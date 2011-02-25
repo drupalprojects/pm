@@ -1,5 +1,4 @@
 <?php
-// $Id$ 
 
 function theme_pm_contract_list($form)
 {
