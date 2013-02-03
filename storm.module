@@ -376,7 +376,7 @@ function storm_storm_dashboard_types() {
       // URL: menu path which should be used, if omitted no menu item will be created
       'url'         => 'storm',
       // title: Required. Title of menu item, page title and title for the storm settings
-      'title'       => t('Storm dashboard'),
+      'title'       => t('Project Management Dashboard'),
       // description: Required. Description for the fieldset in the storm settings
       'description' => t('You can disable or reorder the links from the !dashboard here', array('!dashboard' => l(t('dashboard'), 'storm'))),
       // theme: theme which should be used to display this dashboard. If omitted uses standard theme storm_dashboard
