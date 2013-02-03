@@ -1,0 +1,7 @@
+name = Storm
+description = "Project Management Application (base module - utility for other Storm modules)."
+core = 7.x
+package = Storm
+configure = admin/config/storm
+files[] = storm.test
+dependencies[] = views
