@@ -719,7 +719,6 @@ function stormproject_update($node) {
 
     db_update('stormproject')
       ->fields(array(
-        'vid' => $node->vid,
         'nid' => $node->nid,
         'organization_nid' => $node->organization_nid,
         'organization_title' => $organization->title,
@@ -740,6 +739,7 @@ function stormproject_update($node) {
         'billable' => $node->billable,
         'billed' => $node->billed,
       ))
+      ->condition('vid', $node->vid)
       ->execute();
 
     if ($node->title != $node->title_old) {
