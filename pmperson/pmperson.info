@@ -1,0 +1,7 @@
+name = Project Management Person
+description = "Allows storage of people within organizations, and linking of these to Drupal user accounts."
+dependencies[] = pm
+dependencies[] = pmorganization
+package = Project Management
+core = 7.x
+files[] = pmperson.test

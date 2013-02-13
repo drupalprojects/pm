@@ -1,0 +1,9 @@
+name = Project Management Note
+description = "Allows creation of notes about organizations, projects or tasks."
+dependencies[] = views
+dependencies[] = pm
+dependencies[] = pmorganization
+dependencies[] = pmproject
+dependencies[] = pmtask
+package = Project Management
+core = 7.x

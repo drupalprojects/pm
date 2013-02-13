@@ -1,0 +1,587 @@
+<?php
+/**
+ * @file
+ */
+
+function pmorganization_help($path, $arg) {
+  $output = '';
+
+  switch ($path) {
+    case "admin/help#pmorganization":
+      $output = '<p>'. t("Provides organization support for Project Management") .'</p>';
+      break;
+  }
+
+  return $output;
+}
+
+function pmorganization_permission() {
+  return array(
+    'Project Management organization: access' => array(
+      'title' => t('Access Project Management Organization'),
+    ),
+    'Project Management organization: add' => array(
+      'title' => t('Add Project Management Organization'),
+    ),
+    'Project Management organization: delete all' => array(
+      'title' => t('Delete Any Project Management Organization'),
+    ),
+    'Project Management organization: delete own' => array(
+      'title' => t('Delete Authored Project Management Organizations'),
+    ),
+    'Project Management organization: edit all' => array(
+      'title' => t('Edit Any Project Management Organization'),
+    ),
+    'Project Management organization: edit own' => array(
+      'title' => t('Edit Authored Project Management Organizations'),
+    ),
+    'Project Management organization: edit belonged' => array(
+      'title' => t('Edit Belonged Project Management Organization'),
+    ),
+    'Project Management organization: view all' => array(
+      'title' => t('View Any Project Management Organization'),
+    ),
+    'Project Management organization: view own' => array(
+      'title' => t('View Authored Project Management Organizations'),
+    ),
+    'Project Management organization: view belonged' => array(
+      'title' => t('View Belonged Project Management Organization'),
+    ),
+  );
+}
+
+function pmorganization_access($op, $node, $account = NULL) {
+  if (empty($account)) {
+    global $user;
+    $account = $user;
+  }
+
+  if ($op == 'create') {
+    return user_access('Project Management organization: add');
+  }
+
+  if (is_numeric($node)) $node = node_load($node);
+
+  if (!isset($account->pmorganization_nid) && module_exists('pmperson')) {
+    _pmperson_user_load($account);
+  }
+
+  if ($op == 'delete') {
+    if (user_access('Project Management organization: delete all')) {
+      return TRUE;
+    }
+    elseif (user_access('Project Management organization: delete own') && ($account->uid == $node->uid)) {
+      return TRUE;
+    }
+  }
+
+  if ($op == 'update') {
+    if (user_access('Project Management organization: edit all')) {
+      return TRUE;
+    }
+    elseif (user_access('Project Management organization: edit own') && ($account->uid == $node->uid)) {
+      return TRUE;
+    }
+    elseif (user_access('Project Management organization: edit belonged') && ($account->pmorganization_nid == $node->nid)) {
+      return TRUE;
+    }
+  }
+
+  if ($op == 'view') {
+    if (user_access('Project Management organization: view all')) {
+      return TRUE;
+    }
+    elseif (user_access('Project Management organization: view own') && ($account->uid == $node->uid)) {
+      return TRUE;
+    }
+    elseif (user_access('Project Management organization: view belonged') && ($account->pmorganization_nid == $node->nid)) {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+function pmorganization_access_sql($sql, $where = array()) {
+  if (user_access('Project Management organization: view all')) {
+    $where[] = "'pm_access'='pm_access'";
+    return pm_rewrite_sql($sql, $where);
+  }
+
+  global $user;
+
+  $cond = '';
+  if (user_access('Project Management organization: view own')) {
+    $cond .= 'n.uid='. $user->uid;
+  }
+  if (user_access('Project Management organization: view belonged')) {
+    if (!empty($cond)) $cond .= ' OR ';
+    $cond .= 'n.nid='. $user->pmorganization_nid;
+  }
+  if (empty($cond)) $cond = '0=1';
+  $where[] = $cond;
+
+  $where[] = "'pm_access'='pm_access'";
+  return pm_rewrite_sql($sql, $where);
+}
+
+function pmorganization_pm_rewrite_where_sql($query, $primary_table, $account) {
+  static $conds = array();
+
+  if (isset($conds[$primary_table][$account->uid])) {
+    return $conds[$primary_table][$account->uid];
+  }
+
+  if (preg_match("/'pm_access'='pm_access'/", $query)) {
+    $cond = '';
+  }
+  else {
+    if (user_access('Project Management organization: view all', $account)) {
+      return '';
+    }
+
+    $cond = '';
+    if (user_access('Project Management organization: view own', $account)) {
+      $cond .= "${primary_table}.uid=". $account->uid;
+    }
+    if (user_access('Project Management organization: view belonged', $account)) {
+      if ($cond) {
+        $cond .= ' OR ';
+      }
+      // If function is called without viewing an organization, this variable may not be set.
+      // These lines check for that and set the organization node id to zero if not otherwise set.
+      if (!isset($account->pmorganization_nid)) {
+        $account->pmorganization_nid = 0;
+      }
+      $cond .= ' sor1.nid='. $account->pmorganization_nid;
+    }
+    if ($cond) {
+      $cond = " WHEN 'pmorganization' THEN (SELECT IF($cond,1,0) FROM {pmorganization} sor1 WHERE sor1.vid=${primary_table}.vid) ";
+    }
+    else {
+      $cond = " WHEN 'pmorganization' THEN 0 ";
+    }
+  }
+
+  $conds[$primary_table][$account->uid] = $cond;
+  return $cond;
+}
+
+function pmorganization_menu() {
+  $items = array();
+
+  $items['pm/organizations/autocomplete'] = array(
+    'title' => 'Organization autocomplete',
+    'page callback' => 'pmorganization_autocomplete',
+    'access arguments' => array('Project Management organization: access'),
+    'type' => MENU_CALLBACK,
+    'file' => 'pmorganization.admin.inc',
+  );
+  $items['admin/config/pm/organization'] = array(
+    'title' => 'Project Management organization',
+    'description' => 'Project Management organization administration page',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pmorganization_admin_settings'),
+    'access arguments' => array('Project Management: access administration pages'),
+    'type' => MENU_LOCAL_TASK,
+  );
+  return $items;
+}
+
+function pmorganization_theme() {
+  return array(
+    'pmorganization_view' => array(
+      'file'      => 'pmorganization.theme.inc',
+      'variables' => array('node', 'view_mode'),
+    ),
+  );
+}
+
+function pmorganization_node_info() {
+  return array(
+    'pmorganization' => array(
+      'name' => t('Organization'),
+      'base' => 'pmorganization',
+      'description' => t("An organization for Project Management."),
+      'title_label' => t("Name"),
+      'body_label' => t("Note"),
+    )
+  );
+}
+
+function pmorganization_content_extra_fields($type_name) {
+  if ($type_name == 'pmorganization') {
+    return array(
+      'group1' => array('label' => 'Customer/Provider/Active Group', 'weight' => -20),
+      'group2' => array('label' => 'Prefix/Fullname Group', 'weight' => -19),
+      'group3' => array('label' => 'Address Group', 'weight' => -18),
+      'group4' => array('label' => 'Phone/WWW/Email Group', 'weight' => -17),
+      'group5' => array('label' => 'Currency/Language/Tax ID Group', 'weight' => -16),
+    );
+  }
+}
+
+function pmorganization_form(&$node) {
+  $breadcrumb = array();
+  $breadcrumb[] = l(t('Project Management'), 'pm');
+  $breadcrumb[] = l(t('Organizations'), 'pm/organizations');
+  drupal_set_breadcrumb($breadcrumb);
+
+  $type = node_type_get_type($node);
+
+  $form['#attributes']['class'] = 'pmcomponent_node_form';
+
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => check_plain($type->title_label),
+    '#required' => TRUE,
+    '#default_value' => $node->title,
+    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'title') : -18,
+  );
+
+  $form['group1'] = array(
+    '#type' => 'markup',
+    '#theme' => 'pm_form_group',
+    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
+  );
+
+  $form['group1']['iscustomer'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Customer'),
+    '#default_value' => $node->iscustomer,
+  );
+
+  $form['group1']['isprovider'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Provider'),
+    '#default_value' => $node->isprovider,
+  );
+
+  $form['group1']['isactive'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Active'),
+    '#default_value' => $node->isactive,
+  );
+
+  $form['group2'] = array(
+    '#type' => 'markup',
+    '#theme' => 'pm_form_group',
+    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group2') : -19,
+  );
+
+  $form['group3'] = array(
+    '#type' => 'markup',
+    '#theme' => 'pm_form_group',
+    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group3') : -18,
+  );
+
+  $form['group3']['address'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Address'),
+    '#default_value' => isset($node->address) ? $node->address : NULL,
+    '#weight' => 1,
+  );
+
+  $form['group3']['city'] = array(
+    '#type' => 'textfield',
+    '#title' => t('City'),
+    '#size' => 20,
+    '#default_value' => isset($node->city) ? $node->city : NULL,
+    '#weight' => 2,
+  );
+
+  $form['group3']['provstate'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Province / State'),
+    '#size' => 20,
+    '#default_value' => isset($node->provstate) ? $node->provstate : NULL,
+    '#weight' => 3,
+  );
+
+  $country_list = pm_attributes_bydomain('Country');
+  $form['group3']['country'] = array(
+    '#type' => 'select',
+    '#title' => t('Country'),
+    '#options' => $country_list['values'],
+    '#default_value' => $node->country,
+    '#weight' => 4,
+  );
+
+  $form['group3']['zip'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Zip'),
+    '#size' => 15,
+    '#default_value' => isset($node->zip) ? $node->zip : NULL,
+    '#weight' => 5,
+  );
+
+  $form['group4'] = array(
+    '#type' => 'markup',
+    '#theme' => 'pm_form_group',
+    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group4') : -17,
+  );
+
+  $form['group4']['phone'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Phone'),
+    '#default_value' => isset($node->phone) ? $node->phone : NULL,
+  );
+
+  $form['group4']['www'] = array(
+    '#type' => 'textfield',
+    '#title' => t('WWW'),
+    '#size' => 30,
+    '#default_value' => isset($node->www) ? $node->www : NULL,
+  );
+
+  $form['group4']['email'] = array(
+    '#type' => 'textfield',
+    '#title' => t('E-mail'),
+    '#size' => 30,
+    '#default_value' => isset($node->email) ? $node->email : NULL,
+  );
+
+  $form['group5'] = array(
+    '#type' => 'markup',
+    '#theme' => 'pm_form_group',
+    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group5') : -16,
+  );
+
+  $currency_list = pm_attributes_bydomain('Currency');
+  $form['group5']['currency'] = array(
+    '#type' => 'select',
+    '#title' => t('Currency'),
+    '#options' => $currency_list['values'],
+    '#default_value' => $node->currency,
+  );
+
+  $pricemode_list = pm_attributes_bydomain('Price mode');
+  $form['group5']['pricemode'] = array(
+    '#type' => 'select',
+    '#title' => t('Price mode'),
+    '#default_value' => $node->pricemode,
+    '#options' => $pricemode_list['values'],
+  );
+
+  $form['group5']['price'] = array(
+    '#title' => t('Price'),
+    '#type' => 'textfield',
+    '#size' => 15,
+    '#default_value' => isset($node->price) ? $node->price : NULL,
+  );
+
+  $languages = language_list('language', TRUE);
+  $languages_options = array();
+  foreach ($languages as $language_code => $language) {
+    $languages_options[$language_code] = $language->name;
+  }
+  $form['group5']['orglanguage'] = array(
+    '#type' => 'select',
+    '#title' => t('Language'),
+    '#options' => $languages_options,
+    '#default_value' => isset($node->orglanguage) ? $node->orglanguage : NULL,
+  );
+
+  $form['group5']['taxid'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Tax ID'),
+    '#size' => 20,
+    '#default_value' => isset($node->taxid) ? $node->taxid : NULL,
+  );
+
+  //Check to see if the body field is still there, if so display it
+  $body = field_get_items('pmorganization',$node,'body');
+  if($body){
+    $form['body_field'] = $body;
+  }
+
+  $form['title_old'] = array(
+    '#type' => 'hidden',
+    '#default_value' => isset($node->title_old) ? $node->title_old : NULL,
+  );
+
+  return $form;
+}
+
+function pmorganization_insert($node) {
+  db_insert('pmorganization')
+    ->fields(array(
+      'vid' => $node->vid,
+      'nid' => $node->nid,
+      'country' => $node->country,
+      'www' => $node->www,
+      'phone' => $node->phone,
+      'email' => $node->email,
+      'currency' => $node->currency,
+      'provstate' => $node->provstate,
+      'zip' => $node->zip,
+      'city' => $node->city,
+      'address' => $node->address,
+      'taxid' => $node->taxid,
+      'orglanguage' => $node->orglanguage,
+      'iscustomer' => $node->iscustomer,
+      'isprovider' => $node->isprovider,
+      'isactive' => $node->isactive,
+      'pricemode' => $node->pricemode,
+//      'price' => $node->price,
+    ))
+    ->execute();
+}
+
+function pmorganization_update($node) {
+  // if this is a new node or we're adding a new revision,
+  if ($node->revision) {
+    pmorganization_insert($node);
+  }
+  else {
+    db_update('pmorganization')
+      ->fields(array(
+        'country' => $node->country,
+        'www' => $node->www,
+        'phone' => $node->phone,
+        'email' => $node->email,
+        'currency' => $node->currency,
+        'provstate' => $node->provstate,
+        'zip' => $node->zip,
+        'city' => $node->city,
+        'address' => $node->address,
+        'taxid' => $node->taxid,
+        'orglanguage' => $node->orglanguage,
+        'iscustomer' => $node->iscustomer,
+        'isprovider' => $node->isprovider,
+        'isactive' => $node->isactive,
+        'pricemode' => $node->pricemode,
+//        'price' => $node->price,
+      ))
+      ->condition('vid', $node->vid, '=')
+      ->execute();
+
+    if ($node->title != $node->title_old) {
+      module_invoke_all('pmorganization_change', $node->nid, $node->title);
+    }
+  }
+}
+
+function pmorganization_node_prepare($node) {
+  if (!isset($node->nid)) {
+    $node->iscustomer = 1;
+    $node->isprovider = 0;
+    $node->isactive = 1;
+
+    $country_list = pm_attributes_bydomain('Country');
+    $node->country = $country_list['default'];
+
+    $currency_list = pm_attributes_bydomain('Currency');
+    $node->currency = $currency_list['default'];
+
+    $pricemode_list = pm_attributes_bydomain('Price mode');
+    $node->pricemode = $pricemode_list['default'];
+  }
+}
+
+function pmorganization_node_revision_delete($node) {
+  // Notice that we're matching a single revision based on the node's vid.
+  db_delete('pmorganization')
+    ->condition('vid', $node->vid)
+    ->execute();
+}
+
+function pmorganization_delete($node) {
+  // Notice that we're matching all revision, by using the node's nid.
+  db_delete('pmorganization')
+    ->condition('nid', $node->nid)
+    ->execute();
+}
+
+function pmorganization_load($nodes) {
+  foreach ($nodes as $nid => &$node) {
+    $result = db_select('pmorganization', 'sor')
+      ->fields('sor')
+      ->condition('vid', $node->vid)
+      ->execute();
+    $record = array();
+    $record = $result->fetchAssoc();
+    if($record) {
+      foreach ($record as $key => $value) {
+        $node->$key = $value;
+      }
+    }
+
+    $node->title_old = $node->title;
+  }
+}
+
+function pmorganization_view($node, $view_mode) {
+  if ($view_mode == 'full' && node_is_page($node)) {
+    $breadcrumb = array();
+    $breadcrumb[] = l(t('Project Management'), 'pm');
+    $breadcrumb[] = l(t('Organizations'), 'pm/organizations');
+    drupal_set_breadcrumb($breadcrumb);
+  }
+
+  return theme('pmorganization_view', array('node' => $node, 'view_mode' => $view_mode));
+}
+
+function pmorganization_admin_settings() {
+  $form = array();
+
+  $query = db_select('node', 'n')
+    ->fields('n', array('nid', 'title'))
+    ->condition('status', 1)
+    ->condition('type', 'pmorganization')
+    ->orderBy('title', 'ASC');
+
+  $query->addTag('node_access');
+//  $query->addTag('pmorganization_node_access'); // @TODO
+
+  $result = $query->execute();
+
+  $organizations = array();
+  while ($organization = $result->fetchObject()) {
+    $organizations[$organization->nid] = $organization->title;
+  }
+
+  if (count($organizations) > 0) {
+    $form['pm_organization_nid'] = array(
+      '#type' => 'select',
+      '#title' => t('Host organization'),
+      '#options' => $organizations,
+      '#default_value' => variable_get('pm_organization_nid', 0),
+      '#description' => t('The organization that owns this system'),
+      '#weight' => -30,
+    );
+  }
+  else {
+    $form['pm_organization_nid'] = array(
+      '#type' => 'item',
+      '#title' => t('Host organization'),
+      '#markup' => t('There are no Project Management Organizations in the system.') .'<br />'. l(t('Create a Project Management Organization'), 'node/add/pmorganization'),
+    );
+  }
+  return system_settings_form($form);
+}
+
+function pmorganization_views_api() {
+  return array(
+    'api' => 2,
+    'path' => drupal_get_path('module', 'pmorganization'),
+  );
+}
+
+function pmorganization_pm_dashboard_links($type) {
+  $links = array();
+  if ($type == 'page' || $type == 'block') {
+    $links[] = array(
+      'theme' => 'pm_dashboard_link',
+      'title' => t('Organizations'),
+      'icon' => 'pmorganizations',
+      'path' => 'pm/organizations',
+      'params' => array(),
+      'access_arguments' => 'Project Management organization: access',
+      'node_type' => 'pmorganization',
+      'add_type' => 'pmorganization',
+      'map' => array(),
+      'weight' => 1,
+    );
+  }
+  return $links;
+}

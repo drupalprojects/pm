@@ -1,0 +1,93 @@
+<?php
+/**
+ * @file
+ * Install, uninstall and update functions for the Project Management Team module
+ */
+
+/**
+ * @function
+ * Implementation of hook_install().
+ */
+function pmteam_install() {
+  variable_set('node_options_pmteam', array('status'));
+
+  // Uncache node types
+  node_types_rebuild();
+
+  // Fetch the list of current node types and add the body field to pmteam
+  $types = node_type_get_types();
+  node_add_body_field($types['pmteam'],'Description');
+}
+
+/**
+ * @function
+ * Implementation of hook_disable().
+ */
+function pmteam_disable() {
+  drupal_set_message(t('Nodes of type "Team" have not been deleted on disabling Project Management Team. Please note that they will now have reduced functionality, and will not be protected by Project Management Team access controls.'), 'warning');
+}
+
+/**
+ * @function
+ * Implementation of hook_uninstall().
+ */
+function pmteam_uninstall() {
+  drupal_uninstall_schema('pmteam');
+}
+
+/**
+ * @function
+ * Implementation of hook_schema().
+ */
+function pmteam_schema() {
+  $schema['pmteam'] = array(
+    'fields' => array(
+      'vid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'nid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0),
+      'mnid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0
+      ),
+    ),
+    'primary key' => array(
+      'vid',
+      'nid',
+      'mnid',
+    ),
+    'indexes'     => array(
+      'vid'  => array('vid'),
+      'nid'  => array('nid'),
+      'mnid' => array('mnid'),
+    ),
+  );
+
+  return $schema;
+}
+
+/**
+ * @function
+ * Implementation of hook_update_last_removed().
+ */
+function pmteam_update_last_removed() {
+  return 6201;
+}
+
+/**
+ * Adds Drupal 7 style body field to Project Management Team nodes
+ */
+function pmteam_update_7100() {
+  // Uncache node types
+  node_types_rebuild();
+
+  //Fetch a list of current node types and add a body field to Project Management Team
+  $types = node_type_get_types();
+  node_add_body_field($types['pmteam'],'Description');
+}

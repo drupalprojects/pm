@@ -1,0 +1,8 @@
+name = Project Management Project
+description = "Allows recording of projects based on Project Management Organizations"
+dependencies[] = views
+dependencies[] = pm
+dependencies[] = pmorganization
+package = Project Management
+core = 7.x
+files[] = pmproject.test

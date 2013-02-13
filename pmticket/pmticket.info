@@ -1,0 +1,9 @@
+name = Project Management Ticket
+description = "Allows creation of tickets for Projects and Tasks"
+dependencies[] = pm
+dependencies[] = pmorganization
+dependencies[] = pmproject
+dependencies[] = pmtask
+package = Project Management
+core = 7.x
+files[] = pmticket.test

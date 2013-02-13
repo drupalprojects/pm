@@ -33,8 +33,8 @@ SEE BELOW FOR DETAILS OF EACH OF THE MODULES INCLUDED WITHIN THE PROJECT MANAGEM
 
 
 - Project Management (base module)
--- This module is required for all Storm installations provides a Storm dashboard which gives quick links for the other Storm modules as well as to the Storm administration section.
--- Attributes are the values that are used within Storm, such as task status, countries, currencies etc. This module only relies on the Storm base module, but is needed by all of the following modules.
+-- This module is required for all Project Management installations provides a Project Management dashboard which gives quick links for the other Project Management modules as well as to the Project Management administration section.
+-- Attributes are the values that are used within Project Management, such as task status, countries, currencies etc. This module only relies on the Project Management base module, but is needed by all of the following modules.
 
 - Organization
 -- This module allows you to create nodes relating to the organizations that are the stakeholders of your projects. If you wish to create invoices using Project Management, your own organization should be created as an organization here.

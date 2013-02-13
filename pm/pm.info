@@ -1,0 +1,7 @@
+name = Project Management
+description = "Base module of a set designed to help in Project Management."
+core = 7.x
+package = Project Management
+configure = admin/config/pm
+files[] = pm.test
+dependencies[] = views
