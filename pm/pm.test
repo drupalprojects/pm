@@ -28,7 +28,7 @@ class pmTestCase extends DrupalWebTestCase {
     $privileged_user = $this->drupalCreateUser(array('Project Management: access dashboard'));
     $this->drupalLogin($privileged_user);
     $this->drupalGet('pm');
-    $this->assertText(t('Project Management dashboard'), t('Make sure the correct page has been displayed by checking that the title is "Project Management Dashboard".'));
+    $this->assertText(t('Project Management Dashboard'), t('Make sure the correct page has been displayed by checking that the title is "Project Management Dashboard".'));
   }
 
   public function testpmAccessSettings() {
