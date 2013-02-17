@@ -418,16 +418,19 @@ function pmproject_form(&$node) {
     $organizations[$organization->nid] = $organization->title;
     if (!isset($node->organization_nid)) $node->organization_nid = $organization->nid;
   }
+  if (!isset($node->organization_nid)) {
+    drupal_set_message(t('Please add an orgnization to the system before trying to add a project.'), 'error');
+  }
   $form['group1']['organization_nid'] = array(
     '#type' => 'select',
     '#title' => t('Organization'),
     '#options' => $organizations,
-    '#default_value' => $node->organization_nid,
+    '#default_value' => isset($node->organization_nid) ? $node->organization_nid : NULL,
   );
 
   $form['group1']['organization_nid_old'] = array(
     '#type' => 'hidden',
-    '#default_value' => $node->organization_nid,
+    '#default_value' => isset($node->organization_nid) ? $node->organization_nid : NULL,
   );
 
   $form['title'] = array(
