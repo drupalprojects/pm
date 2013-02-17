@@ -514,7 +514,7 @@ function pmtask_form(&$node, $form_state) {
   $form['group1']['organization_nid'] = array(
     '#type' => 'select',
     '#title' => t('Organization'),
-    '#default_value' => $node->organization_nid,
+    '#default_value' => isset($node->organization_nid) ? $node->organization_nid : NULL,
     '#options' => $organizations,
     '#required' => TRUE,
     '#ajax' => array(
@@ -523,7 +523,13 @@ function pmtask_form(&$node, $form_state) {
     ),
   );
 
-  $organization_nid = isset($form_state['values']['organization_nid']) ? $form_state['values']['organization_nid'] : $node->organization_nid;
+  if (isset($node->organization_nid)) {
+    $organization_nid = isset($form_state['values']['organization_nid']) ? $form_state['values']['organization_nid'] : $node->organization_nid;
+  }
+  else {
+    drupal_set_message(t('Please add an organization to the system before trying to add a task.'), 'error');
+    $organization_nid = NULL;
+  }
 
   $pro_query = db_select('node', 'n');
   $pro_query->join('pmproject', 'spr', 'n.vid = spr.vid');
