@@ -42,46 +42,46 @@ function pmperson_init() {
 
 function pmperson_permission() {
   return array(
-    'Project Management person: access' => array(
+    'Project Management Person: access' => array(
       'title' => t('Access Project Management Person'),
     ),
-    'Project Management person: add' => array(
+    'Project Management Person: add' => array(
       'title' => t('Add Project Management Person'),
     ),
-    'Project Management person: delete all' => array(
+    'Project Management Person: delete all' => array(
       'title' => t('Delete Any Project Management Person'),
     ),
-    'Project Management person: delete own' => array(
+    'Project Management Person: delete own' => array(
       'title' => t('Delete Authored Project Management Person'),
     ),
-    'Project Management person: delete of user organization' => array(
+    'Project Management Person: delete of user organization' => array(
       'title' => t('Delete Project Management Persons in own Organization'),
     ),
-    'Project Management person: delete when linked to own user account' => array(
+    'Project Management Person: delete when linked to own user account' => array(
       'title' => t('Delete Project Management Person linked to own user account'),
     ),
-    'Project Management person: edit all' => array(
+    'Project Management Person: edit all' => array(
       'title' => t('Edit Any Project Management Person'),
     ),
-    'Project Management person: edit own' => array(
+    'Project Management Person: edit own' => array(
       'title' => t('Edit Authored Project Management Person'),
     ),
-    'Project Management person: edit of user organization' => array(
+    'Project Management Person: edit of user organization' => array(
       'title' => t('Edit Project Management Persons in own Organization'),
     ),
-    'Project Management person: edit when linked to own user account' => array(
+    'Project Management Person: edit when linked to own user account' => array(
       'title' => t('Edit Project Management Person linked to own user account'),
     ),
-    'Project Management person: view all' => array(
+    'Project Management Person: view all' => array(
       'title' => t('View Any Project Management Person'),
     ),
-    'Project Management person: view own' => array(
+    'Project Management Person: view own' => array(
       'title' => t('View Authored Project Management Person'),
     ),
-    'Project Management person: view of user organization' => array(
+    'Project Management Person: view of user organization' => array(
       'title' => t('View Project Management Persons in own Organization'),
     ),
-    'Project Management person: view when linked to own user account' => array(
+    'Project Management Person: view when linked to own user account' => array(
       'title' => t('View Project Management Person linked to own user account'),
     ),
   );
