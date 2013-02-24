@@ -26,55 +26,55 @@ function pmproject_help($path, $arg) {
  */
 function pmproject_permission() {
   return array(
-    'Project Management project: access' => array(
+    'Project Management Project: access' => array(
       'title' => t('Access Project Management Project Listings'),
     ),
-    'Project Management project: add' => array(
+    'Project Management Project: add' => array(
       'title' => t('Add Project Management Projects'),
     ),
-    'Project Management project: delete all' => array(
+    'Project Management Project: delete all' => array(
       'title' => t('Delete Any Project Management Project'),
     ),
-    'Project Management project: delete own' => array(
+    'Project Management Project: delete own' => array(
       'title' => t('Delete Authored Project Management Projects'),
     ),
-    'Project Management project: delete of user organization' => array(
+    'Project Management Project: delete of user organization' => array(
       'title' => t('Delete Project Management Projects in own Organization'),
     ),
-    'Project Management project: delete if project manager' => array(
+    'Project Management Project: delete if project manager' => array(
       'title' => t('Delete Project Management Project if project manager'),
     ),
-    'Project Management project: delete if assigned to project' => array(
+    'Project Management Project: delete if assigned to project' => array(
       'title' => t('Delete Project Management Project if assigned to project'),
     ),
-    'Project Management project: edit all' => array(
+    'Project Management Project: edit all' => array(
       'title' => t('Edit Any Project Management Project'),
     ),
-    'Project Management project: edit own' => array(
+    'Project Management Project: edit own' => array(
       'title' => t('Edit Authored Project Management Projects'),
     ),
-    'Project Management project: edit of user organization' => array(
+    'Project Management Project: edit of user organization' => array(
       'title' => t('Edit Project Management Project in own Organization'),
     ),
-    'Project Management project: edit if project manager' => array(
+    'Project Management Project: edit if project manager' => array(
       'title' => t('Edit Project Management Project if project manager'),
     ),
-    'Project Management project: edit if assigned to project' => array(
+    'Project Management Project: edit if assigned to project' => array(
       'title' => t('Edit Project Management Project if assigned to project'),
     ),
-    'Project Management project: view all' => array(
+    'Project Management Project: view all' => array(
       'title' => t('View Any Project Management Project'),
     ),
-    'Project Management project: view own' => array(
+    'Project Management Project: view own' => array(
       'title' => t('View Authored Project Management Project'),
     ),
-    'Project Management project: view of user organization' => array(
+    'Project Management Project: view of user organization' => array(
       'title' => t('View Project Management Project in own Organization'),
     ),
-    'Project Management project: view if project manager' => array(
+    'Project Management Project: view if project manager' => array(
       'title' => t('View Project Management Project if project manager'),
     ),
-    'Project Management project: view if assigned to project' => array(
+    'Project Management Project: view if assigned to project' => array(
       'title' => t('View Project Management Project if assigned to project'),
     ),
   );
