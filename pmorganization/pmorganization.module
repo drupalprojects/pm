@@ -172,7 +172,7 @@ function pmorganization_menu() {
   $items['pm/organizations/autocomplete'] = array(
     'title' => 'Organization autocomplete',
     'page callback' => 'pmorganization_autocomplete',
-    'access arguments' => array('Project Management organization: access'),
+    'access arguments' => array('Project Management Organization: access'),
     'type' => MENU_CALLBACK,
     'file' => 'pmorganization.admin.inc',
   );
