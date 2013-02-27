@@ -30,7 +30,6 @@ function pmperson_schema() {
       'organization_nid'    => array('type' => 'int'),
       'organization_title'  => array('type' => 'varchar', 'length' => 150),
       'prefix'              => array('type' => 'varchar', 'length' => 100),
-      'fullname'            => array('type' => 'varchar', 'length' => 100),
       'email'               => array('type' => 'varchar', 'length' => 50),
       'www'                 => array('type' => 'varchar', 'length' => 100),
       'phone'               => array('type' => 'varchar', 'length' => 100),
@@ -67,4 +66,11 @@ function pmperson_update_7100() {
   node_add_body_field($types['pmperson'],'Description');
 
   return 'Added D7 style body field to pm person nodes';
+}
+
+/**
+ * Deletes fullname field from the person table. This field has been deprecated since 6.x-2.x
+ */
+function pmperson_update_7101() {
+  db_drop_field('pmperson', 'fullname');
 }
