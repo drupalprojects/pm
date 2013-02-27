@@ -263,16 +263,6 @@ function pmtask_menu() {
     'file' => 'pmtask.admin.inc',
     'type' => MENU_CALLBACK,
   );
-  $items['pm/tasks'] = array(
-    'title' => 'Tasks',
-    'description' => 'Project Management Tasks',
-    'page callback' => 'pmtask_list',
-    'access arguments' => array('Project Management Task: access'),
-    'type' => MENU_NORMAL_ITEM,
-    'file' => 'pmtask.admin.inc',
-    'weight' => 4,
-  );
-
   $items['admin/config/pm/task'] = array(
     'title' => 'Project Management Task',
     'description' => 'Project Management Task administration page',
@@ -362,10 +352,6 @@ function jsgantt_check_directory($form_element) {
 
 function pmtask_theme() {
   return array(
-    'pmtask_list' => array(
-      'file'      => 'pmtask.theme.inc',
-      'variables' => array('header', 'tasks'),
-    ),
     'pmtask_tasks' => array(
       'file'      => 'pmtask.theme.inc',
       'arguments' => array('form'),

@@ -50,36 +50,6 @@ function theme_pmtask_tasks($form) {
   return theme('table', array('header' => $header, 'rows' => $rows));
 }
 
-function theme_pmtask_list($variables) {
-  $header = $variables['header'];
-  $tasks = $variables['tasks'];
-
-  $rows = array();
-  foreach ($tasks as $task) {
-    $rows[] = array(
-      // Add classes to each row in table.
-      // Allows customisation of row via css depending on the task's attributes (category, status, priority)
-//      'class' =>
-//        'pm_category_'. preg_replace('/[^a-zA-Z]/', '', $task->taskcategory) . ' ' .
-//        'pm_status_'. preg_replace('/[^a-zA-Z]/', '', $task->taskstatus) . ' ' .
-//        'pm_priority_'. preg_replace('/[^a-zA-Z]/', '', $task->taskpriority),
-      'data' => array(
-        l($task->organization_title, 'node/'. $task->organization_nid),
-        l($task->project_title, 'node/'. $task->project_nid),
-        l($task->title, 'node/'. $task->nid) . theme('mark', array('type' => node_mark($task->nid, $task->changed))),
-        pm_icon('category_'. $task->taskcategory, pm_attribute_value('Task category', $task->taskcategory)),
-        pm_icon('status_'. $task->taskstatus, pm_attribute_value('Task status', $task->taskstatus)),
-        pm_icon('priority_'. $task->taskpriority, pm_attribute_value('Task priority', $task->taskpriority)),
-        array(
-          'data' => pm_icon_edit_node($task, $_GET) .'&nbsp;'. pm_icon_delete_node($task, $_GET),
-//          'class' => 'pm_list_operations',
-        ),
-      ),
-    );
-  }
-  return theme('table', array('header' => $header, 'rows' => $rows));
-}
-
 function theme_pmtask_view($variables) {
   $node = $variables['node'];
 
