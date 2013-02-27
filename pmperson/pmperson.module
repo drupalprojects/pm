@@ -227,7 +227,7 @@ function pmperson_menu() {
     'title' => 'People',
     'description' => 'Project Management people',
     'page callback' => 'pmperson_list',
-    'access arguments' => array('Project Management person: access'),
+    'access arguments' => array('Project Management Person: access'),
     'type' => MENU_NORMAL_ITEM,
     'file' => 'pmperson.admin.inc',
     'weight' => 1,
