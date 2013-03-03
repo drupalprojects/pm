@@ -66,17 +66,6 @@ function pmticket_permission() {
   );
 }
 
-function pmticket_init() {
-  drupal_add_js(drupal_get_path('module', 'pmticket') .'/pmticket.js', 'module', 'header', FALSE);
-
-  $settings = array(
-    'pm' => array(
-      'task_tickets_url' => url('pm/task_tickets_js/')
-    ),
-  );
-  drupal_add_js($settings, 'setting');
-}
-
 // ACCESS FUNCTIONS
 function pmticket_access($op, $node, $account=NULL) {
   if (empty($account)) {
@@ -255,25 +244,6 @@ function pmticket_pm_rewrite_where_sql($query, $primary_table, $account) {
 function pmticket_menu() {
   $items = array();
 
-  $items['pm/tickets'] = array(
-    'title' => 'Tickets',
-    'description' => 'Project Management Tickets',
-    'page callback' => 'pmticket_list',
-    'access arguments' => array('Project Management Ticket: access'),
-    'type' => MENU_NORMAL_ITEM,
-    'file' => 'pmticket.admin.inc',
-    'weight' => 5,
-  );
-
-  $items['pm/task_tickets_js/%/%/%'] = array(
-    'title' => 'Tickets',
-    'page callback' => '_pmticket_task_tickets_js',
-    'page arguments' => array(2, 3, 4),
-    'access callback' => TRUE,
-    'file' => 'pmticket.admin.inc',
-    'type' => MENU_CALLBACK,
-  );
-
   $items['admin/config/pm/ticket'] = array(
     'title' => 'Project Management Ticket',
     'description' => 'Project Management Ticket administration page',
@@ -288,10 +258,6 @@ function pmticket_menu() {
 
 function pmticket_theme() {
   return array(
-    'pmticket_list' => array(
-      'file'      => 'pmticket.theme.inc',
-      'variables' => array('header', 'tickets'),
-    ),
     'pmticket_view' => array(
       'file'      => 'pmticket.theme.inc',
       'variables' => array('node', 'view_mode'),
