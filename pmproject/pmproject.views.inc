@@ -18,7 +18,7 @@ function pmproject_views_data() {
     'help' => t('Project -> Organization'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Project -> Organization'),
     ),
@@ -215,7 +215,7 @@ function pmproject_views_data() {
     'help' => t('Project -> Manager'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Project -> Manager'),
     ),
@@ -243,7 +243,7 @@ function pmproject_views_data() {
     'help' => t('Project -> Assigned'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Project -> Assigned'),
     ),

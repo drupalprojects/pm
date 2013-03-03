@@ -52,7 +52,7 @@ function pminvoice_views_data() {
     'help' => t('Invoice -> Organization'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Invoice -> Organization'),
     ),
@@ -80,7 +80,7 @@ function pminvoice_views_data() {
     'help' => t('Invoice -> Project'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Invoice -> Project'),
     ),
@@ -276,7 +276,7 @@ function pminvoice_views_data() {
     'help' => t('Invoiceitem -> Invoice'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Invoiceitem -> Invoice'),
     ),

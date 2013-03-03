@@ -35,7 +35,7 @@ function pmteam_views_data() {
     ),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Member -> Node'),
     ),

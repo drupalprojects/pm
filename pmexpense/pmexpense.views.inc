@@ -17,7 +17,7 @@ function pmexpense_views_data() {
     'help' => t('Expense -> Organization'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Expense -> Organization'),
     ),
@@ -45,7 +45,7 @@ function pmexpense_views_data() {
     'help' => t('Expense -> Project'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Expense -> Project'),
     ),
@@ -73,7 +73,7 @@ function pmexpense_views_data() {
     'help' => t('Expense -> Task'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Expense -> Task'),
     ),
@@ -118,7 +118,7 @@ function pmexpense_views_data() {
     'help' => t('Expense -> Ticket'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Expense -> Ticket'),
     ),
@@ -146,7 +146,7 @@ function pmexpense_views_data() {
     'help' => t('Expense -> Provider'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Expense -> Provider'),
     ),
@@ -284,4 +284,3 @@ function pmexpense_date_api_fields($field) {
 function pmexpense_date_api_tables() {
   return array('pmexpense');
 }
-

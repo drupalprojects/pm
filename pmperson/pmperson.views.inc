@@ -17,7 +17,7 @@ function pmperson_views_data() {
     'help' => t('Person -> Organization'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Person -> Organization'),
     ),
@@ -130,7 +130,7 @@ function pmperson_views_data() {
     'help' => t('Project Management Person -> Drupal User'),
     'relationship' => array(
       'base' => 'users',
-      'field' => 'uid',
+      'base field' => 'uid',
       'handler' => 'views_handler_relationship',
       'label' => t('Person -> User'),
     ),

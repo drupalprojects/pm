@@ -12,40 +12,6 @@ function pmorganization_views_data() {
     ),
   );
 
-  $data['pmorganization']['prefix'] = array(
-    'title' => t('Prefix'),
-    'help' => t('Project Management Organization Prefix'),
-    'field' => array(
-      'click sortable' => TRUE,
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort',
-    ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_string',
-    ),
-    'argument' => array(
-      'handler' => 'views_handler_argument_string',
-    ),
-  );
-
-  $data['pmorganization']['fullname'] = array(
-    'title' => t('Fullname'),
-    'help' => t('Project Management Organization Fullname'),
-    'field' => array(
-      'click sortable' => TRUE,
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort',
-    ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_string',
-    ),
-    'argument' => array(
-      'handler' => 'views_handler_argument_string',
-    ),
-  );
-
   $data['pmorganization']['country'] = array(
     'title' => t('Country'),
     'help' => t('Project Management Organization Country'),

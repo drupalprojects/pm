@@ -17,7 +17,7 @@ function pmtimetracking_views_data() {
     'help' => t('Timetracking -> Organization'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Timetracking -> Organization'),
     ),
@@ -45,7 +45,7 @@ function pmtimetracking_views_data() {
     'help' => t('Timetracking -> Project'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Timetracking -> Project'),
     ),
@@ -73,7 +73,7 @@ function pmtimetracking_views_data() {
     'help' => t('Timetracking -> Task'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Timetracking -> Task'),
     ),
@@ -118,7 +118,7 @@ function pmtimetracking_views_data() {
     'help' => t('Timetracking -> Ticket'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Timetracking -> Ticket'),
     ),

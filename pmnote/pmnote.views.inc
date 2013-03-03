@@ -17,7 +17,7 @@ function pmnote_views_data() {
     'help' => t('Note -> Organization'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Note -> Organization'),
     ),
@@ -45,7 +45,7 @@ function pmnote_views_data() {
     'help' => t('Note -> Project'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Note -> Project'),
     ),
@@ -73,7 +73,7 @@ function pmnote_views_data() {
     'help' => t('Note -> Task'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Note -> Task'),
     ),

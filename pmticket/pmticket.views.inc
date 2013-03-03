@@ -17,7 +17,7 @@ function pmticket_views_data() {
     'help' => t('Ticket -> Organization'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Ticket -> Organization'),
     ),
@@ -45,7 +45,7 @@ function pmticket_views_data() {
     'help' => t('Ticket -> Project'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Ticket -> Project'),
     ),
@@ -73,7 +73,7 @@ function pmticket_views_data() {
     'help' => t('Ticket -> Task'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Ticket -> Task'),
     ),
@@ -216,7 +216,7 @@ function pmticket_views_data() {
     'help' => t('Ticket -> Assigned'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Ticket -> Assigned'),
     ),

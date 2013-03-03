@@ -34,7 +34,7 @@ function pmtask_views_data() {
     'help' => t('Task -> Organization'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Task -> Organization'),
     ),
@@ -62,7 +62,7 @@ function pmtask_views_data() {
     'help' => t('Task -> Project'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Task -> Project'),
     ),
@@ -90,7 +90,7 @@ function pmtask_views_data() {
     'help' => t('Task -> Parent Task'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Task -> Parent Task'),
     ),
@@ -287,7 +287,7 @@ function pmtask_views_data() {
     'help' => t('Task -> Assigned'),
     'relationship' => array(
       'base' => 'node',
-      'field' => 'nid',
+      'base field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Task -> Assigned'),
     ),
