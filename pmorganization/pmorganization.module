@@ -576,7 +576,7 @@ function pmorganization_pm_dashboard_links($type) {
       'icon' => 'pmorganizations',
       'path' => 'pm/organizations',
       'params' => array(),
-      'access_arguments' => 'Project Management organization: access',
+      'access_arguments' => 'Project Management Organization: access',
       'node_type' => 'pmorganization',
       'add_type' => 'pmorganization',
       'map' => array(),

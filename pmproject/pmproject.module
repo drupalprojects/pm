@@ -1039,7 +1039,7 @@ function pmproject_pm_dashboard_links($type) {
       'icon' => 'pmprojects',
       'path' => 'pm/projects',
       'params' => array(),
-      'access_arguments' => 'Project Management project: access',
+      'access_arguments' => 'Project Management Project: access',
       'node_type' => 'pmproject',
       'add_type' => 'pmproject',
       'map' => array(),

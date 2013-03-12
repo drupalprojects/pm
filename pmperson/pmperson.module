@@ -684,7 +684,7 @@ function pmperson_pm_dashboard_links($type) {
       'icon' => 'pmpeople',
       'path' => 'pm/people',
       'params' => array(),
-      'access_arguments' => 'Project Management person: access',
+      'access_arguments' => 'Project Management Person: access',
       'node_type' => 'pmperson',
       'add_type' => 'pmperson',
       'map' => array(),
