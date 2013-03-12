@@ -26,22 +26,22 @@ function pmproject_views_default_views() {
   $handler->display->display_options['pager']['options']['items_per_page'] = '10';
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
+    'title_1' => 'title_1',
     'title' => 'title',
-    'body' => 'body',
     'edit_node' => 'edit_node',
     'delete_node' => 'edit_node',
   );
-  $handler->display->display_options['style_options']['default'] = 'title';
+  $handler->display->display_options['style_options']['default'] = 'title_1';
   $handler->display->display_options['style_options']['info'] = array(
-    'title' => array(
+    'title_1' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
       'empty_column' => 0,
     ),
-    'body' => array(
-      'sortable' => 0,
+    'title' => array(
+      'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
@@ -58,10 +58,17 @@ function pmproject_views_default_views() {
       'empty_column' => 1,
     ),
   );
-  /* Field: Project Management Project: Organization */
-  $handler->display->display_options['fields']['organization_title']['id'] = 'organization_title';
-  $handler->display->display_options['fields']['organization_title']['table'] = 'pmproject';
-  $handler->display->display_options['fields']['organization_title']['field'] = 'organization_title';
+  /* Relationship: Project Management Project: Organization */
+  $handler->display->display_options['relationships']['organization_nid']['id'] = 'organization_nid';
+  $handler->display->display_options['relationships']['organization_nid']['table'] = 'pmproject';
+  $handler->display->display_options['relationships']['organization_nid']['field'] = 'organization_nid';
+  $handler->display->display_options['relationships']['organization_nid']['required'] = TRUE;
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title_1']['id'] = 'title_1';
+  $handler->display->display_options['fields']['title_1']['table'] = 'node';
+  $handler->display->display_options['fields']['title_1']['field'] = 'title';
+  $handler->display->display_options['fields']['title_1']['relationship'] = 'organization_nid';
+  $handler->display->display_options['fields']['title_1']['label'] = 'Organization';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -105,7 +112,7 @@ function pmproject_views_default_views() {
   $handler->display->display_options['filters']['title']['operator'] = 'contains';
   $handler->display->display_options['filters']['title']['exposed'] = TRUE;
   $handler->display->display_options['filters']['title']['expose']['operator_id'] = 'title_op';
-  $handler->display->display_options['filters']['title']['expose']['label'] = 'Name';
+  $handler->display->display_options['filters']['title']['expose']['label'] = 'Project';
   $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
   $handler->display->display_options['filters']['title']['expose']['identifier'] = 'title';
   $handler->display->display_options['filters']['title']['expose']['remember_roles'] = array(
@@ -126,6 +133,10 @@ function pmproject_views_default_views() {
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['path'] = 'pm/projects';
+  $handler->display->display_options['menu']['type'] = 'normal';
+  $handler->display->display_options['menu']['title'] = 'Projects';
+  $handler->display->display_options['menu']['weight'] = '0';
+  $handler->display->display_options['menu']['context'] = 0;
 
   $views[$view->name] = $view;
 

@@ -1,7 +1,6 @@
 <?php
 function pmnote_views_default_views() {
   $views = array();
-  $view = new view();
 
   $view = new view();
   $view->name = 'pm_note_list';
@@ -26,28 +25,30 @@ function pmnote_views_default_views() {
   $handler->display->display_options['pager']['options']['items_per_page'] = '10';
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
-    'organization_title' => 'organization_title',
-    'project_title' => 'project_title',
-    'task_title' => 'task_title',
+    'title_3' => 'title_3',
+    'title_2' => 'title_2',
+    'title_1' => 'title_1',
     'title' => 'title',
+    'edit_node' => 'edit_node',
+    'delete_node' => 'edit_node',
   );
   $handler->display->display_options['style_options']['default'] = '-1';
   $handler->display->display_options['style_options']['info'] = array(
-    'organization_title' => array(
+    'title_3' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
       'empty_column' => 0,
     ),
-    'project_title' => array(
+    'title_2' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
       'empty_column' => 0,
     ),
-    'task_title' => array(
+    'title_1' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
@@ -61,25 +62,64 @@ function pmnote_views_default_views() {
       'separator' => '',
       'empty_column' => 0,
     ),
+    'edit_node' => array(
+      'align' => '',
+      'separator' => ' ',
+      'empty_column' => 1,
+    ),
+    'delete_node' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
   );
-  /* Field: Project Management Note: Organization */
-  $handler->display->display_options['fields']['organization_title']['id'] = 'organization_title';
-  $handler->display->display_options['fields']['organization_title']['table'] = 'pmnote';
-  $handler->display->display_options['fields']['organization_title']['field'] = 'organization_title';
-  /* Field: Project Management Note: Project */
-  $handler->display->display_options['fields']['project_title']['id'] = 'project_title';
-  $handler->display->display_options['fields']['project_title']['table'] = 'pmnote';
-  $handler->display->display_options['fields']['project_title']['field'] = 'project_title';
-  /* Field: Project Management Note: Task */
-  $handler->display->display_options['fields']['task_title']['id'] = 'task_title';
-  $handler->display->display_options['fields']['task_title']['table'] = 'pmnote';
-  $handler->display->display_options['fields']['task_title']['field'] = 'task_title';
+  /* Relationship: Project Management Note: Organization */
+  $handler->display->display_options['relationships']['organization_nid']['id'] = 'organization_nid';
+  $handler->display->display_options['relationships']['organization_nid']['table'] = 'pmnote';
+  $handler->display->display_options['relationships']['organization_nid']['field'] = 'organization_nid';
+  $handler->display->display_options['relationships']['organization_nid']['required'] = TRUE;
+  /* Relationship: Project Management Note: Project */
+  $handler->display->display_options['relationships']['project_nid']['id'] = 'project_nid';
+  $handler->display->display_options['relationships']['project_nid']['table'] = 'pmnote';
+  $handler->display->display_options['relationships']['project_nid']['field'] = 'project_nid';
+  /* Relationship: Project Management Note: Task */
+  $handler->display->display_options['relationships']['task_nid']['id'] = 'task_nid';
+  $handler->display->display_options['relationships']['task_nid']['table'] = 'pmnote';
+  $handler->display->display_options['relationships']['task_nid']['field'] = 'task_nid';
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title_3']['id'] = 'title_3';
+  $handler->display->display_options['fields']['title_3']['table'] = 'node';
+  $handler->display->display_options['fields']['title_3']['field'] = 'title';
+  $handler->display->display_options['fields']['title_3']['relationship'] = 'organization_nid';
+  $handler->display->display_options['fields']['title_3']['label'] = 'Organization';
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title_2']['id'] = 'title_2';
+  $handler->display->display_options['fields']['title_2']['table'] = 'node';
+  $handler->display->display_options['fields']['title_2']['field'] = 'title';
+  $handler->display->display_options['fields']['title_2']['relationship'] = 'project_nid';
+  $handler->display->display_options['fields']['title_2']['label'] = 'Project';
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title_1']['id'] = 'title_1';
+  $handler->display->display_options['fields']['title_1']['table'] = 'node';
+  $handler->display->display_options['fields']['title_1']['field'] = 'title';
+  $handler->display->display_options['fields']['title_1']['relationship'] = 'task_nid';
+  $handler->display->display_options['fields']['title_1']['label'] = 'Task';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = 'Note';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  /* Field: Content: Edit link */
+  $handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
+  $handler->display->display_options['fields']['edit_node']['table'] = 'views_entity_node';
+  $handler->display->display_options['fields']['edit_node']['field'] = 'edit_node';
+  $handler->display->display_options['fields']['edit_node']['label'] = 'Operations';
+  /* Field: Content: Delete link */
+  $handler->display->display_options['fields']['delete_node']['id'] = 'delete_node';
+  $handler->display->display_options['fields']['delete_node']['table'] = 'views_entity_node';
+  $handler->display->display_options['fields']['delete_node']['field'] = 'delete_node';
   /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
