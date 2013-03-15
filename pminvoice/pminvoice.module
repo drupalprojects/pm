@@ -64,28 +64,8 @@ function pminvoice_permission() {
   );
 }
 
-function pminvoice_init() {
-  $settings = array(
-    'pm' => array(
-      'project_invoices_url' => url('pm/project_invoices_js/')
-    ),
-  );
-  drupal_add_js($settings, 'setting');
-  drupal_add_js(drupal_get_path('module', 'pminvoice') .'/pminvoice.js', 'module', 'header', FALSE);
-}
-
 function pminvoice_menu() {
   $items = array();
-
-  $items['pm/project_invoices_js/%/%'] = array(
-    'title' => 'Tasks',
-    'page callback' => '_pminvoice_project_invoices_js',
-    'page arguments' => array(2, 3),
-    'access callback' => TRUE,
-    'file' => 'pminvoice.admin.inc',
-    'type' => MENU_CALLBACK,
-    'weight' => 8,
-  );
 
   $items['pm/invoices'] = array(
     'title' => 'Invoices',
@@ -112,26 +92,6 @@ function pminvoice_menu() {
     'file' => 'pminvoice.auto_add.inc',
   );
 
-  $items['pm/invoice/report/%node/%/%'] = array(
-    'title' => 'Invoice',
-    'page arguments' => array(3, 4, 5),
-    'description' => 'Project Management Invoice',
-    'page callback' => 'pminvoice_report',
-    'access arguments' => array('Project Management invoice: access'),
-    'type' => MENU_CALLBACK,
-    'file' => 'pminvoice.admin.inc',
-  );
-
-  $items['pm/invoice/report/%node/email/%'] = array(
-    'title' => 'Send Invoice by Email',
-    'page arguments' => array(3, 5),
-    'description' => 'Project Management Invoice',
-    'page callback' => 'pminvoice_send_page',
-    'access arguments' => array('Project Management invoice: access'),
-    'type' => MENU_CALLBACK,
-    'file' => 'pminvoice.admin.inc',
-  );
-
   $items['admin/config/pm/invoice'] = array(
     'title' => 'Project Management Invoice',
     'description' => 'Project Management Invoice Administration Page',
@@ -152,19 +112,7 @@ function pminvoice_theme() {
     ),
     'pminvoice_view' => array(
       'file'      => 'pminvoice.theme.inc',
-      'arguments' => array('node', 'teaser', 'page'),
-    ),
-    'pminvoice_report' => array(
-      'file'      => 'pminvoice.theme.inc',
-      'arguments' => array('node', 'report', 'language'),
-    ),
-    'pminvoice_report_html' => array(
-      'file'      => 'pminvoice.theme.inc',
-      'arguments' => array('node', 'language'),
-    ),
-    'pminvoice_report_pdf' => array(
-      'file'      => 'pminvoice.theme.inc',
-      'arguments' => array('node', 'language', array('output' => 'screen')),
+      'variables' => array('node', 'view_mode'),
     ),
     'pminvoice_autoadd_links' => array(
       'file'      => 'pminvoice.theme.inc',
@@ -424,7 +372,6 @@ function pminvoice_form(&$node) {
     '#default_value' => $node->organization_nid,
     '#options' => $organizations,
     '#required' => TRUE,
-//    '#attributes' => array('onchange' => "pmproject_organization_projects(this, 'edit-project-nid', true, '-')"),
   );
 
   $pro_query = db_select('node', 'n');
@@ -530,7 +477,7 @@ function pminvoice_form(&$node) {
       '#withnull' => 'true',
       '#title' => t('Amount'),
       '#size' => 15,
-      '#default_value' => isset($node->items[$i]->amount) ? $node->items[$i]->amount : NULL,
+      '#default_value' => isset($node->items[$i]->amount) ? $node->items[$i]->amount : 0,
     );
 
     $form['group4'][$i]['first']['items_'. $i .'_weight'] = array(
@@ -538,7 +485,7 @@ function pminvoice_form(&$node) {
       '#title' => t('Weight'),
       '#size' => 3,
       '#maxlength' => 3,
-      '#default_value' => isset($node->items[$i]->weight) ? $node->items[$i]->weight : NULL,
+      '#default_value' => isset($node->items[$i]->weight) ? $node->items[$i]->weight : 0,
     );
 
     $form['group4'][$i]['tax1'] = array(
@@ -676,24 +623,34 @@ function pminvoice_insert($node) {
   $node->src_nid = (isset($node->src_nid)) ? $node->src_nid : NULL;
   $node->src_vid = (isset($node->src_vid)) ? $node->src_vid : NULL;
 
-  db_query("INSERT INTO {pminvoice}
-      (vid, nid, number, reference, organization_nid, organization_title,
-      project_nid, project_title, amount, tax1, tax2,
-      total, totalcustomercurr, requestdate, duedate, paymentdate,
-      taxexempt, src_nid, src_vid) VALUES
-      (%d, %d, '%s', '%s', %d, '%s',
-      %d, '%s', %f, %f, %f,
-      %f, %f, %d, %d, %d,
-      %d, %d, %d)",
-      $node->vid, $node->nid, $node->number, $node->reference, $node->organization_nid, $node->organization_title,
-      $node->project_nid, $node->project_title, $node->amount, $node->tax1, $node->tax2,
-      $node->total, $node->totalcustomercurr, $node->requestdate, $node->duedate, $node->paymentdate,
-      $node->taxexempt, $node->src_nid, $node->src_vid);
+  db_insert('pminvoice')
+  ->fields(array(
+    'vid' => $node->vid,
+    'nid' => $node->nid,
+    'number' => $node->number,
+    'reference' => $node->reference,
+    'organization_nid' => $node->organization_nid,
+    'organization_title' => $node->organization_title,
+    'project_nid' => $node->project_nid,
+    'project_title' => $node->project_title,
+//    'amount' => $node->amount, // will be set later
+//    'tax1' => $node->tax1,
+//    'tax2' => $node->tax2,
+//    'total' => $node->total,
+//    'totalcustomercurr' => $node->totalcustomercurr,
+    'requestdate' => $node->requestdate,
+    'duedate' => $node->duedate,
+    'paymentdate' => $node->paymentdate,
+    'taxexempt' => $node->taxexempt,
+    'src_nid' => $node->src_nid,
+    'src_vid' => $node->src_vid,
+  ))
+  ->execute();
 
   // Insert invoice items
-  _pminvoice_insert_items($node);
+//  _pminvoice_insert_items($node);
 
-  _pminvoice_aftersave($node);
+//  _pminvoice_aftersave($node);
 }
 
 function pminvoice_update($node) {
@@ -703,16 +660,34 @@ function pminvoice_update($node) {
     pminvoice_insert($node);
   }
   else {
-    db_query("UPDATE {pminvoice} SET
-      number='%s', reference='%s', organization_nid=%d, organization_title='%s', project_nid=%d,
-      project_title='%s', amount=%f, tax1=%f, tax2=%f, total=%f,
-      totalcustomercurr=%f, requestdate=%d, duedate=%d, paymentdate=%d, taxexempt=%d WHERE vid = %d",
-      $node->number, $node->reference, $node->organization_nid, $node->organization_title, $node->project_nid,
-      $node->project_title, $node->amount, $node->tax1, $node->tax2, $node->total,
-      $node->totalcustomercurr, $node->requestdate, $node->duedate, $node->paymentdate, $node->taxexempt, $node->vid);
+    db_update('pminvoice')
+    ->fields(array(
+      'number' => $node->number,
+      'reference' => $node->reference,
+      'organization_nid' => $node->organization_nid,
+      'organization_title' => $node->organization_title,
+      'project_nid' => $node->project_nid,
+      'project_title' => $node->project_title,
+      'amount' => $node->amount,
+      'tax1' => $node->tax1,
+      'tax2' => $node->tax2,
+      'total' => $node->total,
+      'totalcustomercurr' => $node->totalcustomercurr,
+      'requestdate' => $node->requestdate,
+      'duedate' => $node->duedate,
+      'paymentdate' => $node->paymentdate,
+      'taxexempt' => $node->taxexempt,
+      'src_nid' => $node->src_nid,
+      'src_vid' => $node->src_vid,
+    ))
+    ->condition('vid', $node->vid)
+    ->execute();
 
     // Update invoice items
-    db_query("DELETE from {pminvoice_items} WHERE invoice_vid = ". $node->vid);
+    db_delete('pminvoice_items')
+    ->condition('invoice_vid', $node->vid)
+    ->execute();
+
     _pminvoice_insert_items($node);
 
     _pminvoice_aftersave($node);
@@ -731,20 +706,22 @@ function _pminvoice_beforesave(&$node) {
   if (is_array($node->duedate)) $node->duedate = _pm_date_to_gmtimestamp($node->duedate);
   if (is_array($node->paymentdate)) $node->paymentdate = _pm_date_to_gmtimestamp($node->paymentdate);
 
-  $s = "SELECT n.title FROM {node} AS n
-    INNER JOIN {pmorganization} AS o ON n.vid=o.vid
-    WHERE type='pmorganization' AND n.nid=%d";
-  $r = db_query($s, $node->organization_nid);
-  $o = db_fetch_object($r);
-  $node->organization_title = $o->title;
+  $org_result = db_select('node', 'n')
+    ->fields('n', array('title'))
+    ->condition('n.type', 'pmorganization')
+    ->condition('n.nid', $node->organization_nid)
+    ->execute();
+  $organization = $org_result->fetchObject();
+  $node->organization_title = $organization->title;
 
   if (isset($node->project_nid)) {
-    $s = "SELECT n.title FROM {node} AS n
-      INNER JOIN {pmproject} AS p ON n.vid=p.vid
-      WHERE type='pmproject' AND n.nid=%d";
-    $r = db_query($s, $node->project_nid);
-    $p = db_fetch_object($r);
-    $node->project_title = (isset($p->title)) ? $p->title : NULL;
+    $pro_result = db_select('node', 'n')
+      ->fields('n', array('title'))
+      ->condition('n.type', 'pmproject')
+      ->condition('n.nid', $node->project_nid)
+      ->execute();
+    $project = $pro_result->fetchObject();
+    $node->project_title = (isset($project->title)) ? $project->title : NULL;
   }
 
   // Parse invoice items
@@ -785,35 +762,44 @@ function _pminvoice_insert_items($node) {
     $node->items[$j]->src_nid = (isset($node->items[$j]->src_nid)) ? $node->items[$j]->src_nid : $node->src_nid;
     $node->items[$j]->src_vid = (isset($node->items[$j]->src_vid)) ? $node->items[$j]->src_vid : $node->src_vid;
 
-    db_query("INSERT INTO {pminvoice_items}
-      (invoice_nid, invoice_vid, amount, description,
-      tax1app, tax1percent, tax1,
-      tax2app, tax2percent, tax2,
-      total, weight,
-      src_nid, src_vid
-      ) VALUES
-      (%d, %d, %f, '%s',
-      %d, %f, %f,
-      %d, %f, %f,
-      %f, %d,
-      %d, %d
-      )",
-      $node->nid, $node->vid, $node->items[$j]->amount, $node->items[$j]->description,
-      $node->items[$j]->tax1app, $node->items[$j]->tax1percent, $node->items[$j]->tax1,
-      $node->items[$j]->tax2app, $node->items[$j]->tax2percent, $node->items[$j]->tax2,
-      $node->items[$j]->total, $node->items[$j]->weight,
-      $node->items[$j]->src_nid, $node->items[$j]->src_vid
-      );
+    db_insert('pminvoice_items')
+    ->fields(array(
+      'invoice_nid' => $node->nid,
+      'invoice_vid' => $node->vid,
+      'amount' => $node->items[$j]->amount,
+      'description' => $node->items[$j]->description,
+      'tax1app' => $node->items[$j]->tax1app,
+      'tax1percent' => $node->items[$j]->tax1percent,
+      'tax1' => $node->items[$j]->tax1,
+      'tax2app' => $node->items[$j]->tax2app,
+      'tax2percent' => $node->items[$j]->tax2percent,
+      'tax2' => $node->items[$j]->tax2,
+      'total' => $node->items[$j]->total,
+      'weight' => $node->items[$j]->weight,
+//      'src_nid' => $node->items[$j]->src_nid,
+//      'src_vid' => $node->items[$j]->src_vid,
+    ))
+    ->execute();
   }
-  db_query("DELETE FROM {pminvoice_items} WHERE invoice_vid=%d AND total=0 AND description='' ", $node->vid);
+
+  db_delete('pminvoice_items')
+  ->condition('invoice_vid', $node->vid)
+  ->condition('total', 0)
+  ->condition('description', '')
+  ->execute();
 }
 
 function _pminvoice_aftersave($node) {
   // Updates totals
-  $s = "SELECT SUM(amount) tamount, SUM(tax1) ttax1, SUM(tax2) ttax2, SUM(total) ttotal
-    FROM {pminvoice_items} WHERE invoice_vid=%d";
-  $r = db_query($s, $node->vid);
-  $t = db_fetch_object($r);
+  $result = db_select('pminvoice_items', 'sii')
+  ->addExpression('sum(amount)', 'tamount')
+  ->addExpression('sum(tax1)', 'ttax1')
+  ->addExpression('sum(tax2)', 'ttax2')
+  ->addExpression('sum(total)', 'ttotal')
+  ->condition('invoice_vid', $node->vid)
+  ->execute();
+
+  $t = $result->fetchObject();
 
   $node->amount = $t->tamount;
   $node->tax1 = $t->ttax1;
@@ -824,9 +810,16 @@ function _pminvoice_aftersave($node) {
     $node->totalcustomercurr = $node->total;
   }
 
-  db_query("UPDATE {pminvoice} SET
-    amount=%f, tax1=%f, tax2=%f, total=%f, totalcustomercurr=%f WHERE vid = %d",
-    $node->amount, $node->tax1, $node->tax2, $node->total, $node->totalcustomercurr, $node->vid);
+  db_update('pminvoice')
+  ->fields(array(
+    'amount' => $node->amount,
+    'tax1' => $node->tax1,
+    'tax2' => $node->tax2,
+    'total' => $node->total,
+    'totalcustomercurr' => $node->totalcustomercurr,
+  ))
+  ->condition('vid', $node->vid)
+  ->execute();
 }
 
 function pminvoice_nodeapi(&$node, $op, $teaser, $page) {
@@ -840,30 +833,47 @@ function pminvoice_nodeapi(&$node, $op, $teaser, $page) {
 }
 
 function pminvoice_delete($node) {
-  db_query('DELETE FROM {pminvoice} WHERE nid = %d', $node->nid);
-  db_query('DELETE FROM {pminvoice_items} WHERE invoice_nid = %d', $node->nid);
+  db_delete('pminvoice')
+  ->condition('nid', $node->nid)
+  ->execute();
+
+  db_delete('pminvoice_items')
+  ->condition('invoice_nid', $node->nid)
+  ->execute();
 }
 
-function pminvoice_load($node) {
-  $additions = db_fetch_object(db_query('SELECT * FROM {pminvoice} WHERE vid = %d', $node->vid));
+function pminvoice_load($nodes) {
+  foreach ($nodes as $nid => &$node) {
+    $result = db_select('pminvoice', 'pmin')
+      ->fields('pmin')
+      ->condition('vid', $node->vid)
+      ->execute();
+    $record = array();
+    $record = $result->fetchAssoc();
+    if ($record) {
+      foreach ($record as $key => $value) {
+        $node->$key = $value;
+      }
+    }
+
+    $node->title_old = $node->title;
+  }
 
   // Load invoice items
-  $result = db_query('SELECT * FROM {pminvoice_items} WHERE invoice_vid = %d ORDER BY weight ASC', $node->vid);
+/*  $result = db_query('SELECT * FROM {pminvoice_items} WHERE invoice_vid = %d ORDER BY weight ASC', $node->vid);
   $additions->items = array();
   while ($item = db_fetch_object($result)) {
     $additions->items[] = $item;
-  }
-
-  return $additions;
+  }*/
 }
 
-function pminvoice_view($node, $teaser = FALSE, $page = FALSE) {
+function pminvoice_view($node, $view_mode) {
   $breadcrumb = array();
   $breadcrumb[] = l(t('Project Management'), 'pm');
   $breadcrumb[] = l(t('Invoices'), 'pm/invoices');
   drupal_set_breadcrumb($breadcrumb);
 
-  return theme('pminvoice_view', $node, $teaser = FALSE, $page = FALSE);
+  return theme('pminvoice_view', array('node' => $node, 'view_mode' => $view_mode));
 }
 
 // ADMIN SETTINGS
