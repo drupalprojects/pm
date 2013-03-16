@@ -67,15 +67,6 @@ function pminvoice_permission() {
 function pminvoice_menu() {
   $items = array();
 
-  $items['pm/invoices'] = array(
-    'title' => 'Invoices',
-    'description' => 'Project Management invoices',
-    'page callback' => 'pminvoice_list',
-    'access arguments' => array('Project Management invoice: access'),
-    'type' => MENU_NORMAL_ITEM,
-    'file' => 'pminvoice.admin.inc',
-  );
-
   $items['pm/invoice/auto_add/new/%node'] = array(
     'page callback' => 'pminvoice_auto_add',
     'page arguments' => array(4),
@@ -106,10 +97,6 @@ function pminvoice_menu() {
 
 function pminvoice_theme() {
   return array(
-    'pminvoice_list' => array(
-      'file'      => 'pminvoice.theme.inc',
-      'arguments' => array('header', 'invoices', 'itemsperpage', 'totals_topay', 'totals_paid', 'totals'),
-    ),
     'pminvoice_view' => array(
       'file'      => 'pminvoice.theme.inc',
       'variables' => array('node', 'view_mode'),
