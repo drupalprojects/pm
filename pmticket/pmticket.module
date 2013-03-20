@@ -676,8 +676,9 @@ function pmticket_update($node) {
     ->condition('n.nid', $node->task_nid)
     ->execute();
 
-  $ta = $task_result->fetchObject();
-  $node->task_title = $ta->title;
+  if ($ta = $task_result->fetchObject()) {
+    $node->task_title = $ta->title;
+  }
 
   if ($node->task_nid != $node->task_nid_old) {
     module_invoke_all('pmticket_change_hierarchy', $node->nid, $node->organization_nid, $node->organization_title, $node->project_nid, $node->project_title, $node->task_nid, $node->task_title);
