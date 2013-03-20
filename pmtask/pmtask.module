@@ -966,14 +966,21 @@ function _pmtask_get_tree($project_nid, $parent_nid = 0, $depth = -1, $max_depth
   if (!isset($children[$project_nid])) {
     $children[$project_nid] = array();
 
-    $s = "SELECT n.title, n.uid, sta.* FROM {node} AS n INNER JOIN {pmtask} AS sta
-    ON n.vid=sta.vid WHERE n.status=1 AND n.type='pmtask' AND sta.project_nid=%d
-    ORDER BY sta.weight";
-    $s = pmtask_access_sql($s, $where);
-    $s = db_rewrite_sql($s);
     $args = array_merge($args, array($project_nid));
-    $r = db_query($s, $args);
-    while ($task = db_fetch_object($r)) {
+
+    $query = db_select('node', 'n');
+    $query->join('pmtask', 'task', 'n.vid = task.vid');
+    $query
+      ->fields('n', array('title', 'uid'))
+      ->fields('task')
+      ->condition('n.status', 1)
+      ->condition('n.type', 'pmtask')
+      ->condition('task.project_nid', $args)
+      ->addTag('node_access')
+      ->orderBy('task.weight', 'ASC');
+    $result = $query->execute();
+
+    foreach ($result as $task) {
       $children[$project_nid][$task->parent_nid][] = $task->nid;
       $parents[$project_nid][$task->nid][] = $task->parent_nid;
       $tasks[$project_nid][$task->nid] = $task;
@@ -984,11 +991,11 @@ function _pmtask_get_tree($project_nid, $parent_nid = 0, $depth = -1, $max_depth
   if (isset($children[$project_nid][$parent_nid]) && $children[$project_nid][$parent_nid]) {
     foreach ($children[$project_nid][$parent_nid] as $child_nid) {
       if ($max_depth > $depth) {
-        $task = drupal_clone($tasks[$project_nid][$child_nid]);
+        $task = clone($tasks[$project_nid][$child_nid]);
         $task->depth = $depth;
         $task->parents = $parents[$project_nid][$child_nid];
         $tree[] = $task;
-        if ($children[$project_nid][$child_nid]) {
+        if (isset($children[$project_nid][$child_nid])) {
           $tree = array_merge($tree, _pmtask_get_tree($project_nid, $child_nid, $depth, $max_depth, $where, $args));
         }
       }

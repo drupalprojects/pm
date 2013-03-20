@@ -437,13 +437,13 @@ function pmticket_form(&$node, $form_state) {
     '#suffix' => '</div>',
   );
 
-//  $tree = isset($node->project_nid) ? _pmtask_get_tree($node->project_nid) : array();
-//  $tasks = _pmtask_plain_tree($tree);
+  $tree = isset($node->project_nid) ? _pmtask_get_tree($node->project_nid) : array();
+  $tasks = _pmtask_plain_tree($tree);
   $form['group1']['task_nid'] = array(
     '#type' => 'select',
     '#title' => t('Task'),
     '#default_value' => isset($node->task_nid) ? $node->task_nid : 0,
-    '#options' => array(0 => '-') + array(),// $tasks,
+    '#options' => array(0 => '-') + $tasks,
   );
 
   $form['group1']['task_nid_old'] = array(
