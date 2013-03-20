@@ -94,12 +94,10 @@ function pmticket_views_default_views() {
   $handler->display->display_options['relationships']['project_nid']['id'] = 'project_nid';
   $handler->display->display_options['relationships']['project_nid']['table'] = 'pmticket';
   $handler->display->display_options['relationships']['project_nid']['field'] = 'project_nid';
-  $handler->display->display_options['relationships']['project_nid']['required'] = TRUE;
   /* Relationship: Project Management Ticket: Task */
   $handler->display->display_options['relationships']['task_nid']['id'] = 'task_nid';
   $handler->display->display_options['relationships']['task_nid']['table'] = 'pmticket';
   $handler->display->display_options['relationships']['task_nid']['field'] = 'task_nid';
-  $handler->display->display_options['relationships']['task_nid']['required'] = TRUE;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title_3']['id'] = 'title_3';
   $handler->display->display_options['fields']['title_3']['table'] = 'node';
