@@ -435,15 +435,23 @@ function pmticket_form(&$node, $form_state) {
     '#options' => array(0 => '-') + $projects,
     '#prefix' => '<div id="pmticket-project-nid">',
     '#suffix' => '</div>',
+    '#ajax' => array(
+      'callback' => 'pmticket_ajax_project_nid',
+      'wrapper' => 'pmticket-task-nid',
+    ),
   );
 
-  $tree = isset($node->project_nid) ? _pmtask_get_tree($node->project_nid) : array();
+  $project_nid = isset($form_state['values']['project_nid']) ? $form_state['values']['project_nid'] : $node->project_nid;
+
+  $tree = isset($project_nid) ? _pmtask_get_tree($project_nid) : array();
   $tasks = _pmtask_plain_tree($tree);
   $form['group1']['task_nid'] = array(
     '#type' => 'select',
     '#title' => t('Task'),
     '#default_value' => isset($node->task_nid) ? $node->task_nid : 0,
     '#options' => array(0 => '-') + $tasks,
+    '#prefix' => '<div id="pmticket-task-nid">',
+    '#suffix' => '</div>',
   );
 
   $form['group1']['task_nid_old'] = array(
@@ -605,6 +613,10 @@ function pmticket_form(&$node, $form_state) {
 
 function pmticket_ajax_organization_nid(&$form, &$form_state) {
   return $form['group1']['project_nid'];
+}
+
+function pmticket_ajax_project_nid(&$form, &$form_state) {
+  return $form['group1']['task_nid'];
 }
 
 // INSERT / UPDATE FUNCTIONS
