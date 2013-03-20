@@ -626,7 +626,7 @@ function pmticket_insert($node) {
       'project_title' => $node->project_title,
       'task_nid' => $node->task_nid,
       'task_title' => $node->task_title,
-      'task_stepno' => $node->stepno,
+      'task_stepno' => $node->task_stepno,
       'ticketcategory' => $node->ticketcategory,
       'ticketstatus' => $node->ticketstatus,
       'ticketpriority' => $node->ticketpriority,
