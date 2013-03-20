@@ -318,7 +318,7 @@ function pmticket_pmtask_change_hierarchy($task_nid, $organization_nid, $organiz
 }
 
 // TICKET CREATE / EDIT FORM
-function pmticket_form(&$node) {
+function pmticket_form(&$node, $form_state) {
   $breadcrumb = array();
   $breadcrumb[] = l(t('Project Management'), 'pm');
   $breadcrumb[] = l(t('Tickets'), 'pm/tickets');
@@ -365,27 +365,6 @@ function pmticket_form(&$node) {
     if (array_key_exists('organization_nid', $_GET)) $node->organization_nid = $_GET['organization_nid'];
     if (array_key_exists('project_nid', $_GET)) $node->project_nid = $_GET['project_nid'];
     if (array_key_exists('task_nid', $_GET)) $node->task_nid = $_GET['task_nid'];
-
-    $org_query = db_select('node', 'n');
-    $org_query->join('pmorganization', 'sor', 'n.vid = sor.vid');
-    $org_query
-      ->fields('n', array('nid', 'title'))
-      ->condition('n.status', 1)
-      ->condition('sor.isactive', 1)
-      ->condition('n.type', 'pmorganization')
-      ->orderBy('n.title', 'ASC');
-
-    $node->billable = variable_get('pmticket_billable_default', FALSE);
-
-  }
-  else {
-    $org_query = db_select('node', 'n');
-    $org_query->join('pmorganization', 'sor', 'n.vid = sor.vid');
-    $org_query
-      ->fields('n', array('nid', 'title'))
-      ->condition('n.status', 1)
-      ->condition('n.type', 'pmorganization')
-      ->orderBy('n.title', 'ASC');
   }
 
   $type = node_type_get_type($node);
@@ -398,8 +377,14 @@ function pmticket_form(&$node) {
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
   );
 
-//  $s_org = pmorganization_access_sql($s_org);
-//  $s_org = db_rewrite_sql($s_org);
+  $org_query = db_select('node', 'n');
+  $org_query->join('pmorganization', 'sor', 'n.vid = sor.vid');
+  $org_query
+    ->fields('n', array('nid', 'title'))
+    ->condition('n.status', 1)
+    ->condition('n.type', 'pmorganization')
+    ->orderBy('n.title', 'ASC');
+
   $org_result = $org_query->execute();
   $organizations = array();
   foreach ($org_result as $organization) {
@@ -408,30 +393,37 @@ function pmticket_form(&$node) {
       $node->organization_nid = $organization->nid;
     }
   }
-  if (!isset($node->organization_nid)) {
-    drupal_set_message(t('Please add an organization to the system before trying to add a ticket.'), 'error');
-  }
+
   $form['group1']['organization_nid'] = array(
     '#type' => 'select',
     '#title' => t('Organization'),
     '#default_value' => isset($node->organization_nid) ? $node->organization_nid : NULL,
     '#options' => $organizations,
     '#required' => TRUE,
-    '#attributes' => array('onchange' => "pmtask_organization_project_tasks(this, 'edit-project-nid', 'edit-parent-nid', 'edit-assigned-nid', true, '-')"),
+    '#ajax' => array(
+      'callback' => 'pmticket_ajax_organization_nid',
+      'wrapper' => 'pmticket-project-nid',
+    ),
   );
+
+  if (isset($node->organization_nid)) {
+    $organization_nid = isset($form_state['values']['organization_nid']) ? $form_state['values']['organization_nid'] : $node->organization_nid;
+  }
+  else {
+    drupal_set_message(t('Please add an organization to the system before trying to add a ticket.'), 'error');
+  }
 
   $pro_query = db_select('node', 'n');
   $pro_query->join('pmproject', 'spr', 'n.vid = spr.vid');
   $pro_result = $pro_query
     ->fields('n', array('nid', 'title'))
-    ->condition('spr.organization_nid', isset($node->organization_nid) ? $node->organization_nid : NULL)
+    ->condition('spr.organization_nid', $organization_nid)
     ->condition('n.status', 1)
     ->condition('n.type', 'pmproject')
     ->orderBy('n.title', 'ASC')
+    ->addTag('node_access')
     ->execute();
 
-//  $s = pmproject_access_sql($s);
-//  $s = db_rewrite_sql($s);
   $projects = array();
   foreach ($pro_result as $project) {
     $projects[$project->nid] = $project->title;
@@ -441,8 +433,8 @@ function pmticket_form(&$node) {
     '#title' => t('Project'),
     '#default_value' => isset($node->project_nid) ? $node->project_nid : 0,
     '#options' => array(0 => '-') + $projects,
-//    '#process' => array('pm_dependent_select_process'),
-    '#attributes' => array('onchange' => "pmtask_project_tasks('edit-organization-nid', this, 'edit-task-nid', 'edit-assigned-nid', true, '-')"),
+    '#prefix' => '<div id="pmticket-project-nid">',
+    '#suffix' => '</div>',
   );
 
 //  $tree = isset($node->project_nid) ? _pmtask_get_tree($node->project_nid) : array();
@@ -452,7 +444,6 @@ function pmticket_form(&$node) {
     '#title' => t('Task'),
     '#default_value' => isset($node->task_nid) ? $node->task_nid : 0,
     '#options' => array(0 => '-') + array(),// $tasks,
-//    '#process' => array('pm_dependent_select_process'),
   );
 
   $form['group1']['task_nid_old'] = array(
@@ -587,7 +578,7 @@ function pmticket_form(&$node) {
   $form['group6']['billable'] = array(
     '#type' => 'checkbox',
     '#title' => t('Billable'),
-    '#default_value' => $node->billable,
+    '#default_value' => isset($node->billable) ? $node->billable : variable_get('pmticket_billable_default', FALSE),
     '#weight' => 1,
   );
 
@@ -610,6 +601,10 @@ function pmticket_form(&$node) {
   );
 
   return $form;
+}
+
+function pmticket_ajax_organization_nid(&$form, &$form_state) {
+  return $form['group1']['project_nid'];
 }
 
 // INSERT / UPDATE FUNCTIONS
