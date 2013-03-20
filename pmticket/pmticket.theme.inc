@@ -36,7 +36,7 @@ function theme_pmticket_list($variables) {
 function theme_pmticket_view($variables) {
   $node = $variables['node'];
 
-  drupal_add_css(drupal_get_path('module', 'pm') . '/pm-node.css', 'module');
+  drupal_add_css(drupal_get_path('module', 'pm') . '/pm-node.css');
 
   $node->content['links'] = array(
     '#prefix' => '<div class="pmlinks"><dl>',
