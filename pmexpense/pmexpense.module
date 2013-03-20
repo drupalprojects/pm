@@ -268,18 +268,42 @@ function pmexpense_pmticket_change($ticket_nid, $ticket_title) {
 }
 
 function pmexpense_pmproject_change_hierarchy($project_nid, $organization_nid, $organization_title) {
+  $query = db_update('pmexpense')
+    ->fields(array(
+      'organization_nid' => $organization_nid,
+      'organization_title' => $organization_title,
+    ))
+    ->condition('project_nid', $project_nid)
+    ->execute();
+
   $s = "UPDATE {pmexpense} SET organization_nid=%d, organization_title='%s' WHERE project_nid=%d";
   db_query($s, $organization_nid, $organization_title, $project_nid);
 }
 
 function pmexpense_pmtask_change_hierarchy($task_nid, $organization_nid, $organization_title, $project_nid, $project_title) {
-  $s = "UPDATE {pmexpense} SET organization_nid=%d, organization_title='%s', project_nid=%d, project_title='%s' WHERE task_nid=%d";
-  db_query($s, $organization_nid, $organization_title, $project_nid, $project_title, $task_nid);
+  $query = db_update('pmexpense')
+    ->fields(array(
+      'organization_nid' => $organization_nid,
+      'organization_title' => $organization_title,
+      'project_nid' => $project_nid,
+      'project_title' => $project_title,
+    ))
+    ->condition('task_nid', $task_nid)
+    ->execute();
 }
 
 function pmexpense_pmticket_change_hierarchy($ticket_nid, $organization_nid, $organization_title, $project_nid, $project_title, $task_nid, $task_title) {
-  $s = "UPDATE {pmexpense} SET organization_nid=%d, organization_title='%s', project_nid=%d, project_title='%s', task_nid=%d, task_title='%s' WHERE ticket_nid=%d";
-  db_query($s, $organization_nid, $organization_title, $project_nid, $project_title, $task_nid, $task_title, $ticket_nid);
+  $query = db_update('pmexpense')
+    ->fields(array(
+      'organization_nid' => $organization_nid,
+      'organization_title' => $organization_title,
+      'project_nid' => $project_nid,
+      'project_title' => $project_title,
+      'task_nid' => $task_nid,
+      'task_title' => $task_title,
+    ))
+    ->condition('ticket_nid', $ticket_nid)
+    ->execute();
 }
 
 function pmexpense_form(&$node) {
