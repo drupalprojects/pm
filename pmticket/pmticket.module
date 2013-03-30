@@ -441,7 +441,7 @@ function pmticket_form(&$node, $form_state) {
     ),
   );
 
-  $project_nid = isset($form_state['values']['project_nid']) ? $form_state['values']['project_nid'] : $node->project_nid;
+  $project_nid = isset($form_state['values']['project_nid']) ? $form_state['values']['project_nid'] : (isset($node->project_nid) ? $node->project_nid : 0);
 
   $tree = isset($project_nid) ? _pmtask_get_tree($project_nid) : array();
   $tasks = _pmtask_plain_tree($tree);
