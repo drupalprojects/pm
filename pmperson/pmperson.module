@@ -439,11 +439,10 @@ function pmperson_form(&$node) {
   return $form;
 }
 
-function pmperson_validate($node, &$form) {
+function pmperson_validate($node, $form, &$form_state) {
   if (!empty($node->user_name)) {
     $username = $node->user_name;
-    $ass_user = user_load_by_name($username);
-    if (!empty($ass_user)) {
+    if($ass_user = user_load_by_name($username)){
       $query = db_select('node', 'n');
 
       $query->fields('n', array('nid', 'title'))
@@ -455,8 +454,11 @@ function pmperson_validate($node, &$form) {
           $message = t('This Drupal user is already assigned to a Project Management person (!link). The same Drupal user can not be assigned to two Project Management people.', array('!link' => l($row['title'], 'node/'. $row['nid'])));
         form_set_error('user_name', $message);
       }
+    } 
+    else {
+      form_set_error('user_name',t('@username is not a current user', array('@username'=>$username)));
     }
-  }
+  } 
 }
 
 function pmperson_user_autocomplete($string = '') {
