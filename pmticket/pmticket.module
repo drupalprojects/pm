@@ -568,12 +568,12 @@ function pmticket_form(&$node, $form_state) {
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group5') : -15,
   );
 
-//  $options = isset($node->project_nid) ? pm_get_assignment_options($node->organization_nid, $node->project_nid) : pm_get_assignment_options($node->organization_nid);
+  $options = isset($project_nid) ? pm_get_assignment_options($node->organization_nid, $project_nid) : pm_get_assignment_options($node->organization_nid);
 
   $form['group5']['assigned_nid'] = array(
     '#type' => 'select',
     '#title' => t('Assigned to'),
-    '#options' => array(),// $options,
+    '#options' => $options,
     '#default_value' => isset($node->assigned_nid) ? $node->assigned_nid : NULL,
   );
 
@@ -644,7 +644,7 @@ function pmticket_insert($node) {
       'pricemode' => $node->pricemode,
 //      'price' => $node->price,
       'currency' => $node->currency,
-//      'assigned_nid' => $node->assigned_nid,
+      'assigned_nid' => $node->assigned_nid,
       'assigned_title' => $node->assigned_title,
       'billable' => $node->billable,
       'billed' => $node->billed,
@@ -717,7 +717,7 @@ function pmticket_update($node) {
         'pricemode' => $node->pricemode,
 //        'price' => $node->price,
         'currency' => $node->currency,
-//        'assigned_nid' => $node->assigned_nid,
+        'assigned_nid' => $node->assigned_nid,
         'assigned_title' => $node->assigned_title,
         'billable' => $node->billable,
         'billed' => $node->billed,
