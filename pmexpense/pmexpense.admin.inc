@@ -426,15 +426,25 @@ function pmexpense_autocomplete($string = '') {
   // Autocomplete for providers textbox: shows any active organizations in Project Management system which have been selected as providers.
   $matches = array();
   if ($string) {
-    $s = "SELECT n.title FROM {node} AS n INNER JOIN {pmorganization} AS sor ON n.vid=sor.vid WHERE n.status=1 AND n.type='pmorganization' AND sor.isprovider=1 AND sor.isactive=1";
-    $where = array("LOWER(title) LIKE LOWER('%s%%')");
-    $s = pmorganization_access_sql($s, $where);
-    $s = db_rewrite_sql($s);
-    $result = db_query_range($s, $string, 0, 10);
-    while ($pro = db_fetch_object($result)) {
+    $search = drupal_strtolower($string);
+
+    $query = db_select('node', 'n');
+    $query->join('pmorganization', 'org', 'n.vid = org.vid');
+    $query
+      ->fields('n', array('title'))
+      ->condition('n.status', 1)
+      ->condition('n.type', 'pmorganization')
+      ->condition('org.isprovider', 1)
+      ->condition('org.isactive', 1)
+      ->where('lower(title) like :search', array(':search' => '%'. db_like($search) .'%'))
+      ->addTag('node_access')
+      ->range(0, 10);
+
+    $result = $query->execute();
+    foreach ($result as $pro) {
       $matches[$pro->title] = check_plain($pro->title);
     }
   }
 
-  drupal_json($matches);
+  drupal_json_output($matches);
 }
