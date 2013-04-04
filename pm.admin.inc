@@ -223,7 +223,7 @@ function pm_attribute_list_filter($form, &$form_state, $filterdesc = 'Filter') {
 
   $form['filter']['group1'] = array(
     '#type' => 'markup',
-//    '#theme' => 'pm_form_group',
+    '#theme' => 'pm_form_group',
   );
 
   $form['filter']['group1']['domain'] = array(
@@ -250,7 +250,7 @@ function pm_attribute_list_filter($form, &$form_state, $filterdesc = 'Filter') {
 
   $form['filter']['group2'] = array(
     '#type' => 'markup',
-//    '#theme' => 'pm_form_group',
+    '#theme' => 'pm_form_group',
   );
 
   $form['filter']['group2']['isactive'] = array(
@@ -269,7 +269,7 @@ function pm_attribute_list_filter($form, &$form_state, $filterdesc = 'Filter') {
 
   $form['filter']['group3'] = array(
     '#type' => 'markup',
-//    '#theme' => 'pm_form_group',
+    '#theme' => 'pm_form_group',
   );
 
   $form['filter']['group3']['itemsperpage'] = array(
@@ -456,7 +456,7 @@ function pm_attribute_form($attribute = NULL) {
 
   $form['group1'] = array(
     '#type' => 'markup',
-//    '#theme' => 'pm_form_group',
+    '#theme' => 'pm_form_group',
   );
 
   $form['group1']['domain'] = array(
@@ -488,7 +488,7 @@ function pm_attribute_form($attribute = NULL) {
 
   $form['group2'] = array(
     '#type' => 'markup',
-//    '#theme' => 'pm_form_group',
+    '#theme' => 'pm_form_group',
   );
 
   $form['group2']['akey'] = array(
@@ -516,7 +516,7 @@ function pm_attribute_form($attribute = NULL) {
 
   $form['group3'] = array(
     '#type' => 'markup',
-//    '#theme' => 'pm_form_group',
+    '#theme' => 'pm_form_group',
   );
 
   $form['group3']['isactive'] = array(
@@ -550,10 +550,15 @@ function pm_attribute_form($attribute = NULL) {
 function _pm_attibute_domain_options() {
   static $options;
   if (!$options) {
-    $r = db_query("SELECT DISTINCT(domain) AS domain_name FROM {pmattribute} ORDER BY domain");
+    $query = db_select('pmattribute', 'att')
+      ->fields('att', array('domain'))
+      ->distinct()
+      ->orderBy('domain', 'ASC');
+    $result = $query->execute();
+
     $options = array();
-    while ($d = db_fetch_object($r)) {
-      $options[$d->domain_name] = $d->domain_name;
+    foreach ($result as $d) {
+      $options[$d->domain_name] = $d->domain;
     }
   }
   return $options;
@@ -587,10 +592,13 @@ function _pm_attribute_domain_autocomplete($string = '') {
 
   $matches = array();
   if ($string) {
-    $s = "SELECT DISTINCT(domain) AS domain FROM {pmattribute} WHERE LOWER(domain) LIKE LOWER('%s%%')";
-    $s = db_rewrite_sql($s, 'pmattribute', 'aid');
-    $result = db_query($s, $string);
-    while ($a = db_fetch_object($result)) {
+    $query = db_select('pmattribute', 'att')
+      ->fields('att', array('domain'))
+      ->distinct()
+      ->where('LOWER(domain) LIKE LOWER(:search)', array(':search' => '%'. $string .'%'));
+    $result = $query->execute();
+
+    foreach ($result as $a) {
       $matches[$a->domain] = check_plain($a->domain);
     }
   }
@@ -605,5 +613,5 @@ function _pm_attribute_domain_autocomplete($string = '') {
 
   $matches = array_slice($matches, 0, 10);
 
-  drupal_json($matches);
+  drupal_json_output($matches);
 }
