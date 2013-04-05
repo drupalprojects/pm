@@ -54,3 +54,16 @@ function pmtimetracking_schema() {
 function pmtimetracking_update_last_removed() {
   return 6201;
 }
+
+/**
+ * Adds Drupal 7 style body field to pm timetracking node
+ */
+function pmtimetracking_update_7100() {
+  // Uncache node types
+  node_types_rebuild();
+  // Fetch list of current node types and add body field to pm timetracking
+  $types = node_type_get_types();
+  node_add_body_field($types['pmtimetracking'],'Description');
+
+  return 'Added D7 style body field to pm timetracking nodes';
+}

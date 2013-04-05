@@ -89,14 +89,15 @@ function theme_pmtimetracking_view($node, $teaser = FALSE, $page = FALSE) {
     '#weight' => 4,
   );
 
-  $node->content['body_field'] = array(
-    '#prefix' => '<div class="pmbody">',
-    '#suffix' => '</div>',
-    '#value' => theme('pm_view_item', t('Description'), $node->content['body']['#value']),
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'body_field') : 0,
-  );
-
-  unset($node->content['body']);
+  $body = field_get_items('node',$node,'body');
+  if($body){
+    $node->content['body'] = array (
+      '#prefix' => '<div class="pmbody">',
+      '#suffix' => '</div>',
+      '#markup' => theme('pm_view_item', array('label' => t('Description'), 'value' => check_plain($node->body['und'][0]['value']))),
+      '#weight' => 4,
+    );
+  }
 
   return $node;
 }
