@@ -370,7 +370,7 @@ function pmtimetracking_form(&$node) {
   $s_org = "SELECT n.nid, n.title FROM {pmorganization} so INNER JOIN {node} n
     ON so.nid=n.nid WHERE n.status=1 AND (so.isactive=1 OR n.nid=%d) AND n.type='pmorganization' ORDER BY n.title";
 
-  $type = node_type_get_types($node);
+  $type = node_type_get_type($node);
 
   $form['#attributes']['class'] = 'pmcomponent_node_form';
 
