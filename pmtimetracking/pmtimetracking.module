@@ -173,16 +173,6 @@ function pmtimetracking_pm_rewrite_where_sql($query, $primary_table, $account) {
 function pmtimetracking_menu() {
   $items = array();
 
-  $items['pm/timetrackings'] = array(
-    'title' => 'Timetrackings',
-    'description' => 'Project Management Timetrackings',
-    'page callback' => 'pmtimetracking_list',
-    'access arguments' => array('Project Management Timetracking: access'),
-    'type' => MENU_NORMAL_ITEM,
-    'file' => 'pmtimetracking.admin.inc',
-    'weight' => 6,
-  );
-
   $items['admin/config/pm/timetracking'] = array(
     'title' => 'Project Management Timetracking',
     'description' => 'Project Management Timetracking administration page',
@@ -197,10 +187,6 @@ function pmtimetracking_menu() {
 
 function pmtimetracking_theme() {
   return array(
-    'pmtimetracking_list' => array(
-      'file'      => 'pmtimetracking.theme.inc',
-      'arguments' => array('header', 'tasks', 'duration'),
-    ),
     'pmtimetracking_view' => array(
       'file'      => 'pmtimetracking.theme.inc',
       'variables' => array('node', 'view_mode'),
