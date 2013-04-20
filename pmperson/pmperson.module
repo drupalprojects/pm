@@ -17,19 +17,16 @@ function pmperson_help($path, $arg) {
 }
 
 function pmperson_init() {
-  if (function_exists('drupal_set_content')) {
-    global $user;
-    if ($user->uid && !isset($user->pmorganization_nid) || !isset($user->pmperson_nid)) {
-      _pmperson_user_load($user);
-    }
-    if (!$user->uid || !isset($user->pmperson_nid)) {
-      $user->pmperson_nid = -1;
-    }
-    if (!$user->uid || !isset($user->pmorganization_nid)) {
-      $user->pmorganization_nid = -1;
-    }
+  global $user;
+  if ($user->uid && !isset($user->pmorganization_nid) || !isset($user->pmperson_nid)) {
+    _pmperson_user_load($user);
   }
-
+  if (!$user->uid || !isset($user->pmperson_nid)) {
+    $user->pmperson_nid = -1;
+  }
+  if (!$user->uid || !isset($user->pmorganization_nid)) {
+    $user->pmorganization_nid = -1;
+  }
   $settings = array(
     'pm' => array(
       'organization_people_url' => url('pm/organization_people_js/')
@@ -632,9 +629,12 @@ function _pmperson_user_load(&$account) {
     }
   }
   else {
-    $result = db_query("SELECT nid, organization_nid FROM {pmperson} WHERE user_uid=:uid", array(':uid' => $account->uid));
-    $a = $result->fetchObject();
-    if ($a) {
+    $result = db_select('pmperson', 'pmper')
+      ->fields('pmper', array( 'nid', 'organization_nid' ))
+      ->condition( 'user_uid', $account->uid)
+      ->execute();
+    $record = $result->fetchObject();
+    if ($record) {
       $loaded_persons[$account->uid] = new stdClass();
       $loaded_persons[$account->uid]->nid = $a->nid;
       $loaded_persons[$account->uid]->organization_nid = $a->organization_nid;
