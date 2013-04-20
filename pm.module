@@ -1348,7 +1348,7 @@ function pm_get_assignment_options($organization_nid = 0, $project_nid = 0) {
     $options['all'] = t('- no filter -');
     $options['mine'] = t('- mine -');
   }
-  $options['none'] = t('- unassigned -');
+  $options[0] = t('- unassigned -');
   if (module_exists('pmteam')) {
     $options[$teams] = array();
   }
