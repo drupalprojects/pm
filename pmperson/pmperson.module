@@ -636,13 +636,15 @@ function _pmperson_user_load(&$account) {
     $record = $result->fetchObject();
     if ($record) {
       $loaded_persons[$account->uid] = new stdClass();
-      $loaded_persons[$account->uid]->nid = $a->nid;
-      $loaded_persons[$account->uid]->organization_nid = $a->organization_nid;
+      $loaded_persons[$account->uid]->nid = $record->nid;
+      $loaded_persons[$account->uid]->organization_nid = $record->organization_nid;
       $account->pmperson_nid = $loaded_persons[$account->uid]->nid;
       $account->pmorganization_nid = $loaded_persons[$account->uid]->organization_nid;
     }
     else {
       $loaded_persons[$account->uid] = 0;
+      $account->pmperson_nid = NULL;
+      $account->pmorganization_nid = NULL;
     }
   }
 }
