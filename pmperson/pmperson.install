@@ -5,6 +5,7 @@
 
 function pmperson_install() {
   variable_set('node_options_pmperson', array('status'));
+  variable_set('node_permissions_pmperson', 0);
 
   // Uncache node types
   node_types_rebuild();
@@ -73,4 +74,13 @@ function pmperson_update_7100() {
  */
 function pmperson_update_7101() {
   db_drop_field('pmperson', 'fullname');
+}
+
+
+/**
+ * Allow Project Management to override the default Person content type CRUD permissions
+ */
+function pmperson_update_7102() {
+  variable_set('node_permissions_pmperson', 0);
+  return 'PM Person permissions overridden';
 }

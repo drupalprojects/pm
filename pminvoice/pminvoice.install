@@ -6,6 +6,7 @@
 function pminvoice_install() {
   variable_set('node_options_pminvoice', array('status'));
   variable_set('node_options_pminvoiceitem', array('status'));
+  variable_set('node_permissions_pminvoice', 0);
 }
 
 function pminvoice_disable() {
@@ -75,4 +76,12 @@ function pminvoice_schema() {
 
 function pminvoice_update_last_removed() {
   return 6201;
+}
+
+/**
+ * Allow Project Management to override the default Invoice content type CRUD permissions
+ */
+function pminvoice_update_7100() {
+  variable_set('node_permissions_pminvoice', 0);
+  return 'PM Invoice permissions overridden';
 }

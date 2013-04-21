@@ -5,6 +5,7 @@
 
 function pmexpense_install() {
   variable_set('node_options_pmexpense', array('status'));
+  variable_set('node_permissions_pmexpense', 0);
 
   $attributes = array();
 
@@ -94,4 +95,12 @@ function pmexpense_schema() {
 
 function pmexpense_update_last_removed() {
   return 6202;
+}
+
+/**
+ * Allow Project Management to override the default Expense content type CRUD permissions
+ */
+function pmexpense_update_7100() {
+  variable_set('node_permissions_pmexpense', 0);
+  return 'PM Expense permissions overridden';
 }

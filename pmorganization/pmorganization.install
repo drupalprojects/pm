@@ -5,6 +5,7 @@
 
 function pmorganization_install() {
   variable_set('node_options_pmorganization', array('status'));
+  variable_set('node_permissions_pmorganization', 0);
 
   // Uncache node types
   node_types_rebuild();
@@ -354,4 +355,12 @@ function pmorganization_update_7100() {
 function pmorganization_update_7101() {
   db_drop_field('pmorganization', 'fullname');
   db_drop_field('pmorganization', 'prefix');
+}
+
+/**
+ * Allow Project Management to override the default Organization content type CRUD permissions
+ */
+function pmorganization_update_7102() {
+  variable_set('node_permissions_pmorganization', 0);
+  return 'PM Organization permissions overridden';
 }
