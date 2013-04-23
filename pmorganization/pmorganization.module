@@ -101,29 +101,6 @@ function pmorganization_access($op, $node, $account = NULL) {
   return FALSE;
 }
 
-function pmorganization_access_sql($sql, $where = array()) {
-  if (user_access('Project Management organization: view all')) {
-    $where[] = "'pm_access'='pm_access'";
-    return pm_rewrite_sql($sql, $where);
-  }
-
-  global $user;
-
-  $cond = '';
-  if (user_access('Project Management organization: view own')) {
-    $cond .= 'n.uid='. $user->uid;
-  }
-  if (user_access('Project Management organization: view belonged')) {
-    if (!empty($cond)) $cond .= ' OR ';
-    $cond .= 'n.nid='. $user->pmorganization_nid;
-  }
-  if (empty($cond)) $cond = '0=1';
-  $where[] = $cond;
-
-  $where[] = "'pm_access'='pm_access'";
-  return pm_rewrite_sql($sql, $where);
-}
-
 function pmorganization_pm_rewrite_where_sql($query, $primary_table, $account) {
   static $conds = array();
 
@@ -584,4 +561,26 @@ function pmorganization_pm_dashboard_links($type) {
     );
   }
   return $links;
+}
+
+/**
+ * Implements  hook_query_TAG_alter.
+ */
+function pmorganization_query_pmorganization_alter (QueryAlterableInterface $query) {
+
+  if (user_access('Project Management Organization: view all')) {
+    return ;
+  }
+
+  global $user;
+
+  $or = db_or();
+  if (user_access('Project Management Organization: view own')) {
+    $or->condition('n.uid', $user->uid);
+  }
+
+  if (!empty($user->pmorganization_nid) AND user_access('Project Management Organization: view belonged')) {
+    $or->condition('n.nid', $user->pmorganization_nid);
+  }
+  $query->condition($or);
 }

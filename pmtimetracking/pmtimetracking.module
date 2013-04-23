@@ -396,8 +396,6 @@ function pmtimetracking_form(&$node) {
     }
     $node->billable = variable_get('pmtimetracking_billable_default', FALSE);
   }
-  $s_org = "SELECT n.nid, n.title FROM {pmorganization} so INNER JOIN {node} n
-    ON so.nid=n.nid WHERE n.status=1 AND (so.isactive=1 OR n.nid=:oid) AND n.type='pmorganization' ORDER BY n.title";
 
   $type = node_type_get_type($node);
 
@@ -417,13 +415,24 @@ function pmtimetracking_form(&$node) {
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
   );
 
-//  $s_org = pmorganization_access_sql($s_org);
-//  $s_org = db_rewrite_sql($s_org);
-  $r = db_query($s_org, array( ':oid' => isset($node->organization_nid) ? $node->organization_nid : -1));
+  $org_id = isset($node->organization_nid) ? $node->organization_nid : -1;
+  $query = db_select('pmorganization', 'pmorg');
+  $query->innerJoin('node', 'n' , 'pmorg.vid=n.vid');
+  $records = $query->fields('pmorg', array('nid', 'isactive'))
+    ->fields('n', array('nid', 'title'))
+    ->condition('n.status', '1')
+    ->condition(db_or()->condition('pmorg.isactive', '1')->condition('n.nid', $org_id))
+    ->condition('n.type', 'pmorganization')
+    ->orderBy('title', 'ASC')
+    ->addTag('node_access')
+    ->addTag('pmorganization')
+    ->execute();
   $organizations = array();
-  foreach ($r as $organization) {
+  foreach ($records as $organization) {
     $organizations[$organization->nid] = $organization->title;
-    if (!isset($node->organization_nid)) $node->organization_nid = $organization->nid;
+  }
+  if (!isset($node->organization_nid)) {
+    $node->organization_nid = empty($organizations) ? NULL : $organization->nid;
   }
   $form['group1']['organization_nid'] = array(
     '#type' => 'select',
