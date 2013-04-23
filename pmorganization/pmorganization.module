@@ -185,16 +185,37 @@ function pmorganization_node_info() {
   );
 }
 
-function pmorganization_content_extra_fields($type_name) {
-  if ($type_name == 'pmorganization') {
-    return array(
-      'group1' => array('label' => 'Customer/Provider/Active Group', 'weight' => -20),
-      'group2' => array('label' => 'Prefix/Fullname Group', 'weight' => -19),
-      'group3' => array('label' => 'Address Group', 'weight' => -18),
-      'group4' => array('label' => 'Phone/WWW/Email Group', 'weight' => -17),
-      'group5' => array('label' => 'Currency/Language/Tax ID Group', 'weight' => -16),
-    );
-  }
+function pmorganization_field_extra_fields() {
+  $extra['node']['pmorganization'] = array(
+    'form' => array(
+      'group1' => array(
+        'label' => 'Customer/Provider/Active Group',
+        'weight' => -21
+      ),
+      'group2' => array(
+        'label' => 'Prefix/Fullname Group',
+        'weight' => -19
+      ),
+      'group3' => array(
+        'label' => 'Address Group',
+        'weight' => -18
+      ),
+      'group4' => array(
+        'label' => 'Phone/WWW/Email Group',
+        'weight' => -17
+      ),
+      'group5' => array(
+        'label' => 'Currency/Language/Tax ID Group',
+        'weight' => -16
+      ),
+    )
+  );
+
+  return $extra;
+}
+
+function pmorganization_field_extra_fields_alter(&$info) {
+  $info['node']['pmorganization']['form']['title']['weight'] = -20;
 }
 
 function pmorganization_form(&$node) {
@@ -206,19 +227,12 @@ function pmorganization_form(&$node) {
   $type = node_type_get_type($node);
 
   $form['#attributes']['class'] = 'pmcomponent_node_form';
-
-  $form['title'] = array(
-    '#type' => 'textfield',
-    '#title' => check_plain($type->title_label),
-    '#required' => TRUE,
-    '#default_value' => $node->title,
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'title') : -18,
-  );
+  $info = field_info_extra_fields('node', 'pmorganization', 'form');
 
   $form['group1'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
+    '#weight' => $info['group1']['weight'],
   );
 
   $form['group1']['iscustomer'] = array(
@@ -239,16 +253,24 @@ function pmorganization_form(&$node) {
     '#default_value' => $node->isactive,
   );
 
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => check_plain($type->title_label),
+    '#required' => TRUE,
+    '#default_value' => $node->title,
+    '#weight' => $info['title']['weight'],
+  );
+
   $form['group2'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group2') : -19,
+    '#weight' => $info['group2']['weight'],
   );
 
   $form['group3'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group3') : -18,
+    '#weight' => $info['group3']['weight'],
   );
 
   $form['group3']['address'] = array(
@@ -294,7 +316,7 @@ function pmorganization_form(&$node) {
   $form['group4'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group4') : -17,
+    '#weight' => $info['group4']['weight'],
   );
 
   $form['group4']['phone'] = array(
@@ -320,7 +342,7 @@ function pmorganization_form(&$node) {
   $form['group5'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group5') : -16,
+    '#weight' => $info['group5']['weight'],
   );
 
   $currency_list = pm_attributes_bydomain('Currency');
