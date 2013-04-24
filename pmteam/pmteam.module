@@ -5,7 +5,7 @@
  * Functionality for the Project Management Team module
  * Organized into the following sections:
  * - General hooks: (help), menu, perm, theme, views_api
- * - Node specific hooks: node_info, content_extra_fields, access, access_sql,
+ * - Node specific hooks: node_info, field_extra_fields, access, access_sql,
  *     pm_rewrite_where_sql, form, load, view, _beforesave, insert, update,
  *     delete, nodeapi
  */
@@ -96,12 +96,24 @@ function pmteam_node_info() {
  * @function
  * Implementation of hook_content_extra_fields().
  */
-function pmteam_content_extra_fields($type_name) {
-  if ($type_name == 'pmteam') {
-    return array(
-      'group1' => array('label' => 'Team members', 'weight' => -20),
-    );
-  }
+function pmteam_field_extra_fields() {
+  $extra['node']['pmteam'] = array(
+    'form' => array(
+      'group1' => array(
+        'label' => 'Team members',
+        'weight' => -20,
+      ),
+    ),
+  );
+  return $extra;
+}
+
+/**
+ * @function
+ * Implementation of hook_field_extra_fields().
+ */
+function pmteam_field_extra_fields_alter(&$info) {
+  $info['node']['pmteam']['form']['title']['weight'] = -21;
 }
 
 /**
@@ -246,18 +258,19 @@ function pmteam_form(&$node) {
   drupal_set_breadcrumb($breadcrumb);
 
   $type = node_type_get_type($node);
+  $info = field_info_extra_fields('node', 'pmteam', 'form');
 
   $form['title'] = array(
     '#type' => 'textfield',
     '#title' => check_plain($type->title_label),
     '#required' => TRUE,
     '#default_value' => $node->title,
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'title') : -21,
+    '#weight' => $info['title']['weight'],
   );
 
   $form['group1'] = array(
     '#type' => 'markup',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
+    '#weight' => $info['group1']['weight'],
   );
 
   $options = array(0 => '-');

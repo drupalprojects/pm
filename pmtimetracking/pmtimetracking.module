@@ -206,15 +206,32 @@ function pmtimetracking_node_info() {
   );
 }
 
-function pmtimetracking_content_extra_fields($type_name) {
-  if ($type_name == 'pmtimetracking') {
-    return array(
-      'group1' => array('label' => 'Organization/Project/Task/Ticket Group', 'weight' => -20),
-      'group2' => array('label' => 'Date', 'weight' => -19),
-      'group3' => array('label' => 'Time / Duration Group', 'weight' => -18),
-      'group4' => array('label' => 'Billable / Billed Group', 'weight' => -17),
-    );
-  }
+function pmtimetracking_field_extra_fields() {
+  $extra['node']['pmtimetracking'] = array(
+    'form' => array(
+      'group1' => array(
+        'label' => 'Organization/Project/Task/Ticket Group',
+        'weight' => -20,
+      ),
+      'group2' => array(
+        'label' => 'Date',
+        'weight' => -19,
+      ),
+      'group3' => array(
+        'label' => 'Time / Duration Group',
+        'weight' => -18,
+      ),
+      'group4' => array(
+        'label' => 'Billable / Billed Group',
+        'weight' => -17,
+      ),
+    ),
+  );
+  return $extra;
+}
+
+function pmtimetracking_field_extra_fields_alter(&$info) {
+  $info['node']['pmtimetracking']['form']['title']['weight'] = -21;
 }
 
 function pmtimetracking_pmorganization_change($organization_nid, $organization_title) {
@@ -398,6 +415,7 @@ function pmtimetracking_form(&$node) {
   }
 
   $type = node_type_get_type($node);
+  $info = field_info_extra_fields('node', 'pmtimetracking', 'form');
 
   $form['#attributes']['class'] = 'pmcomponent_node_form';
 
@@ -406,13 +424,13 @@ function pmtimetracking_form(&$node) {
     '#title' => check_plain($type->title_label),
     '#required' => TRUE,
     '#default_value' => $node->title,
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'title') : -21,
+    '#weight' => $info['title']['weight'],
   );
 
   $form['group1'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
+    '#weight' => $info['group1']['weight'],
   );
 
   $org_id = isset($node->organization_nid) ? $node->organization_nid : -1;
@@ -500,7 +518,7 @@ function pmtimetracking_form(&$node) {
   $form['group2'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group2') : -19,
+    '#weight' => $info['group2']['weight'],
   );
 
   $form['group2']['trackingdate'] = array(
@@ -512,7 +530,7 @@ function pmtimetracking_form(&$node) {
   $form['group3'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group3') : -18,
+    '#weight' => $info['group3']['weight'],
   );
 
   $form['group3']['timebegin'] = array(
@@ -556,7 +574,7 @@ function pmtimetracking_form(&$node) {
   $form['group4'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group3') : -17,
+    '#weight' => $info['group4']['weight'],
   );
 
   $form['group4']['billable'] = array(

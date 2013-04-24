@@ -328,17 +328,40 @@ function pmproject_node_info() {
   );
 }
 
-function pmproject_content_extra_fields($type_name) {
-  if ($type_name == 'pmproject') {
-    return array(
-      'group1' => array('label' => 'Organization', 'weight' => -20),
-      'group2' => array('label' => 'Category/Status/Priority Group', 'weight' => -19),
-      'group3' => array('label' => 'Date/Duration Group', 'weight' => -18),
-      'group4' => array('label' => 'Price Group', 'weight' => -17),
-      'group5' => array('label' => 'Manager / Assigned to Group', 'weight' => -16),
-      'group6' => array('label' => 'Billable / Billed Group', 'weight' => -15),
-    );
-  }
+function pmproject_field_extra_fields() {
+  $extra['node']['pmproject'] = array(
+    'form' => array(
+      'group1' => array(
+        'label' => 'Organization',
+        'weight' => -20,
+      ),
+      'group2' => array(
+        'label' => 'Category/Status/Priority Group',
+        'weight' => -19,
+      ),
+      'group3' => array(
+        'label' => 'Date/Duration Group',
+        'weight' => -18,
+      ),
+      'group4' => array(
+        'label' => 'Price Group',
+        'weight' => -17,
+      ),
+      'group5' => array(
+        'label' => 'Manager / Assigned to Group',
+        'weight' => -16,
+      ),
+      'group6' => array(
+        'label' => 'Billable / Billed Group',
+        'weight' => -15,
+      ),
+    ),
+  );
+  return $extra;
+}
+
+function pmproject_field_extra_fields_alter(&$info) {
+  $info['node']['pmproject']['form']['title']['weight'] = -21;
 }
 
 function pmproject_pmorganization_change($organization_nid, $organization_title) {
@@ -401,13 +424,22 @@ function pmproject_form(&$node) {
   }
 
   $type = node_type_get_type($node);
+  $info = field_info_extra_fields('node', 'pmproject', 'form');
 
   $form['#attributes']['class'] = 'pmcomponent_node_form';
+
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => check_plain($type->title_label),
+    '#required' => TRUE,
+    '#default_value' => $node->title,
+    '#weight' => $info['title']['weight'],
+  );
 
   $form['group1'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
+    '#weight' => $info['group1']['weight'],
   );
 
 //  $s_org = pmorganization_access_sql($s_org);
@@ -433,18 +465,10 @@ function pmproject_form(&$node) {
     '#default_value' => isset($node->organization_nid) ? $node->organization_nid : NULL,
   );
 
-  $form['title'] = array(
-    '#type' => 'textfield',
-    '#title' => check_plain($type->title_label),
-    '#required' => TRUE,
-    '#default_value' => $node->title,
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'title') : -21,
-  );
-
   $form['group2'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group2') : -19,
+    '#weight' => $info['group2']['weight'],
   );
 
   $category_list = pm_attributes_bydomain('Project category');
@@ -474,7 +498,7 @@ function pmproject_form(&$node) {
   $form['group3'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group3') : -18,
+    '#weight' => $info['group3']['weight'],
   );
 
   $form['group3']['datebegin'] = array(
@@ -509,7 +533,7 @@ function pmproject_form(&$node) {
   $form['group4'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group4') : -17,
+    '#weight' => $info['group4']['weight'],
   );
 
   $pricemode_list = pm_attributes_bydomain('Price mode');
@@ -538,7 +562,7 @@ function pmproject_form(&$node) {
   $form['group5'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group5') : -16,
+    '#weight' => $info['group5']['weight'],
   );
 
   if (module_exists('pmperson')) {
@@ -602,7 +626,7 @@ function pmproject_form(&$node) {
   $form['group6'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group6') : -15,
+    '#weight' => $info['group6']['weight'],
   );
 
   $form['group6']['billable'] = array(
@@ -646,15 +670,17 @@ function pmproject_insert($node) {
   $per_result = db_select('node', 'n')
     ->fields('n', array('title'))
     ->condition('n.type', 'pmperson')
-    ->condition('n.nid', '$node->manager_nid')
+    ->condition('n.nid', $node->manager_nid)
     ->execute();
   $manager = $per_result->fetchObject();
   if (!$manager) {
+    $manager = new stdClass();
     $manager->title = '';
   }
 
   $assigned = node_load($node->assigned_nid);
   if (!$assigned) {
+    $assigned = new stdClass();
     $assigned->title = '';
   }
 

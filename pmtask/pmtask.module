@@ -375,17 +375,40 @@ function pmtask_node_info() {
   );
 }
 
-function pmtask_content_extra_fields($type_name) {
-  if ($type_name == 'pmtask') {
-    return array(
-      'group1' => array('label' => 'Organization/Project/Task/Weight/Step Group', 'weight' => -20),
-      'group2' => array('label' => 'Category/Status/Priority Group', 'weight' => -19),
-      'group3' => array('label' => 'Date/Duration Group', 'weight' => -18),
-      'group4' => array('label' => 'Price Group', 'weight' => -17),
-      'group5' => array('label' => 'Assigned to', 'weight' => -16),
-      'group6' => array('label' => 'Billable / Billed Group', 'weight' => -15),
-    );
-  }
+function pmtask_field_extra_fields() {
+  $extra['node']['pmtask'] = array(
+    'form' => array(
+      'group1' => array(
+        'label' => 'Organization/Project/Task/Weight/Step Group',
+        'weight' => -20,
+      ),
+      'group2' => array(
+        'label' => 'Category/Status/Priority Group',
+        'weight' => -18,
+      ),
+      'group3' => array(
+        'label' => 'Date/Duration Group',
+        'weight' => -17,
+      ),
+      'group4' => array(
+        'label' => 'Price Group',
+        'weight' => -16,
+      ),
+      'group5' => array(
+        'label' => 'Assigned to',
+        'weight' => -15,
+      ),
+      'group6' => array(
+        'label' => 'Billable / Billed Group',
+        'weight' => -14,
+      ),
+    ),
+  );
+  return $extra;
+}
+
+function pmtask_field_extra_fields_alter(&$info) {
+  $info['node']['pmtask']['form']['title']['weight'] = -19;
 }
 
 function pmtask_pmorganization_change($organization_nid, $organization_title) {
@@ -471,13 +494,14 @@ function pmtask_form(&$node, $form_state) {
   }
 
   $type = node_type_get_type($node);
+  $info = field_info_extra_fields('node', 'pmtask', 'form');
 
   $form['#attributes']['class'] = 'pmcomponent_node_form';
 
   $form['group1'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
+    '#weight' => $info['group1']['weight'],
   );
 
   $org_query = db_select('node', 'n');
@@ -579,13 +603,13 @@ function pmtask_form(&$node, $form_state) {
     '#title' => check_plain($type->title_label),
     '#required' => TRUE,
     '#default_value' => $node->title,
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'title') : -18,
+    '#weight' => $info['title']['weight'],
   );
 
   $form['group2'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group2') : -17,
+    '#weight' => $info['group2']['weight'],
   );
 
   $taskcategory_list = pm_attributes_bydomain('Task category');
@@ -615,7 +639,7 @@ function pmtask_form(&$node, $form_state) {
   $form['group3'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group3') : -16,
+    '#weight' => $info['group3']['weight'],
   );
 
   $form['group3']['datebegin'] = array(
@@ -650,7 +674,7 @@ function pmtask_form(&$node, $form_state) {
   $form['group4'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group4') : -16,
+    '#weight' => $info['group4']['weight'],
   );
 
   $pricemode_list = pm_attributes_bydomain('Price mode');
@@ -679,7 +703,7 @@ function pmtask_form(&$node, $form_state) {
   $form['group5'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group5') : -16,
+    '#weight' => $info['group5']['weight'],
   );
 
 //  $options = pm_get_assignment_options($node->organization_nid, $node->project_nid);
@@ -694,7 +718,7 @@ function pmtask_form(&$node, $form_state) {
   $form['group6'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group6') : -15,
+    '#weight' => $info['group6']['weight'],
   );
 
   $form['group6']['billable'] = array(

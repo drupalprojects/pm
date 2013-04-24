@@ -235,15 +235,32 @@ function pmexpense_node_info() {
   );
 }
 
-function pmexpense_content_extra_fields($type_name) {
-  if ($type_name == 'pmexpense') {
-    return array(
-      'group1' => array('label' => 'Organization/Project/Task/Ticket Group', 'weight' => -20),
-      'group2' => array('label' => 'Date/Provider Group', 'weight' => -19),
-      'group3' => array('label' => 'Amount', 'weight' => -18),
-      'group4' => array('label' => 'Tax Group', 'weight' => -17),
-    );
-  }
+function pmexpense_field_extra_fields() {
+  $extra['node']['pmexpense'] = array(
+    'form' => array(
+      'group1' => array(
+        'label' => 'Organization/Project/Task/Ticket Group',
+        'weight' => -20,
+      ),
+      'group2' => array(
+        'label' => 'Date/Provider Group',
+        'weight' => -19,
+      ),
+      'group3' => array(
+        'label' => 'Amount',
+        'weight' => -18,
+      ),
+      'group4' => array(
+        'label' => 'Tax Group',
+        'weight' => -17,
+      ),
+    ),
+  );
+  return $extra;
+}
+
+function pmexpense_field_extra_fields_alter(&$info) {
+  $info['node']['pmexpense']['form']['title']['weight'] = -16;
 }
 
 function pmexpense_pmorganization_change($organization_nid, $organization_title) {
@@ -382,6 +399,7 @@ function pmexpense_form($node, $form_state) {
   }
 
   $type = node_type_get_type($node);
+  $info = field_info_extra_fields('node', 'pmexpense', 'form');
   $w = -100;
 
   $form['#attributes']['class'] = 'pmcomponent_node_form';
@@ -389,7 +407,7 @@ function pmexpense_form($node, $form_state) {
   $form['group1'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
+    '#weight' => $info['group1']['weight'],
   );
 
   $query = db_select('node', 'n');
@@ -470,7 +488,7 @@ function pmexpense_form($node, $form_state) {
   $form['group2'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group2') : -19,
+    '#weight' => $info['group2']['weight'],
   );
 
   $form['group2']['expensedate'] = array(
@@ -490,7 +508,7 @@ function pmexpense_form($node, $form_state) {
   $form['group3'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group3') : -18,
+    '#weight' => $info['group3']['weight'],
   );
 
   $form['group3']['amount'] = array(
@@ -503,7 +521,7 @@ function pmexpense_form($node, $form_state) {
   $form['group4'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group4') : -17,
+    '#weight' => $info['group4']['weight'],
   );
 
   $form['group4']['tax1app'] = array(
@@ -560,7 +578,7 @@ function pmexpense_form($node, $form_state) {
     '#title' => check_plain($type->title_label),
     '#required' => TRUE,
     '#default_value' => $node->title,
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'title') : -16,
+    '#weight' => $info['title']['weight'],
   );
 
   // Check to see if the body field is still there, if so, display it.

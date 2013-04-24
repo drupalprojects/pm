@@ -279,15 +279,32 @@ function pmperson_node_info() {
   );
 }
 
-function pmperson_content_extra_fields($type_name) {
-  if ($type_name == 'pmperson') {
-    return array(
-      'group1' => array('label' => 'Prefix/Name Group', 'weight' => -20),
-      'group2' => array('label' => 'Organization/User Group', 'weight' => -19),
-      'group3' => array('label' => 'Email/WWW Group', 'weight' => -18),
-      'group4' => array('label' => 'Phone/IM Group', 'weight' => -17),
-    );
-  }
+function pmperson_field_extra_fields() {
+  $extra['node']['pmperson'] = array(
+    'form' => array(
+      'group1' => array(
+        'label' => 'Prefix/Name Group',
+        'weight' => -20,
+      ),
+      'group2' => array(
+        'label' => 'Organization/User Group',
+        'weight' => -19,
+      ),
+      'group3' => array(
+        'label' => 'Email/WWW Group',
+        'weight' => -18,
+      ),
+      'group4' => array(
+        'label' => 'Phone/IM Group',
+        'weight' => -17,
+      ),
+    ),
+  );
+  return $extra;
+}
+
+function pmperson_field_extra_fields_alter(&$info) {
+  $info['node']['pmperson']['form']['title']['weight'] = -21;
 }
 
 function pmperson_pmorganization_change($organization_nid, $organization_title) {
@@ -314,13 +331,14 @@ function pmperson_form(&$node) {
   }
 
   $type = node_type_get_type($node);
+  $info = field_info_extra_fields('node', 'pmperson', 'form');
 
   $form['#attributes']['class'] = 'pmcomponent_node_form';
 
   $form['group1'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
+    '#weight' => $info['group1']['weight'],
   );
 
   $form['group1']['prefix'] = array(
@@ -341,7 +359,7 @@ function pmperson_form(&$node) {
   $form['group2'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group2') : -19,
+    '#weight' => $info['group2']['weight'],
   );
 
   $query = db_select('node', 'n');
@@ -385,7 +403,7 @@ function pmperson_form(&$node) {
   $form['group3'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group3') : -18,
+    '#weight' => $info['group3']['weight'],
   );
 
   $form['group3']['email'] = array(
@@ -405,7 +423,7 @@ function pmperson_form(&$node) {
   $form['group4'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group4') : -17,
+    '#weight' => $info['group4']['weight'],
   );
 
   $form['group4']['phone'] = array(

@@ -123,17 +123,36 @@ function pminvoice_node_info() {
   );
 }
 
-function pminvoice_content_extra_fields($type_name) {
-  if ($type_name == 'pminvoice') {
-    return array(
-      'group1' => array('label' => 'Number', 'weight' => -20),
-      'group2' => array('label' => 'Organization/Project/Reference Group', 'weight' => -19),
-      'group3' => array('label' => 'Date Group', 'weight' => -18),
-      // Title (description) - weight -17
-      'group4' => array('label' => 'Invoice Items', 'weight' => -16),
-      'group5' => array('label' => 'Price Group', 'weight' => -15),
-    );
-  }
+function pminvoice_field_extra_fields() {
+  $extra['node']['pminvoice'] = array(
+    'form' => array(
+      'group1' => array(
+        'label' => 'Number',
+        'weight' => -20,
+      ),
+      'group2' => array(
+        'label' => 'Organization/Project/Reference Group',
+        'weight' => -19,
+      ),
+      'group3' => array(
+        'label' => 'Date Group',
+        'weight' => -18,
+      ),
+      'group4' => array(
+        'label' => 'Invoice Items',
+        'weight' => -16,
+      ),
+      'group5' => array(
+        'label' => 'Price Group',
+        'weight' => -15,
+      ),
+    ),
+  );
+  return $extra;
+}
+
+function pminvoice_field_extra_fields_alter(&$info) {
+  $info['node']['pminvoice']['form']['title']['weight'] = -17;
 }
 
 // ACCESS FUNCTIONS
@@ -304,13 +323,14 @@ function pminvoice_form(&$node) {
   }
 
   $type = node_type_get_type($node);
+  $info = field_info_extra_fields('node', 'pminvoice', 'form');
 
   $form['#attributes']['class'] = 'pmcomponent_node_form';
 
   $form['group1'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
+    '#weight' => $info['group1']['weight'],
   );
 
   $form['group1']['number'] = array(
@@ -326,13 +346,13 @@ function pminvoice_form(&$node) {
     '#title' => check_plain($type->title_label),
     '#required' => TRUE,
     '#default_value' => $node->title,
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'title') : -17,
+    '#weight' => $info['title']['weight'],
   );
 
   $form['group2'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group2') : -19,
+    '#weight' => $info['group2']['weight'],
   );
 
   $org_query = db_select('node', 'n');
@@ -396,7 +416,7 @@ function pminvoice_form(&$node) {
   $form['group3'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group3') : -18,
+    '#weight' => $info['group3']['weight'],
   );
 
   $form['group3']['requestdate'] = array(
@@ -422,12 +442,12 @@ function pminvoice_form(&$node) {
 
   $form['group4'] = array(
     '#type' => 'markup',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group4') : -16,
+    '#weight' => $info['group4']['weight'],
   );
 
   $count = (isset($node->items)) ? count($node->items) : 0;
   for ($k = $count; $k <= $count + 2; $k++) {
-    // $node->items[$k] = stdclass;
+    $node->items[$k] = new stdClass;
     $node->items[$k]->tax1app = variable_get('pm_tax1_app', 1);
     $node->items[$k]->tax1percent = variable_get('pm_tax1_percent', 20);
     $node->items[$k]->tax2app = variable_get('pm_tax2_app', 0);
@@ -551,7 +571,7 @@ function pminvoice_form(&$node) {
   $form['group5'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group5') : -15,
+    '#weight' => $info['group5']['weight'],
   );
 
   $form['group5']['amount'] = array(

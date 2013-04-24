@@ -190,27 +190,22 @@ function pmorganization_field_extra_fields() {
     'form' => array(
       'group1' => array(
         'label' => 'Customer/Provider/Active Group',
-        'weight' => -21
+        'weight' => -21,
       ),
       'group2' => array(
-        'label' => 'Prefix/Fullname Group',
-        'weight' => -19
+        'label' => 'Address Group',
+        'weight' => -19,
       ),
       'group3' => array(
-        'label' => 'Address Group',
-        'weight' => -18
+        'label' => 'Phone/WWW/Email Group',
+        'weight' => -18,
       ),
       'group4' => array(
-        'label' => 'Phone/WWW/Email Group',
-        'weight' => -17
-      ),
-      'group5' => array(
         'label' => 'Currency/Language/Tax ID Group',
-        'weight' => -16
+        'weight' => -17,
       ),
-    )
+    ),
   );
-
   return $extra;
 }
 
@@ -225,9 +220,9 @@ function pmorganization_form(&$node) {
   drupal_set_breadcrumb($breadcrumb);
 
   $type = node_type_get_type($node);
+  $info = field_info_extra_fields('node', 'pmorganization', 'form');
 
   $form['#attributes']['class'] = 'pmcomponent_node_form';
-  $info = field_info_extra_fields('node', 'pmorganization', 'form');
 
   $form['group1'] = array(
     '#type' => 'markup',
@@ -267,20 +262,14 @@ function pmorganization_form(&$node) {
     '#weight' => $info['group2']['weight'],
   );
 
-  $form['group3'] = array(
-    '#type' => 'markup',
-    '#theme' => 'pm_form_group',
-    '#weight' => $info['group3']['weight'],
-  );
-
-  $form['group3']['address'] = array(
+  $form['group2']['address'] = array(
     '#type' => 'textfield',
     '#title' => t('Address'),
     '#default_value' => isset($node->address) ? $node->address : NULL,
     '#weight' => 1,
   );
 
-  $form['group3']['city'] = array(
+  $form['group2']['city'] = array(
     '#type' => 'textfield',
     '#title' => t('City'),
     '#size' => 20,
@@ -288,7 +277,7 @@ function pmorganization_form(&$node) {
     '#weight' => 2,
   );
 
-  $form['group3']['provstate'] = array(
+  $form['group2']['provstate'] = array(
     '#type' => 'textfield',
     '#title' => t('Province / State'),
     '#size' => 20,
@@ -297,7 +286,7 @@ function pmorganization_form(&$node) {
   );
 
   $country_list = pm_attributes_bydomain('Country');
-  $form['group3']['country'] = array(
+  $form['group2']['country'] = array(
     '#type' => 'select',
     '#title' => t('Country'),
     '#options' => $country_list['values'],
@@ -305,12 +294,38 @@ function pmorganization_form(&$node) {
     '#weight' => 4,
   );
 
-  $form['group3']['zip'] = array(
+  $form['group2']['zip'] = array(
     '#type' => 'textfield',
     '#title' => t('Zip'),
     '#size' => 15,
     '#default_value' => isset($node->zip) ? $node->zip : NULL,
     '#weight' => 5,
+  );
+
+  $form['group3'] = array(
+    '#type' => 'markup',
+    '#theme' => 'pm_form_group',
+    '#weight' => $info['group3']['weight'],
+  );
+
+  $form['group3']['phone'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Phone'),
+    '#default_value' => isset($node->phone) ? $node->phone : NULL,
+  );
+
+  $form['group3']['www'] = array(
+    '#type' => 'textfield',
+    '#title' => t('WWW'),
+    '#size' => 30,
+    '#default_value' => isset($node->www) ? $node->www : NULL,
+  );
+
+  $form['group3']['email'] = array(
+    '#type' => 'textfield',
+    '#title' => t('E-mail'),
+    '#size' => 30,
+    '#default_value' => isset($node->email) ? $node->email : NULL,
   );
 
   $form['group4'] = array(
@@ -319,34 +334,8 @@ function pmorganization_form(&$node) {
     '#weight' => $info['group4']['weight'],
   );
 
-  $form['group4']['phone'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Phone'),
-    '#default_value' => isset($node->phone) ? $node->phone : NULL,
-  );
-
-  $form['group4']['www'] = array(
-    '#type' => 'textfield',
-    '#title' => t('WWW'),
-    '#size' => 30,
-    '#default_value' => isset($node->www) ? $node->www : NULL,
-  );
-
-  $form['group4']['email'] = array(
-    '#type' => 'textfield',
-    '#title' => t('E-mail'),
-    '#size' => 30,
-    '#default_value' => isset($node->email) ? $node->email : NULL,
-  );
-
-  $form['group5'] = array(
-    '#type' => 'markup',
-    '#theme' => 'pm_form_group',
-    '#weight' => $info['group5']['weight'],
-  );
-
   $currency_list = pm_attributes_bydomain('Currency');
-  $form['group5']['currency'] = array(
+  $form['group4']['currency'] = array(
     '#type' => 'select',
     '#title' => t('Currency'),
     '#options' => $currency_list['values'],
@@ -354,14 +343,14 @@ function pmorganization_form(&$node) {
   );
 
   $pricemode_list = pm_attributes_bydomain('Price mode');
-  $form['group5']['pricemode'] = array(
+  $form['group4']['pricemode'] = array(
     '#type' => 'select',
     '#title' => t('Price mode'),
     '#default_value' => $node->pricemode,
     '#options' => $pricemode_list['values'],
   );
 
-  $form['group5']['price'] = array(
+  $form['group4']['price'] = array(
     '#title' => t('Price'),
     '#type' => 'textfield',
     '#size' => 15,
@@ -373,14 +362,14 @@ function pmorganization_form(&$node) {
   foreach ($languages as $language_code => $language) {
     $languages_options[$language_code] = $language->name;
   }
-  $form['group5']['orglanguage'] = array(
+  $form['group4']['orglanguage'] = array(
     '#type' => 'select',
     '#title' => t('Language'),
     '#options' => $languages_options,
     '#default_value' => isset($node->orglanguage) ? $node->orglanguage : NULL,
   );
 
-  $form['group5']['taxid'] = array(
+  $form['group4']['taxid'] = array(
     '#type' => 'textfield',
     '#title' => t('Tax ID'),
     '#size' => 20,

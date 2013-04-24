@@ -277,17 +277,40 @@ function pmticket_node_info() {
   );
 }
 
-function pmticket_content_extra_fields($type_name) {
-  if ($type_name == 'pmticket') {
-    return array(
-      'group1' => array('label' => 'Organization/Project/Task Group', 'weight' => -20),
-      'group2' => array('label' => 'Category/Status/Priority Group', 'weight' => -19),
-      'group3' => array('label' => 'Date/Duration Group', 'weight' => -18),
-      'group4' => array('label' => 'Price Group', 'weight' => -17),
-      'group5' => array('label' => 'Assigned to', 'weight' => -16),
-      'group6' => array('label' => 'Billable / Billed Group', 'weight' => -15),
-    );
-  }
+function pmticket_field_extra_fields() {
+  $extra['node']['pmticket'] =  array(
+    'form' => array(
+      'group1' => array(
+        'label' => 'Organization/Project/Task Group',
+        'weight' => -20,
+      ),
+      'group2' => array(
+        'label' => 'Category/Status/Priority Group',
+        'weight' => -19,
+      ),
+      'group3' => array(
+        'label' => 'Date/Duration Group',
+        'weight' => -17,
+      ),
+      'group4' => array(
+        'label' => 'Price Group',
+        'weight' => -16,
+      ),
+      'group5' => array(
+        'label' => 'Assigned to',
+        'weight' => -15,
+      ),
+      'group6' => array(
+        'label' => 'Billable / Billed Group',
+        'weight' => -14,
+      ),
+    )
+  );
+  return $extra;
+}
+
+function pmticket_field_extra_fields_alter(&$info) {
+  $info['node']['pmticket']['form']['title']['weight'] = -18;
 }
 
 // ORGANISATION / PROJECT / TASK UPDATE FUNCTIONS
@@ -368,13 +391,14 @@ function pmticket_form(&$node, $form_state) {
   }
 
   $type = node_type_get_type($node);
+  $info = field_info_extra_fields('node', 'pmticket', 'form');
 
   $form['#attributes']['class'] = 'pmcomponent_node_form';
 
   $form['group1'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
+    '#weight' => $info['group1']['weight'],
   );
 
   $org_query = db_select('node', 'n');
@@ -462,7 +486,7 @@ function pmticket_form(&$node, $form_state) {
   $form['group2'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group2') : -19,
+    '#weight' => $info['group2']['weight'],
   );
 
   $category_list = pm_attributes_bydomain('Ticket category');
@@ -494,13 +518,13 @@ function pmticket_form(&$node, $form_state) {
     '#title' => check_plain($type->title_label),
     '#required' => TRUE,
     '#default_value' => $node->title,
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'title') : -18,
+    '#weight' => $info['title']['weight'],
   );
 
   $form['group3'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group3') : -17,
+    '#weight' => $info['group3']['weight'],
   );
 
   $form['group3']['datebegin'] = array(
@@ -536,7 +560,7 @@ function pmticket_form(&$node, $form_state) {
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
     '#weight' => 3,
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group4') : -16,
+    '#weight' => $info['group4']['weight'],
   );
 
   $pricemodes = pm_attributes_bydomain('Price mode');
@@ -565,7 +589,7 @@ function pmticket_form(&$node, $form_state) {
   $form['group5'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group5') : -15,
+    '#weight' => $info['group5']['weight'],
   );
 
   $options = isset($project_nid) ? pm_get_assignment_options($node->organization_nid, $project_nid) : pm_get_assignment_options($node->organization_nid);
@@ -580,7 +604,7 @@ function pmticket_form(&$node, $form_state) {
   $form['group6'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group6') : -14,
+    '#weight' => $info['group6']['weight'],
   );
 
   $form['group6']['billable'] = array(

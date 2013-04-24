@@ -188,12 +188,20 @@ function pmnote_node_info() {
   );
 }
 
-function pmnote_content_extra_fields($type_name) {
-  if ($type_name == 'pmnote') {
-    return array(
-      'group1' => array('label' => 'Organization/Project/Task Group', 'weight' => -20),
-    );
-  }
+function pmnote_field_extra_fields() {
+  $extra['node']['pmnote'] = array(
+    'form' => array(
+      'group1' => array(
+        'label' => 'Organization/Project/Task Group',
+        'weight' => -20,
+      ),
+    ),
+  );
+  return $extra;
+}
+
+function pmnote_field_extra_fields_alter(&$info) {
+  $info['node']['pmnote']['form']['title']['weight'] = -19;
 }
 
 function pmnote_pmorganization_change($organization_nid, $organization_title) {
@@ -265,11 +273,12 @@ function pmnote_form(&$node, $form_state) {
   }
 
   $type = node_type_get_type($node);
+  $info = field_info_extra_fields('node', 'pmnote', 'form');
 
   $form['group1'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
+    '#weight' => $info['group1']['weight'],
   );
 
   $org_query = db_select('node', 'n');
@@ -359,7 +368,7 @@ function pmnote_form(&$node, $form_state) {
     '#title' => check_plain($type->title_label),
     '#required' => TRUE,
     '#default_value' => $node->title,
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'title') : -16,
+    '#weight' => $info['title']['weight'],
   );
 
   // Check to see if the body field is still there, if so, display it.
