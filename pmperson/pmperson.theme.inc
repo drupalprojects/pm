@@ -4,32 +4,6 @@
  * @file
  */
 
-function theme_pmperson_list($variables) {
-  $header = $variables['header'];
-  $people = $variables['people'];
-
-  $rows = array();
-  foreach ($people as $person) {
-    $n = new stdClass();
-    $n->nid = $person->nid;
-    $n->uid = $person->uid;
-    $n->user_uid = $person->user_uid;
-    $n->organization_nid = $person->organization_nid;
-    $n->type = 'pmperson';
-
-    $rows[] = array(
-      l($person->organization_title, 'node/'. $person->organization_nid),
-      l($person->title, 'node/'. $person->nid) . theme('mark', array('type' => node_mark($person->nid, $person->changed))),
-      l($person->email, 'mailto:'. $person->email),
-      array(
-        'data' => pm_icon_edit_node($n, $_GET) .'&nbsp;'. pm_icon_delete_node($n, $_GET),
-        'class' => 'pm_list_operations',
-      ),
-    );
-  }
-  return theme('table', array('header' => $header, 'rows' => $rows));
-}
-
 function theme_pmperson_view($variables) {
   $node = $variables['node'];
 

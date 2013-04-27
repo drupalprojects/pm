@@ -220,16 +220,6 @@ function pmperson_pm_rewrite_where_sql($query, $primary_table, $account) {
 }
 
 function pmperson_menu() {
-  $items['pm/people'] = array(
-    'title' => 'People',
-    'description' => 'Project Management people',
-    'page callback' => 'pmperson_list',
-    'access arguments' => array('Project Management Person: access'),
-    'type' => MENU_NORMAL_ITEM,
-    'file' => 'pmperson.admin.inc',
-    'weight' => 1,
-  );
-
   $items['pm/organization_people_js/%'] = array(
     'title' => 'People',
     'page callback' => '_pmperson_organization_people_js',
@@ -252,10 +242,6 @@ function pmperson_menu() {
 
 function pmperson_theme() {
   return array(
-    'pmperson_list' => array(
-      'file'      => 'pmperson.theme.inc',
-      'variables' => array('header', 'people'),
-    ),
     'pmperson_people' => array(
       'file'      => 'pmperson.theme.inc',
       'arguments' => array('header', 'people'),
