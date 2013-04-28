@@ -96,6 +96,10 @@ function pmproject_init() {
   drupal_add_js(drupal_get_path('module', 'pmproject') .'/pmproject.js', 'module', 'header', FALSE);
 }
 
+function pmproject_node_access($node, $op, $account = NULL) {
+  return NODE_ACCESS_IGNORE;
+}
+
 function pmproject_access($op, $node, $account=NULL) {
   if (empty($account)) {
     global $user;

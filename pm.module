@@ -1094,8 +1094,8 @@ function pm_icon_delete_node($node, $params=array()) {
 function pm_icon_add($path, $item, $params=array()) {
   global $user;
   $type = $item->type;
-  $af = $type .'_access';
-  if (!$af('create', $item, $user)) return '';
+  $af = $type .'_node_access';
+  if (!$af($item, 'create', $user)) return '';
   $attributes = array('class' => 'popups-form');
   return pm_icon_l('application_add', $path, t('Add'), '', $params, $attributes);
 }
@@ -1104,7 +1104,7 @@ function pm_icon_edit($path, $item, $params=array()) {
   global $user;
   $type = $item->type;
   $af = $type .'_access';
-//  if (!$af('update', $item, $user)) return '';
+  if (!$af($item, 'update', $user)) return '';
   $attributes = array('class' => 'popups-form');
   return pm_icon_l('application_edit', $path, t('Edit'), '', $params, $attributes);
 }
@@ -1604,6 +1604,10 @@ function pm_views_pre_render(&$view) {
       }
     }
   }
+}
+
+function pm_attribute_node_access($item = NULL, $op, $account = NULL) {
+  return NODE_ACCESS_IGNORE;
 }
 
 function pm_attribute_access($op, $item=NULL, $account=NULL) {

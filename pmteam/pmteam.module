@@ -116,6 +116,10 @@ function pmteam_field_extra_fields_alter(&$info) {
   $info['node']['pmteam']['form']['title']['weight'] = -21;
 }
 
+function pmteam_node_access($node, $op, $account = NULL) {
+  return NODE_ACCESS_IGNORE;
+}
+
 /**
  * @function
  * Implementation of hook_access().

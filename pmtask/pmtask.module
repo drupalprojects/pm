@@ -62,6 +62,10 @@ function pmtask_permission() {
   );
 }
 
+function pmtask_node_access($node, $op, $account = NULL) {
+  return NODE_ACCESS_IGNORE;
+}
+
 function pmtask_access($op, $node, $account=NULL) {
   if (empty($account)) {
     global $user;
@@ -463,7 +467,7 @@ function pmtask_form(&$node, $form_state) {
       $p = node_load($node->project_nid);
       // Ensure that the correct organization is loaded
       $node->organization_nid = $p->organization_nid;
-      if (!pmorganization_access('view', $node->organization_nid)) {
+      if (!pmorganization_node_access($node->organization_nid, 'view')) {
         drupal_set_message(t("You cannot add a task for this project, as you do not have access to view the organization's profile"));
         drupal_goto('node/'. $node->project_nid);
       }
@@ -477,7 +481,7 @@ function pmtask_form(&$node, $form_state) {
       $node->organization_nid = $t->organization_nid;
       // If no parent project then no need to check access rights, there will always be a parent org.
       $project_access = $node->project_nid ? pmproject_access('view', $node->project_nid) : TRUE;
-      if (!$project_access || !pmorganization_access('view', $node->organization_nid)) {
+      if (!$project_access || !pmorganization_node_access($node->organization_nid, 'view')) {
         drupal_set_message(t("You cannot add a task with this parent, as you do not have access to view both the organization and project profiles"));
         drupal_goto('node/'. $node->parent_nid);
       }

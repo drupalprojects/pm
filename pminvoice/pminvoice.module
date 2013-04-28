@@ -156,6 +156,10 @@ function pminvoice_field_extra_fields_alter(&$info) {
 }
 
 // ACCESS FUNCTIONS
+function pminvoice_node_access($node, $op, $account = NULL) {
+  return NODE_ACCESS_IGNORE;
+}
+
 function pminvoice_access($op, $node, $account=NULL) {
   if (empty($account)) {
     global $user;
@@ -308,7 +312,7 @@ function pminvoice_form(&$node) {
       $node->project_nid = $_GET['project_nid'];
       $p = node_load($node->project_nid);
       $node->organization_nid = $p->organization_nid;
-      if (!pmorganization_access('view', $node->organization_nid)) {
+      if (!pmorganization_node_access($node->organization_nid, 'view')) {
         drupal_set_message(t("You cannot add an invoice for this project, as you do not have access to view the organization's profile"));
         drupal_goto('node/'. $node->project_nid);
       }

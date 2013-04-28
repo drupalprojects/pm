@@ -84,6 +84,10 @@ function pmperson_permission() {
   );
 }
 
+function pmperson_node_access($node, $op, $account = NULL) {
+  return NODE_ACCESS_IGNORE;
+}
+
 function pmperson_access($op, $node, $account=NULL) {
   if (empty($account)) {
     global $user;

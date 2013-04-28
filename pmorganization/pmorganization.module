@@ -50,55 +50,65 @@ function pmorganization_permission() {
   );
 }
 
-function pmorganization_access($op, $node, $account = NULL) {
-  if (empty($account)) {
-    global $user;
-    $account = $user;
-  }
+/**
+ * Implements hook_node_access.
+ *
+ * Define node access requirements for Project Management Organization nodes.
+ */
+function pmorganization_node_access($node, $op, $account = NULL) {
+  $type = is_string($node) ? $node : $node->type;
 
-  if ($op == 'create') {
-    return user_access('Project Management organization: add');
-  }
+  if ($type == 'pmorganization') {
+    // If no account is specified, assume that the check is against the current logged in user
+    if (is_null($account)) {
+      global $user;
+      $account = $user;
+    }
 
-  if (is_numeric($node)) $node = node_load($node);
+    // Ensure that objects are setup for access checks
+    $node = is_numeric($node) ? node_load($node) : $node;
+    if (!isset($account->pmorganization_nid) && module_exists('pmperson')) {
+      _pmperson_user_load($account);
+    }
 
-  if (!isset($account->pmorganization_nid) && module_exists('pmperson')) {
-    _pmperson_user_load($account);
+    // Run the access checks
+    if ($op == 'create') {
+      if (user_access('Project Management Organization: add')) {
+        return NODE_ACCESS_ALLOW;
+      }
+    }
+    elseif ($op == 'delete') {
+      if (user_access('Project Management Organization: delete all')) {
+        return NODE_ACCESS_ALLOW;
+      }
+      elseif (user_access('Project Management Organization: delete own') && ($account->uid == $node->uid)) {
+        return NODE_ACCESS_ALLOW;
+      }
+    }
+    elseif ($op == 'update') {
+      if (user_access('Project Management organization: edit all')) {
+        return NODE_ACCESS_ALLOW;
+      }
+      elseif (user_access('Project Management organization: edit own') && ($account->uid == $node->uid)) {
+        return NODE_ACCESS_ALLOW;
+      }
+      elseif (user_access('Project Management organization: edit belonged') && ($account->pmorganization_nid == $node->nid)) {
+        return NODE_ACCESS_ALLOW;
+      }
+    }
+    elseif ($op == 'view') {
+      if (user_access('Project Management organization: view all')) {
+        return NODE_ACCESS_ALLOW;
+      }
+      elseif (user_access('Project Management organization: view own') && ($account->uid == $node->uid)) {
+        return NODE_ACCESS_ALLOW;
+      }
+      elseif (user_access('Project Management organization: view belonged') && ($account->pmorganization_nid == $node->nid)) {
+        return NODE_ACCESS_ALLOW;
+      }
+    }
   }
-
-  if ($op == 'delete') {
-    if (user_access('Project Management organization: delete all')) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management organization: delete own') && ($account->uid == $node->uid)) {
-      return TRUE;
-    }
-  }
-
-  if ($op == 'update') {
-    if (user_access('Project Management organization: edit all')) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management organization: edit own') && ($account->uid == $node->uid)) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management organization: edit belonged') && ($account->pmorganization_nid == $node->nid)) {
-      return TRUE;
-    }
-  }
-
-  if ($op == 'view') {
-    if (user_access('Project Management organization: view all')) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management organization: view own') && ($account->uid == $node->uid)) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management organization: view belonged') && ($account->pmorganization_nid == $node->nid)) {
-      return TRUE;
-    }
-  }
-  return FALSE;
+  return NODE_ACCESS_IGNORE;
 }
 
 function pmorganization_pm_rewrite_where_sql($query, $primary_table, $account) {
