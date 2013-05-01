@@ -330,7 +330,7 @@ function pmtimetracking_pmticket_change_hierarchy($ticket_nid, $organization_nid
     ->execute();
 }
 
-function pmtimetracking_form(&$node) {
+function pmtimetracking_form(&$node, $form_state) {
   $breadcrumb = array();
   $breadcrumb[] = l(t('Project Management'), 'pm');
   $breadcrumb[] = l(t('Timetrackings'), 'pm/timetrackings');
@@ -452,9 +452,7 @@ function pmtimetracking_form(&$node) {
   $organizations = array();
   foreach ($records as $organization) {
     $organizations[$organization->nid] = $organization->title;
-  }
-  if (!isset($node->organization_nid)) {
-    $node->organization_nid = empty($organizations) ? NULL : $organization->nid;
+    if (!isset($node->organization_nid)) $node->organization_nid = $organization->nid;
   }
   $form['group1']['organization_nid'] = array(
     '#type' => 'select',
@@ -462,61 +460,91 @@ function pmtimetracking_form(&$node) {
     '#default_value' => $node->organization_nid,
     '#options' => $organizations,
     '#required' => TRUE,
-//    '#attributes' => array('onchange' => "pmticket_organization_project_task_tickets(this, 'edit-project-nid', 'edit-task-nid', 'edit-ticket-nid', true, '-')"),
-    '#weight' => 1,
+    '#ajax' => array(
+      'callback' => 'pmtimetracking_ajax_organization_nid',
+      'wrapper' => 'pmtimetracking-project-nid',
+    ),
   );
 
-  $s = "SELECT n.nid, n.title FROM {pmproject} spr INNER JOIN {node} n ON spr.nid=n.nid WHERE spr.organization_nid=:oid AND n.status=1 AND n.type='pmproject' ORDER BY n.title";
-//  $s = pmproject_access_sql($s);
-//  $s = db_rewrite_sql($s);
-  $r = db_query($s, array( ':oid' => $node->organization_nid ));
+  if (isset($node->organization_nid)) {
+    $organization_nid = isset($form_state['values']['organization_nid']) ? $form_state['values']['organization_nid'] : $node->organization_nid;
+  }
+  else {
+    drupal_set_message(t('Please add an organization to the system before trying to add a timetracking.'), 'error');
+  }
+
+  $pro_query = db_select('node', 'n');
+  $pro_query->join('pmproject', 'pmpr', 'n.vid = pmpr.vid');
+  $pro_result = $pro_query
+    ->fields('n', array('nid', 'title'))
+    ->condition('n.status', 1)
+    ->condition('pmpr.organization_nid', $organization_nid)
+    ->condition('n.type', 'pmproject')
+    ->orderBy('n.title', 'ASC')
+    ->addTag('node_access')
+    ->addTag('pmproject')
+    ->execute();
+
   $projects = array();
-  foreach ($r as $project) {
+  foreach ($pro_result as $project) {
     $projects[$project->nid] = $project->title;
   }
-  $projects = array(0 => '-') + $projects;
   $form['group1']['project_nid'] = array(
     '#type' => 'select',
     '#title' => t('Project'),
     '#default_value' => isset($node->project_nid) ? $node->project_nid : 0,
-    '#options' => $projects,
-//    '#process' => array('pm_dependent_select_process'),
-//    '#attributes' => array('onchange' => "pmticket_project_task_tickets(this, 'edit-organization-nid', 'edit-task-nid', 'edit-ticket-nid', true, '-')"),
-    '#weight' => 2,
+    '#options' => array(0 => '-') + $projects,
+    '#prefix' => '<div id="pmtimetracking-project-nid">',
+    '#suffix' => '</div>',
+    '#ajax' => array(
+      'callback' => 'pmtimetracking_ajax_project_nid',
+      'wrapper' => 'pmtimetracking-task-nid',
+    ),
   );
 
-  $tree = _pmtask_get_tree(isset($node->project_nid) ? $node->project_nid : 0);
+  $project_nid = isset($form_state['values']['project_nid']) ? $form_state['values']['project_nid'] : (isset($node->project_nid) ? $node->project_nid : 0);
+
+  $tree = isset($project_nid) ? _pmtask_get_tree($project_nid) : array();
   $tasks = _pmtask_plain_tree($tree);
-  $tasks = array(0 => '-') + $tasks;
   $form['group1']['task_nid'] = array(
     '#type' => 'select',
     '#title' => t('Task'),
     '#default_value' => isset($node->task_nid) ? $node->task_nid : 0,
-    '#options' => $tasks,
-//    '#process' => array('pm_dependent_select_process'),
-//    '#attributes' => array('onchange' => "pmticket_task_tickets(this, 'edit-organization-nid', 'edit-project-nid', 'edit-ticket-nid', true, '-')"),
-    '#weight' => 3,
+    '#options' => array(0 => '-') + $tasks,
+    '#prefix' => '<div id="pmtimetracking-task-nid">',
+    '#suffix' => '</div>',
+    '#ajax' => array(
+      'callback' => 'pmtimetracking_ajax_task_nid',
+      'wrapper' => 'pmtimetracking-ticket-nid',
+    ),
   );
+
+  $task_nid = isset($form_state['values']['task_nid']) ? $form_state['values']['task_nid'] : (isset($node->task_nid) ? $node->task_nid : 0);
+
+  $ti_query = db_select('node', 'n');
+  $ti_query->join('pmticket', 'pmti', 'n.vid = pmti.vid');
+  $ti_result = $ti_query
+    ->fields('n', array('nid', 'title'))
+    ->condition('pmti.task_nid', $task_nid)
+    ->condition('n.status', 1)
+    ->condition('n.type', 'pmticket')
+    ->orderBy('n.title', 'ASC')
+    ->addTag('node_access')
+    ->addTag('pmticket')
+    ->execute();
+
   $tickets = array();
-  $s = "SELECT n.nid, n.title FROM {pmticket} sti INNER JOIN {node} n ON sti.nid=n.nid WHERE n.status=1 AND n.type='pmticket' AND sti.organization_nid=:oid AND sti.project_nid=:pid AND sti.task_nid=:tid ORDER BY n.title";
-//  $s = pmticket_access_sql($s);
-//  $s = db_rewrite_sql($s);
-  $r = db_query($s, array(
-      ':oid' => $node->organization_nid,
-      ':pid' => isset($node->project_nid) ? $node->project_nid : -1,
-      ':tid' => isset($node->task_nid) ? $node->task_nid : -1,
-    )
-  );
-  foreach ($r as $ticket) {
+  foreach ($ti_result as $ticket) {
     $tickets[$ticket->nid] = $ticket->title;
   }
+
   $form['group1']['ticket_nid'] = array(
     '#type' => 'select',
     '#title' => t('Ticket'),
     '#default_value' => isset($node->ticket_nid) ? $node->ticket_nid : 0,
     '#options' => array(0 => '-') + $tickets,
-//    '#process' => array('pm_dependent_select_process'),
-    '#weight' => 4,
+    '#prefix' => '<div id="pmtimetracking-ticket-nid">',
+    '#suffix' => '</div>',
   );
 
   $form['group2'] = array(
@@ -602,6 +630,18 @@ function pmtimetracking_form(&$node) {
   }
 
   return $form;
+}
+
+function pmtimetracking_ajax_organization_nid(&$form, &$form_state) {
+  return $form['group1']['project_nid'];
+}
+
+function pmtimetracking_ajax_project_nid(&$form, &$form_state) {
+  return $form['group1']['task_nid'];
+}
+
+function pmtimetracking_ajax_task_nid(&$form, &$form_state) {
+  return $form['group1']['ticket_nid'];
 }
 
 function pmtimetracking_insert($node) {

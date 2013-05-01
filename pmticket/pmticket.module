@@ -152,99 +152,6 @@ function pmticket_access($op, $node, $account=NULL) {
   return FALSE;
 }
 
-function pmticket_access_sql($sql, $where=array()) {
-  if (user_access('Project Management Ticket: view all')) {
-    $where[] = "'pm_access'='pm_access'";
-    return pm_rewrite_sql($sql, $where);
-  }
-
-  global $user;
-
-  $cond = '';
-  if (user_access('Project Management Ticket: view own')) {
-    $cond .= 'n.uid='. $user->uid;
-  }
-  if (user_access('Project Management Ticket: view of user organization')) {
-    if (!empty($cond)) $cond .= ' OR ';
-    $cond .= 'sti.organization_nid='. $user->pmorganization_nid;
-  }
-  if (user_access('Project Management Ticket: view if assigned to ticket')) {
-    if (!empty($cond)) $cond .= ' OR ';
-    $cond .= 'sti.assigned_nid='. $user->pmperson_nid;
-
-    if (module_exists('pmteam')) {
-      // Load teams that the account belongs to
-      $belonged_teams = pmteam_user_return_teams($account);
-      // Allow access if any of those teams is the one in question
-      foreach ($belonged_teams as $belonged_team) {
-        $cond .= ' OR sti.assigned_nid = '. $belonged_team;
-      }
-    }
-  }
-
-  if (empty($cond)) $cond = '0=1';
-  $where[] = $cond;
-
-  $where[] = "'pm_access'='pm_access'";
-  return pm_rewrite_sql($sql, $where);
-}
-
-function pmticket_pm_rewrite_where_sql($query, $primary_table, $account) {
-  static $conds = array();
-
-  if (isset($conds[$primary_table][$account->uid])) {
-    return $conds[$primary_table][$account->uid];
-  }
-
-  if (preg_match("/'pm_access'='pm_access'/", $query)) {
-    $cond = '';
-  }
-  else {
-    if (user_access('Project Management Ticket: view all', $account)) {
-      return '';
-    }
-
-    $cond = '';
-    if (user_access('Project Management Ticket: view own', $account)) {
-      $cond .= " ${primary_table}.uid=". $account->uid;
-    }
-    if (user_access('Project Management Ticket: view of user organization', $account)) {
-      if ($cond) {
-        $cond .= ' OR ';
-      }
-      // If function is called without viewing a ticket, this variable may not be set.
-      // These lines check for that and set the organization node id to zero if not otherwise set.
-      if (!isset($account->pmorganization_nid)) {
-        $account->pmorganization_nid = 0;
-      }
-      $cond .= ' sti1.organization_nid='. $account->pmorganization_nid;
-    }
-    if (user_access('Project Management Ticket: view if assigned to ticket')) {
-      if ($cond) $cond .= ' OR ';
-      $cond .= 'sti1.assigned_nid='. $account->uid;
-
-      if (module_exists('pmteam')) {
-        // Load teams that the account belongs to
-        $belonged_teams = pmteam_user_return_teams($account);
-        // Allow access if any of those teams is the one in question
-        foreach ($belonged_teams as $belonged_team) {
-          $cond .= ' OR sti1.assigned_nid = '. $belonged_team;
-        }
-      }
-    }
-
-    if ($cond) {
-      $cond = " WHEN 'pmticket' THEN (SELECT IF($cond,1,0) FROM {pmticket} sti1 WHERE sti1.vid=${primary_table}.vid) ";
-    }
-    else {
-      $cond = " WHEN 'pmticket' THEN 0 ";
-    }
-  }
-
-  $conds[$primary_table][$account->uid] = $cond;
-  return $cond;
-}
-
 function pmticket_menu() {
   $items = array();
 
@@ -1052,4 +959,47 @@ function pmticket_pm_dashboard_links($type) {
     );
   }
   return $links;
+}
+
+/**
+ * Implements  hook_query_TAG_alter.
+ */
+function pmticket_query_pmticket_alter(QueryAlterableInterface $query) {
+
+  if (user_access('Project Management Ticket: view all')) {
+    return;
+  }
+
+  global $user;
+
+  $add_condition = FALSE;
+  $or = db_or();
+  if (user_access('Project Management Ticket: view own')) {
+    $or->condition('n.uid', $user->uid);
+    $add_condition = TRUE;
+  }
+  if (!empty($user->pmorganization_nid) AND user_access('Project Management Ticket: view of user organization')) {
+    $or->condition('pmti.organization_nid', $user->pmorganization_nid);
+    $add_condition = TRUE;
+  }
+  if (user_access('Project Management Ticket: view if assigned to ticket')) {
+    if (!empty($user->pmperson_nid)) {
+      $or->condition('pmti.assigned_nid', $user->pmperson_nid);
+      $add_condition = TRUE;
+    }
+    //TODO: check if member of assigned team
+    //port pmteam to D7 first
+    //if (module_exists('pmteam')) {
+    //  // Load teams that the account belongs to
+    //  $belonged_teams = pmteam_user_return_teams($user);
+    //  // Allow access if any of those teams is the one in question
+    //  foreach ($belonged_teams as $belonged_team) {
+    //    $or->condition('pmti.assigned_nid', $user->pmperson_nid);
+    //    $add_condition = TRUE;
+    //  }
+    //}
+  }
+  if ($add_condition) {
+    $query->condition($or);
+  }
 }
