@@ -211,18 +211,18 @@ function pmexpense_theme() {
   return array(
     'pmexpense_list' => array(
       'file'      => 'pmexpense.theme.inc',
-      'arguments' => array('header', 'tasks', 'duration'),
+      'variables' => array('header', 'tasks', 'duration'),
     ),
     'pmexpense_view' => array(
       'file'      => 'pmexpense.theme.inc',
-      'arguments' => array('node', 'teaser', 'page'),
+      'variables' => array('node', 'view_mode'),
     ),
     'pmexpense_list_form_report_reports' => array(
       'file'      => 'pmexpense.theme.inc',
     ),
     'pmexpense_list_report' => array(
       'file'      => 'pmexpense.theme.inc',
-      'arguments' => array('report', 'language', 'timetrackings'),
+      'variables' => array('report', 'language', 'timetrackings'),
     ),
   );
 }
@@ -268,24 +268,31 @@ function pmexpense_field_extra_fields_alter(&$info) {
 }
 
 function pmexpense_pmorganization_change($organization_nid, $organization_title) {
-  $s = "UPDATE {pmexpense} SET organization_title='%s' WHERE organization_nid=%d AND organization_title <> '%s'";
-  db_query($s, $organization_title, $organization_nid, $organization_title);
+  db_update('pmexpense')
+    ->fields(array('organization_title' => $organization_title))
+    ->condition('organization_nid', $organization_nid)
+    ->execute();
 }
 
 function pmexpense_pmproject_change($project_nid, $project_title) {
-  $s = "UPDATE {pmexpense} SET project_title='%s' WHERE project_nid=%d AND project_title <> '%s'";
-  db_query($s, $project_title, $project_nid, $project_title);
+  db_update('pmexpense')
+    ->fields(array('project_title' => $project_title))
+    ->condition('project_nid', $project_nid)
+    ->execute();
 }
 
 function pmexpense_pmtask_change($task_nid, $task_title, $task_stepno) {
-  $s = "UPDATE {pmexpense} SET task_title='%s', task_stepno='%s' WHERE task_nid=%d AND
-      (task_title<>'%s' OR task_stepno<>'%s')";
-  db_query($s, $task_title, $task_stepno, $task_nid, $task_title, $task_stepno);
+  db_update('pmexpense')
+    ->fields(array('task_title' => $task_title, 'task_stepno' => $task_stepno))
+    ->condition('task_nid', $task_nid)
+    ->execute();
 }
 
 function pmexpense_pmticket_change($ticket_nid, $ticket_title) {
-  $s = "UPDATE {pmexpense} SET ticket_title='%s' WHERE ticket_nid=%d AND ticket_title <> '%s'";
-  db_query($s, $ticket_title, $ticket_nid, $ticket_title);
+  db_update('pmexpense')
+    ->fields(array('ticket_title' => $ticket_title))
+    ->condition('ticket_nid', $ticket_nid)
+    ->execute();
 }
 
 function pmexpense_pmproject_change_hierarchy($project_nid, $organization_nid, $organization_title) {
@@ -296,9 +303,6 @@ function pmexpense_pmproject_change_hierarchy($project_nid, $organization_nid, $
     ))
     ->condition('project_nid', $project_nid)
     ->execute();
-
-  $s = "UPDATE {pmexpense} SET organization_nid=%d, organization_title='%s' WHERE project_nid=%d";
-  db_query($s, $organization_nid, $organization_title, $project_nid);
 }
 
 function pmexpense_pmtask_change_hierarchy($task_nid, $organization_nid, $organization_title, $project_nid, $project_title) {
@@ -334,6 +338,8 @@ function pmexpense_form($node, $form_state) {
   drupal_set_breadcrumb($breadcrumb);
 
   if (arg(1)=='add') {
+    $node->expensedate = time();
+
     if (array_key_exists('organization_nid', $_GET) && !$node->organization_nid) {
       $node->organization_nid = $_GET['organization_nid'];
     }
@@ -442,51 +448,92 @@ function pmexpense_form($node, $form_state) {
     '#default_value' => $node->organization_nid,
     '#options' => $organizations,
     '#required' => TRUE,
+    '#ajax' => array(
+      'callback' => 'pmexpense_ajax_organization_nid',
+      'wrapper' => 'pmexpense-project-nid',
+    ),
   );
 
-  $s = "SELECT n.nid, n.title FROM {node} AS n INNER JOIN {pmproject} AS spr ON spr.vid=n.vid
-  WHERE spr.organization_nid=%d AND n.status=1 AND n.type='pmproject' ORDER BY n.title";
-//  $s = pmproject_access_sql($s);
-//  $s = db_rewrite_sql($s);
-//  $r = db_query($s, $node->organization_nid);
-//  $projects = array();
-//  while ($project = db_fetch_object($r)) {
-//    $projects[$project->nid] = $project->title;
-//  }
-  $projects = array(0 => '-');// + $projects;
+
+  if (isset($node->organization_nid)) {
+    $organization_nid = isset($form_state['values']['organization_nid']) ? $form_state['values']['organization_nid'] : $node->organization_nid;
+  }
+  else {
+    drupal_set_message(t('Please add an organization to the system before trying to add an expense.'), 'error');
+  }
+
+  $pro_query = db_select('node', 'n');
+  $pro_query->join('pmproject', 'spr', 'n.vid = spr.vid');
+  $pro_result = $pro_query
+    ->fields('n', array('nid', 'title'))
+    ->condition('spr.organization_nid', $organization_nid)
+    ->condition('n.status', 1)
+    ->condition('n.type', 'pmproject')
+    ->orderBy('n.title', 'ASC')
+    ->addTag('node_access')
+    ->execute();
+
+  $projects = array();
+  foreach ($pro_result as $project) {
+    $projects[$project->nid] = $project->title;
+  }
+
   $form['group1']['project_nid'] = array(
     '#type' => 'select',
     '#title' => t('Project'),
-    '#default_value' => (isset($node->project_nid)) ? $node->project_nid : NULL,
-    '#options' => $projects,
+    '#default_value' => isset($node->project_nid) ? $node->project_nid : 0,
+    '#options' => array(0 => '-') + $projects,
+    '#prefix' => '<div id="pmexpense-project-nid">',
+    '#suffix' => '</div>',
+    '#ajax' => array(
+      'callback' => 'pmexpense_ajax_project_nid',
+      'wrapper' => 'pmexpense-task-nid',
+    ),
   );
 
-  $tree = _pmtask_get_tree((isset($node->project_nid)) ? $node->project_nid : NULL);
+  $project_nid = isset($form_state['values']['project_nid']) ? $form_state['values']['project_nid'] : (isset($node->project_nid) ? $node->project_nid : 0);
+
+  $tree = isset($project_nid) ? _pmtask_get_tree($project_nid) : array();
   $tasks = _pmtask_plain_tree($tree);
-  $tasks = array(0 => '-') + $tasks;
   $form['group1']['task_nid'] = array(
     '#type' => 'select',
     '#title' => t('Task'),
-    '#default_value' => (isset($node->task_nid)) ? $node->task_nid : NULL,
-    '#options' => (isset($tasks)) ? $tasks : NULL,
+    '#default_value' => isset($node->task_nid) ? $node->task_nid : 0,
+    '#options' => array(0 => '-') + $tasks,
+    '#prefix' => '<div id="pmexpense-task-nid">',
+    '#suffix' => '</div>',
+    '#ajax' => array(
+      'callback' => 'pmexpense_ajax_task_nid',
+      'wrapper' => 'pmexpense-ticket-nid',
+    ),
   );
 
+  $task_nid = isset($form_state['values']['task_nid']) ? $form_state['values']['task_nid'] : (isset($node->task_nid) ? $node->task_nid : 0);
+
+  $pro_query = db_select('node', 'n');
+  $pro_query->join('pmticket', 'pmti', 'n.vid = pmti.vid');
+  $pro_result = $pro_query
+    ->fields('n', array('nid', 'title'))
+    ->condition('pmti.task_nid', $task_nid)
+    ->condition('n.status', 1)
+    ->condition('n.type', 'pmticket')
+    ->orderBy('n.title', 'ASC')
+    ->addTag('node_access')
+    ->execute();
+
   $tickets = array();
-  $s = "SELECT n.nid, n.title FROM {node} AS n INNER JOIN {pmticket} AS sti ON sti.vid=n.vid WHERE n.status=1 AND n.type='pmticket'
-  AND sti.organization_nid=%d AND sti.project_nid=%d AND sti.task_nid=%d ORDER BY n.title";
-//  $s = pmticket_access_sql($s);
-//  $s = db_rewrite_sql($s);
-//  if (isset($node->organization_nid) && (isset($node->project_nid))) {
-//    $r = db_query($s, $node->organization_nid, $node->project_nid, $node->task_nid);
-//  }
-//  while ($ticket = db_fetch_object($r)) {
-//    $tickets[$ticket->nid] = $ticket->title;
-//  }
+  foreach ($pro_result as $ticket) {
+    $tickets[$ticket->nid] = $ticket->title;
+  }
+
+  $ticket_nid = (isset($node->ticket_nid)) ? $node->ticket_nid : NULL;
   $form['group1']['ticket_nid'] = array(
     '#type' => 'select',
     '#title' => t('Ticket'),
-    '#default_value' => (isset($node->ticket_nid)) ? $node->ticket_nid : NULL,
-    '#options' => array(0 => '-'),// + $tickets,
+    '#default_value' => $ticket_nid,
+    '#options' => array(0 => '-') + $tickets,
+    '#prefix' => '<div id="pmexpense-ticket-nid">',
+    '#suffix' => '</div>',
   );
 
   $form['group2'] = array(
@@ -573,8 +620,8 @@ function pmexpense_form($node, $form_state) {
 
   $form['taxnotes'] = array(
     '#type' => 'markup',
-    '#value' => t('Totals will be calculated automatically according to your tax selections.'),
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group4') : -17,
+    '#markup' => t('Totals will be calculated automatically according to your tax selections.'),
+    '#weight' => $info['group4']['weight'],
   );
 
   $form['title'] = array(
@@ -594,23 +641,49 @@ function pmexpense_form($node, $form_state) {
   return $form;
 }
 
+function pmexpense_ajax_organization_nid(&$form, &$form_state) {
+  return $form['group1']['project_nid'];
+}
+
+function pmexpense_ajax_project_nid(&$form, &$form_state) {
+  return $form['group1']['task_nid'];
+}
+
+function pmexpense_ajax_task_nid(&$form, &$form_state) {
+  return $form['group1']['ticket_nid'];
+}
+
 // NODE MANIPULATION FUNCTIONS
 function pmexpense_insert($node) {
   _pmexpense_beforesave($node);
 
-  db_query("INSERT INTO {pmexpense}
-    (vid, nid, organization_nid, organization_title, project_nid, project_title,
-    task_nid, task_title, task_stepno, ticket_nid, ticket_title,
-    provider_nid, provider_title, expensedate, amount, tax1app, tax1percent,
-    tax1, subtotal, tax2app, tax2percent, tax2, total) VALUES
-    (%d, %d, %d, '%s', %d, '%s',
-    %d, '%s', '%s', %d, '%s',
-    %d, '%s', %d, %f, %d, %f,
-    %f, %f, %d, %f, %f, %f)",
-    $node->vid, $node->nid, $node->organization_nid, $node->organization_title, $node->project_nid, (isset($node->project_title)) ? $node->project_title : NULL,
-    (isset($node->task_nid)) ? $node->task_nid : NULL, (isset($node->task_title)) ? $node->task_title : NULL, (isset($node->task_stepno)) ? $node->task_stepno : NULL, $node->ticket_nid, (isset($node->ticket_title)) ? $node->ticket_title : NULL,
-    (isset($node->provider_nid)) ? $node->provider_nid : NULL, $node->provider_title, $node->expensedate, $node->amount, $node->tax1app, $node->tax1percent,
-    $node->tax1, $node->subtotal, $node->tax2app, $node->tax2percent, $node->tax2, $node->total);
+  db_insert('pmexpense')
+    ->fields(array(
+      'vid' => $node->vid,
+      'nid' => $node->nid,
+      'organization_nid' => $node->organization_nid,
+      'organization_title' => $node->organization_title,
+      'project_nid' => $node->project_nid,
+      'project_title' => (isset($node->project_title)) ? $node->project_title : NULL,
+      'task_nid' => $node->task_nid,
+      'task_title' => (isset($node->task_title)) ? $node->task_title : NULL,
+      'task_stepno' => (isset($node->task_stepno)) ? $node->task_stepno : NULL,
+      'ticket_nid' => $node->ticket_nid,
+      'ticket_title' => (isset($node->ticket_title)) ? $node->ticket_title : NULL,
+      'provider_nid' => (isset($node->provider_nid)) ? $node->provider_nid : NULL,
+      'provider_title' => $node->provider_title,
+      'expensedate' => $node->expensedate,
+      'amount' => $node->amount,
+      'tax1app' => $node->tax1app,
+      'tax1percent' => $node->tax1percent,
+      'tax1' => $node->tax1,
+      'subtotal' => $node->subtotal,
+      'tax2app' => $node->tax2app,
+      'tax2percent' => $node->tax2percent,
+      'tax2' => $node->tax2,
+      'total' => $node->total,
+    ))
+    ->execute();
 }
 
 function pmexpense_update($node) {
@@ -620,75 +693,148 @@ function pmexpense_update($node) {
     pmexpense_insert($node);
   }
   else {
-    db_query("UPDATE {pmexpense} SET
-      organization_nid=%d, organization_title='%s', project_nid=%d, project_title='%s',
-      task_nid=%d, task_title='%s', task_stepno='%s', ticket_nid=%d, ticket_title='%s',
-      provider_nid=%d, provider_title='%s', expensedate=%d, amount=%f, tax1app=%d, tax1percent=%f,
-      tax1=%f, subtotal=%f, tax2app=%d, tax2percent=%f, tax2=%f, total=%f WHERE vid = %d",
-      $node->organization_nid, $node->organization_title, $node->project_nid, $node->project_title,
-      $node->task_nid, $node->task_title, $node->task_stepno, $node->ticket_nid, $node->ticket_title,
-      $node->provider_nid, $node->provider_title, $node->expensedate, $node->amount, $node->tax1app, $node->tax1percent,
-      $node->tax1, $node->subtotal, $node->tax2app, $node->tax2percent, $node->tax2, $node->total, $node->vid);
+    db_update('pmexpense')
+      ->fields(array(
+        'vid' => $node->vid,
+        'nid' => $node->nid,
+        'organization_nid' => $node->organization_nid,
+        'organization_title' => $node->organization_title,
+        'project_nid' => $node->project_nid,
+        'project_title' => (isset($node->project_title)) ? $node->project_title : NULL,
+        'task_nid' => $node->task_nid,
+        'task_title' => (isset($node->task_title)) ? $node->task_title : NULL,
+        'task_stepno' => (isset($node->task_stepno)) ? $node->task_stepno : NULL,
+        'ticket_nid' => $node->ticket_nid,
+        'ticket_title' => (isset($node->ticket_title)) ? $node->ticket_title : NULL,
+        'provider_nid' => (isset($node->provider_nid)) ? $node->provider_nid : NULL,
+        'provider_title' => $node->provider_title,
+        'expensedate' => $node->expensedate,
+        'amount' => $node->amount,
+        'tax1app' => $node->tax1app,
+        'tax1percent' => $node->tax1percent,
+        'tax1' => $node->tax1,
+        'subtotal' => $node->subtotal,
+        'tax2app' => $node->tax2app,
+        'tax2percent' => $node->tax2percent,
+        'tax2' => $node->tax2,
+        'total' => $node->total,
+      ))
+      ->condition('vid', $node->vid)
+      ->execute();
   }
 }
 
 function _pmexpense_beforesave(&$node) {
   // Allow use of comma when inputting numerical values - str_replace with period decimal
+  $node->amount = !empty($node->amount) ? $node->amount : 0;
   $node->amount = str_replace(',', '.', $node->amount);
   $node->tax1percent = str_replace(',', '.', $node->tax1percent);
   $node->tax2percent = str_replace(',', '.', $node->tax2percent);
 
-  $node->expensedate = _pm_date_to_gmtimestamp($node->expensedate);
+  if (!!is_numeric($node->expensedate) && is_array($node->expensedate)) {
+    $node->expensedate = _pm_date_to_gmtimestamp($node->expensedate);
+  }
+  elseif (!is_numeric($node->expensedate) && is_string($node->expensedate)) {
+    $node->expensedate = strtotime($node->expensedate);
+  }
 
   pm_taxation($node);
 
-  $s = "SELECT n.title FROM {node} AS n
-    INNER JOIN {pmorganization} AS o ON n.nid=o.nid
-    WHERE type='pmorganization' AND n.nid=%d";
-  $r = db_query($s, $node->organization_nid);
-  $o = db_fetch_object($r);
-  $o ? $node->organization_title = $o->title : NULL;
+  $org_query = db_select('node', 'n');
+  $org_query->join('pmorganization', 'pmor', 'n.vid = pmor.vid');
+  $org_result = $org_query
+    ->fields('n', array('title'))
+    ->condition('n.type', 'pmorganization')
+    ->condition('n.nid', $node->organization_nid)
+    ->execute();
+  $o = $org_result->fetchObject();
+  $node->organization_title = $o->title;
 
-  $s = "SELECT n.title, p.organization_title
-    FROM {node} n INNER JOIN {pmproject} p ON n.nid=p.nid
-    WHERE type='pmproject' AND n.nid=%d";
-  $r = db_query($s, $node->project_nid);
-  $p = db_fetch_object($r);
-  $p ? $node->project_title = $p->title : NULL;
+  if (isset($node->project_nid)) {
+    $pro_query = db_select('node', 'n');
+    $pro_query->join('pmproject', 'pmpr', 'n.vid = pmpr.vid');
+    $pro_result = $pro_query
+      ->fields('n', array('title'))
+      ->condition('n.type', 'pmproject')
+      ->condition('n.nid', $node->project_nid)
+      ->execute();
+    $p = $pro_result->fetchObject();
+    $node->project_title = isset($p->title) ? $p->title : '';
+   }
+  else {
+    $node->project_title = '';
+  }
 
-  $s = "SELECT title, stepno FROM {node} AS n INNER JOIN {pmtask} AS t ON n.vid=t.vid WHERE n.type='pmtask' AND n.nid=%d";
-  (isset($node->task_nid)) ? $r = db_query($s, $node->task_nid) : NULL;
-  $ta = db_fetch_object($r);
-  (isset($ta->title)) ? $node->task_title = $ta->title : NULL;
-  (isset($ta->stepno)) ? $node->task_stepno = $ta->stepno : NULL;
+  if (isset($node->task_nid)) {
+    $task_query = db_select('node', 'n');
+    $task_query->join('pmtask', 'pmta', 'n.vid = pmta.vid');
+    $task_result = $task_query
+      ->fields('n', array('title'))
+      ->fields('pmta', array('stepno'))
+      ->condition('n.type', 'pmtask')
+      ->condition('n.nid', $node->task_nid)
+      ->execute();
+    $ta = $task_result->fetchObject();
+    $node->task_title = isset($ta->title) ? $ta->title : '';
+    $node->task_stepno = isset($ta->stepno) ? $ta->stepno : '';
+  }
+  else {
+    $node->task_title = '';
+    $node->task_stepno = '';
+  }
 
-  $s = "SELECT title FROM {node} AS n INNER JOIN {pmticket} AS t ON n.vid=t.vid WHERE n.type='pmticket' AND n.nid=%d";
-  (isset($node->ticket_nid)) ? $r = db_query($s, $node->ticket_nid) : NULL;
-
-  $ti = db_fetch_object($r);
-  (isset($ti->title)) ? $node->ticket_title = $ti->title : NULL;
-}
-
-function pmexpense_nodeapi(&$node, $op, $teaser, $page) {
-  switch ($op) {
-    case 'delete revision':
-      // Notice that we're matching a single revision based on the node's vid.
-      db_query('DELETE FROM {pmexpense} WHERE vid = %d', $node->vid);
-      break;
+  if (isset($node->ticket_nid)) {
+    $ticket_query = db_select('node', 'n');
+    $ticket_query->join('pmticket', 'pmti', 'n.vid = pmti.vid');
+    $ticket_result = $ticket_query
+      ->fields('n', array('title'))
+      ->condition('n.type', 'pmticket')
+      ->condition('n.nid', $node->ticket_nid)
+      ->execute();
+    $ti = $ticket_result->fetchObject();
+    $node->ticket_title = isset($ti->title) ? $ti->title : '';
+  }
+  else {
+    $node->ticket_title = '';
   }
 }
 
+function pmexpense_node_revision_delete($node) {
+  // Notice that we're matching a single revision based on the node's vid.
+  db_delete('pmexpense')
+    ->condition('vid', $node->vid)
+    ->execute();
+}
+
 function pmexpense_delete($node) {
-  db_query('DELETE FROM {pmexpense} WHERE nid = %d', $node->nid);
+  db_delete('pmexpense')
+    ->condition('nid', $node->nid)
+    ->execute();
 }
 
-function pmexpense_load($node) {
-  $additions = db_fetch_object(db_query('SELECT * FROM {pmexpense} WHERE vid = %d', $node->vid));
-  return $additions;
+function pmexpense_load($nodes) {
+  foreach ($nodes as $nid => &$node) {
+    $result = db_select('pmexpense', 'pmex')
+      ->fields('pmex')
+      ->condition('vid', $node->vid)
+      ->execute();
+    $record = $result->fetchAssoc();
+
+    foreach ($record as $key => $value) {
+      $node->$key = $value;
+    }
+
+    $node->title_old = $node->title;
+  }
 }
 
-function pmexpense_view($node, $teaser = FALSE, $page = FALSE) {
-  return theme('pmexpense_view', $node, $teaser, $page);
+function pmexpense_view($node, $view_mode) {
+  $breadcrumb = array();
+  $breadcrumb[] = l(t('Project Management'), 'pm');
+  $breadcrumb[] = l(t('Expenses'), 'pm/expenses');
+  drupal_set_breadcrumb($breadcrumb);
+
+  return theme('pmexpense_view', array('node' => $node, 'view_mode' => $view_mode));
 }
 
 // INVOICE AUTO ADD HANDLER

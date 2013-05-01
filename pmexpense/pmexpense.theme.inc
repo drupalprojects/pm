@@ -73,11 +73,11 @@ function theme_pmexpense_list($header, $expenses, $totals) {
   return $o;
 }
 
-function theme_pmexpense_view($node, $teaser = FALSE, $page = FALSE) {
-  drupal_add_css(drupal_get_path('module', 'pm') . '/pm-node.css', 'module');
+function theme_pmexpense_view($variables) {
+  $node = $variables['node'];
 
-  $node = node_prepare($node, $teaser);
   $l_pos = 1; // Used to increase the link position number (see issue 814820)
+  drupal_add_css(drupal_get_path('module', 'pm') . '/pm-node.css');
 
   $node->content['links'] = array(
     '#prefix' => '<div class="pmlinks"><dl>',
@@ -110,28 +110,28 @@ function theme_pmexpense_view($node, $teaser = FALSE, $page = FALSE) {
   $node->content['group1']['organization'] = array(
     '#prefix' => '<div class="organization">',
     '#suffix' => '</div>',
-    '#value' => theme('pm_view_item', t('Organization'), l($node->organization_title, 'node/'. $node->organization_nid)),
+    '#markup' => theme('pm_view_item', array('label' => t('Organization'), 'value' => l($node->organization_title, 'node/'. $node->organization_nid))),
     '#weight' => 1,
   );
 
   $node->content['group1']['project'] = array(
     '#prefix' => '<div class="project">',
     '#suffix' => '</div>',
-    '#value' => theme('pm_view_item', t('Project'), l($node->project_title, 'node/'. $node->project_nid)),
+    '#markup' => theme('pm_view_item', array('label' => t('Project'), 'value' => l($node->project_title, 'node/'. $node->project_nid))),
     '#weight' => 2,
   );
 
   $node->content['group1']['task'] = array(
     '#prefix' => '<div class="task">',
     '#suffix' => '</div>',
-    '#value' => theme('pm_view_item', t('Task'), l($node->task_title, 'node/'. $node->task_nid)),
+    '#markup' => theme('pm_view_item', array('label' => t('Task'), 'value' => l($node->task_title, 'node/'. $node->task_nid))),
     '#weight' => 3,
   );
 
   $node->content['group1']['ticket'] = array(
     '#prefix' => '<div class="ticket">',
     '#suffix' => '</div>',
-    '#value' => theme('pm_view_item', t('Ticket'), l($node->ticket_title, 'node/'. $node->ticket_nid)),
+    '#markup' => theme('pm_view_item', array('label' => t('Ticket'), 'value' => l($node->ticket_title, 'node/'. $node->ticket_nid))),
     '#weight' => 4,
   );
 
@@ -144,14 +144,14 @@ function theme_pmexpense_view($node, $teaser = FALSE, $page = FALSE) {
   $node->content['group2']['expensedate'] = array(
     '#prefix' => '<div class="expensedate">',
     '#suffix' => '</div>',
-    '#value' => theme('pm_view_item', t('Date'), format_date($node->expensedate, 'custom', 'Y-m-d')),
+    '#markup' => theme('pm_view_item', array('label' => t('Date'), 'value' => format_date($node->expensedate, 'custom', 'Y-m-d'))),
     '#weight' => 1,
   );
 
   $node->content['group2']['provider'] = array(
     '#prefix' => '<div class="provider">',
     '#suffix' => '</div>',
-    '#value' => theme('pm_view_item', t('Provider'), $node->provider_title),
+    '#markup' => theme('pm_view_item', array('label' => t('Provider'), 'value' => $node->provider_title)),
     '#weight' => 2,
   );
 
@@ -164,7 +164,7 @@ function theme_pmexpense_view($node, $teaser = FALSE, $page = FALSE) {
   $node->content['group3']['amount'] = array(
     '#prefix' => '<div class="amount">',
     '#suffix' => '</div>',
-    '#value' => theme('pm_view_item', t('Amount'), sprintf('%.2f', $node->amount)),
+    '#markup' => theme('pm_view_item', array('label' => t('Amount'), 'value' => sprintf('%.2f', $node->amount))),
     '#weight' => 1,
   );
 
@@ -178,7 +178,7 @@ function theme_pmexpense_view($node, $teaser = FALSE, $page = FALSE) {
     $node->content['group4']['tax1'] = array(
       '#prefix' => '<div class="tax">',
       '#suffix' => '</div>',
-      '#value' => theme('pm_view_item', variable_get('pm_tax1_name', 'VAT'), sprintf('%.2f', $node->tax1)),
+      '#markup' => theme('pm_view_item', array('label' => variable_get('pm_tax1_name', 'VAT'), 'value' => sprintf('%.2f', $node->tax1))),
       '#weight' => 1,
     );
   }
@@ -187,7 +187,7 @@ function theme_pmexpense_view($node, $teaser = FALSE, $page = FALSE) {
     $node->content['group4']['tax2'] = array(
       '#prefix' => '<div class="tax">',
       '#suffix' => '</div>',
-      '#value' => theme('pm_view_item', variable_get('pm_tax2_name', 'Tax 2'), sprintf('%.2f', $node->tax2)),
+      '#markup' => theme('pm_view_item', array('label' => variable_get('pm_tax2_name', 'Tax 2'), 'value' => sprintf('%.2f', $node->tax2))),
       '#weight' => 2,
     );
   }
@@ -196,18 +196,20 @@ function theme_pmexpense_view($node, $teaser = FALSE, $page = FALSE) {
     $node->content['group4']['total'] = array(
       '#prefix' => '<div class="total">',
       '#suffix' => '</div>',
-      '#value' => theme('pm_view_item', t('Total'), sprintf('%.2f', $node->total)),
+      '#markup' => theme('pm_view_item', array('label' => t('Total'), 'value' => sprintf('%.2f', $node->total))),
       '#weight' => 3,
     );
   }
 
-  $node->content['body_field'] = array(
-    '#prefix' => '<div class="pmbody">',
-    '#suffix' => '</div>',
-    '#value' => theme('pm_view_item', t('Description'), $node->content['body']['#value']),
-    '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'body_field') : -16,
-  );
-  unset($node->content['body']);
+  $body = field_get_items('node', $node, 'body');
+  if($body) {
+    $node->content['body'] = array (
+      '#prefix' => '<div class="pmbody">',
+      '#suffix' => '</div>',
+      '#markup' => theme('pm_view_item', array('label' => t('Description'), 'value' => check_plain($node->body['und'][0]['value']))),
+      '#weight' => -15,
+    );
+  }
 
   return $node;
 }
