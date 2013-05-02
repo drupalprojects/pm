@@ -173,28 +173,11 @@ function pmexpense_pm_rewrite_where_sql($query, $primary_table, $account) {
   return $cond;
 }
 
+/**
+ * Implements hook_menu().
+ */
 function pmexpense_menu() {
   $items = array();
-
-  $items['pm/expenses'] = array(
-    'title' => 'Expenses',
-    'description' => 'Project Management expenses',
-    'page callback' => 'pmexpense_list',
-    'access arguments' => array('Project Management expense: access'),
-    'type' => MENU_NORMAL_ITEM,
-    'file' => 'pmexpense.admin.inc',
-    'weight' => 9,
-  );
-
-  $items['pm/expenses/report/%/%'] = array(
-    'title' => 'Expenses',
-    'description' => 'Project Management expenses',
-    'page arguments' => array(3, 4),
-    'page callback' => 'pmexpense_list_report',
-    'access arguments' => array('Project Management expense: access'),
-    'type' => MENU_CALLBACK,
-    'file' => 'pmexpense.admin.inc',
-  );
 
   $items['pm/expenses/provider_autocomplete'] = array(
     'title' => 'Provider autocomplete',
@@ -216,22 +199,14 @@ function pmexpense_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_theme().
+ */
 function pmexpense_theme() {
   return array(
-    'pmexpense_list' => array(
-      'file'      => 'pmexpense.theme.inc',
-      'variables' => array('header', 'tasks', 'duration'),
-    ),
     'pmexpense_view' => array(
       'file'      => 'pmexpense.theme.inc',
       'variables' => array('node', 'view_mode'),
-    ),
-    'pmexpense_list_form_report_reports' => array(
-      'file'      => 'pmexpense.theme.inc',
-    ),
-    'pmexpense_list_report' => array(
-      'file'      => 'pmexpense.theme.inc',
-      'variables' => array('report', 'language', 'timetrackings'),
     ),
   );
 }
