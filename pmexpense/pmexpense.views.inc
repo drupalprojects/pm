@@ -235,6 +235,42 @@ function pmexpense_views_data() {
     ),
   );
 
+  $data['pmexpense']['billable'] = array(
+    'title' => t('Expense billable'),
+    'help' => 'Project Management Expense Billable',
+    'field' => array(
+      'handler' => 'views_handler_field_boolean',
+      'click sortable' => TRUE,
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+    'filter' => array(
+      'label' => t('Expense billable'),
+      'type' => 'yes-no',
+      'handler' => 'views_handler_filter_boolean_operator',
+      'use equal' => TRUE,
+    ),
+  );
+
+  $data['pmexpense']['billed'] = array(
+    'title' => t('Expense billed'),
+    'help' => 'Project Management Expense Billed',
+    'field' => array(
+      'handler' => 'views_handler_field_boolean',
+      'click sortable' => TRUE,
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+    'filter' => array(
+      'label' => t('Expense billed'),
+      'type' => 'yes-no',
+      'handler' => 'views_handler_filter_boolean_operator',
+      'use equal' => TRUE,
+    ),
+  );
+
   $data['pmexpense']['operation'] = array(
     'field' => array(
       'title' => t('Edit/Delete link'),

@@ -1,8 +1,12 @@
 <?php
 /**
  * @file
+ * Installation file for pmexpense module.
  */
 
+/**
+ * Implements hook_install().
+ */
 function pmexpense_install() {
   variable_set('node_options_pmexpense', array('status'));
   variable_set('node_permissions_pmexpense', 0);
@@ -22,7 +26,9 @@ function pmexpense_install() {
   $prevdomain = '';
   $weight = 0;
   foreach ($attributes as $domain => $attribute) {
-    if ($domain != $prevdomain) $weight=0;
+    if ($domain != $prevdomain) {
+      $weight = 0;
+    }
     foreach ($attribute as $key => $value) {
       db_insert('pmattribute')
         ->fields(array(
@@ -78,6 +84,8 @@ function pmexpense_schema() {
       'tax2percent'         => array('type' => 'float'),
       'tax2'                => array('type' => 'float'),
       'total'               => array('type' => 'float'),
+      'billable'            => array('type' => 'int', 'default' => 0),
+      'billed'              => array('type' => 'int', 'default' => 0),
     ),
     'primary key' => array('vid'),
     'indexes'     => array(
@@ -98,9 +106,23 @@ function pmexpense_update_last_removed() {
 }
 
 /**
- * Allow Project Management to override the default Expense content type CRUD permissions
+ * Allow Project Management to override the default Expense content type CRUD
+ * permissions.
  */
 function pmexpense_update_7100() {
   variable_set('node_permissions_pmexpense', 0);
   return 'PM Expense permissions overridden';
+}
+
+/**
+ * Add billable and billed fields to the {pmexpense} table.
+ */
+function pmexpense_update_7101() {
+  $spec = array(
+    'type' => 'int',
+    'default' => 0,
+    'initial' => 0,
+  );
+  db_add_field('pmexpense', 'billable', $spec);
+  db_add_field('pmexpense', 'billed', $spec);
 }
