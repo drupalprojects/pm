@@ -3,7 +3,11 @@
  * @file
  * Test definitions for the Project Management expense module
  */
-class pmexpenseTestCase extends DrupalWebTestCase {
+
+/**
+ * Defines tests for the Project Management Expense module.
+ */
+class PMExpenseTestCase extends DrupalWebTestCase {
 
   public static function getInfo() {
     return array(
@@ -54,13 +58,5 @@ class pmexpenseTestCase extends DrupalWebTestCase {
     $this->assertText(t('Expense @title has been created.', array('@title' => $expense['title'])));
   }
 
-  public function testpmexpenseReports() {
-    // Create and login user
-    $user = $this->drupalCreateUser(array('Project Management expense: access'));
-    $this->drupalLogin($user);
-
-    // Create a team
-    $this->drupalGet('pm/expenses/report/std/en');
-  }
 }
 

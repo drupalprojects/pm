@@ -157,6 +157,9 @@ function pm_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_theme().
+ */
 function pm_theme() {
   return array(
     'pm_form_group' => array(
@@ -174,14 +177,6 @@ function pm_theme() {
     'pm_link' => array(
       'file'      => 'pm.theme.inc',
       'arguments' => array('source_module', 'destination_module', 'node_nid', 'weight'),
-    ),
-    'pm_list_report' => array(
-      'file'      => 'pm.theme.inc',
-      'arguments' => array('header', 'rows', 'title', 'footer', 'headtitle'),
-    ),
-    'pm_report' => array(
-      'file'      => 'pm.theme.inc',
-      'arguments' => array('header', 'content', 'title', 'footer'),
     ),
     'pm_view_item' => array(
       'file'      => 'pm.theme.inc',
@@ -468,22 +463,6 @@ function pm_admin_settings() {
     '#description' => t('Default items per page when viewing lists'),
     '#size' => 5,
     '#weight' => $w++
-  );
-
-  $form['reports'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Reports'),
-    '#collapsed' => TRUE,
-    '#collapsible' => TRUE,
-    '#weight' => $w++,
-  );
-
-  $form['reports']['pm_report_header'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Report header'),
-    '#default_value' => variable_get('pm_report_header', ''),
-    '#description' => t('The header that will appear on Project Management reports'),
-    '#weight' => $w++,
   );
 
   $form['yearsrange'] = array(

@@ -62,12 +62,6 @@ div.pm_popup_inner {
 clear: both;
 }
 
-div.pm_list_form_report {
-display:none;
-width: 0px;
-height: 0px;
-}
-
 div.pm_quick_shortcuts {
 clear: both;
 }
