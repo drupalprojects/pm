@@ -119,12 +119,12 @@ function theme_pmproject_view($variables) {
     '#weight' => 2,
   );
 
-  $body = field_get_items('node',$node,'body');
-  if($body){
-    $node->content['body'] = array (
+  $body = field_get_items('node', $node, 'body');
+  if ($body) {
+    $node->content['body'] = array(
       '#prefix' => '<div class="pmbody">',
       '#suffix' => '</div>',
-      '#markup' => theme('pm_view_item', array('label' => t('Description'), 'value' => check_plain($node->body['und'][0]['value']))),
+      '#markup' => theme('pm_view_item', array('label' => t('Description'), 'value' => $body[0]['safe_value'])),
       '#weight' => 4,
     );
   }

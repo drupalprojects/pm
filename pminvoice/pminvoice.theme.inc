@@ -245,7 +245,7 @@ function theme_pminvoice_view($variables) {
     $node->content['body'] = array(
       '#prefix' => '<div class="pmbody">',
       '#suffix' => '</div>',
-      '#markup' => theme('pm_view_item', array('label' => t('Description'), 'value' => check_plain($node->body['und'][0]['value']))),
+      '#markup' => theme('pm_view_item', array('label' => t('Description'), 'value' => $body[0]['safe_value'])),
       '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'body_field') : -18,
     );
   }

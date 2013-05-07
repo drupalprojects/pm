@@ -46,10 +46,10 @@ function theme_pmnote_view($variables) {
 
   $body = field_get_items('node', $node, 'body');
   if ($body) {
-    $node->content['body'] = array (
+    $node->content['body'] = array(
       '#prefix' => '<div class="pmbody">',
       '#suffix' => '</div>',
-      '#markup' => theme('pm_view_item', array('label' => t('Description'), 'value' => check_plain($node->body['und'][0]['value']))),
+      '#markup' => theme('pm_view_item', array('label' => t('Description'), 'value' => $body[0]['safe_value'])),
       '#weight' => 4,
     );
   }
