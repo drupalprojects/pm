@@ -622,6 +622,7 @@ function pm_admin_settings() {
     foreach ($all_links_options as $path => $title) {
       $form['pm_dashboard_settings'][$type]['dashboard_links'][$path][$type .'_pm_dashboard_link_active_'. $path] = array(
         '#type' => 'checkbox',
+        '#title' => $title,
         '#default_value' => isset($default_dashboard_settings[$path]['active']) ? $default_dashboard_settings[$path]['active'] : TRUE,
       );
       $form['pm_dashboard_settings'][$type]['dashboard_links'][$path][$type .'_pm_dashboard_link_weight_'. $path] = array(
