@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Functions to expose Project Management Timetracking Module data to the Views module.
+ * Functions to expose Project Management Timetracking data to Views.
  */
 function pmtimetracking_views_data() {
   $data['pmtimetracking']['table']['group']  = 'Project Management Timetracking';
@@ -240,6 +240,9 @@ function pmtimetracking_views_data() {
   return $data;
 }
 
+/**
+ * Implements hook_views_handlers().
+ */
 function pmtimetracking_views_handlers() {
   return array(
     'info' => array(
@@ -257,6 +260,9 @@ function pmtimetracking_views_handlers() {
   );
 }
 
+/**
+ * Implements hook_date_api_fields().
+ */
 function pmtimetracking_date_api_fields($field) {
   $values = array(
     'sql_type' => DATE_UNIX,
@@ -274,6 +280,9 @@ function pmtimetracking_date_api_fields($field) {
 
 }
 
+/**
+ * Implements hook_date_api_tables().
+ */
 function pmtimetracking_date_api_tables() {
   return array('pmtimetracking');
 }

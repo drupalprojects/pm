@@ -3,19 +3,31 @@
  * @file
  */
 
+/**
+ * Implements hook_install().
+ */
 function pmtimetracking_install() {
   variable_set('node_options_pmtimetracking', array('status'));
   variable_set('node_permissions_pmtimetracking', 0);
 }
 
+/**
+ * Implements hook_disable().
+ */
 function pmtimetracking_disable() {
   drupal_set_message(t('Nodes of type "Timetracking" have not been deleted on disabling Project Management Timetracking. Please note that they will now have reduced functionality, and will not be protected by Project Management Timetracking access controls.'), 'warning');
 }
 
+/**
+ * Implements hook_uninstall().
+ */
 function pmtimetracking_uninstall() {
   drupal_uninstall_schema('pmtimetracking');
 }
 
+/**
+ * Implements hook_schema().
+ */
 function pmtimetracking_schema() {
   $schema['pmtimetracking'] = array(
     'fields'                => array(
@@ -52,6 +64,9 @@ function pmtimetracking_schema() {
   return $schema;
 }
 
+/**
+ * Implements hook_update_last_removed().
+ */
 function pmtimetracking_update_last_removed() {
   return 6201;
 }
@@ -64,14 +79,14 @@ function pmtimetracking_update_7100() {
   node_types_rebuild();
   // Fetch list of current node types and add body field to pm timetracking
   $types = node_type_get_types();
-  node_add_body_field($types['pmtimetracking'],'Description');
+  node_add_body_field($types['pmtimetracking'], 'Description');
 
   return 'Added D7 style body field to pm timetracking nodes';
 }
 
 
 /**
- * Allow Project Management to override the default Timetracking content type CRUD permissions
+ * Allow Project Management to override the default content type permissions.
  */
 function pmtimetracking_update_7101() {
   variable_set('node_permissions_pmtimetracking', 0);

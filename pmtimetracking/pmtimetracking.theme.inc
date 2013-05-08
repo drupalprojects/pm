@@ -4,6 +4,9 @@
  * @file
  */
 
+/**
+ * Provides HTML markup for a pmtimetracking node view.
+ */
 function theme_pmtimetracking_view($variables) {
   $node = $variables['node'];
   drupal_add_css(drupal_get_path('module', 'pm') . '/pm-node.css', 'module');
