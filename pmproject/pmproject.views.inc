@@ -4,6 +4,9 @@
  * Functions to expose Project Management Project data to the views module
  */
 
+/**
+ * Implements hook_views_data().
+ */
 function pmproject_views_data() {
   $data['pmproject']['table']['group']  = 'Project Management Project';
   $data['pmproject']['table']['join'] = array(
@@ -306,6 +309,9 @@ function pmproject_views_data() {
   return $data;
 }
 
+/**
+ * Implements hook_views_handlers().
+ */
 function pmproject_views_handlers() {
   return array(
     'info' => array(
@@ -328,8 +334,7 @@ function pmproject_views_handlers() {
 
 
 /**
- * Implementation of hook_date_api_fields().
- * on behalf of core fields.
+ * Implements hook_date_api_fields().
  *
  * All modules that create custom fields that use the
  * 'views_handler_field_date' handler can provide
@@ -337,7 +342,6 @@ function pmproject_views_handlers() {
  * date they create so the date can be used by
  * the Date API views date argument and date filter.
  */
-
 function pmproject_date_api_fields($field) {
   $values = array(
     'sql_type' => DATE_UNIX,

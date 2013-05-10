@@ -3,6 +3,10 @@
  * @file
  * Installation functions for the Project Management project module
  */
+
+/**
+ * Implements hook_install().
+ */
 function pmproject_install() {
   variable_set('node_options_pmproject', array('status'));
   variable_set('node_permissions_pmproject', 0);
@@ -12,7 +16,7 @@ function pmproject_install() {
 
   // Fetch list of current node types and add body field to pmproject
   $types = node_type_get_types();
-  node_add_body_field($types['pmproject'],'Description');
+  node_add_body_field($types['pmproject'], 'Description');
 
   $attributes = array();
 
@@ -82,10 +86,16 @@ function pmproject_install() {
   }
 }
 
+/**
+ * Implements hook_disable().
+ */
 function pmproject_disable() {
   drupal_set_message(t('Nodes of type "Project" have not been deleted on disabling Project Management Project. Please note that they will now have reduced functionality, and will not be protected by Project Management Project access controls.'), 'warning');
 }
 
+/**
+ * Implements hook_uninstall().
+ */
 function pmproject_uninstall() {
   drupal_uninstall_schema('pmproject');
 
@@ -94,6 +104,9 @@ function pmproject_uninstall() {
     ->execute();
 }
 
+/**
+ * Implements hook_schema().
+ */
 function pmproject_schema() {
   $schema['pmproject'] = array(
     'fields'                => array(
@@ -130,6 +143,9 @@ function pmproject_schema() {
   return $schema;
 }
 
+/**
+ * Implements hook_update_last_removed().
+ */
 function pmproject_update_last_removed() {
   return 6202;
 }
@@ -142,13 +158,13 @@ function pmproject_update_7100() {
   node_types_rebuild();
   // Fetch list of current node types and add body field to pm project
   $types = node_type_get_types();
-  node_add_body_field($types['pmproject'],'Description');
+  node_add_body_field($types['pmproject'], 'Description');
 
   return 'Added D7 style body field to pm project nodes';
 }
 
 /**
- * Allow Project Management to override the default Project content type CRUD permissions
+ * Allow pm to override the default Project content type CRUD permissions
  */
 function pmproject_update_7101() {
   variable_set('node_permissions_pmproject', 0);

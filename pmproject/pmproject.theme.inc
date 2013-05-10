@@ -4,22 +4,25 @@
  * @file
  */
 
+/**
+ * Provides HTML markup for a pmtimetracking list.
+ */
 function theme_pmproject_list($variables) {
   $header = $variables['header'];
   $projects = $variables['projects'];
 
-  drupal_add_css(drupal_get_path('module', 'pm') .'/pm.css', 'module');
+  drupal_add_css(drupal_get_path('module', 'pm') . '/pm.css', 'module');
 
   $rows = array();
   foreach ($projects as $key => $project) {
     $rows[] = array(
-      pm_icon('projectcategory_'. $project->projectcategory, pm_attribute_value('Project category', $project->projectcategory)),
-      l($project->organization_title, 'node/'. $project->organization_nid),
-      l($project->title, 'node/'. $project->nid) . theme('mark', array('type' => node_mark($project->nid, $project->changed))),
-      pm_icon('status_'. $project->projectstatus, pm_attribute_value('Project status', $project->projectstatus)),
-      pm_icon('priority_'. $project->projectpriority, pm_attribute_value('Project priority', $project->projectpriority)),
+      pm_icon('projectcategory_' . $project->projectcategory, pm_attribute_value('Project category', $project->projectcategory)),
+      l($project->organization_title, 'node/' . $project->organization_nid),
+      l($project->title, 'node/' . $project->nid) . theme('mark', array('type' => node_mark($project->nid, $project->changed))),
+      pm_icon('status_' . $project->projectstatus, pm_attribute_value('Project status', $project->projectstatus)),
+      pm_icon('priority_' . $project->projectpriority, pm_attribute_value('Project priority', $project->projectpriority)),
       array(
-        'data' => pm_icon_edit_node($project, $_GET) .'&nbsp;'. pm_icon_delete_node($project, $_GET),
+        'data' => pm_icon_edit_node($project, $_GET) . '&nbsp;' . pm_icon_delete_node($project, $_GET),
         'class' => 'pm_list_operations',
       ),
     );
@@ -27,6 +30,9 @@ function theme_pmproject_list($variables) {
   return theme('table', array('header' => $header, 'rows' => $rows));
 }
 
+/**
+ * Provides HTML markup for a pmproject node view.
+ */
 function theme_pmproject_view($variables) {
   $node = $variables['node'];
 
@@ -68,7 +74,7 @@ function theme_pmproject_view($variables) {
   $node->content['group1']['organization'] = array(
     '#prefix' => '<div class="organization">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Organization'), 'value' => l($node->organization_title, 'node/'. $node->organization_nid))),
+    '#markup' => theme('pm_view_item', array('label' => t('Organization'), 'value' => l($node->organization_title, 'node/' . $node->organization_nid))),
     '#weight' => 1,
   );
 
@@ -108,14 +114,14 @@ function theme_pmproject_view($variables) {
   $node->content['group5']['manager'] = array(
     '#prefix' => '<div class="manager">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Project Manager'), 'value' => l($node->manager_title, 'node/'. $node->manager_nid))),
+    '#markup' => theme('pm_view_item', array('label' => t('Project Manager'), 'value' => l($node->manager_title, 'node/' . $node->manager_nid))),
     '#weight' => 1,
   );
 
   $node->content['group5']['assigned'] = array(
     '#prefix' => '<div class="assigned">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Assigned to'), 'value' => l($node->assigned_title, 'node/'. $node->assigned_nid))),
+    '#markup' => theme('pm_view_item', array('label' => t('Assigned to'), 'value' => l($node->assigned_title, 'node/' . $node->assigned_nid))),
     '#weight' => 2,
   );
 

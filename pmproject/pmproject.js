@@ -1,4 +1,3 @@
-
 function pmproject_organization_projects(_organization_select, _project_select_id, _with_all_option, _all_text) {
   var project_select = $("#" + _project_select_id).get(0);
   pm_empty_select(project_select);

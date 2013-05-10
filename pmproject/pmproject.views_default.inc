@@ -1,5 +1,15 @@
 <?php
+/**
+ * @file
+ * Views integration default settings.
+ *
+ * Stores default values for views. The view provides a list of timtracking
+ * nodes and is available at 'pm/timetrackings'
+ */
 
+/**
+ * Implements hook_views_default_views().
+ */
 function pmproject_views_default_views() {
   $views = array();
 

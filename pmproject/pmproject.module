@@ -5,15 +5,14 @@
  */
 
 /**
- * @function
- * Implementation of hook_help().
+ * Implements hook_help().
  */
 function pmproject_help($path, $arg) {
   $o = '';
 
   switch ($path) {
     case "admin/help#pmproject":
-      $o = '<p>'.  t("Provides project support for Project Management") .'</p>';
+      $o = '<p>' . t("Provides project support for Project Management") . '</p>';
       break;
   }
 
@@ -21,8 +20,7 @@ function pmproject_help($path, $arg) {
 }
 
 /**
- * @function
- * Implementation of hook_permission().
+ * Implements hook_permission().
  */
 function pmproject_permission() {
   return array(
@@ -81,8 +79,7 @@ function pmproject_permission() {
 }
 
 /**
- * @function
- * Implementation of hook_init().
+ * Implements hook_init().
  */
 function pmproject_init() {
   $settings = array(
@@ -92,14 +89,20 @@ function pmproject_init() {
   );
   drupal_add_js($settings, 'setting');
 
-  drupal_add_js(drupal_get_path('module', 'pm') .'/pm.js', 'module', 'header', FALSE);
-  drupal_add_js(drupal_get_path('module', 'pmproject') .'/pmproject.js', 'module', 'header', FALSE);
+  drupal_add_js(drupal_get_path('module', 'pm') . '/pm.js', 'module', 'header', FALSE);
+  drupal_add_js(drupal_get_path('module', 'pmproject') . '/pmproject.js', 'module', 'header', FALSE);
 }
 
+/**
+ * Implements hook_node_access().
+ */
 function pmproject_node_access($node, $op, $account = NULL) {
   return NODE_ACCESS_IGNORE;
 }
 
+/**
+ * Implements hook_access().
+ */
 function pmproject_access($op, $node, $account=NULL) {
   if (empty($account)) {
     global $user;
@@ -192,6 +195,9 @@ function pmproject_access($op, $node, $account=NULL) {
   return FALSE;
 }
 
+/**
+ * Implements hook_menu().
+ */
 function pmproject_menu() {
   $items = array();
 
@@ -216,6 +222,9 @@ function pmproject_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_theme().
+ */
 function pmproject_theme() {
   return array(
     'pmproject_view' => array(
@@ -225,6 +234,9 @@ function pmproject_theme() {
   );
 }
 
+/**
+ * Implements hook_node_info().
+ */
 function pmproject_node_info() {
   return array(
     'pmproject' => array(
@@ -237,6 +249,9 @@ function pmproject_node_info() {
   );
 }
 
+/**
+ * Implements hook_field_extra_fields().
+ */
 function pmproject_field_extra_fields() {
   $extra['node']['pmproject'] = array(
     'form' => array(
@@ -269,10 +284,16 @@ function pmproject_field_extra_fields() {
   return $extra;
 }
 
+/**
+ * Implements hook_field_extra_fields_alter().
+ */
 function pmproject_field_extra_fields_alter(&$info) {
   $info['node']['pmproject']['form']['title']['weight'] = -21;
 }
 
+/**
+ * Implements hook_pmorganization_change().
+ */
 function pmproject_pmorganization_change($organization_nid, $organization_title) {
   db_update('pmproject')
     ->fields(array('organization_title' => $organization_title))
@@ -280,6 +301,9 @@ function pmproject_pmorganization_change($organization_nid, $organization_title)
     ->execute();
 }
 
+/**
+ * Implements hook_pmperson_change().
+ */
 function pmproject_pmperson_change($person_nid, $person_title) {
   // Manager field
   db_update('pmproject')
@@ -294,6 +318,9 @@ function pmproject_pmperson_change($person_nid, $person_title) {
     ->execute();
 }
 
+/**
+ * Implements hook_form().
+ */
 function pmproject_form(&$node) {
   $breadcrumb = array();
   $breadcrumb[] = l(t('Project Management'), 'pm');
@@ -552,9 +579,9 @@ function pmproject_form(&$node) {
     '#weight' => 2,
   );
 
-  //Check to see if the body field is still there, if so, display it.
-  $body = field_get_items('pmproject',$node,'body');
-  if($body) {
+  // Check to see if the body field is still there, if so, display it.
+  $body = field_get_items('pmproject', $node, 'body');
+  if ($body) {
     $form['body_field'] = $body;
   }
 
@@ -566,6 +593,9 @@ function pmproject_form(&$node) {
   return $form;
 }
 
+/**
+ * Implements hook_insert().
+ */
 function pmproject_insert($node) {
   _pmproject_beforesave($node);
 
@@ -619,6 +649,9 @@ function pmproject_insert($node) {
     ->execute();
 }
 
+/**
+ * Implements hook_update().
+ */
 function pmproject_update($node) {
   _pmproject_beforesave($node);
 
@@ -686,6 +719,9 @@ function pmproject_update($node) {
   }
 }
 
+/**
+ * Prepare node data before saving it to the database.
+ */
 function _pmproject_beforesave(&$node) {
   // Allow use of comma when inputting numerical values - str_replace with period decimal
   $node->duration = str_replace(',', '.', $node->duration);
@@ -706,6 +742,9 @@ function _pmproject_beforesave(&$node) {
   }
 }
 
+/**
+ * Implements hook_node_prepare().
+ */
 function pmproject_node_prepare($node) {
   if (!isset($node->nid)) {
     $category_list = pm_attributes_bydomain('Project category');
@@ -728,6 +767,9 @@ function pmproject_node_prepare($node) {
   }
 }
 
+/**
+ * Implements hook_node_revision_delete().
+ */
 function pmproject_node_revision_delete($node) {
   // Notice that we're matching a single revision based on the node's vid.
   db_delete('pmproject')
@@ -735,6 +777,9 @@ function pmproject_node_revision_delete($node) {
     ->execute();
 }
 
+/**
+ * Implements hook_delete().
+ */
 function pmproject_delete($node) {
   // Notice that we're matching all revision, by using the node's nid.
   db_delete('pmproject')
@@ -742,6 +787,9 @@ function pmproject_delete($node) {
     ->execute();
 }
 
+/**
+ * Implements hook_load().
+ */
 function pmproject_load($nodes) {
   foreach ($nodes as $nid => &$node) {
     $result = db_select('pmproject', 'spr')
@@ -758,6 +806,9 @@ function pmproject_load($nodes) {
   }
 }
 
+/**
+ * Implements hook_view().
+ */
 function pmproject_view($node, $view_mode) {
   $breadcrumb = array();
   $breadcrumb[] = l(t('Project Management'), 'pm');
@@ -767,6 +818,9 @@ function pmproject_view($node, $view_mode) {
   return theme('pmproject_view', array('node' => $node, 'view_mode' => $view_mode));
 }
 
+/**
+ * Implements hook_views_api().
+ */
 function pmproject_views_api() {
   return array(
     'api' => 2,
@@ -774,7 +828,9 @@ function pmproject_views_api() {
   );
 }
 
-// ADMIN SETTINGS
+/**
+ * Admin settings form for pmproject module
+ */
 function pmproject_admin_settings() {
   $form = array();
 
@@ -789,7 +845,9 @@ function pmproject_admin_settings() {
   return system_settings_form($form);
 }
 
-// INVOICE AUTO ADD HANDLER
+/**
+ * Handler to automatically add projects to an invoice.
+ */
 function pmproject_pminvoice_auto_add($node, $invoice_nid = NULL) {
   if (!module_exists('pminvoice')) {
     drupal_set_message(t('This function should only be called from within Project Management Invoice'));
@@ -866,7 +924,7 @@ function pmproject_pminvoice_auto_add($node, $invoice_nid = NULL) {
 }
 
 /**
- * Implementation of hook_token_list().
+ * Implements hook_token_list().
  */
 function pmproject_token_list($type='all') {
   $tokens = array();
@@ -902,7 +960,7 @@ function pmproject_token_list($type='all') {
 }
 
 /**
- * Implementation of hook_token_values().
+ * Implements hook_token_values().
  */
 function pmproject_token_values($type, $object = NULL) {
   $values = array();
@@ -965,6 +1023,9 @@ function pmproject_token_values($type, $object = NULL) {
   return $values;
 }
 
+/**
+ * Implements hook_pm_dashboard_links().
+ */
 function pmproject_pm_dashboard_links($type) {
   $links = array();
   if ($type == 'page' || $type == 'block') {
@@ -985,7 +1046,7 @@ function pmproject_pm_dashboard_links($type) {
 }
 
 /**
- * Implements  hook_query_TAG_alter.
+ * Implements hook_query_TAG_alter().
  */
 function pmproject_query_pmproject_alter(QueryAlterableInterface $query) {
 
@@ -1014,17 +1075,17 @@ function pmproject_query_pmproject_alter(QueryAlterableInterface $query) {
       $or->condition('pmpr.assigned_nid', $user->pmperson_nid);
       $add_condition = TRUE;
     }
-    //TODO: check if member of assigned team
-    //port pmteam to D7 first
-    //if (module_exists('pmteam')) {
-    //  // Load teams that the account belongs to
-    //  $belonged_teams = pmteam_user_return_teams($user);
-    //  // Allow access if any of those teams is the one in question
-    //  foreach ($belonged_teams as $belonged_team) {
-    //    $or->condition('pmpr.assigned_nid', $user->pmperson_nid);
-    //    $add_condition = TRUE;
-    //  }
-    //}
+    // @todo: check if member of assigned team
+    // port pmteam to D7 first
+    // if (module_exists('pmteam')) {
+    //   // Load teams that the account belongs to
+    //   $belonged_teams = pmteam_user_return_teams($user);
+    //   // Allow access if any of those teams is the one in question
+    //   foreach ($belonged_teams as $belonged_team) {
+    //     $or->condition('pmpr.assigned_nid', $user->pmperson_nid);
+    //     $add_condition = TRUE;
+    //   }
+    // }
   }
   if ($add_condition) {
     $query->condition($or);
