@@ -617,12 +617,12 @@ function pmtask_form(&$node, $form_state) {
     '#weight' => $info['group5']['weight'],
   );
 
-//  $options = pm_get_assignment_options($node->organization_nid, $node->project_nid);
+  $options = pm_get_assignment_options($node->organization_nid, $node->project_nid);
 
   $form['group5']['assigned_nid'] = array(
     '#type' => 'select',
     '#title' => t('Assigned to'),
-    '#options' => array(),// $options,
+    '#options' => $options,
     '#default_value' => isset($node->assigned_nid) ? $node->assigned_nid : 0,
   );
 
