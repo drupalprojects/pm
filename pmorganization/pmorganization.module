@@ -576,8 +576,12 @@ function pmorganization_node_access_records($node) {
  */
 function pmorganization_node_grants($account, $op) {
 
+  $is_pmperson = FALSE;
   if (!isset($account->pmorganization_nid) && module_exists('pmperson')) {
     _pmperson_user_load($account);
+    if (isset($account->pmperson_nid) AND $account->pmperson_nid > 0) {
+      $is_pmperson = TRUE;
+    }
   }
   $grants = array();
   switch ($op) {
@@ -588,8 +592,10 @@ function pmorganization_node_grants($account, $op) {
       if (user_access('Project Management Organization: view own', $account)) {
         $grants['pmorganization_view_own'] = array($account->uid);
       }
-      if (user_access('Project Management Organization: view belonged', $account)) {
-        $grants['pmorganization_view_if_user_org'] = array($account->pmorganization_nid);
+      if ($is_pmperson) {
+        if (user_access('Project Management Organization: view belonged', $account)) {
+          $grants['pmorganization_view_if_user_org'] = array($account->pmorganization_nid);
+        }
       }
       break;
 
@@ -600,8 +606,10 @@ function pmorganization_node_grants($account, $op) {
       if (user_access('Project Management Organization: edit own', $account)) {
         $grants['pmorganization_update_own'] = array($account->uid);
       }
-      if (user_access('Project Management Organization: edit belonged', $account)) {
-        $grants['pmorganization_update_if_user_org'] = array($account->pmorganization_nid);
+      if ($is_pmperson) {
+        if (user_access('Project Management Organization: edit belonged', $account)) {
+          $grants['pmorganization_update_if_user_org'] = array($account->pmorganization_nid);
+        }
       }
       break;
 
