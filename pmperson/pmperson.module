@@ -4,6 +4,9 @@
  * @file
  */
 
+/**
+ * Implements hook_help().
+ */
 function pmperson_help($path, $arg) {
   $o = '';
 
@@ -84,145 +87,27 @@ function pmperson_permission() {
   );
 }
 
+/**
+ * Implements hook_node_access().
+ */
 function pmperson_node_access($node, $op, $account = NULL) {
+  $type = is_string($node) ? $node : $node->type;
+  if ($type == 'pmperson') {
+    // If no account is specified, assume that the check is against the current logged in user
+    if (is_null($account)) {
+      global $user;
+      $account = $user;
+    }
+    if ($op == 'create' AND user_access('Project Management Person: add', $account)) {
+      return NODE_ACCESS_ALLOW;
+    }
+  }
   return NODE_ACCESS_IGNORE;
 }
 
-function pmperson_access($op, $node, $account=NULL) {
-  if (empty($account)) {
-    global $user;
-    $account = $user;
-  }
-
-  if (is_numeric($node)) $node = node_load($node);
-
-  if ($op == 'create') {
-    return user_access('Project Management person: add');
-  }
-
-  if ($op == 'delete') {
-    if (user_access('Project Management person: delete all')) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management person: delete own') && ($account->uid == $node->uid)) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management person: delete of user organization') && ($account->pmorganization_nid == $node->organization_nid)) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management person: delete when linked to own user account') && ($account->uid == $node->user_uid)) {
-      return TRUE;
-    }
-  }
-
-  if ($op == 'update') {
-    if (user_access('Project Management person: edit all')) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management person: edit own') && ($account->uid == $node->uid)) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management person: edit of user organization') && ($account->pmorganization_nid == $node->organization_nid)) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management person: edit when linked to own user account') && ($account->uid == $node->user_uid)) {
-      return TRUE;
-    }
-  }
-
-  if ($op == 'view') {
-    if (user_access('Project Management person: view all')) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management person: view own') && ($account->uid == $node->uid)) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management person: view of user organization') && ($account->pmorganization_nid == $node->organization_nid)) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management person: view when linked to own user account') && ($account->uid == $node->user_uid)) {
-      return TRUE;
-    }
-  }
-  return FALSE;
-}
-
-function pmperson_access_sql($sql, $where = array()) {
-  if (user_access('Project Management person: view all')) {
-    $where[] = "'pm_access'='pm_access'";
-    return pm_rewrite_sql($sql, $where);
-  }
-
-  global $user;
-
-  $cond = '';
-  if (user_access('Project Management person: view own')) {
-    $cond .= 'n.uid='. $user->uid;
-  }
-  if (user_access('Project Management person: view of user organization')) {
-    if (!empty($cond)) $cond .= ' OR ';
-    $cond .= 'spe.organization_nid='. $user->pmorganization_nid;
-  }
-  if (user_access('Project Management person: view when linked to own user account')) {
-    if (!empty($cond)) $cond .= ' OR ';
-    $cond .= 'spe.user_uid='. $user->uid;
-  }
-  if (empty($cond)) $cond = '0=1';
-  $where[] = $cond;
-
-  $where[] = "'pm_access'='pm_access'";
-  return pm_rewrite_sql($sql, $where);
-}
-
-function pmperson_pm_rewrite_where_sql($query, $primary_table, $account) {
-  static $conds = array();
-
-  if (isset($conds[$primary_table][$account->uid])) {
-    return $conds[$primary_table][$account->uid];
-  }
-
-  if (preg_match("/'pm_access'='pm_access'/", $query)) {
-    $cond = '';
-  }
-  else {
-    if (user_access('Project Management person: view all', $account)) {
-      return '';
-    }
-
-    $cond = '';
-    if (user_access('Project Management person: view own', $account)) {
-      $cond .= " ${primary_table}.uid=". $account->uid;
-    }
-    if (user_access('Project Management person: view of user organization', $account)) {
-      if ($cond) {
-        $cond .= ' OR ';
-      }
-      // If function is called without viewing an organization, this variable may not be set.
-      // These lines check for that and set the organization node id to zero if not otherwise set.
-      if (!isset($account->pmorganization_nid)) {
-        $account->pmorganization_nid = 0;
-      }
-      $cond .= ' spe1.organization_nid='. $account->pmorganization_nid;
-    }
-    if (user_access('Project Management person: view when linked to own user account', $account)) {
-      if ($cond) {
-        $cond .= ' OR ';
-      }
-      $cond .= ' spe1.user_uid='. $account->uid;
-    }
-
-    if ($cond) {
-      $cond = " WHEN 'pmperson' THEN (SELECT IF($cond,1,0) FROM {pmperson} spe1 WHERE spe1.vid=${primary_table}.vid) ";
-    }
-    else {
-      $cond = " WHEN 'pmperson' THEN 0 ";
-    }
-  }
-
-  $conds[$primary_table][$account->uid] = $cond;
-  return $cond;
-}
-
+/**
+ * Implements hook_menu().
+ */
 function pmperson_menu() {
   $items['pm/organization_people_js/%'] = array(
     'title' => 'People',
@@ -456,16 +341,19 @@ function pmperson_validate($node, $form, &$form_state) {
 
       $row = $query->execute()->fetchAssoc();
         if ($row && (empty($form['#node']->user_name) || ($form['#node']->user_name != $node->user_name))) {
-          $message = t('This Drupal user is already assigned to a Project Management person (!link). The same Drupal user can not be assigned to two Project Management people.', array('!link' => l($row['title'], 'node/'. $row['nid'])));
+          $message = t('This Drupal user is already assigned to a Project Management person (!link). The same Drupal user can not be assigned to two Project Management people.', array('!link' => l($row['title'], 'node/' . $row['nid'])));
         form_set_error('user_name', $message);
       }
-    } 
-    else {
-      form_set_error('user_name',t('@username is not a current user', array('@username'=>$username)));
     }
-  } 
+    else {
+      form_set_error('user_name', t('@username is not a current user', array('@username' => $username)));
+    }
+  }
 }
 
+/**
+ * Generates list of pmperson for autocomplete widget.
+ */
 function pmperson_user_autocomplete($string = '') {
   $matches = array();
   if ($string) {
@@ -687,6 +575,204 @@ function pmperson_primary_email($node) {
   }
 }
 
+
+/**
+ * Implements  hook_node_access_records().
+ */
+function pmperson_node_access_records($node) {
+  if (empty($node->status)) {
+    // Lets Drupal take care of permission on unpublished nodes.
+    return array();
+  }
+  $type = is_string($node) ? $node : $node->type;
+  $grants = array();
+  if ($type == 'pmperson') {
+    // Project Management Person: view all
+    $grants[] = array(
+      'realm' => 'pmperson_view_all',
+      'gid' => 0,
+      'grant_view' => 1,
+      'grant_update' => 0,
+      'grant_delete' => 0,
+      'priority' => 0,
+    );
+    // Project Management Person: view own
+    $grants[] = array(
+      'realm' => 'pmperson_view_own',
+      'gid' => $node->uid,
+      'grant_view' => 1,
+      'grant_update' => 0,
+      'grant_delete' => 0,
+      'priority' => 0,
+    );
+    // Project Management Person: view of user organization
+    if ( isset($node->organization_nid) && !empty($node->organization_nid)) {
+      $grants[] = array(
+        'realm' => 'pmperson_view_if_user_organization',
+        'gid' => $node->organization_nid,
+        'grant_view' => 1,
+        'grant_update' => 0,
+        'grant_delete' => 0,
+        'priority' => 0,
+      );
+    }
+    // Project Management Person: view when linked to own user account
+    if ( isset($node->user_uid) && !empty($node->user_uid)) {
+      $grants[] = array(
+        'realm' => 'pmperson_view_linked',
+        'gid' => $node->user_uid,
+        'grant_view' => 1,
+        'grant_update' => 0,
+        'grant_delete' => 0,
+        'priority' => 0,
+      );
+    }
+
+    // Project Management Person: edit all
+    $grants[] = array(
+      'realm' => 'pmperson_update_all',
+      'gid' => 0,
+      'grant_view' => 0,
+      'grant_update' => 1,
+      'grant_delete' => 0,
+      'priority' => 0,
+    );
+    // Project Management Person: edit own
+    $grants[] = array(
+      'realm' => 'pmperson_update_own',
+      'gid' => $node->uid,
+      'grant_view' => 0,
+      'grant_update' => 1,
+      'grant_delete' => 0,
+      'priority' => 0,
+    );
+    // Project Management Person: edit of user organization
+    if ( isset($node->organization_nid) && !empty($node->organization_nid)) {
+      $grants[] = array(
+        'realm' => 'pmperson_update_if_user_organization',
+        'gid' => $node->organization_nid,
+        'grant_view' => 0,
+        'grant_update' => 1,
+        'grant_delete' => 0,
+        'priority' => 0,
+      );
+    }
+    // Project Management Person: edit when linked to own user account
+    if ( isset($node->user_uid) && !empty($node->user_uid)) {
+      $grants[] = array(
+        'realm' => 'pmperson_update_linked',
+        'gid' => $node->user_uid,
+        'grant_view' => 0,
+        'grant_update' => 1,
+        'grant_delete' => 0,
+        'priority' => 0,
+      );
+    }
+    // Project Management Person: delete all
+    $grants[] = array(
+      'realm' => 'pmperson_delete_all',
+      'gid' => 0,
+      'grant_view' => 0,
+      'grant_update' => 0,
+      'grant_delete' => 1,
+      'priority' => 0,
+    );
+    // Project Management Person: delete own
+    $grants[] = array(
+      'realm' => 'pmperson_delete_own',
+      'gid' => $node->uid,
+      'grant_view' => 0,
+      'grant_update' => 0,
+      'grant_delete' => 1,
+      'priority' => 0,
+    );
+    // Project Management Person: delete of user organization
+    if ( isset($node->organization_nid) && !empty($node->organization_nid)) {
+      $grants[] = array(
+        'realm' => 'pmperson_delete_if_user_organization',
+        'gid' => $node->organization_nid,
+        'grant_view' => 0,
+        'grant_update' => 0,
+        'grant_delete' => 1,
+        'priority' => 0,
+      );
+    }
+    // Project Management Person: delete when linked to own user account
+    if ( isset($node->user_uid) && !empty($node->user_uid)) {
+      $grants[] = array(
+        'realm' => 'pmperson_delete_linked',
+        'gid' => $node->user_uid,
+        'grant_view' => 0,
+        'grant_update' => 0,
+        'grant_delete' => 1,
+        'priority' => 0,
+      );
+    }
+  }
+  return $grants;
+}
+
+/**
+ * Implements hook_node_grants().
+ */
+function pmperson_node_grants($account, $op) {
+
+  if (!isset($account->pmorganization_nid)) {
+    _pmperson_user_load($account);
+  }
+  $grants = array();
+  switch ($op) {
+    case 'view':
+      if (user_access('Project Management Person: view all', $account)) {
+        $grants['pmperson_view_all'] = array(0);
+      }
+      if (user_access('Project Management Person: view own', $account)) {
+        $grants['pmperson_view_own'] = array($account->uid);
+      }
+      if (user_access('Project Management Person: view of user organization', $account)) {
+        $grants['pmperson_view_if_user_organization'] = array($account->pmorganization_nid);
+      }
+      if (user_access('Project Management Person: view when linked to own user account', $account)) {
+        $grants['pmperson_view_linked'] = array($account->uid);
+      }
+      break;
+
+    case 'update':
+      if (user_access('Project Management Person: edit all', $account)) {
+        $grants['pmperson_update_all'] = array(0);
+      }
+      if (user_access('Project Management Person: edit own', $account)) {
+        $grants['pmperson_update_own'] = array($account->uid);
+      }
+      if (user_access('Project Management Person: edit of user organization', $account)) {
+        $grants['pmperson_update_if_user_organization'] = array($account->pmorganization_nid);
+      }
+      if (user_access('Project Management Person: edit when linked to own user account', $account)) {
+        $grants['pmperson_update_linked'] = array($account->uid);
+      }
+      break;
+
+    case 'delete':
+      if (user_access('Project Management Person: delete all', $account)) {
+        $grants['pmperson_delete_all'] = array(0);
+      }
+      if (user_access('Project Management Person: delete own', $account)) {
+        $grants['pmperson_delete_own'] = array($account->uid);
+      }
+      if (user_access('Project Management Person: delete of user organization', $account)) {
+        $grants['pmperson_delete_if_user_organization'] = array($account->pmorganization_nid);
+      }
+      if (user_access('Project Management Person: delete when linked to own user account', $account)) {
+        $grants['pmperson_delete_linked'] = array($account->uid);
+      }
+      break;
+  }
+  return $grants;
+}
+
+/**
+ * Implements hook_pm_dashboard_links().
+ */
 function pmperson_pm_dashboard_links($type) {
   $links = array();
   if ($type == 'page' || $type == 'block') {
