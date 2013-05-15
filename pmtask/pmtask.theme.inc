@@ -2,8 +2,12 @@
 
 /**
  * @file
+ * Theme functions for the Project Management Task module.
  */
 
+/**
+ * Provides HTML for the project node tasks list.
+ */
 function theme_pmtask_tasks($form) {
   if (count($form['tasks'])>0 && pmproject_access('update', $form['project']['#value'])) {
     drupal_add_tabledrag('tasks', 'match', 'parent', 'task-parent-nid', 'task-parent-nid', 'task-nid', TRUE);
@@ -17,23 +21,23 @@ function theme_pmtask_tasks($form) {
   unset($form['header']);
 
   foreach (element_children($form['tasks']) as $key) {
-    $form['tasks'][$key]['task_parent-nid_'. $key]['#attributes']['class'] = 'task-parent-nid';
-    $form['tasks'][$key]['task_nid_'. $key]['#attributes']['class'] = 'task-nid';
-    $form['tasks'][$key]['task_weight_'. $key]['#attributes']['class'] = 'task-weight';
-    $durationunit = $form['tasks'][$key]['task_durationunit_'. $key]['#value'];
+    $form['tasks'][$key]['task_parent-nid_' . $key]['#attributes']['class'] = 'task-parent-nid';
+    $form['tasks'][$key]['task_nid_' . $key]['#attributes']['class'] = 'task-nid';
+    $form['tasks'][$key]['task_weight_' . $key]['#attributes']['class'] = 'task-weight';
+    $durationunit = $form['tasks'][$key]['task_durationunit_' . $key]['#value'];
 
     $data = array(
-      theme('indentation', $form['tasks'][$key]['task_depth_'. $key]['#value']) . drupal_render($form['tasks'][$key]['task_description_'. $key]),
-      drupal_render($form['tasks'][$key]['task_category_'. $key]),
-      drupal_render($form['tasks'][$key]['task_status_'. $key]),
-      drupal_render($form['tasks'][$key]['task_priority_'. $key]),
+      theme('indentation', $form['tasks'][$key]['task_depth_' . $key]['#value']) . drupal_render($form['tasks'][$key]['task_description_' . $key]),
+      drupal_render($form['tasks'][$key]['task_category_' . $key]),
+      drupal_render($form['tasks'][$key]['task_status_' . $key]),
+      drupal_render($form['tasks'][$key]['task_priority_' . $key]),
       array(
-        'data' => sprintf('%.2f', drupal_render($form['tasks'][$key]['task_duration_'. $key])) .' '. substr($durationunit, 0, 1),
+        'data' => sprintf('%.2f', drupal_render($form['tasks'][$key]['task_duration_' . $key])) . ' ' . substr($durationunit, 0, 1),
         'style' => 'text-align: right'),
-      drupal_render($form['tasks'][$key]['task_parent-nid_'. $key]) . drupal_render($form['tasks'][$key]['task_nid_'. $key]),
-      drupal_render($form['tasks'][$key]['task_weight_'. $key]),
+      drupal_render($form['tasks'][$key]['task_parent-nid_' . $key]) . drupal_render($form['tasks'][$key]['task_nid_' . $key]),
+      drupal_render($form['tasks'][$key]['task_weight_' . $key]),
       array(
-        'data' => drupal_render($form['tasks'][$key]['task_operations_'. $key]),
+        'data' => drupal_render($form['tasks'][$key]['task_operations_' . $key]),
         'class' => 'pm_list_operations',
       ),
     );
@@ -43,13 +47,16 @@ function theme_pmtask_tasks($form) {
     }
     $row['data'] = $data;
     if (pmproject_access('update', $form['project']['#value'])) {
-      $row['class'] = empty($row['class']) ? 'draggable' : $row['class'] .' draggable';
+      $row['class'] = empty($row['class']) ? 'draggable' : $row['class'] . ' draggable';
     }
     $rows[] = $row;
   }
   return theme('table', array('header' => $header, 'rows' => $rows));
 }
 
+/**
+ * Provides HTML for the task node view.
+ */
 function theme_pmtask_view($variables) {
   $node = $variables['node'];
 
@@ -88,14 +95,14 @@ function theme_pmtask_view($variables) {
   $node->content['group1']['organization'] = array(
     '#prefix' => '<div class="organization">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Organization'), 'value' => l($node->organization_title, 'node/'. $node->organization_nid))),
+    '#markup' => theme('pm_view_item', array('label' => t('Organization'), 'value' => l($node->organization_title, 'node/' . $node->organization_nid))),
     '#weight' => 1,
   );
 
   $node->content['group1']['project'] = array(
     '#prefix' => '<div class="project">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Project'), 'value' => l($node->project_title, 'node/'. $node->project_nid))),
+    '#markup' => theme('pm_view_item', array('label' => t('Project'), 'value' => l($node->project_title, 'node/' . $node->project_nid))),
     '#weight' => 2,
   );
 
@@ -142,7 +149,7 @@ function theme_pmtask_view($variables) {
   $node->content['group5']['assigned'] = array(
     '#prefix' => '<div class="assigned">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Assigned to'), 'value' => l($node->assigned_title, 'node/'. $node->assigned_nid))),
+    '#markup' => theme('pm_view_item', array('label' => t('Assigned to'), 'value' => l($node->assigned_title, 'node/' . $node->assigned_nid))),
     '#weight' => 2,
   );
 

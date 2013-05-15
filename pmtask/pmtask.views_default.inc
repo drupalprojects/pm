@@ -1,4 +1,12 @@
 <?php
+/**
+ * @file
+ * Default views for the Project Management Task module.
+ */
+
+/**
+ * Implements hook_views_default_views().
+ */
 function pmtask_views_default_views() {
   $views = array();
 

@@ -3,18 +3,24 @@
  * @file
  */
 
+/**
+ * Implements hook_help().
+ */
 function pmtask_help($path, $arg) {
   $o = '';
 
   switch ($path) {
     case "admin/help#pmtask":
-      $o = '<p>'. t("Provides task support for Project Management") .'</p>';
+      $o = '<p>' . t("Provides task support for Project Management") . '</p>';
       break;
   }
 
   return $o;
 }
 
+/**
+ * Implements hook_permission().
+ */
 function pmtask_permission() {
   return array(
     'Project Management Task: access' => array(
@@ -62,10 +68,16 @@ function pmtask_permission() {
   );
 }
 
+/**
+ * Implements hook_node_access().
+ */
 function pmtask_node_access($node, $op, $account = NULL) {
   return NODE_ACCESS_IGNORE;
 }
 
+/**
+ * @todo Remove this function as part of porting the access controls.
+ */
 function pmtask_access($op, $node, $account=NULL) {
   if (empty($account)) {
     global $user;
@@ -147,6 +159,9 @@ function pmtask_access($op, $node, $account=NULL) {
   return FALSE;
 }
 
+/**
+ * Implements hook_menu().
+ */
 function pmtask_menu() {
   $items['node/%node/tasks'] = array(
     'title' => 'Tasks',
@@ -186,6 +201,9 @@ function pmtask_menu() {
   return $items;
 }
 
+/**
+ * Admin settings form for pmtask module.
+ */
 function pmtask_admin_settings() {
   $form = array();
 
@@ -253,14 +271,20 @@ function pmtask_admin_settings() {
   return system_settings_form($form);
 }
 
+/**
+ * Checks that the JSGantt library is present.
+ */
 function jsgantt_check_directory($form_element) {
-  $file = $form_element['#value'] ."/jsgantt.js";
+  $file = $form_element['#value'] . "/jsgantt.js";
   if (!file_exists($file)) {
     form_set_error($form_element['#name'], t('The file %file does not exist.', array('%file' => $file)));
   }
   return $form_element;
 }
 
+/**
+ * Implements hook_theme().
+ */
 function pmtask_theme() {
   return array(
     'pmtask_tasks' => array(
@@ -274,6 +298,9 @@ function pmtask_theme() {
   );
 }
 
+/**
+ * Implements hook_node_info().
+ */
 function pmtask_node_info() {
   return array(
     'pmtask' => array(
@@ -286,6 +313,9 @@ function pmtask_node_info() {
   );
 }
 
+/**
+ * Implements hook_field_extra_fields().
+ */
 function pmtask_field_extra_fields() {
   $extra['node']['pmtask'] = array(
     'form' => array(
@@ -318,10 +348,16 @@ function pmtask_field_extra_fields() {
   return $extra;
 }
 
+/**
+ * Implements hook_field_extra_fields_alter().
+ */
 function pmtask_field_extra_fields_alter(&$info) {
   $info['node']['pmtask']['form']['title']['weight'] = -19;
 }
 
+/**
+ * Implements hook_pmorganization_change().
+ */
 function pmtask_pmorganization_change($organization_nid, $organization_title) {
   db_update('pmtask')
     ->fields(array('organization_title' => $organization_title))
@@ -329,6 +365,9 @@ function pmtask_pmorganization_change($organization_nid, $organization_title) {
     ->execute();
 }
 
+/**
+ * Implements hook_pmproject_change().
+ */
 function pmtask_pmproject_change($project_nid, $project_title) {
   db_update('pmproject')
     ->fields(array('project_title' => $project_title))
@@ -336,6 +375,9 @@ function pmtask_pmproject_change($project_nid, $project_title) {
     ->execute();
 }
 
+/**
+ * Implements hook_pmproject_change_hierarchy().
+ */
 function pmtask_pmproject_change_hierarchy($project_nid, $organization_nid, $organization_title) {
   db_update('pmtask')
     ->fields(array(
@@ -346,6 +388,9 @@ function pmtask_pmproject_change_hierarchy($project_nid, $organization_nid, $org
     ->execute();
 }
 
+/**
+ * Implements hook_form().
+ */
 function pmtask_form(&$node, $form_state) {
   $breadcrumb = array();
   $breadcrumb[] = l(t('Project Management'), 'pm');
@@ -353,8 +398,8 @@ function pmtask_form(&$node, $form_state) {
   if (array_key_exists('project_nid', $_GET)) {
     $breadcrumb[] = l(t('Projects'), 'pm/projects');
     $project = node_load($_GET['project_nid']);
-    $breadcrumb[] = l(t('Project : !project', array('!project' => $project->title)), 'node/'. $project->nid);
-    $breadcrumb[] = l(t('Tasks'), 'node/'. $project->nid .'/tasks');
+    $breadcrumb[] = l(t('Project : !project', array('!project' => $project->title)), 'node/' . $project->nid);
+    $breadcrumb[] = l(t('Tasks'), 'node/' . $project->nid . '/tasks');
   }
   else {
     $breadcrumb[] = l(t('Tasks'), 'pm/tasks');
@@ -376,7 +421,7 @@ function pmtask_form(&$node, $form_state) {
       $node->organization_nid = $p->organization_nid;
       if (!pmorganization_node_access($node->organization_nid, 'view')) {
         drupal_set_message(t("You cannot add a task for this project, as you do not have access to view the organization's profile"));
-        drupal_goto('node/'. $node->project_nid);
+        drupal_goto('node/' . $node->project_nid);
       }
     }
     if (array_key_exists('task_nid', $_GET) && !$node->parent_nid) {
@@ -390,7 +435,7 @@ function pmtask_form(&$node, $form_state) {
       $project_access = $node->project_nid ? pmproject_access('view', $node->project_nid) : TRUE;
       if (!$project_access || !pmorganization_node_access($node->organization_nid, 'view')) {
         drupal_set_message(t("You cannot add a task with this parent, as you do not have access to view both the organization and project profiles"));
-        drupal_goto('node/'. $node->parent_nid);
+        drupal_goto('node/' . $node->parent_nid);
       }
     }
 
@@ -417,16 +462,15 @@ function pmtask_form(&$node, $form_state) {
 
   $org_query = db_select('node', 'n');
   $org_query->join('pmorganization', 'sor', 'n.vid = sor.vid');
-  $org_query
+  $org_result = $org_query
     ->fields('n', array('nid', 'title'))
     ->condition('n.status', 1)
     ->condition('sor.isactive', 1)
     ->condition('n.type', 'pmorganization')
-    ->orderBy('n.title', 'ASC');
+    ->addTag('node_access')
+    ->orderBy('n.title', 'ASC')
+    ->execute();
 
-//  $s_org = pmorganization_access_sql($s_org);
-//  $s_org = db_rewrite_sql($s_org);
-  $org_result = $org_query->execute();
   $organizations = array();
   foreach ($org_result as $organization) {
     $organizations[$organization->nid] = $organization->title;
@@ -459,11 +503,10 @@ function pmtask_form(&$node, $form_state) {
     ->condition('n.status', 1)
     ->condition('spr.organization_nid', $organization_nid)
     ->condition('n.type', 'pmproject')
+    ->addTag('node_access')
     ->orderBy('n.title', 'ASC')
     ->execute();
 
-//  $s = pmproject_access_sql($s);
-//  $s = db_rewrite_sql($s);
   $projects = array();
   foreach ($pro_result as $project) {
     $projects[$project->nid] = $project->title;
@@ -647,8 +690,8 @@ function pmtask_form(&$node, $form_state) {
   );
 
   // Check to see if the body field is still there, if so, display it.
-  $body = field_get_items('pmtask',$node,'body');
-  if($body) {
+  $body = field_get_items('pmtask', $node, 'body');
+  if ($body) {
     $form['body_field'] = $body;
   }
 
@@ -665,11 +708,16 @@ function pmtask_form(&$node, $form_state) {
   return $form;
 }
 
+/**
+ * Ajax callback for the organization nid field on a pmproject node.
+ */
 function pmtask_ajax_organization_nid(&$form, &$form_state) {
   return $form['group1']['project_nid'];
 }
 
-// INSERT / UPDATE FUNCTIONS
+/**
+ * Implements hook_insert().
+ */
 function pmtask_insert($node) {
   _pmtask_beforesave($node);
 
@@ -702,6 +750,9 @@ function pmtask_insert($node) {
     ->execute();
 }
 
+/**
+ * Implements hook_update().
+ */
 function pmtask_update($node) {
   $org_query = db_select('node', 'n');
   $org_query->join('pmorganization', 'sor', 'n.vid = sor.vid');
@@ -768,6 +819,9 @@ function pmtask_update($node) {
   }
 }
 
+/**
+ * Prepares pmtask for saving.
+ */
 function _pmtask_beforesave(&$node) {
   $org_query = db_select('node', 'n');
   $org_query->join('pmorganization', 'sor', 'n.vid = sor.vid');
@@ -814,6 +868,9 @@ function _pmtask_beforesave(&$node) {
   }
 }
 
+/**
+ * Implements hook_node_prepare().
+ */
 function pmtask_node_prepare($node) {
   if (!isset($node->nid)) {
     $node->iscustomer = 1;
@@ -839,6 +896,9 @@ function pmtask_node_prepare($node) {
   }
 }
 
+/**
+ * Implements hook_node_revision_delete().
+ */
 function pmtask_node_revision_delete($node) {
   // Notice that we're matching a single revision based on the node's vid.
   db_delete('pmtask')
@@ -846,6 +906,9 @@ function pmtask_node_revision_delete($node) {
     ->execute();
 }
 
+/**
+ * Implements hook_delete().
+ */
 function pmtask_delete($node) {
   // Notice that we're matching all revision, by using the node's nid.
   db_delete('pmtask')
@@ -853,6 +916,9 @@ function pmtask_delete($node) {
     ->execute();
 }
 
+/**
+ * Implements hook_load().
+ */
 function pmtask_load($nodes) {
   foreach ($nodes as $nid => &$node) {
     $result = db_select('pmtask', 'sta')
@@ -870,12 +936,18 @@ function pmtask_load($nodes) {
   }
 }
 
+/**
+ * Implements hook_validate().
+ */
 function pmtask_validate(&$node) {
   if (($node->nid == $node->parent_nid) && $node->parent_nid) {
     form_set_error('parent_nid', t('Impossible to assign itself as parent.'));
   }
 }
 
+/**
+ * Implements hook_view().
+ */
 function pmtask_view($node, $view_mode) {
   $breadcrumb = array();
   $breadcrumb[] = l(t('Project Management'), 'pm');
@@ -885,13 +957,18 @@ function pmtask_view($node, $view_mode) {
   return theme('pmtask_view', array('node' => $node, 'view_mode' => $view_mode));
 }
 
+/**
+ * Determines whether the task tab of a project is visible.
+ */
 function _pmtask_tasks_access($node=NULL) {
-  // Determines whether the task tab of a project is visible
   if ($node == NULL) return FALSE;
   if ($node->type == 'pmproject' && user_access('Project Management Task: access')) return TRUE;
   return FALSE;
 }
 
+/**
+ * Provides a tree of tasks for a given project and (if selected) parent task.
+ */
 function _pmtask_get_tree($project_nid, $parent_nid = 0, $depth = -1, $max_depth = NULL, $where = NULL, $args = array()) {
   static $children, $parents, $tasks;
 
@@ -940,17 +1017,23 @@ function _pmtask_get_tree($project_nid, $parent_nid = 0, $depth = -1, $max_depth
   return isset($tree) ? $tree : array();
 }
 
+/**
+ * Provides task details for tasks within a tree.
+ */
 function _pmtask_plain_tree($tree) {
   $rows = array();
   foreach ($tree as $item) {
     $nid = $item->nid;
     $title = check_plain($item->title);
-    if ($item->stepno) $title = check_plain($item->stepno) .' '. $title;
-    if ($nid) $rows[$nid] = str_repeat('--', $item->depth) .' '. $title;
+    if ($item->stepno) $title = check_plain($item->stepno) . ' ' . $title;
+    if ($nid) $rows[$nid] = str_repeat('--', $item->depth) . ' ' . $title;
   }
   return $rows;
 }
 
+/**
+ * Implements hook_views_api().
+ */
 function pmtask_views_api() {
   return array(
     'api' => 2,
@@ -958,7 +1041,9 @@ function pmtask_views_api() {
   );
 }
 
-// INVOICE AUTO ADD HANDLER
+/**
+ * Creates an invoice based on a selected task.
+ */
 function pmtask_pminvoice_auto_add($node, $invoice_nid = NULL) {
   if (!module_exists('pminvoice')) {
     drupal_set_message(t('This function should only be called from within Project Management Invoice'));
@@ -1035,7 +1120,7 @@ function pmtask_pminvoice_auto_add($node, $invoice_nid = NULL) {
 }
 
 /**
- * Implementation of hook_token_list().
+ * Implements hook_token_list().
  */
 function pmtask_token_list($type='all') {
   $tokens = array();
@@ -1067,7 +1152,7 @@ function pmtask_token_list($type='all') {
 }
 
 /**
- * Implementation of hook_token_values().
+ * Implements hook_token_values().
  */
 function pmtask_token_values($type, $object = NULL) {
   $values = array();
@@ -1120,6 +1205,9 @@ function pmtask_token_values($type, $object = NULL) {
   return $values;
 }
 
+/**
+ * Implements hook_pm_dashboard_links().
+ */
 function pmtask_pm_dashboard_links($type) {
   $links = array();
   if ($type == 'page' || $type == 'block') {
@@ -1140,7 +1228,7 @@ function pmtask_pm_dashboard_links($type) {
 }
 
 /**
- * Implements  hook_query_TAG_alter.
+ * Implements hook_query_TAG_alter().
  */
 function pmtask_query_pmtask_alter(QueryAlterableInterface $query) {
 
@@ -1165,9 +1253,9 @@ function pmtask_query_pmtask_alter(QueryAlterableInterface $query) {
       $or->condition('pmta.assigned_nid', $user->pmperson_nid);
       $add_condition = TRUE;
     }
-    //TODO: check if member of assigned team
-    //port pmteam to D7 first
-    //if (module_exists('pmteam')) {
+    // @todo Check if member of assigned team
+    // Port pmteam to D7 first
+    // if (module_exists('pmteam')) {
     //  // Load teams that the account belongs to
     //  $belonged_teams = pmteam_user_return_teams($user);
     //  // Allow access if any of those teams is the one in question
@@ -1175,7 +1263,7 @@ function pmtask_query_pmtask_alter(QueryAlterableInterface $query) {
     //    $or->condition('pmta.assigned_nid', $belonged_team);
     //    $add_condition = TRUE;
     //  }
-    //}
+    // }
   }
   if ($add_condition) {
     $query->condition($or);

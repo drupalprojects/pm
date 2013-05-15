@@ -2,13 +2,17 @@
 
 /**
  * @file
+ * Contains functions to provide the project node tasks tab.
  */
 
+/**
+ * Callback for the project node tasks tab.
+ */
 function pmtask_tasks($project) {
   $breadcrumb = array();
   $breadcrumb[] = l(t('Project Management'), 'pm');
   $breadcrumb[] = l(t('Projects'), 'pm/projects');
-  $breadcrumb[] = l(t('Project : !project', array('!project' => $project->title)), 'node/'. $project->nid);
+  $breadcrumb[] = l(t('Project : !project', array('!project' => $project->title)), 'node/' . $project->nid);
   drupal_set_breadcrumb($breadcrumb);
 
   $i = new stdClass();
@@ -67,7 +71,7 @@ function pmtask_tasks($project) {
     $category = split(',', $taskcategory);
     $v = array();
     foreach ($category as $item) $v[] = '%s';
-    $where[] = "sta.taskcategory IN ('". implode("','", $v) ."')";
+    $where[] = "sta.taskcategory IN ('" . implode("','", $v) . "')";
     foreach ($category as $key => $value) {
       $args[] = $value;
     }
@@ -83,7 +87,7 @@ function pmtask_tasks($project) {
     $status = split(',', $taskstatus);
     $v = array();
     foreach ($status as $item) $v[] = '%s';
-    $where[] = "sta.taskstatus IN ('". implode("','", $v) ."')";
+    $where[] = "sta.taskstatus IN ('" . implode("','", $v) . "')";
     foreach ($status as $key => $value) {
       $args[] = $value;
     }
@@ -99,7 +103,7 @@ function pmtask_tasks($project) {
     $priority = split(',', $taskpriority);
     $v = array();
     foreach ($priority as $item) $v[] = '%s';
-    $where[] = "sta.taskpriority IN ('". implode("','", $v) ."')";
+    $where[] = "sta.taskpriority IN ('" . implode("','", $v) . "')";
     foreach ($priority as $key => $value) {
       $args[] = $value;
     }
@@ -108,22 +112,22 @@ function pmtask_tasks($project) {
   $taskstree = _pmtask_get_tree($project->nid, 0, -1, NULL, $where, $args);
 
   $o_gantt ="";
-  $jsgantt_dir = drupal_get_path('module', 'pmtask') .'/jsgantt';
+  $jsgantt_dir = drupal_get_path('module', 'pmtask') . '/jsgantt';
 
-  $dispOpt=variable_get('pmtask_jsgantt_options', array());
-  if ($dispOpt['ShowStartDate']) {
-    $dispOpt['ShowStartDate']=1;
+  $display_options = variable_get('pmtask_jsgantt_options', array());
+  if ($display_options['ShowStartDate']) {
+    $display_options['ShowStartDate']=1;
   }
-  if ($dispOpt['ShowEndDate']) {
-    $dispOpt['ShowEndDate']=1;
+  if ($display_options['ShowEndDate']) {
+    $display_options['ShowEndDate']=1;
   }
-  if ($dispOpt['ShowDur']) {
-    $dispOpt['ShowDur']=1;
+  if ($display_options['ShowDur']) {
+    $display_options['ShowDur']=1;
   }
 
   if (variable_get('pmtask_enable_ganttchart', 0)) {
-    drupal_add_js($jsgantt_dir ."/jsgantt.js");
-    drupal_add_css($jsgantt_dir ."/jsgantt.css");
+    drupal_add_js($jsgantt_dir . "/jsgantt.js");
+    drupal_add_css($jsgantt_dir . "/jsgantt.css");
     drupal_add_css(drupal_get_path('module', 'pmtask') . '/pmtask-gantt.css');
 
     // version w/o xml file
@@ -146,7 +150,7 @@ function pmtask_tasks($project) {
       $pID = $task->nid;
       $pName = check_plain($task->title);
       $pCaption = $pName;
-      $pLink = base_path() ."node/". $task->nid;
+      $pLink = base_path() . "node/" . $task->nid;
       $pStart = date("n/j/Y", $task->datebegin);
       $pEnd = date("n/j/Y", $task->dateend);
       $pColor = variable_get('pmtask_jsgantt_color', '00CCFF'); // $task->taskstatus;
@@ -180,10 +184,10 @@ function pmtask_tasks($project) {
 
       // show tasks with depth
       if ($task->depth) {
-        $pName = str_repeat('--', $task->depth) .' '. $pName;
+        $pName = str_repeat('--', $task->depth) . ' ' . $pName;
       }
 
-      $js .= "g.AddTaskItem(new JSGantt.TaskItem(". $pID .",'". $pName ."','". $pStart ."','". $pEnd ."','". $pColor ."','". $pLink ."',". $pMile .",'". $pRes ."',". $pComp .",". $pGroup .",". $pParent .",". $pOpen .",". $pDepend .",'". $pCaption ."'));\n";
+      $js .= "g.AddTaskItem(new JSGantt.TaskItem(" . $pID . ",'" . $pName . "','" . $pStart . "','" . $pEnd . "','" . $pColor . "','" . $pLink . "'," . $pMile . ",'" . $pRes . "'," . $pComp . "," . $pGroup . "," . $pParent . "," . $pOpen . "," . $pDepend . ",'" . $pCaption . "'));\n";
     }
 
     $o_gantt .= "<div style='position:relative' class='gantt' id='GanttChartDIV'></div>";
@@ -194,14 +198,14 @@ function pmtask_tasks($project) {
       var g = new JSGantt.GanttChart('g',document.getElementById('GanttChartDIV'), 'day');
         g.setShowRes(0); // Show/Hide Responsible (0/1)
         g.setShowComp(0); // Show/Hide % Complete(0/1)
-        g.setShowDur('". $dispOpt['ShowDur'] ."'); // Show/Hide Duration (0/1)
-        g.setShowStartDate('". $dispOpt['ShowStartDate'] ."'); // Show/Hide Start Date(0/1)
-        g.setShowEndDate('". $dispOpt['ShowEndDate'] ."'); // Show/Hide End Date(0/1)
+        g.setShowDur('" . $display_options['ShowDur'] . "'); // Show/Hide Duration (0/1)
+        g.setShowStartDate('" . $display_options['ShowStartDate'] . "'); // Show/Hide Start Date(0/1)
+        g.setShowEndDate('" . $display_options['ShowEndDate'] . "'); // Show/Hide End Date(0/1)
         //g.setFormatArr('day','week','month')
         g.setCaptionType('Resource');  // Set to Show Caption (None,Caption,Resource,Duration,Complete)
       if( g ) {
 // Parameters (pID, pName, pStart, pEnd, pColor, pLink, pMile, pRes,  pComp, pGroup, pParent, pOpen)
-". $js ."
+" . $js . "
 
 // use the XML file parser
 //    JSGantt.parseXML('http://localhost/services/sites/default/files/project.xml',g)
@@ -220,6 +224,9 @@ function pmtask_tasks($project) {
   return $o;
 }
 
+/**
+ * Provides form for project node tasks tab.
+ */
 function pmtask_tasks_form($form_id, $header, $tasks, $project) {
   $form = array();
 
@@ -240,47 +247,47 @@ function pmtask_tasks_form($form_id, $header, $tasks, $project) {
   foreach ($tasks as $task) {
     $task->type = 'pmtask';
 
-    $form['tasks']['tasks'][$task->nid]['task_depth_'. $task->nid] = array(
+    $form['tasks']['tasks'][$task->nid]['task_depth_' . $task->nid] = array(
       '#value' => $task->depth,
     );
 
-    $form['tasks']['tasks'][$task->nid]['task_description_'. $task->nid] = array(
-      '#value' => l($task->stepno .' '. $task->title, 'node/'. $task->nid, array('html' => TRUE)),
+    $form['tasks']['tasks'][$task->nid]['task_description_' . $task->nid] = array(
+      '#value' => l($task->stepno . ' ' . $task->title, 'node/' . $task->nid, array('html' => TRUE)),
     );
 
-    $form['tasks']['tasks'][$task->nid]['task_category_'. $task->nid] = array(
-      '#value' => pm_icon('category_'. $task->taskcategory, pm_attribute_value('Task category', $task->taskcategory)),
+    $form['tasks']['tasks'][$task->nid]['task_category_' . $task->nid] = array(
+      '#value' => pm_icon('category_' . $task->taskcategory, pm_attribute_value('Task category', $task->taskcategory)),
     );
 
-    $form['tasks']['tasks'][$task->nid]['task_status_'. $task->nid] = array(
-      '#value' => pm_icon('status_'. $task->taskstatus, pm_attribute_value('Task status', $task->taskstatus)),
+    $form['tasks']['tasks'][$task->nid]['task_status_' . $task->nid] = array(
+      '#value' => pm_icon('status_' . $task->taskstatus, pm_attribute_value('Task status', $task->taskstatus)),
     );
 
-    $form['tasks']['tasks'][$task->nid]['task_priority_'. $task->nid] = array(
-      '#value' => pm_icon('priority_'. $task->taskpriority, pm_attribute_value('Task priority', $task->taskpriority)),
+    $form['tasks']['tasks'][$task->nid]['task_priority_' . $task->nid] = array(
+      '#value' => pm_icon('priority_' . $task->taskpriority, pm_attribute_value('Task priority', $task->taskpriority)),
     );
 
-    $form['tasks']['tasks'][$task->nid]['task_duration_'. $task->nid] = array(
+    $form['tasks']['tasks'][$task->nid]['task_duration_' . $task->nid] = array(
       '#value' => $task->duration,
     );
 
-    $form['tasks']['tasks'][$task->nid]['task_durationunit_'. $task->nid] = array(
+    $form['tasks']['tasks'][$task->nid]['task_durationunit_' . $task->nid] = array(
       '#type' => 'hidden',
       '#value' => $task->durationunit,
     );
 
-    $form['tasks']['tasks'][$task->nid]['task_parent-nid_'. $task->nid] = array(
+    $form['tasks']['tasks'][$task->nid]['task_parent-nid_' . $task->nid] = array(
       '#type' => 'select',
       '#options' => array(0 => '-') + $parent_tasks,
       '#default_value' => $task->parent_nid,
     );
 
-    $form['tasks']['tasks'][$task->nid]['task_nid_'. $task->nid] = array(
+    $form['tasks']['tasks'][$task->nid]['task_nid_' . $task->nid] = array(
       '#type' => 'hidden',
       '#default_value' => $task->nid,
     );
 
-    $form['tasks']['tasks'][$task->nid]['task_weight_'. $task->nid] = array(
+    $form['tasks']['tasks'][$task->nid]['task_weight_' . $task->nid] = array(
       '#type' => 'weight',
       '#default_value' => $task->weight,
     );
@@ -288,10 +295,10 @@ function pmtask_tasks_form($form_id, $header, $tasks, $project) {
     $params['task_nid'] = $task->nid;
 
     $v = pm_icon_edit_node($task, $params);
-    $v .= '&nbsp;'. pm_icon_delete_node($task, $params);
-    $v .= '&nbsp;'. pm_icon_add_node($task, $params);
+    $v .= '&nbsp;' . pm_icon_delete_node($task, $params);
+    $v .= '&nbsp;' . pm_icon_add_node($task, $params);
 
-    $form['tasks']['tasks'][$task->nid]['task_operations_'. $task->nid] = array(
+    $form['tasks']['tasks'][$task->nid]['task_operations_' . $task->nid] = array(
       '#value' => $v,
     );
   }
@@ -315,6 +322,9 @@ function pmtask_tasks_form($form_id, $header, $tasks, $project) {
   return $form;
 }
 
+/**
+ * Submit function for pmtask_tasks_form().
+ */
 function pmtask_tasks_submit($form, &$form_state) {
   $tasks = array();
   foreach ($form_state['values'] as $key => $value) {
@@ -333,6 +343,9 @@ function pmtask_tasks_submit($form, &$form_state) {
   drupal_set_message(t('Tasks saved'));
 }
 
+/**
+ * Defines filter form for project node tasks tab.
+ */
 function pmtask_tasks_filter() {
   $category_list = pm_attributes_bydomain('Task category search');
   $taskcategory = $_SESSION['pmtask_tasks_filter']['taskcategory'];
@@ -398,16 +411,25 @@ function pmtask_tasks_filter() {
   return $form;
 }
 
+/**
+ * Saves filter values on project node tasks tab.
+ */
 function pmtask_tasks_filter_filter($form, &$form_state) {
   $_SESSION['pmtask_tasks_filter']['taskcategory'] = $form_state['values']['taskcategory'];
   $_SESSION['pmtask_tasks_filter']['taskstatus'] = $form_state['values']['taskstatus'];
   $_SESSION['pmtask_tasks_filter']['taskpriority'] = $form_state['values']['taskpriority'];
 }
 
+/**
+ * Forgets stored filter values on project node tasks tab.
+ */
 function pmtask_tasks_filter_reset($form, &$form_state) {
   unset($_SESSION['pmtask_tasks_filter']);
 }
 
+/**
+ * Javascript callback for tasks.
+ */
 function _pmtask_project_tasks_js($project_nid) {
   $tree = _pmtask_get_tree($project_nid);
   $tasks = _pmtask_plain_tree($tree);
@@ -415,6 +437,9 @@ function _pmtask_project_tasks_js($project_nid) {
   exit();
 }
 
+/**
+ * Javascript callback for task assignments.
+ */
 function _pmtask_project_assignments_js($organization_nid, $project_nid) {
   $assignments = pm_get_assignment_options($organization_nid, $project_nid);
   print drupal_to_js($assignments);

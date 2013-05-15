@@ -3,6 +3,10 @@
  * @file
  * Functions to expose Project Management Task module data to the Views module.
  */
+
+/**
+ * Implements hook_views_data().
+ */
 function pmtask_views_data() {
   $data['pmtask']['table']['group']  = 'Project Management Task';
   $data['pmtask']['table']['join'] = array(
@@ -350,6 +354,9 @@ function pmtask_views_data() {
   return $data;
 }
 
+/**
+ * Implements hook_views_handlers().
+ */
 function pmtask_views_handlers() {
   return array(
     'info' => array(
@@ -371,14 +378,7 @@ function pmtask_views_handlers() {
 }
 
 /**
- * Implementation of hook_date_api_fields().
- * on behalf of core fields.
- *
- * All modules that create custom fields that use the
- * 'views_handler_field_date' handler can provide
- * additional information here about the type of
- * date they create so the date can be used by
- * the Date API views date argument and date filter.
+ * Implements hook_date_api_fields().
  */
 function pmtask_date_api_fields($field) {
   $values = array(
