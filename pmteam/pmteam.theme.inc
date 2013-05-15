@@ -32,11 +32,12 @@ function theme_pmteam_view($variables) {
   if (isset($node->members_array) && is_array($node->members_array)) {
     foreach ($node->members_array as $nid => $name) {
       $member = node_load($nid);
-      if (($member->type == 'pmperson' && pmperson_access('view', $nid)) || ($member->type == 'pmorganization' && pmorganization_node_access($nid, 'view'))) {
+      // @todo Revisit these node access checks once access control changes have been finished.
+      if (($member->type == 'pmperson' && pmperson_node_access('view', $nid)) || ($member->type == 'pmorganization' && pmorganization_node_access($nid, 'view'))) {
         if (!empty($node->members_deactivated_array) && array_key_exists($nid, $node->members_deactivated_array)) {
-          $name .= " (". t('disabled') .")";
+          $name .= " (" . t('disabled') . ")";
         }
-        $node->members_array[$nid] = l($name, 'node/'. $nid);
+        $node->members_array[$nid] = l($name, 'node/' . $nid);
     }
   }
 
