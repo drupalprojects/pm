@@ -64,12 +64,12 @@ function pmtimetracking_views_default_views() {
     'edit_node' => array(
       'align' => '',
       'separator' => ' ',
-      'empty_column' => 0,
+      'empty_column' => 1,
     ),
     'delete_node' => array(
       'align' => '',
       'separator' => '',
-      'empty_column' => 0,
+      'empty_column' => 1,
     ),
   );
   /* No results behavior: Global: Text area */

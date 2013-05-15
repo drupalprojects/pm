@@ -7,7 +7,7 @@ function pmorganization_views_default_views() {
   $view->description = '';
   $view->tag = 'pm';
   $view->base_table = 'node';
-  $view->human_name = 'pmorganization_list';
+  $view->human_name = 'Project Management Organization List';
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
@@ -49,12 +49,12 @@ function pmorganization_views_default_views() {
     'edit_node' => array(
       'align' => '',
       'separator' => ' ',
-      'empty_column' => 0,
+      'empty_column' => 1,
     ),
     'delete_node' => array(
       'align' => '',
       'separator' => '',
-      'empty_column' => 0,
+      'empty_column' => 1,
     ),
   );
   /* Field: Content: Title */

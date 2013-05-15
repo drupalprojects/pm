@@ -4,11 +4,11 @@ function pmteam_views_default_views() {
   $views = array();
 
   $view = new view();
-  $view->name = 'pm_team_list';
+  $view->name = 'pmteam_list';
   $view->description = '';
   $view->tag = 'pm';
   $view->base_table = 'node';
-  $view->human_name = 'pmteam_list';
+  $view->human_name = 'Project Management Team List';
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */

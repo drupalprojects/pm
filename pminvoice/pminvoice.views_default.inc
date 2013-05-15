@@ -3,11 +3,11 @@ function pminvoice_views_default_views() {
   $views = array();
 
   $view = new view();
-  $view->name = 'pminvoices_list';
+  $view->name = 'pminvoice_list';
   $view->description = '';
-  $view->tag = 'default';
+  $view->tag = 'pm';
   $view->base_table = 'node';
-  $view->human_name = 'pminvoices_list';
+  $view->human_name = 'Project Management Invoice List';
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
@@ -78,7 +78,7 @@ function pminvoice_views_default_views() {
     'delete_node' => array(
       'align' => '',
       'separator' => '',
-      'empty_column' => 0,
+      'empty_column' => 1,
     ),
   );
   /* Relationship: Project Management Invoice: Organization */

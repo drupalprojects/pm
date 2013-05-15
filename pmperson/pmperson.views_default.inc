@@ -63,7 +63,7 @@ function pmperson_views_default_views() {
     'delete_node' => array(
       'align' => '',
       'separator' => '',
-      'empty_column' => 0,
+      'empty_column' => 1,
     ),
   );
   /* Relationship: Project Management Person: Organization */
