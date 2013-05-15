@@ -60,9 +60,11 @@ function pm_permission() {
 }
 
 // Note #370120. It is intended to move these calls to pages which specifically need them rather than on hook_init.
+/**
+ * Implements hook_init().
+ */
 function pm_init() {
-  drupal_add_js(drupal_get_path('module', 'pm') .'/pm.js', 'module', 'header', FALSE);
-  drupal_add_css(drupal_get_path('module', 'pm') .'/pm.css');
+  drupal_add_css(drupal_get_path('module', 'pm') . '/pm.css');
 }
 
 /**

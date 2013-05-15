@@ -19,6 +19,9 @@ function pmperson_help($path, $arg) {
   return $o;
 }
 
+/**
+ * Implements hook_init().
+ */
 function pmperson_init() {
   global $user;
   if ($user->uid && !isset($user->pmorganization_nid) || !isset($user->pmperson_nid)) {
@@ -30,16 +33,11 @@ function pmperson_init() {
   if (!$user->uid || !isset($user->pmorganization_nid)) {
     $user->pmorganization_nid = -1;
   }
-  $settings = array(
-    'pm' => array(
-      'organization_people_url' => url('pm/organization_people_js/')
-    ),
-  );
-  drupal_add_js($settings, 'setting');
-  drupal_add_js(drupal_get_path('module', 'pm') .'/pm.js', 'module', 'header', FALSE);
-  drupal_add_js(drupal_get_path('module', 'pmperson') .'/pmperson.js', 'module', 'header', FALSE);
 }
 
+/**
+ * Implements hook_permission().
+ */
 function pmperson_permission() {
   return array(
     'Project Management Person: access' => array(

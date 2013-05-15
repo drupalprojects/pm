@@ -79,21 +79,6 @@ function pmproject_permission() {
 }
 
 /**
- * Implements hook_init().
- */
-function pmproject_init() {
-  $settings = array(
-    'pm' => array(
-      'organization_projects_url' => url('pm/organization_projects_js/')
-    ),
-  );
-  drupal_add_js($settings, 'setting');
-
-  drupal_add_js(drupal_get_path('module', 'pm') . '/pm.js', 'module', 'header', FALSE);
-  drupal_add_js(drupal_get_path('module', 'pmproject') . '/pmproject.js', 'module', 'header', FALSE);
-}
-
-/**
  * Implements hook_node_access().
  */
 function pmproject_node_access($node, $op, $account = NULL) {
