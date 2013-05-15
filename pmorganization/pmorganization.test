@@ -3,8 +3,11 @@
  * @file
  * Test definitions for the Project Management Organization module
  */
-class pmorganizationTestCase extends DrupalWebTestCase {
+class PMOrganizationTestCase extends DrupalWebTestCase {
 
+  /**
+   * Provides metadata about this group of test cases.
+   */
   public static function getInfo() {
     return array(
       'name' => 'Project Management Organization functionality',
@@ -13,10 +16,16 @@ class pmorganizationTestCase extends DrupalWebTestCase {
     );
   }
 
+  /**
+   * Standard configuration for all test cases.
+   */
   public function setUp() {
-    parent::setUp('views','pm', 'pmorganization');
+    parent::setUp('views', 'pm', 'pmorganization');
   }
 
+  /**
+   * Test case covering access of organization list.
+   */
   public function testpmorganizationAccess() {
     $this->drupalGet('pm/organizations');
     $this->assertResponse(403, t('Make sure access is denied to Project Management Organizations list for anonymous user'));
@@ -32,6 +41,9 @@ class pmorganizationTestCase extends DrupalWebTestCase {
     $this->assertText(t('Organizations'), t('Make sure the correct page has been displayed by checking that the title is "Organizations".'));
   }
 
+  /**
+   * Test case covering creation of pmorganizations.
+   */
   public function testpmorganizationCreate() {
     $privileged_user = $this->drupalCreateUser(array('Project Management Organization: add'));
     $this->drupalLogin($privileged_user);

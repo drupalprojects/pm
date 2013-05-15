@@ -265,6 +265,9 @@ function pmorganization_views_data() {
   return $data;
 }
 
+/**
+ * Implements pmorganization_views_handlers().
+ */
 function pmorganization_views_handlers() {
   return array(
     'info' => array(

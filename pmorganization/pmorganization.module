@@ -3,18 +3,24 @@
  * @file
  */
 
+/**
+ * Implements hook_help().
+ */
 function pmorganization_help($path, $arg) {
   $output = '';
 
   switch ($path) {
     case "admin/help#pmorganization":
-      $output = '<p>'. t("Provides organization support for Project Management") .'</p>';
+      $output = '<p>' . t("Provides organization support for Project Management") . '</p>';
       break;
   }
 
   return $output;
 }
 
+/**
+ * Implements hook_permission().
+ */
 function pmorganization_permission() {
   return array(
     'Project Management Organization: access' => array(
@@ -51,7 +57,7 @@ function pmorganization_permission() {
 }
 
 /**
- * Implements hook_node_access.
+ * Implements hook_node_access().
  *
  * Define node access requirements for Project Management Organization nodes.
  */
@@ -70,6 +76,9 @@ function pmorganization_node_access($node, $op, $account = NULL) {
   return NODE_ACCESS_IGNORE;
 }
 
+/**
+ * Implements hook_menu().
+ */
 function pmorganization_menu() {
   $items = array();
 
@@ -91,6 +100,9 @@ function pmorganization_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_theme().
+ */
 function pmorganization_theme() {
   return array(
     'pmorganization_view' => array(
@@ -100,6 +112,9 @@ function pmorganization_theme() {
   );
 }
 
+/**
+ * Implements hook_node_info().
+ */
 function pmorganization_node_info() {
   return array(
     'pmorganization' => array(
@@ -107,11 +122,14 @@ function pmorganization_node_info() {
       'base' => 'pmorganization',
       'description' => t("An organization for Project Management."),
       'title_label' => t("Name"),
-      'body_label' => t("Note"),
+      'body_label' => t("Description"),
     )
   );
 }
 
+/**
+ * Implements hook_field_extra_fields().
+ */
 function pmorganization_field_extra_fields() {
   $extra['node']['pmorganization'] = array(
     'form' => array(
@@ -136,10 +154,16 @@ function pmorganization_field_extra_fields() {
   return $extra;
 }
 
+/**
+ * Implements hook_field_extra_fields_alter().
+ */
 function pmorganization_field_extra_fields_alter(&$info) {
   $info['node']['pmorganization']['form']['title']['weight'] = -20;
 }
 
+/**
+ * Implements hook_form().
+ */
 function pmorganization_form(&$node) {
   $breadcrumb = array();
   $breadcrumb[] = l(t('Project Management'), 'pm');
@@ -303,9 +327,9 @@ function pmorganization_form(&$node) {
     '#default_value' => isset($node->taxid) ? $node->taxid : NULL,
   );
 
-  //Check to see if the body field is still there, if so display it
-  $body = field_get_items('pmorganization',$node,'body');
-  if($body){
+  // Check to see if the body field is still there, if so display it
+  $body = field_get_items('pmorganization', $node, 'body');
+  if ($body) {
     $form['body_field'] = $body;
   }
 
@@ -317,6 +341,9 @@ function pmorganization_form(&$node) {
   return $form;
 }
 
+/**
+ * Implements hook_insert().
+ */
 function pmorganization_insert($node) {
   db_insert('pmorganization')
     ->fields(array(
@@ -342,6 +369,9 @@ function pmorganization_insert($node) {
     ->execute();
 }
 
+/**
+ * Implements hook_update().
+ */
 function pmorganization_update($node) {
   // if this is a new node or we're adding a new revision,
   if ($node->revision) {
@@ -376,6 +406,9 @@ function pmorganization_update($node) {
   }
 }
 
+/**
+ * Implements hook_node_prepare().
+ */
 function pmorganization_node_prepare($node) {
   if (!isset($node->nid)) {
     $node->iscustomer = 1;
@@ -393,6 +426,9 @@ function pmorganization_node_prepare($node) {
   }
 }
 
+/**
+ * Implements hook_node_revision_delete().
+ */
 function pmorganization_node_revision_delete($node) {
   // Notice that we're matching a single revision based on the node's vid.
   db_delete('pmorganization')
@@ -400,6 +436,9 @@ function pmorganization_node_revision_delete($node) {
     ->execute();
 }
 
+/**
+ * Implements hook_delete().
+ */
 function pmorganization_delete($node) {
   // Notice that we're matching all revision, by using the node's nid.
   db_delete('pmorganization')
@@ -407,6 +446,9 @@ function pmorganization_delete($node) {
     ->execute();
 }
 
+/**
+ * Implements hook_load().
+ */
 function pmorganization_load($nodes) {
   foreach ($nodes as $nid => &$node) {
     $result = db_select('pmorganization', 'sor')
@@ -415,7 +457,7 @@ function pmorganization_load($nodes) {
       ->execute();
     $record = array();
     $record = $result->fetchAssoc();
-    if($record) {
+    if ($record) {
       foreach ($record as $key => $value) {
         $node->$key = $value;
       }
@@ -425,6 +467,9 @@ function pmorganization_load($nodes) {
   }
 }
 
+/**
+ * Implements hook_view().
+ */
 function pmorganization_view($node, $view_mode) {
   if ($view_mode == 'full' && node_is_page($node)) {
     $breadcrumb = array();
@@ -436,6 +481,9 @@ function pmorganization_view($node, $view_mode) {
   return theme('pmorganization_view', array('node' => $node, 'view_mode' => $view_mode));
 }
 
+/**
+ * Admin settings form for pmproject module
+ */
 function pmorganization_admin_settings() {
   $form = array();
 
@@ -469,12 +517,15 @@ function pmorganization_admin_settings() {
     $form['pm_organization_nid'] = array(
       '#type' => 'item',
       '#title' => t('Host organization'),
-      '#markup' => t('There are no Project Management Organizations in the system.') .'<br />'. l(t('Create a Project Management Organization'), 'node/add/pmorganization'),
+      '#markup' => t('There are no Project Management Organizations in the system.') . '<br />' . l(t('Create a Project Management Organization'), 'node/add/pmorganization'),
     );
   }
   return system_settings_form($form);
 }
 
+/**
+ * Implements hook_views_api().
+ */
 function pmorganization_views_api() {
   return array(
     'api' => 2,
@@ -484,7 +535,7 @@ function pmorganization_views_api() {
 
 
 /**
- * Implements  hook_node_access_records().
+ * Implements hook_node_access_records().
  */
 function pmorganization_node_access_records($node) {
   if (empty($node->status)) {

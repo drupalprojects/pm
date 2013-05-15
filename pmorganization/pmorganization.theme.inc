@@ -16,7 +16,7 @@ function theme_pmorganization_view($variables) {
     '#weight' => -25,
   );
 
-/*
+/**
   $node->content['links']['expenses'] = theme('pm_link', 'pmorganization', 'pmexpense', $node->nid, $l_pos++);
   $node->content['links']['invoices'] = theme('pm_link', 'pmorganization', 'pminvoice', $node->nid, $l_pos++);
   $node->content['links']['notes'] = theme('pm_link', 'pmorganization', 'pmnote', $node->nid, $l_pos++);
@@ -90,14 +90,14 @@ function theme_pmorganization_view($variables) {
   $node->content['group4']['www'] = array(
     '#prefix' => '<div class="www">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('WWW'), 'value' => l($node->www, 'http://'. $node->www, array('absolute' => TRUE)))),
+    '#markup' => theme('pm_view_item', array('label' => t('WWW'), 'value' => l($node->www, 'http://' . $node->www, array('absolute' => TRUE)))),
     '#weight' => 2,
   );
 
   $node->content['group4']['mail'] = array(
     '#prefix' => '<div class="mail">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('E-mail'), 'value' => l($node->email, 'mailto:'. $node->email, array('absolute' => TRUE)))),
+    '#markup' => theme('pm_view_item', array('label' => t('E-mail'), 'value' => l($node->email, 'mailto:' . $node->email, array('absolute' => TRUE)))),
     '#weight' => 3,
   );
 

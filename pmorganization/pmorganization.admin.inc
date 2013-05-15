@@ -16,7 +16,7 @@ function pmorganization_autocomplete($string = '') {
       ->range(0, 10)
       ->execute();
 
-      foreach($return as $row) {
+      foreach ($return as $row) {
         $matches[$row->title] = check_plain($row->title);
       }
     }

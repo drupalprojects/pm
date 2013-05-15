@@ -1,4 +1,16 @@
 <?php
+/**
+ * @file
+ *
+ * Views integration default settings.
+ *
+ * Stores default values for views. The view provides a list of organization
+ * nodes and is available at 'pm/organizations'
+ */
+
+/**
+ * Implements hook_views_default_views().
+ */
 function pmorganization_views_default_views() {
   $views = array();
 

@@ -3,6 +3,9 @@
  * @file
  */
 
+/**
+ * Implements hook_install().
+ */
 function pmorganization_install() {
   variable_set('node_options_pmorganization', array('status'));
   variable_set('node_permissions_pmorganization', 0);
@@ -348,6 +351,9 @@ function pmorganization_schema() {
   return $schema;
 }
 
+/**
+ * Implements hook_update_last_removed().
+ */
 function pmorganization_update_last_removed() {
   return 6202;
 }
@@ -374,7 +380,7 @@ function pmorganization_update_7101() {
 }
 
 /**
- * Allow Project Management to override the default Organization content type CRUD permissions
+ * Allow Project Management to override the default content type permissions
  */
 function pmorganization_update_7102() {
   variable_set('node_permissions_pmorganization', 0);
