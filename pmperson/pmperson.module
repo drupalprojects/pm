@@ -534,6 +534,17 @@ function _pmperson_user_load(&$account) {
       $loaded_persons[$account->uid]->organization_nid = $record->organization_nid;
       $account->pmperson_nid = $loaded_persons[$account->uid]->nid;
       $account->pmorganization_nid = $loaded_persons[$account->uid]->organization_nid;
+      if (module_exists('pmteam')) {
+        $result = db_select('pmteam', 'pmt')
+          ->fields('pmt', array('nid'))
+          ->condition('pmt.mnid', $account->pmperson_nid)
+          ->execute();
+        $loaded_persons[$account->uid]->team = array();
+        foreach ($result as $pmteam) {
+          $loaded_persons[$account->uid]->team[] = $pmteam->nid;
+        }
+        $account->pmteam = $loaded_persons[$account->uid]->team;
+      }
     }
     else {
       $loaded_persons[$account->uid] = 0;
