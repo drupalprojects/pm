@@ -1,7 +1,11 @@
 <?php
 /**
  * @file
- * Functions to expose Project Management Ticket module data to the Views module.
+ * Functions to expose Project Management Ticket data to the Views module.
+ */
+
+/**
+ * Implements hook_views_data().
  */
 function pmticket_views_data() {
   $data['pmticket']['table']['group']  = 'Project Management Ticket';
@@ -279,6 +283,9 @@ function pmticket_views_data() {
   return $data;
 }
 
+/**
+ * Implements hook_views_handlers().
+ */
 function pmticket_views_handlers() {
   return array(
     'info' => array(
@@ -299,6 +306,9 @@ function pmticket_views_handlers() {
   );
 }
 
+/**
+ * Implements hook_date_api_fields().
+ */
 function pmticket_date_api_fields($field) {
   $values = array(
     'sql_type' => DATE_UNIX,
@@ -317,6 +327,9 @@ function pmticket_date_api_fields($field) {
 
 }
 
+/**
+ * Implements hook_date_api_tables().
+ */
 function pmticket_date_api_tables() {
   return array('pmticket');
 }

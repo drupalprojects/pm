@@ -1,9 +1,15 @@
 <?php
 /**
  * @file
- * This file will contain default views for the Project Management Ticket module.
+ * Views integration default settings.
+ *
+ * Stores default values for views. The view provides a list of ticket
+ * nodes and is available at 'pm/tickets'
  */
 
+/**
+ * Implements hook_views_default_views().
+ */
 function pmticket_views_default_views() {
   $views = array();
 

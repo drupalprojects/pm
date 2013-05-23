@@ -4,6 +4,9 @@
  * @file
  */
 
+/**
+ * Provides HTML markup for a pmticket list.
+ */
 function theme_pmticket_list($variables) {
   $header = $variables['header'];
   $tickets = $variables['tickets'];
@@ -17,15 +20,15 @@ function theme_pmticket_list($variables) {
     $n->type = 'pmticket';
 
     $rows[] = array(
-      pm_icon('category_'. $ticket->ticketcategory, pm_attribute_value('Ticket category', $ticket->ticketcategory)),
-      l($ticket->organization_title, 'node/'. $ticket->organization_nid),
-      l($ticket->project_title, 'node/'. $ticket->project_nid),
-      l($ticket->title, 'node/'. $ticket->nid) . theme('mark', array('type' => node_mark($ticket->nid, $ticket->changed))),
+      pm_icon('category_' . $ticket->ticketcategory, pm_attribute_value('Ticket category', $ticket->ticketcategory)),
+      l($ticket->organization_title, 'node/' . $ticket->organization_nid),
+      l($ticket->project_title, 'node/' . $ticket->project_nid),
+      l($ticket->title, 'node/' . $ticket->nid) . theme('mark', array('type' => node_mark($ticket->nid, $ticket->changed))),
       format_date($ticket->created, 'small'),
-      pm_icon('status_'. $ticket->ticketstatus, pm_attribute_value('Ticket status', $ticket->ticketstatus)),
-      pm_icon('priority_'. $ticket->ticketpriority, pm_attribute_value('Ticket priority', $ticket->ticketpriority)),
+      pm_icon('status_' . $ticket->ticketstatus, pm_attribute_value('Ticket status', $ticket->ticketstatus)),
+      pm_icon('priority_' . $ticket->ticketpriority, pm_attribute_value('Ticket priority', $ticket->ticketpriority)),
       array(
-        'data' => pm_icon_edit_node($n, $_GET) .'&nbsp;'. pm_icon_delete_node($n, $_GET),
+        'data' => pm_icon_edit_node($n, $_GET) . '&nbsp;' . pm_icon_delete_node($n, $_GET),
 //        'class' => 'pm_list_operations',
       ),
     );
@@ -33,6 +36,9 @@ function theme_pmticket_list($variables) {
   return theme('table', array('header' => $header, 'rows' => $rows));
 }
 
+/**
+ * Provides HTML markup for a pmticket node view.
+ */
 function theme_pmticket_view($variables) {
   $node = $variables['node'];
 
@@ -67,21 +73,21 @@ function theme_pmticket_view($variables) {
   $node->content['group1']['organization'] = array(
     '#prefix' => '<div class="organization">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Organization'), 'value' => l($node->organization_title, 'node/'. $node->organization_nid))),
+    '#markup' => theme('pm_view_item', array('label' => t('Organization'), 'value' => l($node->organization_title, 'node/' . $node->organization_nid))),
     '#weight' => 1,
   );
 
   $node->content['group1']['project_nid'] = array(
     '#prefix' => '<div class="project">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Project'), 'value' => l($node->project_title, 'node/'. $node->project_nid))),
+    '#markup' => theme('pm_view_item', array('label' => t('Project'), 'value' => l($node->project_title, 'node/' . $node->project_nid))),
     '#weight' => 2,
   );
 
   $node->content['group1']['task_nid'] = array(
     '#prefix' => '<div class="task">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Task'), 'value' => l($node->task_title, 'node/'. $node->task_nid))),
+    '#markup' => theme('pm_view_item', array('label' => t('Task'), 'value' => l($node->task_title, 'node/' . $node->task_nid))),
     '#weight' => 2,
   );
 
@@ -121,7 +127,7 @@ function theme_pmticket_view($variables) {
   $node->content['group5']['assigned'] = array(
     '#prefix' => '<div class="assigned">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Assigned to'), 'value' => l($node->assigned_title, 'node/'. $node->assigned_nid))),
+    '#markup' => theme('pm_view_item', array('label' => t('Assigned to'), 'value' => l($node->assigned_title, 'node/' . $node->assigned_nid))),
   );
 
   $body = field_get_items('node', $node, 'body');

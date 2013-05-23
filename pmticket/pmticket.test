@@ -3,8 +3,11 @@
  * @file
  * Test definitions for the Project Management Ticket module.
  */
-class pmticketTestCase extends DrupalWebTestCase {
+class PMTicketTestCase extends DrupalWebTestCase {
 
+  /**
+   * Provides metadata about this group of test cases.
+   */
   public static function getInfo() {
     return array(
       'name' => t('Project Management Ticket Functionality'),
@@ -13,10 +16,16 @@ class pmticketTestCase extends DrupalWebTestCase {
     );
   }
 
+  /**
+   * Standard configuration for all test cases.
+   */
   public function setUp() {
     parent::setUp('pm', 'pmorganization', 'pmproject', 'pmtask', 'pmticket');
   }
 
+  /**
+   * Test case covering access of ticket list.
+   */
   public function testpmticketAccess() {
     $this->drupalGet('pm/tickets');
     $this->assertResponse(403, t('Make sure access is denied to Project Management Tickets list for anonymous user'));
@@ -32,6 +41,9 @@ class pmticketTestCase extends DrupalWebTestCase {
     $this->assertText(t('Tickets'), t('Make sure the correct page has been displayed by checking that the title is "Tickets".'));
   }
 
+  /**
+   * Test case covering creation of pmtickets.
+   */
   public function testpmticketCreate() {
     // Create and login user
     $user = $this->drupalCreateUser(array('Project Management Organization: add', 'Project Management Organization: view all', 'Project Management Project: add', 'Project Management Project: view all', 'Project Management Task: add', 'Project Management Task: view all', 'Project Management Ticket: add', 'Project Management Ticket: view all'));

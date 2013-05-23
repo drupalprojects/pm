@@ -7,18 +7,23 @@
  * 2: Access functions
  */
 
-// HOOKS
+/**
+ * Implements hook_help().
+ */
 function pmticket_help($path, $arg) {
   $o = '';
 
   switch ($path) {
     case "admin/help#pmticket":
-      $o = '<p>'. t("Provides ticket support for Project Management") .'</p>';
+      $o = '<p>' . t("Provides ticket support for Project Management") . '</p>';
       break;
   }
   return $o;
 }
 
+/**
+ * Implements hook_permission().
+ */
 function pmticket_permission() {
   return array(
     'Project Management Ticket: access' => array(
@@ -66,11 +71,16 @@ function pmticket_permission() {
   );
 }
 
-// ACCESS FUNCTIONS
+/**
+ * Implements hook_node_access().
+ */
 function pmticket_node_access($node, $op, $account = NULL) {
   return NODE_ACCESS_IGNORE;
 }
 
+/**
+ * Implements hook_access().
+ */
 function pmticket_access($op, $node, $account=NULL) {
   if (empty($account)) {
     global $user;
@@ -152,6 +162,9 @@ function pmticket_access($op, $node, $account=NULL) {
   return FALSE;
 }
 
+/**
+ * Implements hook_menu().
+ */
 function pmticket_menu() {
   $items = array();
 
@@ -167,6 +180,9 @@ function pmticket_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_theme().
+ */
 function pmticket_theme() {
   return array(
     'pmticket_view' => array(
@@ -176,6 +192,9 @@ function pmticket_theme() {
   );
 }
 
+/**
+ * Implements hook_node_info().
+ */
 function pmticket_node_info() {
   return array(
     'pmticket' => array(
@@ -188,6 +207,9 @@ function pmticket_node_info() {
   );
 }
 
+/**
+ * Implements hook_field_extra_fields().
+ */
 function pmticket_field_extra_fields() {
   $extra['node']['pmticket'] =  array(
     'form' => array(
@@ -220,38 +242,57 @@ function pmticket_field_extra_fields() {
   return $extra;
 }
 
+/**
+ * Implements hook_field_extra_fields_alter().
+ */
 function pmticket_field_extra_fields_alter(&$info) {
   $info['node']['pmticket']['form']['title']['weight'] = -18;
 }
 
-// ORGANISATION / PROJECT / TASK UPDATE FUNCTIONS
+/**
+ * Implements hook_pmorganization_change().
+ */
 function pmticket_pmorganization_change($organization_nid, $organization_title) {
   $s = "UPDATE {pmticket} SET organization_title='%s' WHERE organization_nid=%d AND organization_title <> '%s'";
   db_query($s, $organization_title, $organization_nid, $organization_title);
 }
 
+/**
+ * Implements hook_pmproject_change().
+ */
 function pmticket_pmproject_change($project_nid, $project_title) {
   $s = "UPDATE {pmticket} SET project_title='%s' WHERE project_nid=%d AND project_title <> '%s'";
   db_query($s, $project_title, $project_nid, $project_title);
 }
 
+/**
+ * Implements hook_pmtask_change().
+ */
 function pmticket_pmtask_change($task_nid, $task_title, $task_stepno) {
   $s = "UPDATE {pmticket} SET task_title='%s', task_stepno='%s' WHERE task_nid=%d AND
       (task_title<>'%s' OR task_stepno<>'%s')";
   db_query($s, $task_title, $task_stepno, $task_nid, $task_title, $task_stepno);
 }
 
+/**
+ * Implements hook_pmproject_change_hierarchy().
+ */
 function pmticket_pmproject_change_hierarchy($project_nid, $organization_nid, $organization_title) {
   $s = "UPDATE {pmticket} SET organization_nid=%d, organization_title='%s' WHERE project_nid=%d";
   db_query($s, $organization_nid, $organization_title, $project_nid);
 }
 
+/**
+ * Implements hook_pmtask_change_hierarchy().
+ */
 function pmticket_pmtask_change_hierarchy($task_nid, $organization_nid, $organization_title, $project_nid, $project_title) {
   $s = "UPDATE {pmticket} SET organization_nid=%d, organization_title='%s', project_nid=%d, project_title='%s' WHERE task_nid=%d";
   db_query($s, $organization_nid, $organization_title, $project_nid, $project_title, $task_nid);
 }
 
-// TICKET CREATE / EDIT FORM
+/**
+ * Implements hook_form().
+ */
 function pmticket_form(&$node, $form_state) {
   $breadcrumb = array();
   $breadcrumb[] = l(t('Project Management'), 'pm');
@@ -270,7 +311,7 @@ function pmticket_form(&$node, $form_state) {
       $node->organization_nid = $p->organization_nid;
       if (!pmorganization_node_access($node->organization_nid, 'view')) {
         drupal_set_message(t("You cannot add a ticket for this project, as you do not have access to view the organization's profile"));
-        drupal_goto('node/'. $node->project_nid);
+        drupal_goto('node/' . $node->project_nid);
       }
     }
     if (array_key_exists('task_nid', $_GET) && !$node->task_nid) {
@@ -282,7 +323,7 @@ function pmticket_form(&$node, $form_state) {
       $project_access = $node->project_nid ? pmproject_access('view', $node->project_nid) : TRUE;
       if (!pmorganization_node_access($node->organization_nid, 'view') || !pmproject_access('view', $node->project_nid)) {
         drupal_set_message(t("You cannot add a ticket for this task, as you do not have access to view the both the organization and project's profile"));
-        drupal_goto('node/'. $node->task_nid);
+        drupal_goto('node/' . $node->task_nid);
       }
     }
 
@@ -532,9 +573,9 @@ function pmticket_form(&$node, $form_state) {
     '#weight' => 2,
   );
 
-  //Check to see if the body field is still there, if so, display it.
-  $body = field_get_items('pmticket',$node,'body');
-  if($body) {
+  // Check to see if the body field is still there, if so, display it.
+  $body = field_get_items('pmticket', $node, 'body');
+  if ($body) {
     $form['body_field'] = $body;
   }
 
@@ -546,15 +587,23 @@ function pmticket_form(&$node, $form_state) {
   return $form;
 }
 
+/**
+ * Ajax callback for the organization nid field on a pmticket node.
+ */
 function pmticket_ajax_organization_nid(&$form, &$form_state) {
   return $form['group1']['project_nid'];
 }
 
+/**
+ * Ajax callback for the project nid field on a pmticket node.
+ */
 function pmticket_ajax_project_nid(&$form, &$form_state) {
   return $form['group1']['task_nid'];
 }
 
-// INSERT / UPDATE FUNCTIONS
+/**
+ * Implements hook_insert().
+ */
 function pmticket_insert($node) {
   _pmticket_beforesave($node);
 
@@ -587,6 +636,9 @@ function pmticket_insert($node) {
     ->execute();
 }
 
+/**
+ * Implements hook_update().
+ */
 function pmticket_update($node) {
   $org_query = db_select('node', 'n');
   $org_query->join('pmorganization', 'sor', 'n.vid = sor.vid');
@@ -666,6 +718,9 @@ function pmticket_update($node) {
   }
 }
 
+/**
+ * Prepares pmticket for saving.
+ */
 function _pmticket_beforesave(&$node) {
   $org_query = db_select('node', 'n');
   $org_query->join('pmorganization', 'sor', 'n.vid = sor.vid');
@@ -710,6 +765,9 @@ function _pmticket_beforesave(&$node) {
   if (is_array($node->dateend)) $node->dateend = _pm_date_to_gmtimestamp($node->dateend);
 }
 
+/**
+ * Implements hook_node_prepare().
+ */
 function pmticket_node_prepare($node) {
   if (!isset($node->nid)) {
     $category_list = pm_attributes_bydomain('Ticket category');
@@ -723,6 +781,9 @@ function pmticket_node_prepare($node) {
   }
 }
 
+/**
+ * Implements hook_node_revision_delete().
+ */
 function pmticket_node_revision_delete($node) {
   // Notice that we're matching a single revision based on the node's vid.
   db_delete('pmticket')
@@ -730,6 +791,9 @@ function pmticket_node_revision_delete($node) {
     ->execute();
 }
 
+/**
+ * Implements hook_delete().
+ */
 function pmticket_delete($node) {
   // Notice that we're matching all revision, by using the node's nid.
   db_delete('pmticket')
@@ -737,6 +801,9 @@ function pmticket_delete($node) {
     ->execute();
 }
 
+/**
+ * Implements hook_load().
+ */
 function pmticket_load($nodes) {
   foreach ($nodes as $nid => &$node) {
     $result = db_select('pmticket', 'sti')
@@ -753,6 +820,9 @@ function pmticket_load($nodes) {
   }
 }
 
+/**
+ * Implements hook_view().
+ */
 function pmticket_view($node, $view_mode) {
   $breadcrumb = array();
   $breadcrumb[] = l(t('Project Management'), 'pm');
@@ -762,6 +832,9 @@ function pmticket_view($node, $view_mode) {
   return theme('pmticket_view', array('node' => $node, 'view_mode' => $view_mode));
 }
 
+/**
+ * Implements hook_views_api().
+ */
 function pmticket_views_api() {
   return array(
     'api' => 2,
@@ -769,7 +842,9 @@ function pmticket_views_api() {
   );
 }
 
-// ADMIN SETTINGS
+/**
+ * Admin settings form for pmproject module.
+ */
 function pmticket_admin_settings() {
   $form = array();
 
@@ -784,7 +859,9 @@ function pmticket_admin_settings() {
   return system_settings_form($form);
 }
 
-// INVOICE AUTO ADD HANDLER
+/**
+ * Implements hook_pminvoice_auto_add().
+ */
 function pmticket_pminvoice_auto_add($node, $invoice_nid = NULL) {
   if (!module_exists('pminvoice')) {
     drupal_set_message(t('This function should only be called from within Project Management Invoice'));
@@ -861,7 +938,7 @@ function pmticket_pminvoice_auto_add($node, $invoice_nid = NULL) {
 }
 
 /**
- * Implementation of hook_token_list().
+ * Implements hook_token_list().
  */
 function pmticket_token_list($type='all') {
   $tokens = array();
@@ -891,7 +968,7 @@ function pmticket_token_list($type='all') {
 }
 
 /**
- * Implementation of hook_token_values().
+ * Implements hook_token_values().
  */
 function pmticket_token_values($type, $object = NULL) {
   $values = array();
@@ -942,6 +1019,9 @@ function pmticket_token_values($type, $object = NULL) {
   return $values;
 }
 
+/**
+ * Implements hook_pm_dashboard_links().
+ */
 function pmticket_pm_dashboard_links($type) {
   $links = array();
   if ($type == 'page' || $type == 'block') {
@@ -962,7 +1042,7 @@ function pmticket_pm_dashboard_links($type) {
 }
 
 /**
- * Implements  hook_query_TAG_alter.
+ * Implements hook_query_TAG_alter().
  */
 function pmticket_query_pmticket_alter(QueryAlterableInterface $query) {
 
@@ -987,17 +1067,17 @@ function pmticket_query_pmticket_alter(QueryAlterableInterface $query) {
       $or->condition('pmti.assigned_nid', $user->pmperson_nid);
       $add_condition = TRUE;
     }
-    //TODO: check if member of assigned team
-    //port pmteam to D7 first
-    //if (module_exists('pmteam')) {
-    //  // Load teams that the account belongs to
-    //  $belonged_teams = pmteam_user_return_teams($user);
-    //  // Allow access if any of those teams is the one in question
-    //  foreach ($belonged_teams as $belonged_team) {
-    //    $or->condition('pmti.assigned_nid', $user->pmperson_nid);
-    //    $add_condition = TRUE;
-    //  }
-    //}
+    // @todo check if member of assigned team
+    // port pmteam to D7 first
+    // if (module_exists('pmteam')) {
+    //   // Load teams that the account belongs to
+    //   $belonged_teams = pmteam_user_return_teams($user);
+    //   // Allow access if any of those teams is the one in question
+    //   foreach ($belonged_teams as $belonged_team) {
+    //     $or->condition('pmti.assigned_nid', $user->pmperson_nid);
+    //     $add_condition = TRUE;
+    //   }
+    // }
   }
   if ($add_condition) {
     $query->condition($or);
