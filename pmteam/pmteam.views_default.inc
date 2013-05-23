@@ -1,5 +1,12 @@
 <?php
+/**
+ * @file
+ * Defines default views for the Project Management Module.
+ */
 
+/**
+ * Implements hook_views_default_views().
+ */
 function pmteam_views_default_views() {
   $views = array();
 

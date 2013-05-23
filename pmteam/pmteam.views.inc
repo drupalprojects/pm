@@ -3,6 +3,10 @@
  * @file
  * Functions to expose Project Management Team module data to the Views module.
  */
+
+/**
+ * Implements hook_views_data().
+ */
 function pmteam_views_data() {
   $data['pmteam']['table']['group']  = 'Project Management Team';
   $data['pmteam']['table']['join'] = array(
@@ -53,6 +57,9 @@ function pmteam_views_data() {
   return $data;
 }
 
+/**
+ * Implements hook_views_handlers().
+ */
 function pmteam_views_handlers() {
   return array(
     'info' => array(
