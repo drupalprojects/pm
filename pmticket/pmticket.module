@@ -253,41 +253,61 @@ function pmticket_field_extra_fields_alter(&$info) {
  * Implements hook_pmorganization_change().
  */
 function pmticket_pmorganization_change($organization_nid, $organization_title) {
-  $s = "UPDATE {pmticket} SET organization_title='%s' WHERE organization_nid=%d AND organization_title <> '%s'";
-  db_query($s, $organization_title, $organization_nid, $organization_title);
+  db_update('pmticket')
+    ->fields(array('organization_title' => $organization_title))
+    ->condition('organization_nid', $organization_nid)
+    ->execute();
 }
 
 /**
  * Implements hook_pmproject_change().
  */
 function pmticket_pmproject_change($project_nid, $project_title) {
-  $s = "UPDATE {pmticket} SET project_title='%s' WHERE project_nid=%d AND project_title <> '%s'";
-  db_query($s, $project_title, $project_nid, $project_title);
+  db_update('pmticket')
+    ->fields(array('project_title' => $project_title))
+    ->condition('project_nid', $project_nid)
+    ->execute();
 }
 
 /**
  * Implements hook_pmtask_change().
  */
 function pmticket_pmtask_change($task_nid, $task_title, $task_stepno) {
-  $s = "UPDATE {pmticket} SET task_title='%s', task_stepno='%s' WHERE task_nid=%d AND
-      (task_title<>'%s' OR task_stepno<>'%s')";
-  db_query($s, $task_title, $task_stepno, $task_nid, $task_title, $task_stepno);
+  db_update('pmticket')
+    ->fields(array(
+      'task_title' => $task_title,
+      'task_stepno' => $task_stepno,
+    ))
+    ->condition('task_nid', $task_nid)
+    ->execute();
 }
 
 /**
  * Implements hook_pmproject_change_hierarchy().
  */
 function pmticket_pmproject_change_hierarchy($project_nid, $organization_nid, $organization_title) {
-  $s = "UPDATE {pmticket} SET organization_nid=%d, organization_title='%s' WHERE project_nid=%d";
-  db_query($s, $organization_nid, $organization_title, $project_nid);
+  db_update('pmticket')
+    ->fields(array(
+      'organization_nid' => $organization_nid,
+      'organization_title' => $organization_title,
+    ))
+    ->condition('project_nid', $project_nid)
+    ->execute();
 }
 
 /**
  * Implements hook_pmtask_change_hierarchy().
  */
 function pmticket_pmtask_change_hierarchy($task_nid, $organization_nid, $organization_title, $project_nid, $project_title) {
-  $s = "UPDATE {pmticket} SET organization_nid=%d, organization_title='%s', project_nid=%d, project_title='%s' WHERE task_nid=%d";
-  db_query($s, $organization_nid, $organization_title, $project_nid, $project_title, $task_nid);
+  db_update('pmticket')
+    ->fields(array(
+      'organization_nid' => $organization_nid,
+      'organization_title' => $organization_title,
+      'project_nid' => $project_nid,
+      'project_title' => $project_title,
+    ))
+    ->condition('task_nid', $task_nid)
+    ->execute();
 }
 
 /**

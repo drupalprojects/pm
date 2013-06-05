@@ -276,20 +276,37 @@ function pminvoice_pm_rewrite_where_sql($query, $primary_table, $account) {
   return $cond;
 }
 
-// IMPLEMENT Project Management HOOKS - ACCOUNT FOR CHANGES IN OTHER Project Management NODES
+/**
+ * Implements pmorganization_change().
+ */
 function pminvoice_pmorganization_change($organization_nid, $organization_title) {
-  $s = "UPDATE {pminvoice} SET organization_title='%s' WHERE organization_nid=%d AND organization_title <> '%s'";
-  db_query($s, $organization_title, $organization_nid, $organization_title);
+  db_update('pminvoice')
+    ->fields(array('organization_title' => $organization_title))
+    ->condition('organization_nid', $organization_nid)
+    ->execute();
 }
 
+/**
+ * Implements pmorganization_change().
+ */
 function pminvoice_pmproject_change($project_nid, $project_title) {
-  $s = "UPDATE {pminvoice} SET project_title='%s' WHERE project_nid=%d AND project_title <> '%s'";
-  db_query($s, $project_title, $project_nid, $project_title);
+  db_update('pminvoice')
+    ->fields(array('project_title' => $project_title))
+    ->condition('project_nid', $project_nid)
+    ->execute();
 }
 
+/**
+ * Implements pmproject_change_hierarchy().
+ */
 function pminvoice_pmproject_change_hierarchy($project_nid, $organization_nid, $organization_title) {
-  $s = "UPDATE {pminvoice} SET organization_nid=%d, organization_title='%s' WHERE project_nid=%d";
-  db_query($s, $organization_nid, $organization_title, $project_nid);
+  db_update('pminvoice')
+    ->fields(array(
+      'organization_nid' => $organization_nid,
+      'organization_title' => $organization_title,
+    ))
+    ->condition('project_nid', $project_nid)
+    ->execute();
 }
 
 // INVOICE CREATE/EDIT FORM
