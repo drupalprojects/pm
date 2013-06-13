@@ -5,10 +5,13 @@
  * Provides theme functions for Project Management modules
  */
 
+/**
+ * Provides HTML for a Project Management form group.
+ */
 function theme_pm_form_group($variables) {
   $element = $variables['element'];
 
-  drupal_add_css(drupal_get_path('module', 'pm') .'/pm.css');
+  drupal_add_css(drupal_get_path('module', 'pm') . '/pm.css');
 
   $row = array();
   foreach (element_children($element) as $key) {
@@ -52,6 +55,9 @@ function theme_pm_view_item($variables) {
   return $o;
 }
 
+/**
+ * Provides HTML for a Project Management dashboard.
+ */
 function theme_pm_dashboard($link_blocks) {
   $content = '<div id="pmdashboard">';
   if (!empty($link_blocks)) {
@@ -80,6 +86,9 @@ function theme_pm_dashboard($link_blocks) {
   return $content;
 }
 
+/**
+ * Provides HTML for the Project Management dashboard blocks.
+ */
 function theme_pm_dashboard_block($link_blocks) {
   $content = '<div id="pmdashboard-block">';
   if (!empty($link_blocks)) {
@@ -106,8 +115,10 @@ function theme_pm_dashboard_block($link_blocks) {
   return $content;
 }
 
+/**
+ * Provides HTML for Project Management links.
+ */
 function theme_pm_dashboard_link($link_array) {
-
   $content = '';
 
   // DEFAULT ICON
@@ -120,7 +131,7 @@ function theme_pm_dashboard_link($link_array) {
 
   $params = array();
   if (!empty($link_array['nid'])) {
-    $params_key = $link_array['node_type'] .'_nid';
+    $params_key = $link_array['node_type'] . '_nid';
     $params['query'] = array($params_key => $link_array['nid']);
   }
 
@@ -133,13 +144,13 @@ function theme_pm_dashboard_link($link_array) {
     if (empty($link_array['params'])) {
       $link_array['params'] = array();
     }
-    $link .= pm_icon_add('node/add/'. str_replace('_', '-', $link_array['add_type']), $item, $link_array['params']);
+    $link .= pm_icon_add('node/add/' . str_replace('_', '-', $link_array['add_type']), $item, $link_array['params']);
   }
 
 
   if (empty($link_array['nid']) || 0 == $link_array['nid']) {
     if (variable_get('pm_icons_display', TRUE)) {
-      $content .= '<dt id="'. $dt_id .'" class="pmcomponent">';
+      $content .= '<dt id="' . $dt_id . '" class="pmcomponent">';
     }
     else {
       $content .= '<dt class="pmcomponent">';
@@ -149,17 +160,18 @@ function theme_pm_dashboard_link($link_array) {
   }
   else {
     $content = array(
-      '#prefix' => variable_get('pm_icons_display', TRUE) ? '<dt id="'. $dt_id .'" class="pmcomponent">' : '<dt class="pmcomponent">',
+      '#prefix' => variable_get('pm_icons_display', TRUE) ? '<dt id="' . $dt_id . '" class="pmcomponent">' : '<dt class="pmcomponent">',
       '#suffix' => '</dt>',
       '#value' => $link,
       '#weight' => $link_array['weight'],
     );
   }
-
-
   return $content;
 }
 
+/**
+ * Provides HTML for the Project Management dashboard weight table.
+ */
 function theme_pm_dashboard_links_weight_table($form = array()) {
   $type = $form['#infix'];
   $rows = array();
@@ -167,12 +179,12 @@ function theme_pm_dashboard_links_weight_table($form = array()) {
     if ($id[0] == '#') {
       continue;
     }
-    $value[$type .'_pm_dashboard_link_weight_'. $id]['#attributes']['class'] = $type .'dashboard-link-table-weight';
+    $value[$type . '_pm_dashboard_link_weight_' . $id]['#attributes']['class'] = $type . 'dashboard-link-table-weight';
 
     $row = array();
     $row[] = $value['#value'];
-    $row[] = drupal_render($value[$type .'_pm_dashboard_link_active_'. $id]);
-    $row[] = drupal_render($value[$type .'_pm_dashboard_link_weight_'. $id]);
+    $row[] = drupal_render($value[$type . '_pm_dashboard_link_active_' . $id]);
+    $row[] = drupal_render($value[$type . '_pm_dashboard_link_weight_' . $id]);
     unset($value['#value']);
     if (!empty($row)) {
       $rows[] = array(
@@ -183,15 +195,18 @@ function theme_pm_dashboard_links_weight_table($form = array()) {
   }
   $headers = array(t('Link'), t('Active'), t('Weight'));
 
-  $output = theme('table', array('headers' => $headers, 'rows' => $rows, 'attributes' => array('id' => $type .'dashboard-link-table')));
+  $output = theme('table', array('headers' => $headers, 'rows' => $rows, 'attributes' => array('id' => $type . 'dashboard-link-table')));
 
-  drupal_add_tabledrag($type .'dashboard-link-table', 'order', 'sibling', $type .'dashboard-link-table-weight');
+  drupal_add_tabledrag($type . 'dashboard-link-table', 'order', 'sibling', $type . 'dashboard-link-table-weight');
 
   $output .= drupal_render($form);
 
   return $output;
 }
 
+/**
+ * Provides HTML for a Project Management link.
+ */
 function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $weight=0) {
   switch ($source_module) {
 
@@ -238,7 +253,7 @@ function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $
       $list_text = t('Expenses');
       $list_path = 'pm/expenses';
       $add_icon_type = 'pmexpense';
-      $add_path = 'node/add/'. $destination_module;
+      $add_path = 'node/add/' . $destination_module;
       $dt_id = 'pmexpenses';
       break;
 
@@ -247,7 +262,7 @@ function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $
       $list_text = t('Invoices');
       $list_path = 'pm/invoices';
       $add_icon_type = 'pminvoice';
-      $add_path = 'node/add/'. $destination_module;
+      $add_path = 'node/add/' . $destination_module;
       $dt_id = 'pminvoices';
       break;
 
@@ -256,7 +271,7 @@ function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $
       $list_text = t('Knowledge base');
       $list_path = 'pm/knowledgebase';
       $add_icon_type = 'pmknowledgebase';
-      $add_path = 'node/add/'. $destination_module;
+      $add_path = 'node/add/' . $destination_module;
       $dt_id = 'pmknowledgebase';
       break;
 
@@ -265,7 +280,7 @@ function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $
       $list_text = t('Notes');
       $list_path = 'pm/notes/';
       $add_icon_type = 'pmnote';
-      $add_path = 'node/add/'. $destination_module;
+      $add_path = 'node/add/' . $destination_module;
       $dt_id = 'pmnotes';
       break;
 
@@ -274,7 +289,7 @@ function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $
       $list_text = t('Organizations');
       $list_path = 'pm/organizations';
       $add_icon_type = 'pmorganization';
-      $add_path = 'node/add/'. $destination_module;
+      $add_path = 'node/add/' . $destination_module;
       $dt_id = 'pmorganizations';
       break;
 
@@ -283,7 +298,7 @@ function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $
       $list_text = t('People');
       $list_path = 'pm/people/';
       $add_icon_type = 'pmperson';
-      $add_path = 'node/add/'. $destination_module;
+      $add_path = 'node/add/' . $destination_module;
       $dt_id = 'pmpeople';
       break;
 
@@ -292,7 +307,7 @@ function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $
       $list_text = t('Projects');
       $list_path = 'pm/projects';
       $add_icon_type = 'pmproject';
-      $add_path = 'node/add/'. $destination_module;
+      $add_path = 'node/add/' . $destination_module;
       $dt_id = 'pmprojects';
       break;
 
@@ -301,7 +316,7 @@ function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $
       $list_text = t('Tasks');
       $list_path = 'pm/tasks/';
       $add_icon_type = 'pmtask';
-      $add_path = 'node/add/'. $destination_module;
+      $add_path = 'node/add/' . $destination_module;
       $dt_id = 'pmtasks';
       break;
 
@@ -310,7 +325,7 @@ function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $
       $list_text = t('Teams');
       $list_path = 'pm/teams';
       $add_icon_type = 'pmteam';
-      $add_path = 'node/add/'. $destination_module;
+      $add_path = 'node/add/' . $destination_module;
       $dt_id = 'pmteams';
       break;
 
@@ -319,7 +334,7 @@ function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $
       $list_text = t('Tickets');
       $list_path = 'pm/tickets/';
       $add_icon_type = 'pmticket';
-      $add_path = 'node/add/'. $destination_module;
+      $add_path = 'node/add/' . $destination_module;
       $dt_id = 'pmtickets';
       break;
 
@@ -329,7 +344,7 @@ function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $
       $list_path = 'pm/timetrackings';
       $add_icon_type = 'pmtimetracking';
       $node_links_key = 'timetrackings';
-      $add_path = 'node/add/'. $destination_module;
+      $add_path = 'node/add/' . $destination_module;
       $dt_id = 'pmtimetrackings';
       break;
   }
@@ -359,13 +374,13 @@ function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $
     }
 
     if ($node_nid == 0) {
-      $r = variable_get('pm_icons_display', TRUE) ? '<dt id="'. $dt_id .'" class="pmcomponent">' : '<dt class="pmcomponent">';
+      $r = variable_get('pm_icons_display', TRUE) ? '<dt id="' . $dt_id . '" class="pmcomponent">' : '<dt class="pmcomponent">';
       $r .= $v;
       $r .= '</dt>';
     }
     else {
       $r = array(
-        '#prefix' => variable_get('pm_icons_display', TRUE) ? '<dt id="'. $dt_id .'" class="pmcomponent">' : '<dt class="pmcomponent">',
+        '#prefix' => variable_get('pm_icons_display', TRUE) ? '<dt id="' . $dt_id . '" class="pmcomponent">' : '<dt class="pmcomponent">',
         '#suffix' => '</dt>',
         '#value' => $v,
         '#weight' => $weight,
@@ -375,14 +390,20 @@ function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $
   }
 }
 
+/**
+ * Provides HTML for the Project Managment number of items text.
+ */
 function theme_pm_number_items($number) {
   $content = '';
   if ($number !== '') {
-    $content .= '<span class="pmlinks-count">('. $number .')</span>';
+    $content .= '<span class="pmlinks-count">(' . $number . ')</span>';
   }
   return $content;
 }
 
+/**
+ * Provides HTML for the Project Management attributes list.
+ */
 function theme_pm_attribute_list($form) {
   drupal_add_tabledrag('attributes', 'order', 'sibling', 'attribute-weight');
 
@@ -395,26 +416,26 @@ function theme_pm_attribute_list($form) {
 
   if (isset($form['form']['attributes'])) {
     foreach (element_children($form['form']['attributes']) as $key) {
-      $form['form']['attributes'][$key]['attribute_weight_'. $key]['#attributes']['class'] = array('attribute-weight');
-      $domain = check_markup($form['form']['attributes'][$key]['attribute_domain_'. $key]['#value']);
-      $isdefault = $form['form']['attributes'][$key]['attribute_default_'. $key]['#default_value'];
+      $form['form']['attributes'][$key]['attribute_weight_' . $key]['#attributes']['class'] = array('attribute-weight');
+      $domain = check_markup($form['form']['attributes'][$key]['attribute_domain_' . $key]['#value']);
+      $isdefault = $form['form']['attributes'][$key]['attribute_default_' . $key]['#default_value'];
       if ($isdefault) {
         $ischecked = 'checked="checked"';
       }
       else {
         $ischecked = '';
       }
-      $domain_name = 'attribute_default_'. str_replace(' ', '|', $domain);
-      $default_ctl = '<input type="radio" name="'. $domain_name .'" value="'. $key .'" '. $ischecked .'"/>';
+      $domain_name = 'attribute_default_' . str_replace(' ', '|', $domain);
+      $default_ctl = '<input type="radio" name="' . $domain_name . '" value="' . $key . '" ' . $ischecked . '"/>';
       $data = array(
         $domain,
-        check_markup($form['form']['attributes'][$key]['attribute_akey_'. $key]['#value']),
-        check_markup($form['form']['attributes'][$key]['attribute_avalue_'. $key]['#value']),
-        drupal_render($form['form']['attributes'][$key]['attribute_isactive_'. $key]),
+        check_markup($form['form']['attributes'][$key]['attribute_akey_' . $key]['#value']),
+        check_markup($form['form']['attributes'][$key]['attribute_avalue_' . $key]['#value']),
+        drupal_render($form['form']['attributes'][$key]['attribute_isactive_' . $key]),
         $default_ctl,
-        drupal_render($form['form']['attributes'][$key]['attribute_weight_'. $key]),
+        drupal_render($form['form']['attributes'][$key]['attribute_weight_' . $key]),
         array(
-          'data' => $form['form']['attributes'][$key]['attribute_operations_'. $key]['#value'],
+          'data' => $form['form']['attributes'][$key]['attribute_operations_' . $key]['#value'],
           'class' => 'pm_list_operations',
         ),
       );

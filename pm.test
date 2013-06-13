@@ -3,7 +3,10 @@
  * @file
  * Tests for the Project Management module
  */
-class pmTestCase extends DrupalWebTestCase {
+class PMTestCase extends DrupalWebTestCase {
+  /**
+   * Returns meta data for Project Managment tests.
+   */
   public static function getInfo() {
     return array(
       'name' => 'Project Management functionality',
@@ -12,10 +15,16 @@ class pmTestCase extends DrupalWebTestCase {
     );
   }
 
+  /**
+   * Standard set up for all tests.
+   */
   public function setUp() {
     parent::setUp('pm');
   }
 
+  /**
+   * Tests access to Project Management pages.
+   */
   public function testpmAccess() {
     $this->drupalGet('pm');
     $this->assertResponse(403, t('Make sure access is denied to Project Management dashboard for anonymous user'));
@@ -31,6 +40,9 @@ class pmTestCase extends DrupalWebTestCase {
     $this->assertText(t('Project Management Dashboard'), t('Make sure the correct page has been displayed by checking that the title is "Project Management Dashboard".'));
   }
 
+  /**
+   * Tests access to Project Management settings pages.
+   */
   public function testpmAccessSettings() {
     $this->drupalGet('admin/config/pm');
     $this->assertResponse(403, t('Make sure access is denied to Project Management settings page for anonymous user'));
@@ -52,6 +64,9 @@ class pmTestCase extends DrupalWebTestCase {
     $this->assertText(t('Project Management'), t('Make sure the correct page has been displayed by checking that the title of the settings page is "Project Management".'));
   }
 
+  /**
+   * Tests access to Project Management attributes pages.
+   */
   public function testpmAttributesAccess() {
     $this->drupalGet('pm/attributes');
     $this->assertResponse(403, t('Make sure access is denied to Project Management Attributes list for anonymous user'));

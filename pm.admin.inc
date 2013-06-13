@@ -2,8 +2,12 @@
 
 /**
  * @file
+ * List functions for the Project Management module.
  */
 
+/**
+ * Provides a list of attributes.
+ */
 function pm_attribute_list() {
   $i = new stdClass();
   $i->type = 'pm_attribute';
@@ -87,7 +91,7 @@ function pm_attribute_list() {
   else {
     $filterdesc = t('Filtered by !fields', array('!fields' => implode(", ", array_unique($filterfields))));
   }
-  $filterdesc .= ' | '. t('!items items per page', array('!items' => $itemsperpage));
+  $filterdesc .= ' | ' . t('!items items per page', array('!items' => $itemsperpage));
 
   $pm_attribute_list_filter = drupal_get_form('pm_attribute_list_filter', $filterdesc);
 
@@ -107,6 +111,9 @@ function pm_attribute_list() {
   return $o;
 }
 
+/**
+ * Defines form for attribute list.
+ */
 function pm_attribute_list_form($form, &$form_state, $header, $attributes) {
   $form = array();
 
@@ -120,34 +127,34 @@ function pm_attribute_list_form($form, &$form_state, $header, $attributes) {
     $i = new stdClass();
     $i->type = 'pm_attribute';
 
-    $form['attributes']['attributes'][$attribute->aid]['attribute_domain_'. $attribute->aid] = array(
+    $form['attributes']['attributes'][$attribute->aid]['attribute_domain_' . $attribute->aid] = array(
       '#value' => $attribute->domain,
     );
 
-    $form['attributes']['attributes'][$attribute->aid]['attribute_akey_'. $attribute->aid] = array(
+    $form['attributes']['attributes'][$attribute->aid]['attribute_akey_' . $attribute->aid] = array(
       '#value' => $attribute->akey,
     );
 
-    $form['attributes']['attributes'][$attribute->aid]['attribute_avalue_'. $attribute->aid] = array(
+    $form['attributes']['attributes'][$attribute->aid]['attribute_avalue_' . $attribute->aid] = array(
       '#value' => $attribute->avalue,
     );
 
-    $form['attributes']['attributes'][$attribute->aid]['attribute_isactive_'. $attribute->aid] = array(
+    $form['attributes']['attributes'][$attribute->aid]['attribute_isactive_' . $attribute->aid] = array(
       '#type' => 'checkbox',
       '#default_value' => $attribute->isactive,
     );
 
-    $form['attributes']['attributes'][$attribute->aid]['attribute_default_'. $attribute->aid] = array(
+    $form['attributes']['attributes'][$attribute->aid]['attribute_default_' . $attribute->aid] = array(
       '#default_value' => $attribute->isdefault,
     );
 
-    $form['attributes']['attributes'][$attribute->aid]['attribute_weight_'. $attribute->aid] = array(
+    $form['attributes']['attributes'][$attribute->aid]['attribute_weight_' . $attribute->aid] = array(
       '#type' => 'weight',
       '#default_value' => $attribute->weight,
     );
 
-    $form['attributes']['attributes'][$attribute->aid]['attribute_operations_'. $attribute->aid] = array(
-      '#value' => pm_icon_edit('pm/attributes/edit/'. $attribute->aid, $i, $_GET) .'&nbsp;'.  pm_icon_delete('pm/attributes/delete/'. $attribute->aid, $i, $_GET),
+    $form['attributes']['attributes'][$attribute->aid]['attribute_operations_' . $attribute->aid] = array(
+      '#value' => pm_icon_edit('pm/attributes/edit/' . $attribute->aid, $i, $_GET) . '&nbsp;' .  pm_icon_delete('pm/attributes/delete/' . $attribute->aid, $i, $_GET),
     );
   }
 
@@ -160,6 +167,9 @@ function pm_attribute_list_form($form, &$form_state, $header, $attributes) {
   return $form;
 }
 
+/**
+ * Submit function for attribute list.
+ */
 function pm_attribute_list_submit($form, &$form_state) {
   $attributes = array();
   $default_for_domain = array();
@@ -204,6 +214,9 @@ function pm_attribute_list_submit($form, &$form_state) {
   drupal_set_message(t('Attributes saved'));
 }
 
+/**
+ * Defines form for attribute list filter.
+ */
 function pm_attribute_list_filter($form, &$form_state, $filterdesc = 'Filter') {
   $domain = isset($_SESSION['pmattribute_list_filter']['domain']) ? $_SESSION['pmattribute_list_filter']['domain'] : '';
   $akey = isset($_SESSION['pmattribute_list_filter']['akey']) ? $_SESSION['pmattribute_list_filter']['akey'] : '';
@@ -296,6 +309,9 @@ function pm_attribute_list_filter($form, &$form_state, $filterdesc = 'Filter') {
   return $form;
 }
 
+/**
+ * Sets filter for attribute list filter.
+ */
 function pm_attribute_list_filter_filter($form, &$form_state) {
   $_SESSION['pmattribute_list_filter']['domain'] = $form_state['values']['domain'];
   $_SESSION['pmattribute_list_filter']['akey'] = $form_state['values']['akey'];
@@ -305,15 +321,24 @@ function pm_attribute_list_filter_filter($form, &$form_state) {
   $_SESSION['pmattribute_list_filter']['itemsperpage'] = $form_state['values']['itemsperpage'];
 }
 
+/**
+ * Reset function for attribute list filter.
+ */
 function pm_attribute_list_filter_reset($form, &$form_state) {
   unset($_SESSION['pmattribute_list_filter']);
 }
 
+/**
+ * Callback for attribute add page.
+ */
 function pm_attribute_add() {
   $attribute = new stdClass();
   return pm_attribute_form($attribute);
 }
 
+/**
+ * Submit function for attribute add form.
+ */
 function pm_attribute_add_submit($form, &$form_state) {
   if ($form_state['values']['isdefault']) {
     db_query("UPDATE {pmattribute} SET isdefault=0 WHERE domain='%s'", $form_state['values']['domain']);
@@ -340,6 +365,9 @@ function pm_attribute_add_submit($form, &$form_state) {
   drupal_goto($destination);
 }
 
+/**
+ * Define attribute edit form.
+ */
 function pm_attribute_edit($form, $form_state, $aid) {
   $attribute = array();
   if ($aid) {
@@ -354,6 +382,9 @@ function pm_attribute_edit($form, $form_state, $aid) {
   return pm_attribute_form($attribute);
 }
 
+/**
+ * Submit function for attribute edit form.
+ */
 function pm_attribute_edit_submit($form, &$form_state) {
   if ($form_state['values']['isdefault']) {
     $query = db_update('pmattribute')
@@ -383,12 +414,18 @@ function pm_attribute_edit_submit($form, &$form_state) {
   drupal_goto($destination);
 }
 
+/**
+ * Callback for attribute delete.
+ */
 function pm_attribute_form_delete($form, &$form_state) {
   $destination = drupal_get_destination();
   if (array_key_exists('destination', $_REQUEST)) unset($_REQUEST['destination']);
-  drupal_goto('pm/attributes/delete/'. $form_state['values']['aid'], $destination);
+  drupal_goto('pm/attributes/delete/' . $form_state['values']['aid'], $destination);
 }
 
+/**
+ * Defines attribute delete confirmation form.
+ */
 function pm_attribute_delete($form, $form_state, $aid) {
   $destination = drupal_get_destination();
   if (array_key_exists('destination', $_REQUEST)) {
@@ -404,15 +441,18 @@ function pm_attribute_delete($form, $form_state, $aid) {
     ->execute();
 
   $a = $result->fetchObject();
-  $title = $a->domain .' : '. $a->avalue;
+  $title = $a->domain . ' : ' . $a->avalue;
 
   return confirm_form($form,
   t('Are you sure you want to delete the attribute %title?', array('%title' => $title)),
-  array('path' => 'pm/attributes/edit/'. $aid, 'query' => $destination),
+  array('path' => 'pm/attributes/edit/' . $aid, 'query' => $destination),
   t('This action cannot be undone.'),
   t('Delete'), t('Cancel'));
 }
 
+/**
+ * Submit function for attribute delete form.
+ */
 function pm_attribute_delete_submit($form, &$form_state) {
   if ($form_state['values']['aid']) {
     $query = db_delete('pmattribute')
@@ -430,6 +470,9 @@ function pm_attribute_delete_submit($form, &$form_state) {
   }
 }
 
+/**
+ * Defines attribute list form.
+ */
 function pm_attribute_form($attribute = NULL) {
   $breadcrumb = array();
   $breadcrumb[] = l(t('Project Management'), 'pm');
@@ -547,6 +590,9 @@ function pm_attribute_form($attribute = NULL) {
   return $form;
 }
 
+/**
+ * Returns list of distinct attribute domains.
+ */
 function _pm_attibute_domain_options() {
   static $options;
   if (!$options) {
@@ -564,6 +610,9 @@ function _pm_attibute_domain_options() {
   return $options;
 }
 
+/**
+ * Javascript callback for attribute domain autocomplete field.
+ */
 function _pm_attribute_domain_autocomplete($string = '') {
   static $default_domains;
   if (!$default_domains) {
@@ -595,7 +644,7 @@ function _pm_attribute_domain_autocomplete($string = '') {
     $query = db_select('pmattribute', 'att')
       ->fields('att', array('domain'))
       ->distinct()
-      ->where('LOWER(domain) LIKE LOWER(:search)', array(':search' => '%'. $string .'%'));
+      ->where('LOWER(domain) LIKE LOWER(:search)', array(':search' => '%' . $string . '%'));
     $result = $query->execute();
 
     foreach ($result as $a) {

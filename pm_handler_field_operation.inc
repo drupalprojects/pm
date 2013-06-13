@@ -4,6 +4,9 @@
  * Field handler to present a link node edit.
  */
 class pm_handler_field_operation extends views_handler_field_node_link {
+  /**
+   * Adds fields to view.
+   */
   function construct() {
     parent::construct();
     $this->additional_fields['uid'] = array('table' => 'node', 'field' => 'uid');
@@ -11,15 +14,19 @@ class pm_handler_field_operation extends views_handler_field_node_link {
     $this->additional_fields['format'] = array('table' => 'node_revisions', 'field' => 'format');
   }
 
+  /**
+   * Defines views field options.
+   */
   function option_definition() {
-    // $options = parent::option_definition();
     $options['display_add_icon'] = array('default' => TRUE);
     $options['display_icons'] = array('default' => TRUE);
     return $options;
   }
 
+  /**
+   * Defines views field option form.
+   */
   function options_form(&$form, &$form_state) {
-    // parent::options_form($form, $form_state);
     $form['display_icons'] = array(
       '#type' => 'checkbox',
       '#title' => t('Display icon links'),
@@ -33,6 +40,9 @@ class pm_handler_field_operation extends views_handler_field_node_link {
     );
   }
 
+  /**
+   * Renders field to sohw icon.
+   */
   function render($values) {
     // ensure user has access to edit this node.
     $node = new stdClass();
@@ -54,7 +64,7 @@ class pm_handler_field_operation extends views_handler_field_node_link {
     else {
       global $user;
       $type = $node->type;
-      $af = $type .'_access';
+      $af = $type . '_access';
 
       $value = "";
       if ($af('update', $node, $user)) {

@@ -13,30 +13,28 @@
  * 8: Node form theming
  */
 
-// HOOKS
 /**
- * @function
- * Implementation of hook_help().
+ * Implements hook_help().
  */
 function pm_help($path, $arg) {
   $output = '';
 
   switch ($path) {
     case "admin/help#pm":
-      $output = '<p>'.  t("Provides a complete project management environment") .'</p>';
+      $output = '<p>' . t("Provides a complete project management environment") . '</p>';
       break;
     case "admin/help#pmattribute":
-      $output = '<p>'.  t("Provides attributes support for Project Management") .'</p>';
-      $output .= '<p>'. t("Price Modes - Price modes are used calculate the price of the Project Management node when added to an invoice. A price mode can be added to any Project Management node type and any type can be added to an invoice. When a node is added to an invoice it looks for a price mode in the following order:") .'</p>';
-      $output .= '<p>'. t("Ticket, Task, Project, Organization.") .'</p>';
-      $output .= '<p>'. t("It will take the price mode for it's current node or the first valid node type above in it's tree. e.g. For a task node type, if that node doesn't have a price mode it will look at the project and then the organization and take the first one it finds. This means you can define a price mode for the organization and it will be used for all nodes under that organization unless it's given a different one.") .'</p>';
-      $output .= '<p>'. t("The following price modes keys are defined:") .'<br />';
+      $output = '<p>' . t("Provides attributes support for Project Management") . '</p>';
+      $output .= '<p>' . t("Price Modes - Price modes are used calculate the price of the Project Management node when added to an invoice. A price mode can be added to any Project Management node type and any type can be added to an invoice. When a node is added to an invoice it looks for a price mode in the following order:") . '</p>';
+      $output .= '<p>' . t("Ticket, Task, Project, Organization.") . '</p>';
+      $output .= '<p>' . t("It will take the price mode for it's current node or the first valid node type above in it's tree. For example, for a task node type, if that node doesn't have a price mode it will look at the project and then the organization and take the first one it finds. This means you can define a price mode for the organization and it will be used for all nodes under that organization unless it's given a different one.") . '</p>';
+      $output .= '<p>' . t("The following price modes keys are defined:") . '<br />';
       $output .= '<ul>';
-      $output .= '<li>'. t("not applicable - This is ignored by the system. This means that no price mode is defined.") .'</li>';
-      $output .= '<li>'. t("fixed - Price of 0 is used (so the invoice would need to be manually updated.") .'</li>';
-      $output .= '<li>'. t("hourly - Price taken from node and multiplied by billing duration.") .'</li>';
-      $output .= '<li>'. t("daily - Price given is for daily rate. This price is divided by 8 hours and then multiplied by the billing duration.") .'</li>';
-      $output .= '<li>'. t("fixed_price - Will use the price given as the fixed price for that invoice item.") .'</li>';
+      $output .= '<li>' . t("not applicable - This is ignored by the system. This means that no price mode is defined.") . '</li>';
+      $output .= '<li>' . t("fixed - Price of 0 is used (so the invoice would need to be manually updated.") . '</li>';
+      $output .= '<li>' . t("hourly - Price taken from node and multiplied by billing duration.") . '</li>';
+      $output .= '<li>' . t("daily - Price given is for daily rate. This price is divided by 8 hours and then multiplied by the billing duration.") . '</li>';
+      $output .= '<li>' . t("fixed_price - Will use the price given as the fixed price for that invoice item.") . '</li>';
       $output .= '</ul>';
       break;
   }
@@ -45,8 +43,7 @@ function pm_help($path, $arg) {
 }
 
 /**
- * @function
- * Implementation of hook_permission().
+ * Implements hook_permission().
  */
 function pm_permission() {
   return array(
@@ -68,8 +65,7 @@ function pm_init() {
 }
 
 /**
- * @function
- * Implementation of hook_menu().
+ * Implements hook_menu().
  */
 function pm_menu() {
   $items = array();
@@ -215,9 +211,10 @@ function pm_theme() {
 /**
  * Function to create a dashboard (call to theme function)
  *
- * @param string $type dashboard type, used for pm_get_dashboard_links
- * @param null|string $theme Theme function to use, if omitted it uses pm_dashboard
- * @return string themed string
+ * @param string $type
+ *   Dashboard type, used for pm_get_dashboard_links
+ * @return string
+ *   Themed string
  */
 function pm_dashboard($type = 'page') {
   $types = module_invoke_all('pm_dashboard_types');
@@ -226,7 +223,7 @@ function pm_dashboard($type = 'page') {
   if (isset($types[$type]['url']) && isset($types[$type]['title'])) {
     drupal_set_title($types[$type]['title']);
   }
-  drupal_add_css(drupal_get_path('module', 'pm') .'/pm-dashboard.css');
+  drupal_add_css(drupal_get_path('module', 'pm') . '/pm-dashboard.css');
 
   $link_blocks = pm_dashboard_get_links(TRUE, $type);
   if (!empty($link_blocks)) {
@@ -243,9 +240,12 @@ function pm_dashboard($type = 'page') {
 /**
  * Return links array for the pm dashboard.
  *
- * @param bool $check_active when FALSE, returns all links, no matter if activated or not (needed for admin settings)
+ * @param bool $check_active
+ *   When FALSE, returns all links whether active or not (for admin settings)
  * @param string $type
- * @return array dashboard links
+ *   Dashboard type
+ * @return array
+ *   Dashboard links
  */
 function pm_dashboard_get_links($check_active = TRUE, $type = 'page') {
 
@@ -253,7 +253,7 @@ function pm_dashboard_get_links($check_active = TRUE, $type = 'page') {
 
   if (!empty($links)) {
 
-    $default_dashboard_settings = variable_get('pm_'. $type .'dashboard_settings', array());
+    $default_dashboard_settings = variable_get('pm_' . $type . 'dashboard_settings', array());
 
     $weight = 0;
     foreach ($links as $key => &$link_array) {
@@ -312,14 +312,15 @@ function pm_dashboard_get_links($check_active = TRUE, $type = 'page') {
 }
 
 /**
- * Helper function for pm_dashboard_get_links().
- * Order dashboard links by their weight.
- * This is a uasort callback function.
+ * Orders dashboard links by weight. Helper for pm_dashboard_get_links().
  *
  * @see uasort()
- * @param array $a dashboard link array
- * @param array $b dashboard link array
+ * @param array $a
+ *   Dashboard link array
+ * @param array $b
+ *   Dashboard link array
  * @return int
+ *   Relative weight of $a and $b
  */
 function _pm_dashboard_sort_links($a, $b) {
   if (intval($a['weight']) == intval($b['weight'])) {
@@ -333,6 +334,9 @@ function _pm_dashboard_sort_links($a, $b) {
   }
 }
 
+/**
+ * Implements hook_pm_dashboard_links().
+ */
 function pm_pm_dashboard_links($type) {
   $links = array();
   if ($type == 'page' || $type == 'block') {
@@ -362,10 +366,10 @@ function pm_pm_dashboard_links($type) {
 }
 
 /**
- * Implementation of hook_pm_dashboard_types().
- * Defines dashboard types page and block.
- * This can be used as an example for other types
+ * Implements hook_pm_dashboard_types().
+ *
  * @return array
+ *   Definition of dashboard type.
  */
 function pm_pm_dashboard_types() {
   return array(
@@ -394,7 +398,7 @@ function pm_pm_dashboard_types() {
 }
 
 /**
- * Implementation of hook_block().
+ * Implements hook_block().
  */
 function pm_block($op = 'list', $delta = 0) {
   switch ($op) {
@@ -418,7 +422,6 @@ function pm_block($op = 'list', $delta = 0) {
 }
 
 /**
- * @function
  * Defines the administration settings form for the Project Management module
  */
 function pm_admin_settings() {
@@ -444,7 +447,7 @@ function pm_admin_settings() {
   $form['icons']['pm_icons_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Icons directory'),
-    '#default_value' => variable_get('pm_icons_path', drupal_get_path('module', 'pm') .'/icons'),
+    '#default_value' => variable_get('pm_icons_path', drupal_get_path('module', 'pm') . '/icons'),
     '#description' => t("The directory that contains Project Management's icons."),
     '#weight' => $w++,
     '#element_validate' => array('pm_admin_settings_icons_path_validate'),
@@ -606,7 +609,7 @@ function pm_admin_settings() {
       $all_links_options[$link['path']] = l($link['title'], $link['path']);
     }
 
-    $default_dashboard_settings = variable_get('pm_'. $type .'dashboard_settings', array());
+    $default_dashboard_settings = variable_get('pm_' . $type . 'dashboard_settings', array());
 
     $form['pm_dashboard_settings'][$type] = array(
       '#type' => 'fieldset',
@@ -622,12 +625,12 @@ function pm_admin_settings() {
 
     $weight = 0;
     foreach ($all_links_options as $path => $title) {
-      $form['pm_dashboard_settings'][$type]['dashboard_links'][$path][$type .'_pm_dashboard_link_active_'. $path] = array(
+      $form['pm_dashboard_settings'][$type]['dashboard_links'][$path][$type . '_pm_dashboard_link_active_' . $path] = array(
         '#type' => 'checkbox',
         '#title' => $title,
         '#default_value' => isset($default_dashboard_settings[$path]['active']) ? $default_dashboard_settings[$path]['active'] : TRUE,
       );
-      $form['pm_dashboard_settings'][$type]['dashboard_links'][$path][$type .'_pm_dashboard_link_weight_'. $path] = array(
+      $form['pm_dashboard_settings'][$type]['dashboard_links'][$path][$type . '_pm_dashboard_link_weight_' . $path] = array(
         '#type' => 'weight',
         '#default_value' => isset($default_dashboard_settings[$path]['weight']) ? $default_dashboard_settings[$path]['weight'] : $weight,
         '#delta' => 30,
@@ -649,10 +652,12 @@ function pm_admin_settings() {
  * Validate Icon Path form element.
  *
  * @param $form
+ *   Form array
  * @param $form_values
+ *   Form values
  */
 function pm_admin_settings_icons_path_validate($form, $form_values) {
-  $icon_path_old = variable_get('pm_icons_path', drupal_get_path('module', 'pm') .'/icons');
+  $icon_path_old = variable_get('pm_icons_path', drupal_get_path('module', 'pm') . '/icons');
   $icon_path = $form_values['values']['pm_icons_path'];
   // check if directory exists
   if (!is_dir($icon_path)) {
@@ -664,13 +669,16 @@ function pm_admin_settings_icons_path_validate($form, $form_values) {
   }
 }
 
+/**
+ * Submit function for admin settings form.
+ */
 function pm_admin_settings_form_submit($form, $form_state) {
   $op = isset($form_state['values']['op']) ? $form_state['values']['op'] : '';
   // RESET
   if ($op == t('Reset to defaults')) {
     $types = module_invoke_all('pm_dashboard_types');
     foreach ($types as $type => $type_data) {
-      variable_del('pm_'. $type .'dashboard_settings');
+      variable_del('pm_' . $type . 'dashboard_settings');
     };
     return;
   }
@@ -682,15 +690,17 @@ function pm_admin_settings_form_submit($form, $form_state) {
     $settings = array();
     foreach ($all_links as $link) {
       $path = $link['path'];
-      $settings[$path]['active'] = $form_state['values'][$type .'_pm_dashboard_link_active_'. $path];
-      $settings[$path]['weight'] = $form_state['values'][$type .'_pm_dashboard_link_weight_'. $path];
+      $settings[$path]['active'] = $form_state['values'][$type . '_pm_dashboard_link_active_' . $path];
+      $settings[$path]['weight'] = $form_state['values'][$type . '_pm_dashboard_link_weight_' . $path];
     }
-    variable_set('pm_'. $type .'dashboard_settings', $settings);
+    variable_set('pm_' . $type . 'dashboard_settings', $settings);
   }
 
 }
 
-// DATE / TIME MANIPULATION
+/**
+ * Implements hook_elements().
+ */
 function pm_elements() {
   $type['datetime'] = array(
     '#input' => TRUE,
@@ -715,6 +725,9 @@ function pm_elements() {
   return $type;
 }
 
+/**
+ * Expands a date into individual elements.
+ */
 function pm_datetime_expand($element) {
   if (empty($element['#value'])) {
     $element['#value'] = array(
@@ -770,12 +783,18 @@ function pm_datetime_expand($element) {
   return $element;
 }
 
+/**
+ * Validate form date elements.
+ */
 function pm_datetime_validate($form) {
   if (!checkdate($form['#value']['month'], $form['#value']['day'], $form['#value']['year'])) {
     form_error($form, t('The specified date is invalid.'));
   }
 }
 
+/**
+ * Expand form date elements into day, month, and year.
+ */
 function pm_dateext_expand($element, $edit, $form_state, $form) {
   if (empty($element['#value'])) {
     if (!$element['#withnull']) {
@@ -818,11 +837,11 @@ function pm_dateext_expand($element, $edit, $form_state, $form) {
     $current_year = date('Y');
     $begin = variable_get('pm_yearsrangebegin', 2001) - $current_year;
     if ($begin > 0) {
-      $begin = '+'. $begin;
+      $begin = '+' . $begin;
     }
     $end = variable_get('pm_yearsrangeend', 2015) - $current_year;
     if ($end > 0) {
-      $end = '+'. $end;
+      $end = '+' . $end;
     }
 
     $parents = $element['#parents'];
@@ -831,7 +850,7 @@ function pm_dateext_expand($element, $edit, $form_state, $form) {
       '#type' => 'date_popup',
       '#date_timezone' => date_default_timezone_name(),
       '#date_format' => "Y-m-d",
-      '#date_year_range' => $begin .':'. $end,
+      '#date_year_range' => $begin . ':' . $end,
       '#default_value' => $value,
       '#attributes' => $element['#attributes'],
       '#withnull' => $element['#withnull'],
@@ -881,13 +900,16 @@ function pm_dateext_expand($element, $edit, $form_state, $form) {
         '#type' => 'select',
         '#value' => isset($element['#value'][$type]) ? $element['#value'][$type] : NULL,
         '#options' => $options,
-        '#attributes' => array_merge(array('onchange' => "pm_datext_tonull(this, '". $element['#id'] ."')"), $element['#attributes']),
+        '#attributes' => array_merge(array('onchange' => "pm_datext_tonull(this, '" . $element['#id'] . "')"), $element['#attributes']),
       );
     }
   }
   return $element;
 }
 
+/**
+ * Validation for the dateext form element.
+ */
 function pm_dateext_validate($element, &$form_state) {
   // value is a string, convert it back to array
   if (is_array($element['#value']) && isset($element['#value']['popup'])) {
@@ -918,11 +940,17 @@ function pm_dateext_validate($element, &$form_state) {
   return $element;
 }
 
+/**
+ * @todo This function can probably be removed.
+ */
 function pm_dependent_select_process($form, $edit, $form_state, $complete_form) {
   unset($form['#needs_validation']);
   return $form;
 }
 
+/**
+ * Converts a local timestamp to GMT.
+ */
 function _timestamp_to_gm($timestamp, $timezone=NULL) {
   if (!isset($timezone)) {
     global $user;
@@ -937,6 +965,9 @@ function _timestamp_to_gm($timestamp, $timezone=NULL) {
   return $timestamp;
 }
 
+/**
+ * Converts a date to a GMT timestamp.
+ */
 function _pm_date_to_gmtimestamp($date, $timezone=NULL) {
   if ($date['month'] == -1 || $date['year'] == -1 || $date['day'] == -1) {
     return NULL;
@@ -947,12 +978,18 @@ function _pm_date_to_gmtimestamp($date, $timezone=NULL) {
   }
 }
 
+/**
+ * Converts a datetime to a GMT timestamp.
+ */
 function _pm_datetime_to_gmtimestamp($datetime, $timezone=NULL) {
   $gmttimestamp = gmmktime(intval($datetime['hour']), intval($datetime['minute']), 0, intval($datetime['month']),
   intval($datetime['day']), intval($datetime['year']));
   return _timestamp_to_gm($gmttimestamp, $timezone);
 }
 
+/**
+ * Converts a GMT timestamp to a datetime.
+ */
 function _pm_gmtimestamp_to_datetime($timestamp, $timezone=NULL) {
   $datetime = array(
     'day' => format_date($timestamp, 'custom', 'j', $timezone),
@@ -964,6 +1001,9 @@ function _pm_gmtimestamp_to_datetime($timestamp, $timezone=NULL) {
   return $datetime;
 }
 
+/**
+ * Converts a GMT timestamp to a date.
+ */
 function _pm_gmtimestamp_to_date($timestamp, $timezone=NULL) {
   if ($timestamp) {
     $date = array(
@@ -983,12 +1023,18 @@ function _pm_gmtimestamp_to_date($timestamp, $timezone=NULL) {
   return $date;
 }
 
+/**
+ * Converts a GMT Timestamp to a timestamp showing date only.
+ */
 function _pm_gmtimestamp_without_time($timestamp, $timezone=NULL) {
   $date = _pm_gmtimestamp_to_date($timestamp, $timezone);
   $gmttimestamp = gmmktime(0, 0, 0, $date['month'], $date['day'], $date['year']);
   return _timestamp_to_gm($gmttimestamp, $timezone);
 }
 
+/**
+ * Converts a string to a time array.
+ */
 function _pm_strtotime($timestr='') {
   $timestr = drupal_substr($timestr, 0, 5);
   $time = array();
@@ -1003,14 +1049,15 @@ function _pm_strtotime($timestr='') {
   return $time;
 }
 
+/**
+ * Converts a time array to a string.
+ */
 function _timetostr($time=array()) {
-  $timestr = str_pad($time['hour'], 2, "0", STR_PAD_LEFT) .':'. str_pad($time['minute'], 2, "0", STR_PAD_RIGHT);
+  $timestr = str_pad($time['hour'], 2, "0", STR_PAD_LEFT) . ':' . str_pad($time['minute'], 2, "0", STR_PAD_RIGHT);
   return $timestr;
 }
 
-
 /**
- * @function
  * Calculates taxation for Project Management nodes
  */
 function pm_taxation(&$node) {
@@ -1060,46 +1107,66 @@ function pm_taxation(&$node) {
   $node->total = $node->subtotal + $node->tax2;
 }
 
-// Project Management ICON ADD / EDIT / LINK FUNCTIONS
+/**
+ * Provides an add icon for Project Management nodes.
+ */
 function pm_icon_add_node($node, $params=array()) {
-  return pm_icon_add('node/add/'. $node->type, $node, $params);
+  return pm_icon_add('node/add/' . $node->type, $node, $params);
 }
 
+/**
+ * Provides an edit icon for Project Management nodes.
+ */
 function pm_icon_edit_node($node, $params=array()) {
-  return pm_icon_edit('node/'. $node->nid .'/edit', $node, $params);
+  return pm_icon_edit('node/' . $node->nid . '/edit', $node, $params);
 }
 
+/**
+ * Provides a delete icon for Project Management nodes.
+ */
 function pm_icon_delete_node($node, $params=array()) {
-  return pm_icon_delete('node/'. $node->nid .'/delete', $node, $params);
+  return pm_icon_delete('node/' . $node->nid . '/delete', $node, $params);
 }
 
+/**
+ * Provides a Project Management add icon.
+ */
 function pm_icon_add($path, $item, $params=array()) {
   global $user;
   $type = $item->type;
-  $af = $type .'_node_access';
+  $af = $type . '_node_access';
   if (!$af($item, 'create', $user)) return '';
   $attributes = array('class' => 'popups-form');
   return pm_icon_l('application_add', $path, t('Add'), '', $params, $attributes);
 }
 
+/**
+ * Provides a Project Management edit icon.
+ */
 function pm_icon_edit($path, $item, $params=array()) {
   global $user;
   $type = $item->type;
-  $af = $type .'_access';
+  $af = $type . '_access';
   if (!$af($item, 'update', $user)) return '';
   $attributes = array('class' => 'popups-form');
   return pm_icon_l('application_edit', $path, t('Edit'), '', $params, $attributes);
 }
 
+/**
+ * Provides a Project Management delete icon.
+ */
 function pm_icon_delete($path, $item, $params=array()) {
   global $user;
   $type = $item->type;
-  $af = $type .'_access';
+  $af = $type . '_access';
 //  if (!$af('delete', $item, $user)) return '';
   $attributes = array('class' => 'popups-form');
   return pm_icon_l('application_delete', $path, t('Delete'), '', $params, $attributes);
 }
 
+/**
+ * Provides an icon link.
+ */
 function pm_icon_l($icon, $path, $title, $permission='', $params=array(), $attributes=array()) {
   if ($permission && !user_access($permission)) return '';
   $icon = pm_icon($icon, $title);
@@ -1112,7 +1179,7 @@ function pm_icon_l($icon, $path, $title, $permission='', $params=array(), $attri
     unset($params['q']);
     $c = 0;
     if (array_key_exists('page', $params)) {
-      $destination .= '?page='. $params['page'];
+      $destination .= '?page=' . $params['page'];
       unset($params['page']);
       $c++;
     }
@@ -1123,7 +1190,7 @@ function pm_icon_l($icon, $path, $title, $permission='', $params=array(), $attri
       else {
         $destination .= '?';
       }
-      $destination .= 'sort='. $params['sort'];
+      $destination .= 'sort=' . $params['sort'];
       unset($params['sort']);
       $c++;
     }
@@ -1134,29 +1201,32 @@ function pm_icon_l($icon, $path, $title, $permission='', $params=array(), $attri
       else {
         $destination .= '?';
       }
-      $destination .= 'order='. $params['order'];
+      $destination .= 'order=' . $params['order'];
       unset($params['order']);
       $c++;
     }
-    $query .= 'destination='. urlencode($destination);
+    $query .= 'destination=' . urlencode($destination);
     unset($params['destination']);
   }
 
   $params = _pm_icon_urlencode_helper($params);
   foreach ($params as $key => $value) {
     if ($query) $query .= '&';
-    $query .= $key .'='. urlencode($value);
+    $query .= $key . '=' . urlencode($value);
   }
 
   $o = l($icon, $path, array('attributes' => $attributes, 'html' => TRUE)); // @TODO add back query
   return $o;
 }
 
+/**
+ * Encodes URL for icon links.
+ */
 function _pm_icon_urlencode_helper($params, $org_key = "") {
   $new_params = array();
   foreach ($params as $key => $value) {
     if (!empty($org_key)) {
-      $new_key = $org_key ."[". $key ."]";
+      $new_key = $org_key . "[" . $key . "]";
     }
     else {
       $new_key = $key;
@@ -1171,6 +1241,9 @@ function _pm_icon_urlencode_helper($params, $org_key = "") {
   return $new_params;
 }
 
+/**
+ * Provides a Project Management icon.
+ */
 function pm_icon($icon, $title) {
   global $base_path;
 
@@ -1187,10 +1260,10 @@ function pm_icon($icon, $title) {
       $available = pm_icon_recache();
     }
 
-    if (in_array($icon .'.png', $available->data)) {
+    if (in_array($icon . '.png', $available->data)) {
       // Standard route - display normal image
-      $img_src = $base_path . variable_get('pm_icons_path', drupal_get_path('module', 'pm') .'/icons') .'/'. $icon .'.png';
-      $o = '<img src="'. $img_src .'" alt="'. $title .'" title="'. $title .'" />';
+      $img_src = $base_path . variable_get('pm_icons_path', drupal_get_path('module', 'pm') . '/icons') . '/' . $icon . '.png';
+      $o = '<img src="' . $img_src . '" alt="' . $title . '" title="' . $title . '" />';
     }
     else {
       // Icon not found
@@ -1204,6 +1277,9 @@ function pm_icon($icon, $title) {
   return $o;
 }
 
+/**
+ * Forces a recache of Project Management icons.
+ */
 function pm_icon_recache() {
   $available = array();
 
@@ -1219,6 +1295,9 @@ function pm_icon_recache() {
   return $available;
 }
 
+/**
+ * Provides a default icon to avoid missing icons.
+ */
 function pm_icon_default($icon, $title) {
   // For now, just return $title.
   // A future extension could be more intelligent using $icon.
@@ -1398,9 +1477,12 @@ function pm_get_assignment_options($organization_nid = 0, $project_nid = 0) {
 /**
  * Helper function to count nodes of type destination module with parent nid of type source module.
  *
- * @param string $source_module A string of module where the request is comming from
- * @param string $destination_module A string with name of targeted module
- * @param int $nid node id of source module
+ * @param string $source_module
+ *   A string of module where the request is comming from
+ * @param string $destination_module
+ *   A string with name of targeted module
+ * @param int $nid
+ *   Node id of source module
  * @return ''|int
  *   empty string if can't be counted or the count of destination nodes in source node
  * @see theme_pm_link()
@@ -1436,42 +1518,42 @@ function _pm_number_of_items($source_module, $destination_module, $nid) {
     switch ($destination_module) {
       case 'pmproject':
         $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmproject} AS spr ON n.vid=spr.vid WHERE n.status=1 AND
-                n.type='pmproject' and spr.". $column_name ." = %d";
+                n.type='pmproject' and spr." . $column_name . " = %d";
         $sql = pmproject_access_sql($sql);
         break;
       case 'pmtask':
         $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmtask} AS sta ON n.vid=sta.vid WHERE n.status=1 AND
-                n.type='pmtask' and sta.". $column_name ." = %d";
+                n.type='pmtask' and sta." . $column_name . " = %d";
         $sql = pmtask_access_sql($sql);
         break;
       case 'pmticket':
         $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmticket} AS sti ON n.vid=sti.vid WHERE n.status=1 AND
-                n.type='pmticket' and sti.". $column_name ." = %d";
+                n.type='pmticket' and sti." . $column_name . " = %d";
         $sql = pmticket_access_sql($sql);
         break;
       case 'pmtimetracking':
         $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmtimetracking} AS stt ON n.vid=stt.vid WHERE n.status=1 AND
-                n.type='pmtimetracking' and stt.". $column_name ." = %d";
+                n.type='pmtimetracking' and stt." . $column_name . " = %d";
         $sql = pmtimetracking_access_sql($sql);
         break;
       case 'pmperson':
         $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmperson} AS spe ON n.vid=spe.vid WHERE n.status=1 AND
-                n.type='pmperson' and spe.". $column_name ." = %d";
+                n.type='pmperson' and spe." . $column_name . " = %d";
         $sql = pmperson_access_sql($sql);
         break;
       case 'pmnote':
         $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmnote} AS sno ON n.vid=sno.vid WHERE n.status=1 AND
-                n.type='pmnote' and sno.". $column_name ." = %d";
+                n.type='pmnote' and sno." . $column_name . " = %d";
         $sql = pmnote_access_sql($sql);
         break;
       case 'pmexpense':
         $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmexpense} AS sex ON n.vid=sex.vid WHERE n.status=1 AND
-                n.type='pmexpense' and sex.". $column_name ." = %d";
+                n.type='pmexpense' and sex." . $column_name . " = %d";
         $sql = pmexpense_access_sql($sql);
         break;
       case 'pminvoice':
         $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pminvoice} AS sin ON n.vid=sin.vid WHERE n.status=1 AND
-                n.type='pminvoice' and sin.". $column_name ." = %d";
+                n.type='pminvoice' and sin." . $column_name . " = %d";
         $sql = pminvoice_access_sql($sql);
         break;
 
@@ -1486,6 +1568,7 @@ function _pm_number_of_items($source_module, $destination_module, $nid) {
  * Implements hook_views_pre_render to add the pm_icon_add
  *
  * @param $view
+ *   Views object.
  */
 function pm_views_pre_render(&$view) {
   if (isset($view->field['operation'])
@@ -1496,23 +1579,29 @@ function pm_views_pre_render(&$view) {
     $i = new stdClass();
     $i->type = $view->field['operation']->definition['type'];
     if ($view->field['operation']->options['display_icons']) {
-      $view->attachment_before .= '<span class="pm-icon-add-view">'. pm_icon_add_node($i, $_GET) .'</span>';
+      $view->attachment_before .= '<span class="pm-icon-add-view">' . pm_icon_add_node($i, $_GET) . '</span>';
     }
     else {
       global $user;
       $type = $i->type;
-      $af = $type .'_access';
+      $af = $type . '_access';
       if ($af('create', $i, $user)) {
-        $view->attachment_before .= '<span class="pm-icon-add-view">'. l(t('Add'), 'node/add/'. $type) .'</span>';
+        $view->attachment_before .= '<span class="pm-icon-add-view">' . l(t('Add'), 'node/add/' . $type) . '</span>';
       }
     }
   }
 }
 
+/**
+ * Implements hook_node_access().
+ */
 function pm_attribute_node_access($item = NULL, $op, $account = NULL) {
   return NODE_ACCESS_IGNORE;
 }
 
+/**
+ * @todo Convert this function to hook_node_access().
+ */
 function pm_attribute_access($op, $item=NULL, $account=NULL) {
   if (empty($account)) {
     global $user;
@@ -1534,6 +1623,9 @@ function pm_attribute_access($op, $item=NULL, $account=NULL) {
   return FALSE;
 }
 
+/**
+ * Provides attributes in a specified domain.
+ */
 function pm_attributes_bydomain($domain) {
   static $attributes_cache = array();
   $attributes = array();
@@ -1568,7 +1660,9 @@ function pm_attributes_bydomain($domain) {
   return $attributes;
 }
 
-
+/**
+ * Provides attribute value for a given domain and key.
+ */
 function pm_attribute_value($domain, $key) {
   $attributes_array = pm_attributes_bydomain($domain);
   $attributes = $attributes_array['values'];
