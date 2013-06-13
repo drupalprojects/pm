@@ -1001,12 +1001,12 @@ function pminvoice_get_invoice_number($requestdate) {
   $existing = array(0);
 
   foreach ($result as $record) {
-    $pos = substr($record->number, '/');
+    $pos = strpos($record->number, '/');
     $left = $pos;
     $right = strlen($record->number) - $pos;
 
-    if (right($record->number, $right) == $date['year']) {
-      $existing[] = left($record->number, $left);
+    if (substr($record->number, 1 - $right) == $date['year']) {
+      $existing[] = substr($record->number, 0, $left);
     }
   }
 
