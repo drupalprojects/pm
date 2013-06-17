@@ -17,10 +17,10 @@
 function pmteam_permission() {
   return array(
     'Project Management Team: access' => array(
-      'title' => t('Access Project Management Team lists'),
+      'title' => t('Access Project Management Team'),
     ),
     'Project Management Team: add' => array(
-      'title' => t('Add Project Management Teams'),
+      'title' => t('Add Project Management Team'),
     ),
     'Project Management Team: view all' => array(
       'title' => t('View Any Project Management Team'),
@@ -117,68 +117,18 @@ function pmteam_field_extra_fields_alter(&$info) {
 }
 
 function pmteam_node_access($node, $op, $account = NULL) {
+  $type = is_string($node) ? $node : $node->type;
+  if ($type == 'pmteam') {
+    // If no account is specified, assume that the check is against the current logged in user
+    if (is_null($account)) {
+      global $user;
+      $account = $user;
+    }
+    if ($op == 'create' AND user_access('Project Management Team: add', $account)) {
+      return NODE_ACCESS_ALLOW;
+    }
+  }
   return NODE_ACCESS_IGNORE;
-}
-
-/**
- * @function
- * Implementation of hook_access().
- */
-function pmteam_access($op, $node, $account = NULL) {
-  if (empty($account)) {
-    global $user;
-    $account = $user;
-  }
-
-  if (is_numeric($node)) $node = node_load($node);
-
-  switch ($op) {
-    case 'create':
-      return user_access('Project Management Team: add');
-    case 'view':
-      if (user_access('Project Management Team: view all')) {
-        return TRUE;
-      }
-      elseif (user_access('Project Management Team: view own') && ($account->uid == $node->uid)) {
-        return TRUE;
-      }
-      elseif (user_access('Project Management Team: view belonged') && pmteam_user_belongs_to_team($node->nid, $account->pmperson_nid)) {
-        return TRUE;
-      }
-      elseif (user_access('Project Management Team: view belonged') && pmteam_user_belongs_to_team($node->nid, $account->pmorganization_nid)) {
-        return TRUE;
-      }
-      break;
-    case 'update':
-      if (user_access('Project Management Team: edit all')) {
-        return TRUE;
-      }
-      elseif (user_access('Project Management Team: edit own') && ($account->uid == $node->uid)) {
-        return TRUE;
-      }
-      elseif (user_access('Project Management Team: edit belonged') && pmteam_user_belongs_to_team($node->nid, $account->pmperson_nid)) {
-        return TRUE;
-      }
-      elseif (user_access('Project Management Team: edit belonged') && pmteam_user_belongs_to_team($node->nid, $account->pmorganization_nid)) {
-        return TRUE;
-      }
-      break;
-    case 'delete':
-      if (user_access('Project Management Team: delete all')) {
-        return TRUE;
-      }
-      elseif (user_access('Project Management Team: delete own') && ($account->uid == $node->uid)) {
-        return TRUE;
-      }
-      elseif (user_access('Project Management Team: delete belonged') && pmteam_user_belongs_to_team($node->nid, $account->pmperson_nid)) {
-        return TRUE;
-      }
-      elseif (user_access('Project Management Team: delete belonged') && pmteam_user_belongs_to_team($node->nid, $account->pmorganization_nid)) {
-        return TRUE;
-      }
-      break;
-  }
-  return FALSE;
 }
 
 /**
@@ -577,6 +527,157 @@ function pmteam_user_return_teams($account = NULL) {
   return $teams;
 }
 
+/**
+ * Implements hook_node_access_records().
+ */
+function pmteam_node_access_records($node) {
+  if (empty($node->status)) {
+    // Lets Drupal take care of permission to unpublished nodes.
+    return array();
+  }
+  $type = is_string($node) ? $node : $node->type;
+  $grants = array();
+  if ($type == 'pmteam') {
+    // Project Management Team: view all
+    $grants[] = array(
+      'realm' => 'pmteam_view_all',
+      'gid' => 0,
+      'grant_view' => 1,
+      'grant_update' => 0,
+      'grant_delete' => 0,
+      'priority' => 0,
+    );
+    // Project Management Team: view own
+    $grants[] = array(
+      'realm' => 'pmteam_view_own',
+      'gid' => $node->uid,
+      'grant_view' => 1,
+      'grant_update' => 0,
+      'grant_delete' => 0,
+      'priority' => 0,
+    );
+    // Project Management Team: view belonged
+    $grants[] = array(
+      'realm' => 'pmteam_view_if_belonged',
+      'gid' => $node->nid,
+      'grant_view' => 1,
+      'grant_update' => 0,
+      'grant_delete' => 0,
+      'priority' => 0,
+    );
+    // Project Management Team: edit all
+    $grants[] = array(
+      'realm' => 'pmteam_update_all',
+      'gid' => 0,
+      'grant_view' => 0,
+      'grant_update' => 1,
+      'grant_delete' => 0,
+      'priority' => 0,
+    );
+    // Project Management Team: edit own
+    $grants[] = array(
+      'realm' => 'pmteam_update_own',
+      'gid' => $node->uid,
+      'grant_view' => 0,
+      'grant_update' => 1,
+      'grant_delete' => 0,
+      'priority' => 0,
+    );
+    // Project Management Team: edit belonged
+    $grants[] = array(
+      'realm' => 'pmteam_update_if_belonged',
+      'gid' => $node->nid,
+      'grant_view' => 0,
+      'grant_update' => 1,
+      'grant_delete' => 0,
+      'priority' => 0,
+    );
+    // Project Management Team: delete all
+    $grants[] = array(
+      'realm' => 'pmteam_delete_all',
+      'gid' => 0,
+      'grant_view' => 0,
+      'grant_update' => 0,
+      'grant_delete' => 1,
+      'priority' => 0,
+    );
+    // Project Management Team: delete own
+    $grants[] = array(
+      'realm' => 'pmteam_delete_own',
+      'gid' => $node->uid,
+      'grant_view' => 0,
+      'grant_update' => 0,
+      'grant_delete' => 1,
+      'priority' => 0,
+    );
+    // Project Management Team: delete belonged
+    $grants[] = array(
+      'realm' => 'pmteam_delete_if_belonged',
+      'gid' => $node->nid,
+      'grant_view' => 0,
+      'grant_update' => 0,
+      'grant_delete' => 1,
+      'priority' => 0,
+    );
+  }
+  return $grants;
+}
+
+/**
+ * Implements hook_node_grants().
+ */
+function pmteam_node_grants($account, $op) {
+  $assigned_nids = array();
+  if (module_exists('pmperson')) {
+    _pmperson_user_load($account);
+    if (!empty($account->pmteam) AND is_array($account->pmteam)) {
+      $assigned_nids = $account->pmteam;
+    }
+  }
+  $grants = array();
+  switch ($op) {
+    case 'view':
+      if (user_access('Project Management Team: view all', $account)) {
+        $grants['pmteam_view_all'] = array(0);
+      }
+      if (user_access('Project Management Team: view own', $account)) {
+        $grants['pmteam_view_own'] = array($account->uid);
+      }
+      if (!empty($assigned_nids) AND user_access('Project Management Team: view belonged', $account)) {
+        $grants['pmteam_view_if_belonged'] = $assigned_nids;
+      }
+      break;
+
+    case 'update':
+      if (user_access('Project Management Team: edit all', $account)) {
+        $grants['pmteam_update_all'] = array(0);
+      }
+      if (user_access('Project Management Team: edit own', $account)) {
+        $grants['pmteam_update_own'] = array($account->uid);
+      }
+      if (!empty($assigned_nids) AND user_access('Project Management Team: edit belonged', $account)) {
+        $grants['pmteam_update_if_belonged'] = $assigned_nids;
+      }
+      break;
+
+    case 'delete':
+      if (user_access('Project Management Team: delete all', $account)) {
+        $grants['pmteam_delete_all'] = array(0);
+      }
+      if (user_access('Project Management Team: delete own', $account)) {
+        $grants['pmteam_delete_own'] = array($account->uid);
+      }
+      if (!empty($assigned_nids) AND user_access('Project Management Team: delete belonged', $account)) {
+        $grants['pmteam_delete_if_belonged'] = $assigned_nids;
+      }
+      break;
+  }
+  return $grants;
+}
+
+/**
+ * Implements hook_pm_dashboard_links().
+ */
 function pmteam_pm_dashboard_links($type) {
   $links = array();
   if ($type == 'page' || $type == 'block') {

@@ -20,9 +20,17 @@ function pmteam_install() {
 }
 
 /**
+ * Implements hook_enable().
+ */
+function pmteam_enable() {
+  node_access_needs_rebuild(TRUE);
+}
+
+/**
  * Implements hook_disable().
  */
 function pmteam_disable() {
+  node_access_needs_rebuild(TRUE);
   drupal_set_message(t('Nodes of type "Team" have not been deleted on disabling Project Management Team. Please note that they will now have reduced functionality, and will not be protected by Project Management Team access controls.'), 'warning');
 }
 
@@ -94,4 +102,11 @@ function pmteam_update_7100() {
 function pmteam_update_7101() {
   variable_set('node_permissions_pmteam', 0);
   return 'PM Team permissions overridden';
+}
+
+/**
+ * Display message to admin regarding need to rebuild permission.
+ */
+function pmteam_update_7102() {
+  node_access_needs_rebuild(TRUE);
 }
