@@ -54,60 +54,27 @@ function pmexpense_permission() {
   );
 }
 
+/**
+ * Implements hook_node_access().
+ */
 function pmexpense_node_access($node, $op, $account = NULL) {
+  $type = is_string($node) ? $node : $node->type;
+  if ($type == 'pmexpense') {
+    // If no account is specified, assume that the check is against the current logged in user
+    if (is_null($account)) {
+      global $user;
+      $account = $user;
+    }
+    if ($op == 'create' AND user_access('Project Management expense: add', $account)) {
+      return NODE_ACCESS_ALLOW;
+    }
+  }
   return NODE_ACCESS_IGNORE;
 }
 
-function pmexpense_access($op, $node, $account=NULL) {
-  if (empty($account)) {
-    global $user;
-    $account = $user;
-  }
-
-  if ($op == 'create') {
-    return user_access('Project Management expense: add');
-  }
-
-  if (is_numeric($node)) $node = node_load($node);
-
-  if ($op == 'delete') {
-    if (user_access('Project Management expense: delete all')) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management expense: delete own') && ($account->uid == $node->uid)) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management expense: delete of user organization') && ($account->pmorganization_nid == $node->organization_nid)) {
-      return TRUE;
-    }
-  }
-
-  if ($op == 'update') {
-    if (user_access('Project Management expense: edit all')) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management expense: edit own') && ($account->uid == $node->uid)) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management expense: edit of user organization') && ($account->pmorganization_nid == $node->organization_nid)) {
-      return TRUE;
-    }
-  }
-
-  if ($op == 'view') {
-    if (user_access('Project Management expense: view all')) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management expense: view own') && ($account->uid == $node->uid)) {
-      return TRUE;
-    }
-    elseif (user_access('Project Management expense: view of user organization') && ($account->pmorganization_nid == $node->organization_nid)) {
-      return TRUE;
-    }
-  }
-  return FALSE;
-}
-
+/**
+ * @todo Remove as part of the port to Drupal 7.
+ */
 function pmexpense_access_sql($sql, $where = array()) {
   if (user_access('Project Management expense: view all')) {
     $where[] = "'pm_access'='pm_access'";
@@ -990,6 +957,160 @@ function pmexpense_views_api() {
   );
 }
 
+/**
+ * Implements hook_node_access_records().
+ */
+function pmexpense_node_access_records($node) {
+  if (empty($node->status)) {
+    // Lets Drupal take care of permission to unpublished nodes.
+    return array();
+  }
+  $type = is_string($node) ? $node : $node->type;
+  $grants = array();
+  if ($type == 'pmexpense') {
+    // Project Management expense: view all
+    $grants[] = array(
+      'realm' => 'pmexpense_view_all',
+      'gid' => 0,
+      'grant_view' => 1,
+      'grant_update' => 0,
+      'grant_delete' => 0,
+      'priority' => 0,
+    );
+    // Project Management expense: view own
+    $grants[] = array(
+      'realm' => 'pmexpense_view_own',
+      'gid' => $node->uid,
+      'grant_view' => 1,
+      'grant_update' => 0,
+      'grant_delete' => 0,
+      'priority' => 0,
+    );
+    // Project Management expense: view of user organization
+    if ( isset($node->organization_nid) && !empty($node->organization_nid)) {
+      $grants[] = array(
+        'realm' => 'pmexpense_view_if_user_organization',
+        'gid' => $node->organization_nid,
+        'grant_view' => 1,
+        'grant_update' => 0,
+        'grant_delete' => 0,
+        'priority' => 0,
+      );
+    }
+    // Project Management expense: edit all
+    $grants[] = array(
+      'realm' => 'pmexpense_update_all',
+      'gid' => 0,
+      'grant_view' => 0,
+      'grant_update' => 1,
+      'grant_delete' => 0,
+      'priority' => 0,
+    );
+    // Project Management expense: edit own
+    $grants[] = array(
+      'realm' => 'pmexpense_update_own',
+      'gid' => $node->uid,
+      'grant_view' => 0,
+      'grant_update' => 1,
+      'grant_delete' => 0,
+      'priority' => 0,
+    );
+    // Project Management expense: edit of user organization
+    if ( isset($node->organization_nid) && !empty($node->organization_nid)) {
+      $grants[] = array(
+        'realm' => 'pmexpense_update_if_user_organization',
+        'gid' => $node->organization_nid,
+        'grant_view' => 0,
+        'grant_update' => 1,
+        'grant_delete' => 0,
+        'priority' => 0,
+      );
+    }
+    // Project Management expense: delete all
+    $grants[] = array(
+      'realm' => 'pmexpense_delete_all',
+      'gid' => 0,
+      'grant_view' => 0,
+      'grant_update' => 0,
+      'grant_delete' => 1,
+      'priority' => 0,
+    );
+    // Project Management expense: delete own
+    $grants[] = array(
+      'realm' => 'pmexpense_delete_own',
+      'gid' => $node->uid,
+      'grant_view' => 0,
+      'grant_update' => 0,
+      'grant_delete' => 1,
+      'priority' => 0,
+    );
+    // Project Management expense: delete of user organization
+    if ( isset($node->organization_nid) && !empty($node->organization_nid)) {
+      $grants[] = array(
+        'realm' => 'pmexpense_delete_if_user_organization',
+        'gid' => $node->organization_nid,
+        'grant_view' => 0,
+        'grant_update' => 0,
+        'grant_delete' => 1,
+        'priority' => 0,
+      );
+    }
+  }
+  return $grants;
+}
+
+/**
+ * Implements hook_node_grants().
+ */
+function pmexpense_node_grants($account, $op) {
+
+  if (module_exists('pmperson')) {
+    _pmperson_user_load($account);
+  }
+  $grants = array();
+  switch ($op) {
+    case 'view':
+      if (user_access('Project Management expense: view all', $account)) {
+        $grants['pmexpense_view_all'] = array(0);
+      }
+      if (user_access('Project Management expense: view own', $account)) {
+        $grants['pmexpense_view_own'] = array($account->uid);
+      }
+      if (user_access('Project Management expense: view of user organization', $account) AND !empty($account->pmorganization_nid)) {
+        $grants['pmexpense_view_if_user_organization'] = array($account->pmorganization_nid);
+      }
+      break;
+
+    case 'update':
+      if (user_access('Project Management expense: edit all', $account)) {
+        $grants['pmexpense_update_all'] = array(0);
+      }
+      if (user_access('Project Management expense: edit own', $account)) {
+        $grants['pmexpense_update_own'] = array($account->uid);
+      }
+      if (user_access('Project Management expense: edit of user organization', $account) AND !empty($account->pmorganization_nid)) {
+        $grants['pmexpense_update_if_user_organization'] = array($account->pmorganization_nid);
+      }
+      break;
+
+    case 'delete':
+      if (user_access('Project Management expense: delete all', $account)) {
+        $grants['pmexpense_delete_all'] = array(0);
+      }
+      if (user_access('Project Management expense: delete own', $account)) {
+        $grants['pmexpense_delete_own'] = array($account->uid);
+      }
+      if (user_access('Project Management expense: delete of user organization', $account) AND !empty($account->pmorganization_nid)) {
+        $grants['pmexpense_delete_if_user_organization'] = array($account->pmorganization_nid);
+      }
+      break;
+  }
+  return $grants;
+}
+
+/**
+ * Implements hook_pm_dashboard_links().
+ */
 function pmexpense_pm_dashboard_links($type) {
   $links = array();
   if ($type == 'page' || $type == 'block') {

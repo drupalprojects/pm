@@ -45,7 +45,18 @@ function pmexpense_install() {
   }
 }
 
+/**
+ * Implements hook_enable().
+ */
+function pmexpense_enable() {
+  node_access_needs_rebuild(TRUE);
+}
+
+/**
+ * Implements hook_disable().
+ */
 function pmexpense_disable() {
+  node_access_needs_rebuild(TRUE);
   drupal_set_message(t('Nodes of type "Expense" have not been deleted on disabling Project Management Expense. Please note that they will now have reduced functionality, and will not be protected by Project Management Expense access controls.'), 'warning');
 }
 
@@ -125,4 +136,11 @@ function pmexpense_update_7101() {
   );
   db_add_field('pmexpense', 'billable', $spec);
   db_add_field('pmexpense', 'billed', $spec);
+}
+
+/**
+ * Display message to admin regarding need to rebuild permission.
+ */
+function pmexpense_update_7102() {
+  node_access_needs_rebuild(TRUE);
 }
