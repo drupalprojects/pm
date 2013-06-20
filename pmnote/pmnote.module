@@ -73,73 +73,8 @@ function pmnote_node_access($node, $op, $account = NULL) {
 }
 
 /**
- * @todo Remove as part of the port to Drupal 7.
+ * Implements hook_theme().
  */
-function pmnote_access_sql($sql, $where = array()) {
-  if (user_access('Project Management note: view all')) {
-    $where[] = "'pm_access'='pm_access'";
-    return pm_rewrite_sql($sql, $where);
-  }
-
-  global $user;
-
-  $cond = '';
-  if (user_access('Project Management note: view own')) {
-    $cond .= 'n.uid='. $user->uid;
-  }
-  if (user_access('Project Management note: view of user organization')) {
-    if (!empty($cond)) $cond .= ' OR ';
-    $cond .= 'sno.organization_nid='. $user->pmorganization_nid;
-  }
-  if (empty($cond)) $cond = '0=1';
-  $where[] = $cond;
-
-  $where[] = "'pm_access'='pm_access'";
-  return pm_rewrite_sql($sql, $where);
-}
-
-function pmnote_pm_rewrite_where_sql($query, $primary_table, $account) {
-  static $conds = array();
-
-  if (isset($conds[$primary_table][$account->uid])) {
-    return $conds[$primary_table][$account->uid];
-  }
-
-  if (preg_match("/'pm_access'='pm_access'/", $query)) {
-    $cond = '';
-  }
-  else {
-    if (user_access('Project Management note: view all', $account)) {
-      return '';
-    }
-
-    $cond = '';
-    if (user_access('Project Management note: view own', $account)) {
-      $cond .= "${primary_table}.uid=". $account->uid;
-    }
-    if (user_access('Project Management note: view of user organization', $account)) {
-      if ($cond) {
-        $cond .= ' OR ';
-      }
-      // If function is called without viewing a note, this variable may not be set.
-      // These lines check for that and set the organization node id to zero if not otherwise set.
-      if (!isset($account->pmorganization_nid)) {
-        $account->pmorganization_nid = 0;
-      }
-      $cond .= ' sno1.organization_nid='. $account->pmorganization_nid;
-    }
-    if ($cond) {
-      $cond = " WHEN 'pmnote' THEN (SELECT IF($cond,1,0) FROM {pmnote} sno1 WHERE sno1.vid=${primary_table}.vid) ";
-    }
-    else {
-      $cond = " WHEN 'pmnote' THEN 0 ";
-    }
-  }
-
-  $conds[$primary_table][$account->uid] = $cond;
-  return $cond;
-}
-
 function pmnote_theme() {
   return array(
     'pmnote_view' => array(
@@ -293,16 +228,15 @@ function pmnote_form(&$node, $form_state) {
 
   $org_query = db_select('node', 'n');
   $org_query->join('pmorganization', 'sor', 'n.vid = sor.vid');
-  $org_query
+  $org_result = $org_query
     ->fields('n', array('nid', 'title'))
     ->condition('n.status', 1)
     ->condition('n.type', 'pmorganization')
     ->condition('sor.isactive', 1)
     ->orderBy('n.title', 'ASC')
-    ->addTag('node_access');
+    ->addTag('node_access')
+    ->execute();
 
-//  $s_org = pmorganization_access_sql($s_org);
-  $org_result = $org_query->execute();
   $organizations = array();
   foreach ($org_result as $organization) {
     $organizations[$organization->nid] = $organization->title;

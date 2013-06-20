@@ -242,10 +242,9 @@ function pmperson_form(&$node) {
     ->condition('n.status', 1)
     ->condition('n.type', 'pmorganization')
     ->orderBy('n.title', 'ASC')
+    ->addTag('node_access')
     ->execute();
 
-//  $s = pmorganization_access_sql($s);
-//  $s = db_rewrite_sql($s);
   $organizations = array();
   foreach ($result as $organization) {
     $organizations[$organization->nid] = $organization->title;

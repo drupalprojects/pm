@@ -69,17 +69,17 @@ function pminvoice_auto_add_select() {
 
   $sql = "SELECT n.nid, n.title, sin.* FROM {node} AS n INNER JOIN {pminvoice} AS sin ON n.nid=sin.nid";
   // Ensure node is published, correct type. Always filter by Organization
-  $sql .= " WHERE n.status=1 AND n.type='pminvoice' AND sin.organization_nid=". $node->organization_nid;
+  $sql .= " WHERE n.status=1 AND n.type='pminvoice' AND sin.organization_nid=" . $node->organization_nid;
 
   if ($node->project_nid) {
-    $sql .= " AND (sin.project_nid=". $node->project_nid ." OR sin.project_nid=0)";
+    $sql .= " AND (sin.project_nid=" . $node->project_nid . " OR sin.project_nid=0)";
   }
 
-  $sql = pminvoice_access_sql($sql);
-  $sql = db_rewrite_sql($sql);
+  // @todo Convert to DBTNG
+  // ->addTag('node_access')
   $r = db_query($sql);
   while ($r_invoice = db_fetch_object($r)) {
-    $form['invoice']['#options'][$r_invoice->nid] = $r_invoice->number ." | ". $r_invoice->title;
+    $form['invoice']['#options'][$r_invoice->nid] = $r_invoice->number . " | " . $r_invoice->title;
   }
 
   $form['submit'] = array(

@@ -1519,46 +1519,39 @@ function _pm_number_of_items($source_module, $destination_module, $nid) {
       case 'pmproject':
         $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmproject} AS spr ON n.vid=spr.vid WHERE n.status=1 AND
                 n.type='pmproject' and spr." . $column_name . " = %d";
-        $sql = pmproject_access_sql($sql);
         break;
       case 'pmtask':
         $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmtask} AS sta ON n.vid=sta.vid WHERE n.status=1 AND
                 n.type='pmtask' and sta." . $column_name . " = %d";
-        $sql = pmtask_access_sql($sql);
         break;
       case 'pmticket':
         $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmticket} AS sti ON n.vid=sti.vid WHERE n.status=1 AND
                 n.type='pmticket' and sti." . $column_name . " = %d";
-        $sql = pmticket_access_sql($sql);
         break;
       case 'pmtimetracking':
         $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmtimetracking} AS stt ON n.vid=stt.vid WHERE n.status=1 AND
                 n.type='pmtimetracking' and stt." . $column_name . " = %d";
-        $sql = pmtimetracking_access_sql($sql);
         break;
       case 'pmperson':
         $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmperson} AS spe ON n.vid=spe.vid WHERE n.status=1 AND
                 n.type='pmperson' and spe." . $column_name . " = %d";
-        $sql = pmperson_access_sql($sql);
         break;
       case 'pmnote':
         $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmnote} AS sno ON n.vid=sno.vid WHERE n.status=1 AND
                 n.type='pmnote' and sno." . $column_name . " = %d";
-        $sql = pmnote_access_sql($sql);
         break;
       case 'pmexpense':
         $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmexpense} AS sex ON n.vid=sex.vid WHERE n.status=1 AND
                 n.type='pmexpense' and sex." . $column_name . " = %d";
-        $sql = pmexpense_access_sql($sql);
         break;
       case 'pminvoice':
         $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pminvoice} AS sin ON n.vid=sin.vid WHERE n.status=1 AND
                 n.type='pminvoice' and sin." . $column_name . " = %d";
-        $sql = pminvoice_access_sql($sql);
         break;
 
     }
-    $sql = db_rewrite_sql($sql);
+    // @todo Convert to DBTNG
+    // ->addTag('node_access')
     $nmb_of_items = db_result(db_query($sql, $nid));
   }
   return $nmb_of_items;

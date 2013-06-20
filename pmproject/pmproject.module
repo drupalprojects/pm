@@ -279,8 +279,6 @@ function pmproject_form(&$node) {
     '#weight' => $info['group1']['weight'],
   );
 
-//  $s_org = pmorganization_access_sql($s_org);
-//  $s_org = db_rewrite_sql($s_org);
   $org_result = $org_query->execute();
   $organizations = array();
   foreach ($org_result as $organization) {
@@ -409,10 +407,9 @@ function pmproject_form(&$node) {
       ->fields('n', array('nid', 'title'))
       ->condition('n.type', 'pmperson')
       ->orderBy('n.title', 'ASC')
+      ->addTag('node_access')
       ->execute();
 
-//    $s_per = pmperson_access_sql($s_per);
-//    $s_per = db_rewrite_sql($s_per);
     $people = array();
     foreach ($per_result as $person) {
       $people[$person->nid] = $person->title;
@@ -438,10 +435,9 @@ function pmproject_form(&$node) {
       ->fields('n', array('nid', 'title'))
       ->condition('n.type', 'pmperson')
       ->orderBy('n.title', 'ASC')
+      ->addTag('node_access')
       ->execute();
 
-//    $s_team = pmteam_access_sql($s_team);
-//    $s_team = db_rewrite_sql($s_team);
     $teams = array();
     foreach ($team_result as $team) {
       $teams[$team->nid] = $team->title;
