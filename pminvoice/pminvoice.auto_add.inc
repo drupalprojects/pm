@@ -1,8 +1,12 @@
 <?php
 /**
  * @file
- * Contains functions relating to the Project Management Invoice auto_add functionality
- * (creating invoices based on other Project Management nodes)
+ * Contains functions relating to the Project Management Invoice auto_add
+ * functionality (creating invoices based on other Project Management nodes)
+ */
+
+/**
+ * Function to automatically add an item to an invoice.
  */
 function pminvoice_auto_add($node, $invoice = NULL) {
   switch ($node->type) {
@@ -27,7 +31,7 @@ function pminvoice_auto_add($node, $invoice = NULL) {
     default:
       drupal_set_message(t('This type of node cannot be automatically added to an invoice'), 'error');
       // watchdog - add link to record error in more detail?
-      drupal_goto('node/'. $node->nid);
+      drupal_goto('node/' . $node->nid);
   }
   if ($invoice) {
     drupal_set_message(t('The @type has been added to the selected invoice.', array('@type' => $node->type)));
@@ -35,9 +39,12 @@ function pminvoice_auto_add($node, $invoice = NULL) {
   else {
     drupal_set_message(t('This invoice was created automatically from the selected @type.', array('@type' => $node->type)));
   }
-  drupal_goto('node/'. $invoice_nid);
+  drupal_goto('node/' . $invoice_nid);
 }
 
+/**
+ * Form function to load the invoice selector.
+ */
 function pminvoice_auto_add_select() {
   $form['node'] = array(
     '#title' => t('Node'),
@@ -90,6 +97,9 @@ function pminvoice_auto_add_select() {
   return $form;
 }
 
+/**
+ * Submit function for invoice selector form.
+ */
 function pminvoice_auto_add_select_submit($form_id, $form_state) {
   $node = node_load($form_state['values']['node']);
   $invoice = $form_state['values']['invoice'];

@@ -47,14 +47,14 @@ function theme_pminvoice_view($variables) {
   $node->content['group2']['organization'] = array(
     '#prefix' => '<div class="organization">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Organization'), 'value' => l($node->organization_title, 'node/'. $node->organization_nid))),
+    '#markup' => theme('pm_view_item', array('label' => t('Organization'), 'value' => l($node->organization_title, 'node/' . $node->organization_nid))),
     '#weight' => 1,
   );
 
   $node->content['group2']['project'] = array(
     '#prefix' => '<div class="project">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Project'), 'value' => l($node->project_title, 'node/'. $node->project_nid))),
+    '#markup' => theme('pm_view_item', array('label' => t('Project'), 'value' => l($node->project_title, 'node/' . $node->project_nid))),
     '#weight' => 2,
   );
 
@@ -149,11 +149,12 @@ function theme_pminvoice_view($variables) {
     $s .= "sit.tax2, ";
   }
   $s .= "sit.total, sit.src_nid FROM {pminvoice_items} sit WHERE sit.invoice_vid=%d ORDER BY sit.weight ASC";
-//  $r = db_query($s, $node->vid);
+  // $r = db_query($s, $node->vid);
 
   $invoice_items = array();
   $i = 0;
-  while (0){//$invoice_item = db_fetch_array($r)) {
+  while (0) {
+    // $invoice_item = db_fetch_array($r)) {
     $invoice_items[$i] = $invoice_item;
     $i++;
   }
@@ -169,7 +170,7 @@ function theme_pminvoice_view($variables) {
     }
     $invoice_items[$key]['total'] = sprintf("%.2f", $inv_item['total']);
     if ($invoice_items[$key]['src_nid'] != 0 AND $invoice_items[$key]['src_nid'] != NULL) {
-      $invoice_items[$key]['description'] = l(t($invoice_items[$key]['description']), 'node/'. $inv_item['src_nid']);
+      $invoice_items[$key]['description'] = l(t($invoice_items[$key]['description']), 'node/' . $inv_item['src_nid']);
     }
     unset($invoice_items[$key]['src_nid']);
   }
@@ -223,7 +224,7 @@ function theme_pminvoice_view($variables) {
   $myorg = node_load(variable_get('pm_organization_nid', 0));
   if (isset($myorg->orglanguage)) {
     if ($myorg->orglanguage != $organization->orglanguage) {
-      $language = $organization->orglanguage .','. $myorg->orglanguage;
+      $language = $organization->orglanguage . ',' . $myorg->orglanguage;
     }
     else {
       $language = $myorg->orglanguage;
@@ -268,19 +269,19 @@ function theme_pminvoice_autoadd_links($variables) {
   if (user_access('Project Management invoice: add')) {
     if ($billable && !$billed) {
       $v = '';
-      $v = '<strong>'. t('Invoice this item:') .'</strong>';
+      $v = '<strong>' . t('Invoice this item:') . '</strong>';
       $v .= '<ul>';
-      $v .= '<li>'. l(t('Add to new invoice'), 'pm/invoice/auto_add/new/'. $nid) .'</li>';
-      $v .= '<li>'. l(t('Add to existing invoice'), 'pm/invoice/auto_add/existing/'. $nid) .'</li>';
+      $v .= '<li>' . l(t('Add to new invoice'), 'pm/invoice/auto_add/new/' . $nid) . '</li>';
+      $v .= '<li>' . l(t('Add to existing invoice'), 'pm/invoice/auto_add/existing/' . $nid) . '</li>';
       $v .= '</ul>';
     }
     elseif ($billed) {
       $v = '';
-      $v .= '<strong>'. t('Item already billed.') .'</strong>';
+      $v .= '<strong>' . t('Item already billed.') . '</strong>';
     }
     else {
       $v = '';
-      $v .= '<strong>'. t('Item marked unbillable.') .'</strong>';
+      $v .= '<strong>' . t('Item marked unbillable.') . '</strong>';
     }
   }
   return $v;

@@ -3,13 +3,27 @@
  * @file
  * Handler for the Project Management Invoice status filter in views
  */
+
+/**
+ * Filter handler for invoice status.
+ */
 class pminvoice_handler_filter_invoice_status extends views_handler_filter_in_operator {
   var $value_form_type = 'radios';
 
+  /**
+   * Options for filter values.
+   */
   function get_value_options() {
-    $this->value_options = array('to pay' => t('to pay'), 'paid' => t('paid'), 'overdue' => t('overdue'));
+    $this->value_options = array(
+      'to pay' => t('to pay'),
+      'paid' => t('paid'),
+      'overdue' => t('overdue'),
+    );
   }
 
+  /**
+   * Available operators for this filter.
+   */
   function operators() {
     $operators = array(
       'in' => array(
@@ -23,6 +37,9 @@ class pminvoice_handler_filter_invoice_status extends views_handler_filter_in_op
     return $operators;
   }
 
+  /**
+   * If default_value is array, use the first value.
+   */
   function value_form(&$form, &$form_state) {
     parent::value_form($form, $form_state);
     if (isset($form['value']) && is_array($form['value']['#default_value'])) {
@@ -30,6 +47,9 @@ class pminvoice_handler_filter_invoice_status extends views_handler_filter_in_op
     }
   }
 
+  /**
+   * Override expose_form_right method.
+   */
   function expose_form_right(&$form, &$form_state) {
     parent::expose_form_right($form, $form_state);
     unset($form['expose']['reduce']);
@@ -39,6 +59,9 @@ class pminvoice_handler_filter_invoice_status extends views_handler_filter_in_op
     );
   }
 
+  /**
+   * Build filter query.
+   */
   function op_simple() {
     if (empty($this->value)) {
       return;
@@ -48,16 +71,16 @@ class pminvoice_handler_filter_invoice_status extends views_handler_filter_in_op
 
     $args = array();
     if ($this->value == 'to pay') {
-      $where = $this->table_alias .".paymentdate=%d AND ". $this->table_alias .".duedate >= %d";
+      $where = $this->table_alias . ".paymentdate=%d AND " . $this->table_alias . ".duedate >= %d";
       $args[] = 0;
       $args[] = time();
     }
     elseif ($this->value == 'paid') {
-      $where = $this->table_alias .".paymentdate<>%d";
+      $where = $this->table_alias . ".paymentdate<>%d";
       $args[] = 0;
     }
     else { // if ($this->value == 'overdue') {
-      $where = $this->table_alias .".paymentdate=%d AND ". $this->table_alias .".duedate < %d";
+      $where = $this->table_alias . ".paymentdate=%d AND " . $this->table_alias . ".duedate < %d";
       $args[] = 0;
       $args[] = time();
     }

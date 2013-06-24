@@ -14,18 +14,23 @@
  * 9: Project Managementinvoiceitem legacy functions
  */
 
-// HOOKS
+/**
+ * Implements hook_help().
+ */
 function pminvoice_help($path, $arg) {
   $o = '';
 
   switch ($path) {
     case "admin/help#pminvoice":
-      $o = '<p>'. t("Provides invoice support for Project Management") .'</p>';
+      $o = '<p>' . t("Provides invoice support for Project Management") . '</p>';
       break;
   }
   return $o;
 }
 
+/**
+ * Implements hook_permission().
+ */
 function pminvoice_permission() {
   return array(
     'Project Management invoice: access' => array(
@@ -64,6 +69,9 @@ function pminvoice_permission() {
   );
 }
 
+/**
+ * Implements hook_menu().
+ */
 function pminvoice_menu() {
   $items = array();
 
@@ -95,6 +103,9 @@ function pminvoice_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_theme().
+ */
 function pminvoice_theme() {
   return array(
     'pminvoice_view' => array(
@@ -112,6 +123,9 @@ function pminvoice_theme() {
   );
 }
 
+/**
+ * Implements hook_node_info().
+ */
 function pminvoice_node_info() {
   return array(
     'pminvoice' => array(
@@ -123,6 +137,9 @@ function pminvoice_node_info() {
   );
 }
 
+/**
+ * Implements hook_field_extra_fields().
+ */
 function pminvoice_field_extra_fields() {
   $extra['node']['pminvoice'] = array(
     'form' => array(
@@ -151,6 +168,9 @@ function pminvoice_field_extra_fields() {
   return $extra;
 }
 
+/**
+ * Implements hook_field_extra_fields_alter().
+ */
 function pminvoice_field_extra_fields_alter(&$info) {
   $info['node']['pminvoice']['form']['title']['weight'] = -17;
 }
@@ -206,8 +226,10 @@ function pminvoice_pmproject_change_hierarchy($project_nid, $organization_nid, $
     ->execute();
 }
 
-// INVOICE CREATE/EDIT FORM
-function pminvoice_form(&$node) {
+/**
+ * Implements hook_form().
+ */
+function pminvoice_form(&$node, $form_state) {
   $breadcrumb = array();
   $breadcrumb[] = l(t('Project Management'), 'pm');
   $breadcrumb[] = l(t('Invoices'), 'pm/invoices');
@@ -228,7 +250,7 @@ function pminvoice_form(&$node) {
       $node->organization_nid = $p->organization_nid;
       if (!pmorganization_node_access($node->organization_nid, 'view')) {
         drupal_set_message(t("You cannot add an invoice for this project, as you do not have access to view the organization's profile"));
-        drupal_goto('node/'. $node->project_nid);
+        drupal_goto('node/' . $node->project_nid);
       }
     }
 
@@ -292,10 +314,22 @@ function pminvoice_form(&$node) {
   $form['group2']['organization_nid'] = array(
     '#type' => 'select',
     '#title' => t('Organization'),
-    '#default_value' => $node->organization_nid,
+    '#default_value' => isset($node->organization_nid) ? $node->organization_nid : NULL,
     '#options' => $organizations,
     '#required' => TRUE,
+    '#ajax' => array(
+      'callback' => 'pminvoice_ajax_organization_nid',
+      'wrapper' => 'pminvoice-project-nid',
+    ),
   );
+
+  if (isset($node->organization_nid)) {
+    $organization_nid = isset($form_state['values']['organization_nid']) ? $form_state['values']['organization_nid'] : $node->organization_nid;
+  }
+  else {
+    drupal_set_message(t('Please add an organization to the system before trying to add an invoice.'), 'error');
+    $organization_nid = NULL;
+  }
 
   $pro_query = db_select('node', 'n');
   $pro_query->join('pmproject', 'spr', 'n.vid = spr.vid');
@@ -303,7 +337,7 @@ function pminvoice_form(&$node) {
     ->fields('n', array('nid', 'title'))
     ->condition('n.status', 1)
     ->condition('n.type', 'pmproject')
-    ->condition('spr.organization_nid', $node->organization_nid)
+    ->condition('spr.organization_nid', $organization_nid)
     ->orderBy('n.title', 'ASC')
     ->addTag('node_access')
     ->execute();
@@ -318,7 +352,8 @@ function pminvoice_form(&$node) {
     '#title' => t('Project'),
     '#default_value' => isset($node->project_nid) ? $node->project_nid : NULL,
     '#options' => $projects,
-//    '#process' => array('pm_dependent_select_process'),
+    '#prefix' => '<div id="pminvoice-project-nid">',
+    '#suffix' => '</div>',
   );
 
   $form['group2']['reference'] = array(
@@ -374,7 +409,7 @@ function pminvoice_form(&$node) {
   foreach ($node->items as $item) {
     $form['group4'][$i] = array(
       '#type' => 'fieldset',
-      '#title' => isset($node->items[$i]->new_item) ? 'New item' : 'Item '. ($i + 1),
+      '#title' => isset($node->items[$i]->new_item) ? 'New item' : 'Item ' . ($i + 1),
       '#collapsible' => TRUE,
       '#collapsed' => isset($node->items[$i]->new_item) ? TRUE : FALSE,
       '#weight' => $i,
@@ -386,7 +421,7 @@ function pminvoice_form(&$node) {
       '#weight' => 1,
     );
 
-    $form['group4'][$i]['first']['items_'. $i .'_description'] = array(
+    $form['group4'][$i]['first']['items_' . $i . '_description'] = array(
       '#type' => 'textfield',
       '#title' => 'Item description',
       '#default_value' => isset($node->items[$i]->description) ? $node->items[$i]->description : NULL,
@@ -394,7 +429,7 @@ function pminvoice_form(&$node) {
     );
 
 
-    $form['group4'][$i]['first']['items_'. $i .'_amount'] = array(
+    $form['group4'][$i]['first']['items_' . $i . '_amount'] = array(
       '#type' => 'textfield',
       '#withnull' => 'true',
       '#title' => t('Amount'),
@@ -402,7 +437,7 @@ function pminvoice_form(&$node) {
       '#default_value' => isset($node->items[$i]->amount) ? $node->items[$i]->amount : 0,
     );
 
-    $form['group4'][$i]['first']['items_'. $i .'_weight'] = array(
+    $form['group4'][$i]['first']['items_' . $i . '_weight'] = array(
       '#type' => 'textfield',
       '#title' => t('Weight'),
       '#size' => 3,
@@ -416,7 +451,7 @@ function pminvoice_form(&$node) {
       '#weight' => 2,
     );
 
-    $form['group4'][$i]['tax1']['items_'. $i .'_tax1app'] = array(
+    $form['group4'][$i]['tax1']['items_' . $i . '_tax1app'] = array(
       '#type' => 'select',
       '#title' => t('@tax1 Application', array('@tax1' => variable_get('pm_tax1_name', 'Tax 1'))),
       '#options' => array(
@@ -426,7 +461,7 @@ function pminvoice_form(&$node) {
       '#default_value' => $node->items[$i]->tax1app,
     );
 
-    $form['group4'][$i]['tax1']['items_'. $i .'_tax1percent'] = array(
+    $form['group4'][$i]['tax1']['items_' . $i . '_tax1percent'] = array(
       '#type' => 'textfield',
       '#title' => t('@tax1 Percentage', array('@tax1' => variable_get('pm_tax1_name', 'Tax 1'))),
       '#default_value' => $node->items[$i]->tax1percent,
@@ -439,7 +474,7 @@ function pminvoice_form(&$node) {
       '#weight' => 3,
     );
 
-    $form['group4'][$i]['tax2']['items_'. $i .'_tax2app'] = array(
+    $form['group4'][$i]['tax2']['items_' . $i . '_tax2app'] = array(
       '#type' => 'select',
       '#title' => t('@tax2 Application', array('@tax2' => variable_get('pm_tax2_name', 'Tax 2'))),
       '#options' => array(
@@ -450,19 +485,19 @@ function pminvoice_form(&$node) {
       '#default_value' => $node->items[$i]->tax2app,
     );
 
-    $form['group4'][$i]['tax2']['items_'. $i .'_tax2percent'] = array(
+    $form['group4'][$i]['tax2']['items_' . $i . '_tax2percent'] = array(
       '#type' => 'textfield',
       '#title' => t('@tax2 Percentage', array('@tax2' => variable_get('pm_tax2_name', 'Tax 2'))),
       '#default_value' => $node->items[$i]->tax2percent,
       '#size' => 20,
     );
 
-    $form['group4'][$i]['first']['items_'. $i .'_src_nid'] = array(
+    $form['group4'][$i]['first']['items_' . $i . '_src_nid'] = array(
       '#type' => 'hidden',
       '#default_value' => isset($node->items[$i]->src_nid) ? $node->items[$i]->src_nid : NULL,
     );
 
-    $form['group4'][$i]['first']['items_'. $i .'_src_vid'] = array(
+    $form['group4'][$i]['first']['items_' . $i . '_src_vid'] = array(
       '#type' => 'hidden',
       '#default_value' => isset($node->items[$i]->src_vid) ? $node->items[$i]->src_vid : NULL,
     );
@@ -475,7 +510,7 @@ function pminvoice_form(&$node) {
       $form['group4'][$i]['tax2']['#type'] = 'hidden';
     }
 
-    $form['group4'][$i]['items_'. $i .'_total'] = array(
+    $form['group4'][$i]['items_' . $i . '_total'] = array(
       '#type' => 'hidden',
       '#default_value' => isset($node->items[$i]->total) ? $node->items[$i]->total : NULL,
     );
@@ -537,7 +572,16 @@ function pminvoice_form(&$node) {
   return $form;
 }
 
-// INVOICE NODE MANIPULATION FUNCTIONS
+/**
+ * Ajax callback for the organization nid field on a pminvoice node.
+ */
+function pminvoice_ajax_organization_nid(&$form, &$form_state) {
+  return $form['group2']['project_nid'];
+}
+
+/**
+ * Implements hook_insert().
+ */
 function pminvoice_insert($node) {
   _pminvoice_beforesave($node);
 
@@ -555,11 +599,6 @@ function pminvoice_insert($node) {
     'organization_title' => $node->organization_title,
     'project_nid' => $node->project_nid,
     'project_title' => $node->project_title,
-//    'amount' => $node->amount, // will be set later
-//    'tax1' => $node->tax1,
-//    'tax2' => $node->tax2,
-//    'total' => $node->total,
-//    'totalcustomercurr' => $node->totalcustomercurr,
     'requestdate' => $node->requestdate,
     'duedate' => $node->duedate,
     'paymentdate' => $node->paymentdate,
@@ -570,11 +609,14 @@ function pminvoice_insert($node) {
   ->execute();
 
   // Insert invoice items
-//  _pminvoice_insert_items($node);
+  _pminvoice_insert_items($node);
 
-//  _pminvoice_aftersave($node);
+  _pminvoice_aftersave($node);
 }
 
+/**
+ * Implements hook_update().
+ */
 function pminvoice_update($node) {
   _pminvoice_beforesave($node);
 
@@ -616,13 +658,16 @@ function pminvoice_update($node) {
   }
 }
 
+/**
+ * Prepares pminvoice for saving.
+ */
 function _pminvoice_beforesave(&$node) {
   // Allow use of comma when inputting numerical values - str_replace with period decimal
-  $node->amount = str_replace(',', '.', $node->amount);
-  $node->tax1 = str_replace(',', '.', $node->tax1);
-  $node->tax2 = str_replace(',', '.', $node->tax2);
-  $node->total = str_replace(',', '.', $node->total);
-  $node->totalcustomercurr = str_replace(',', '.', $node->totalcustomercurr);
+  $node->amount = floatval(str_replace(',', '.', $node->amount));
+  $node->tax1 = floatval(str_replace(',', '.', $node->tax1));
+  $node->tax2 = floatval(str_replace(',', '.', $node->tax2));
+  $node->total = floatval(str_replace(',', '.', $node->total));
+  $node->totalcustomercurr = floatval(str_replace(',', '.', $node->totalcustomercurr));
 
   if (is_array($node->requestdate)) $node->requestdate = _pm_date_to_gmtimestamp($node->requestdate);
   if (is_array($node->duedate)) $node->duedate = _pm_date_to_gmtimestamp($node->duedate);
@@ -649,36 +694,38 @@ function _pminvoice_beforesave(&$node) {
   // Parse invoice items
   // from linear to array/object combination
   $j = 0;
-  $variable = 'items_'. $j . '_description';
+  $variable = 'items_' . $j . '_description';
   while (isset($node->$variable)) {
     $node->items[$j]->description = $node->$variable;
-    $variable = 'items_'. $j .'_amount';
+    $variable = 'items_' . $j . '_amount';
     $node->items[$j]->amount = str_replace(',', '.', $node->$variable);
-    $variable = 'items_'. $j .'_tax1app';
+    $variable = 'items_' . $j . '_tax1app';
     $node->items[$j]->tax1app = $node->$variable;
-    $variable = 'items_'. $j .'_tax1percent';
+    $variable = 'items_' . $j . '_tax1percent';
     $node->items[$j]->tax1percent = $node->$variable;
-    $variable = 'items_'. $j .'_tax2app';
+    $variable = 'items_' . $j . '_tax2app';
     $node->items[$j]->tax2app = $node->$variable;
-    $variable = 'items_'. $j .'_tax2percent';
+    $variable = 'items_' . $j . '_tax2percent';
     $node->items[$j]->tax2percent = $node->$variable;
-    $variable = 'items_'. $j .'_weight';
+    $variable = 'items_' . $j . '_weight';
     $node->items[$j]->weight = (isset($node->$variable)) ? $node->$variable : $j;
 
-    $variable = 'items_'. $j .'_src_nid';
+    $variable = 'items_' . $j . '_src_nid';
     $node->items[$j]->src_nid = $node->$variable;
 
-    $variable = 'items_'. $j .'_src_vid';
+    $variable = 'items_' . $j . '_src_vid';
     $node->items[$j]->src_vid = $node->$variable;
-
     // Update taxes
     pm_taxation($node->items[$j]);
 
     $j++;
-    $variable = 'items_'. $j .'_description';
+    $variable = 'items_' . $j . '_description';
   }
 }
 
+/**
+ * Save invoice items to database.
+ */
 function _pminvoice_insert_items($node) {
   foreach ($node->items as $j => $item) {
     $node->items[$j]->src_nid = (isset($node->items[$j]->src_nid)) ? $node->items[$j]->src_nid : $node->src_nid;
@@ -688,16 +735,16 @@ function _pminvoice_insert_items($node) {
     ->fields(array(
       'invoice_nid' => $node->nid,
       'invoice_vid' => $node->vid,
-      'amount' => $node->items[$j]->amount,
-      'description' => $node->items[$j]->description,
-      'tax1app' => $node->items[$j]->tax1app,
-      'tax1percent' => $node->items[$j]->tax1percent,
-      'tax1' => $node->items[$j]->tax1,
-      'tax2app' => $node->items[$j]->tax2app,
-      'tax2percent' => $node->items[$j]->tax2percent,
-      'tax2' => $node->items[$j]->tax2,
-      'total' => $node->items[$j]->total,
-      'weight' => $node->items[$j]->weight,
+      'amount' => $item->amount,
+      'description' => $item->description,
+      'tax1app' => $item->tax1app,
+      'tax1percent' => $item->tax1percent,
+      'tax1' => $item->tax1,
+      'tax2app' => $item->tax2app,
+      'tax2percent' => $item->tax2percent,
+      'tax2' => $item->tax2,
+      'total' => $item->total,
+      'weight' => $item->weight,
 //      'src_nid' => $node->items[$j]->src_nid,
 //      'src_vid' => $node->items[$j]->src_vid,
     ))
@@ -711,15 +758,18 @@ function _pminvoice_insert_items($node) {
   ->execute();
 }
 
+/**
+ * Calculate sums for amount and taxes and save to database.
+ */
 function _pminvoice_aftersave($node) {
   // Updates totals
-  $result = db_select('pminvoice_items', 'sii')
-  ->addExpression('sum(amount)', 'tamount')
-  ->addExpression('sum(tax1)', 'ttax1')
-  ->addExpression('sum(tax2)', 'ttax2')
-  ->addExpression('sum(total)', 'ttotal')
-  ->condition('invoice_vid', $node->vid)
-  ->execute();
+  $query = db_select('pminvoice_items', 'sii');
+  $query->addExpression('sum(amount)', 'tamount');
+  $query->addExpression('sum(tax1)', 'ttax1');
+  $query->addExpression('sum(tax2)', 'ttax2');
+  $query->addExpression('sum(total)', 'ttotal');
+  $query->condition('invoice_vid', $node->vid);
+  $result = $query->execute();
 
   $t = $result->fetchObject();
 
@@ -744,16 +794,22 @@ function _pminvoice_aftersave($node) {
   ->execute();
 }
 
-function pminvoice_nodeapi(&$node, $op, $teaser, $page) {
-  switch ($op) {
-    case 'delete revision':
-      // Notice that we're matching a single revision based on the node's vid.
-      db_query('DELETE FROM {pminvoice} WHERE vid = %d', $node->vid);
-      db_query('DELETE FROM {pminvoice_items} WHERE invoice_vid = %d', $node->vid);
-      break;
-  }
+/**
+ * Implements hook_node_revision_delete().
+ */
+function pminvoice_node_revision_delete($node) {
+  db_delete('pminvoice')
+    ->condition('vid', $node->vid)
+    ->execute();
+
+  db_delete('pminvoice_items')
+    ->condition('invoice_vid', $node->vid)
+    ->execute();
 }
 
+/**
+ * Implements hook_delete().
+ */
 function pminvoice_delete($node) {
   db_delete('pminvoice')
   ->condition('nid', $node->nid)
@@ -764,6 +820,9 @@ function pminvoice_delete($node) {
   ->execute();
 }
 
+/**
+ * Implements hook_load().
+ */
 function pminvoice_load($nodes) {
   foreach ($nodes as $nid => &$node) {
     $result = db_select('pminvoice', 'pmin')
@@ -779,16 +838,23 @@ function pminvoice_load($nodes) {
     }
 
     $node->title_old = $node->title;
-  }
 
-  // Load invoice items
-/*  $result = db_query('SELECT * FROM {pminvoice_items} WHERE invoice_vid = %d ORDER BY weight ASC', $node->vid);
-  $additions->items = array();
-  while ($item = db_fetch_object($result)) {
-    $additions->items[] = $item;
-  }*/
+    // Load invoice items
+    $result = db_select('pminvoice_items', 'pmini')
+      ->fields('pmini')
+      ->condition('invoice_vid', $node->vid)
+      ->orderBy('weight')
+      ->execute();
+    $node->items = array();
+    foreach ($result as $item) {
+      $node->items[] = $item;
+    }
+  }
 }
 
+/**
+ * Implements hook_view().
+ */
 function pminvoice_view($node, $view_mode) {
   $breadcrumb = array();
   $breadcrumb[] = l(t('Project Management'), 'pm');
@@ -798,7 +864,9 @@ function pminvoice_view($node, $view_mode) {
   return theme('pminvoice_view', array('node' => $node, 'view_mode' => $view_mode));
 }
 
-// ADMIN SETTINGS
+/**
+ * Admin settings form for pmproject module
+ */
 function pminvoice_admin_settings() {
   $form = array();
 
@@ -852,14 +920,16 @@ function pminvoice_admin_settings() {
     '#type' => 'textfield',
     '#title' => t('Location of tcpdf library'),
     '#default_value' => variable_get('pminvoice_tcpdf_location', t('sites/all/libraries/tcpdf')),
-    '#description' => t('The directory that contains the <a href="http://sourceforge.net/projects/tcpdf/files/">TCPDF library</a> (sites/all/libraries/tcpdf is recommended).'),
+    '#description' => t('The directory that contains the !link (sites/all/libraries/tcpdf is recommended).', array('!link' => l(t('TCPDF library'), 'http://sourceforge.net/projects/tcpdf/files/'))),
     '#size' => 50,
   );
 
   return system_settings_form($form);
 }
 
-// VIEWS HOOK
+/**
+ * Implements hook_views_api().
+ */
 function pminvoice_views_api() {
   return array(
     'api' => 2,
@@ -867,7 +937,9 @@ function pminvoice_views_api() {
   );
 }
 
-// Helper function to return items for a particular invoice. Called from within the theme functions
+/**
+ * Helper function to return items for a particular invoice.
+ */
 function pminvoice_getitems($invoice_vid) {
   $s = "SELECT sit.* FROM {pminvoice_items} AS sit WHERE sit.invoice_vid = %d ORDER BY sit.weight ASC";
   $r = db_query($s, $invoice_vid);
@@ -880,10 +952,10 @@ function pminvoice_getitems($invoice_vid) {
 }
 
 /**
- * @function
- * Creates next incremental invoice number
+ * Creates next incremental invoice number.
  *
- * @return varchar text value of the calculated invoice number
+ * @return
+ *   varchar text value of the calculated invoice number
  */
 function pminvoice_get_invoice_number($requestdate) {
   $date = getdate($requestdate);
@@ -906,13 +978,16 @@ function pminvoice_get_invoice_number($requestdate) {
 
   $increment = max($existing) + 1;
 
-  $new_invoice_number = $increment .'/'. $date['year'];
+  $new_invoice_number = $increment . '/' . $date['year'];
 
   return $new_invoice_number;
 }
 
 /**
- * Try to obtain an hourly rate or fixed price for the new invoice item for a timetracking node.
+ * Get the rate from a pm node to create an invoice item.
+ *
+ * Try to obtain an hourly rate or fixed price for the new invoice item for a
+ * timetracking node.
  * To do this we will use the first technique, among the following, to work:
  *  (1) try to obtain a rate from a ticket
  *  (2) try to obtain a rate from a task
@@ -997,37 +1072,40 @@ function pminvoice_get_rate($node) {
   return $rate_array;
 }
 
+/**
+ * Create the description for a invoice item depending on the node type.
+ */
 function pminvoice_get_item_desc($rate_array, $node) {
 
   switch ($rate_array['pricemode_used']) {
     case 'hourly':
       if ($node->type == 'pmtimetracking') {
-        $description = date('d M y', $node->trackingdate) . ': ' . t('@dur @units work at @rate per hour on @desc', array('@dur' => $node->billing_duration, '@unit' => $node->durationunit, '@rate' => $node->price, '@desc' => $node->title));
+        $description = format_date($node->trackingdate, 'custom', 'd M y') . ': ' . t('@dur @units work at @rate per hour on @desc', array('@dur' => $node->billing_duration, '@unit' => $node->durationunit, '@rate' => $node->price, '@desc' => $node->title));
       }
       else {
-        $description = date('d M y') . ': ' . t('@dur @units work at @rate per hour on @desc', array('@dur' => $node->duration, '@unit' => $node->durationunit, '@rate' => $node->price, '@desc' => $node->title));
+        $description = format_date(time(), 'custom', 'd M y') . ': ' . t('@dur @units work at @rate per hour on @desc', array('@dur' => $node->duration, '@unit' => $node->durationunit, '@rate' => $node->price, '@desc' => $node->title));
       }
       break;
     case 'daily':
       if ($node->type == 'pmtimetracking') {
-        $description = date('d M y', $node->trackingdate) . ': ' . t('@dur @units work at @rate per day on @desc', array('@dur' => $node->billing_duration, '@unit' => $node->durationunit, '@rate' => $node->price, '@desc' => $node->title));
+        $description = format_date($node->trackingdate, 'custom', 'd M y') . ': ' . t('@dur @units work at @rate per day on @desc', array('@dur' => $node->billing_duration, '@unit' => $node->durationunit, '@rate' => $node->price, '@desc' => $node->title));
       }
       else {
-        $description = date('d M y') . ': ' . t('@dur @units work at @rate per day on @desc', array('@dur' => $node->duration, '@unit' => $node->durationunit, '@rate' => $node->price, '@desc' => $node->title));
+        $description = format_date(time(), 'custom', 'd M y') . ': ' . t('@dur @units work at @rate per day on @desc', array('@dur' => $node->duration, '@unit' => $node->durationunit, '@rate' => $node->price, '@desc' => $node->title));
       }
       break;
     case 'fixed':
       if ($node->type == 'pmtimetracking') {
-        $description = date('d M y', $node->trackingdate) . ': ' . t('@dur @units unbilled work on @desc', array('@dur' => $node->billing_duration, '@unit' => $node->durationunit, '@desc' => $node->title));
+        $description = format_date($node->trackingdate, 'custom', 'd M y') . ': ' . t('@dur @units unbilled work on @desc', array('@dur' => $node->billing_duration, '@unit' => $node->durationunit, '@desc' => $node->title));
       }
       else {
-        $description = date('d M y') . ': ' . t('@dur @units unbilled work on @desc', array('@dur' => $node->duration, '@unit' => $node->durationunit, '@desc' => $node->title));
+        $description = format_date(time(), 'custom', 'd M y') . ': ' . t('@dur @units unbilled work on @desc', array('@dur' => $node->duration, '@unit' => $node->durationunit, '@desc' => $node->title));
       }
       break;
     case 'fixed_price':
       switch ($node->type) {
         case 'pmtimetracking':
-        $description = date('d M y', $node->trackingdate) . ': ' . t('work billed for @desc', array('@desc' => $node->title));
+        $description = format_date($node->trackingdate, 'custom', 'd M y') . ': ' . t('work billed for @desc', array('@desc' => $node->title));
         break;
       case 'pmproject':
         $description = t('Project billed: @desc', array('@desc' => $node->title));
@@ -1045,6 +1123,9 @@ function pminvoice_get_item_desc($rate_array, $node) {
 
 }
 
+/**
+ * Get the amount for an invoice item.
+ */
 function pminvoice_get_item_amount($rate_array, $node) {
   switch ($rate_array['pricemode_used']) {
     case 'hourly':
@@ -1075,7 +1156,7 @@ function pminvoice_get_item_amount($rate_array, $node) {
 }
 
 /**
- * Implementation of hook_token_list().
+ * Implements hook_token_list().
  */
 function pminvoice_token_list($type='all') {
   $tokens = array();
@@ -1094,17 +1175,17 @@ function pminvoice_token_list($type='all') {
     $tokens['node']['pminvoice-totalcustomer'] = t('Project Management Invoice: Total in customer currency.');
     $tokens['node']['pminvoice-taxexempt'] = t('Project Management Invoice: Tax Exempt.');
     if (variable_get('pm_tax1_app', 0)) {
-      $tokens['node']['pminvoice-tax1'] = t('Project Management Invoice: '. variable_get('pm_tax1_name', 'VAT') .'.');
+      $tokens['node']['pminvoice-tax1'] = t('Project Management Invoice: ' . variable_get('pm_tax1_name', 'VAT') . '.');
     }
     if (variable_get('pm_tax2_app', 0)) {
-      $tokens['node']['pminvoice-tax2'] = t('Project Management Invoice: '. variable_get('pm_tax2_name', 'Tax 2') .'.');
+      $tokens['node']['pminvoice-tax2'] = t('Project Management Invoice: ' . variable_get('pm_tax2_name', 'Tax 2') . '.');
     }
   }
   return $tokens;
 }
 
 /**
- * Implementation of hook_token_values().
+ * Implements hook_token_values().
  */
 function pminvoice_token_values($type, $object = NULL) {
   $values = array();

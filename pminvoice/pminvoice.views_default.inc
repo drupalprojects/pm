@@ -1,4 +1,12 @@
 <?php
+/**
+ * @file
+ * Default view for invoice listing.
+ */
+
+/**
+ * Implements hook_views_default_views().
+ */
 function pminvoice_views_default_views() {
   $views = array();
 

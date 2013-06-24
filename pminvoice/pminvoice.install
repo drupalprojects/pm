@@ -3,6 +3,9 @@
  * @file
  */
 
+/**
+ * Implements hook_install().
+ */
 function pminvoice_install() {
   variable_set('node_options_pminvoice', array('status'));
   variable_set('node_options_pminvoiceitem', array('status'));
@@ -10,7 +13,7 @@ function pminvoice_install() {
 }
 
 /**
- * Implement hook_enable().
+ * Implements hook_enable().
  */
 function pminvoice_enable() {
   node_access_needs_rebuild(TRUE);
@@ -91,12 +94,15 @@ function pminvoice_schema() {
   return $schema;
 }
 
+/**
+ * Implements hook_update_last_removed().
+ */
 function pminvoice_update_last_removed() {
   return 6201;
 }
 
 /**
- * Allow Project Management to override the default Invoice content type CRUD permissions
+ * Allow Project Management to override the default content type permissions
  */
 function pminvoice_update_7100() {
   variable_set('node_permissions_pminvoice', 0);

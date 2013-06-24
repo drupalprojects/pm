@@ -1,7 +1,11 @@
 <?php
 /**
  * @file
- * Functions to expose Project Management Invoice module data to the views module
+ * Functions to expose PM Invoice module data to the views module.
+ */
+
+/**
+ * Implements hook_views_data().
  */
 function pminvoice_views_data() {
   // Invoice core fields
@@ -413,6 +417,9 @@ function pminvoice_views_data() {
   return $data;
 }
 
+/**
+ * Implements hook_views_handlers().
+ */
 function pminvoice_views_handlers() {
   return array(
     'info' => array(
@@ -437,6 +444,9 @@ function pminvoice_views_handlers() {
   );
 }
 
+/**
+ * Implements hook_date_api_fields().
+ */
 function pminvoice_date_api_fields($field) {
   $values = array(
     'sql_type' => DATE_UNIX,
@@ -456,6 +466,9 @@ function pminvoice_date_api_fields($field) {
 
 }
 
+/**
+ * Implements hook_date_api_tables().
+ */
 function pminvoice_date_api_tables() {
   return array('pminvoice');
 }
