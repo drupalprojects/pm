@@ -1111,64 +1111,54 @@ function pm_taxation(&$node) {
  * Provides an add icon for Project Management nodes.
  */
 function pm_icon_add_node($node, $params=array()) {
-  return pm_icon_add('node/add/' . $node->type, $node, $params);
+  return pm_icon_add('node/add/' . $node->type, $params);
 }
 
 /**
  * Provides an edit icon for Project Management nodes.
  */
 function pm_icon_edit_node($node, $params=array()) {
-  return pm_icon_edit('node/' . $node->nid . '/edit', $node, $params);
+  return pm_icon_edit('node/' . $node->nid . '/edit', $params);
 }
 
 /**
  * Provides a delete icon for Project Management nodes.
  */
 function pm_icon_delete_node($node, $params=array()) {
-  return pm_icon_delete('node/' . $node->nid . '/delete', $node, $params);
+  return pm_icon_delete('node/' . $node->nid . '/delete', $params);
 }
 
 /**
  * Provides a Project Management add icon.
  */
-function pm_icon_add($path, $item, $params=array()) {
-  global $user;
-  $type = $item->type;
-  $af = $type . '_node_access';
-  if (!$af($item, 'create', $user)) return '';
+function pm_icon_add($path, $params=array()) {
   $attributes = array('class' => 'popups-form');
-  return pm_icon_l('application_add', $path, t('Add'), '', $params, $attributes);
+  return pm_icon_l('application_add', $path, t('Add'), $params, $attributes);
 }
 
 /**
  * Provides a Project Management edit icon.
  */
-function pm_icon_edit($path, $item, $params=array()) {
-  global $user;
-  $type = $item->type;
-  $af = $type . '_access';
-  if (!$af($item, 'update', $user)) return '';
+function pm_icon_edit($path, $params=array()) {
   $attributes = array('class' => 'popups-form');
-  return pm_icon_l('application_edit', $path, t('Edit'), '', $params, $attributes);
+  return pm_icon_l('application_edit', $path, t('Edit'), $params, $attributes);
 }
 
 /**
  * Provides a Project Management delete icon.
  */
-function pm_icon_delete($path, $item, $params=array()) {
-  global $user;
-  $type = $item->type;
-  $af = $type . '_access';
-//  if (!$af('delete', $item, $user)) return '';
+function pm_icon_delete($path, $params=array()) {
   $attributes = array('class' => 'popups-form');
-  return pm_icon_l('application_delete', $path, t('Delete'), '', $params, $attributes);
+  return pm_icon_l('application_delete', $path, t('Delete'), $params, $attributes);
 }
 
 /**
  * Provides an icon link.
  */
-function pm_icon_l($icon, $path, $title, $permission='', $params=array(), $attributes=array()) {
-  if ($permission && !user_access($permission)) return '';
+function pm_icon_l($icon, $path, $title, $params=array(), $attributes=array()) {
+  if (!drupal_valid_path($path)) {
+    return '';
+  }
   $icon = pm_icon($icon, $title);
   $attributes ['title'] = $title;
 
@@ -1245,8 +1235,6 @@ function _pm_icon_urlencode_helper($params, $org_key = "") {
  * Provides a Project Management icon.
  */
 function pm_icon($icon, $title) {
-  global $base_path;
-
   // Running checkplain on these variables means that we can call pm_icon without further sanitising
   $icon = check_plain($icon);
   $title = check_plain($title);
@@ -1260,21 +1248,26 @@ function pm_icon($icon, $title) {
       $available = pm_icon_recache();
     }
 
+    // Normal situation - display icon image
     if (in_array($icon . '.png', $available->data)) {
-      // Standard route - display normal image
-      $img_src = $base_path . variable_get('pm_icons_path', drupal_get_path('module', 'pm') . '/icons') . '/' . $icon . '.png';
-      $o = '<img src="' . $img_src . '" alt="' . $title . '" title="' . $title . '" />';
+      // Construct path relative to folder stored in settings
+      $img_src = variable_get('pm_icons_path', drupal_get_path('module', 'pm') . '/icons') . '/' . $icon . '.png';
+      // Return the icon
+      return theme('image', array(
+        'path' => $img_src,
+        'alt' => $title,
+        'title' => $title,
+      ));
     }
     else {
       // Icon not found
-      $o = pm_icon_default($icon, $title);
+      return pm_icon_default($icon, $title);
     }
   }
   else {
     // Icons set to not display
-    $o = $title;
+    return $title;
   }
-  return $o;
 }
 
 /**
