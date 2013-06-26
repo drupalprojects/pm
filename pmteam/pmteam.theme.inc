@@ -33,7 +33,7 @@ function theme_pmteam_view($variables) {
     foreach ($node->members_array as $nid => $name) {
       $member = node_load($nid);
       // @todo Revisit these node access checks once access control changes have been finished.
-      if (($member->type == 'pmperson' && pmperson_node_access('view', $nid)) || ($member->type == 'pmorganization' && pmorganization_node_access($nid, 'view'))) {
+      if (drupal_valid_path('node/', $nid)) {
         if (!empty($node->members_deactivated_array) && array_key_exists($nid, $node->members_deactivated_array)) {
           $name .= " (" . t('disabled') . ")";
         }

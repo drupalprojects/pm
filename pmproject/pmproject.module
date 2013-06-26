@@ -245,6 +245,7 @@ function pmproject_form(&$node) {
       ->condition('n.status', 1)
       ->condition('n.type', 'pmorganization')
       ->condition('sor.isactive', 1)
+      ->addTag('node_access')
       ->orderBy('n.title', 'ASC');
 
     $node->billable = variable_get('pmproject_billable_default', FALSE);
@@ -257,6 +258,7 @@ function pmproject_form(&$node) {
       ->fields('n', array('nid', 'title'))
       ->condition('n.status', 1)
       ->condition('n.type', 'pmorganization')
+      ->addTag('node_access')
       ->orderBy('n.title', 'ASC');
   }
 
@@ -1178,7 +1180,6 @@ function pmproject_pm_dashboard_links($type) {
       'icon' => 'pmprojects',
       'path' => 'pm/projects',
       'params' => array(),
-      'access_arguments' => 'Project Management Project: access',
       'node_type' => 'pmproject',
       'add_type' => 'pmproject',
       'map' => array(),

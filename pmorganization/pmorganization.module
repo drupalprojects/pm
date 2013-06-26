@@ -491,10 +491,8 @@ function pmorganization_admin_settings() {
     ->fields('n', array('nid', 'title'))
     ->condition('status', 1)
     ->condition('type', 'pmorganization')
+    ->addTag('node_access')
     ->orderBy('title', 'ASC');
-
-  $query->addTag('node_access');
-//  $query->addTag('pmorganization_node_access'); // @TODO
 
   $result = $query->execute();
 
@@ -688,7 +686,6 @@ function pmorganization_pm_dashboard_links($type) {
       'icon' => 'pmorganizations',
       'path' => 'pm/organizations',
       'params' => array(),
-      'access_arguments' => 'Project Management Organization: access',
       'node_type' => 'pmorganization',
       'add_type' => 'pmorganization',
       'map' => array(),

@@ -271,23 +271,7 @@ function pm_dashboard_get_links($check_active = TRUE, $type = 'page') {
       }
 
       // ACCESS CHECK
-      if (!empty($link_array['access_callback'])) {
-        if (function_exists($link_array['access_callback'])) {
-          if (!isset($link_array['access_arguments'])) {
-            $link_array['access_arguments'] = "";
-          }
-          // USE THE ACCESS CHECK OF THE MENU API
-          _menu_check_access($link_array, $link_array['map']);
-        }
-      }
-      elseif (isset($link_array['access_arguments'])) {
-        $link_array['access'] = user_access($link_array['access_arguments']);
-      }
-      else {
-        $link_array['access'] = TRUE;
-      }
-
-      if (!$link_array['access']) {
+      if (!drupal_valid_path($link_array['path'])) {
         unset($links[$key]);
       }
 
@@ -298,7 +282,6 @@ function pm_dashboard_get_links($check_active = TRUE, $type = 'page') {
         $link_array['weight'] = $weight;
         $weight++;
       }
-
     }
 
     // HOOK FOR ALTERING LINKS
@@ -345,7 +328,6 @@ function pm_pm_dashboard_links($type) {
       'icon' => 'pmconfiguration',
       'path' => 'admin/config/pm',
       'params' => array(),
-      'access_arguments' => 'Project Management: access administration pages',
       'node_type' => '',
       'add_type' => '',
       'map' => array(),
@@ -357,7 +339,6 @@ function pm_pm_dashboard_links($type) {
       'icon' => 'pmattributes',
       'path' => 'pm/attributes',
       'params' => array(),
-      'access_arguments' => 'Project Management: access administration pages',
       'map' => array(),
       'weight' => 14,
     );
@@ -938,14 +919,6 @@ function pm_dateext_validate($element, &$form_state) {
     form_error($element, t('The specified date is invalid.'));
   }
   return $element;
-}
-
-/**
- * @todo This function can probably be removed.
- */
-function pm_dependent_select_process($form, $edit, $form_state, $complete_form) {
-  unset($form['#needs_validation']);
-  return $form;
 }
 
 /**
@@ -1548,65 +1521,6 @@ function _pm_number_of_items($source_module, $destination_module, $nid) {
     $nmb_of_items = db_result(db_query($sql, $nid));
   }
   return $nmb_of_items;
-}
-
-/**
- * Implements hook_views_pre_render to add the pm_icon_add
- *
- * @param $view
- *   Views object.
- */
-function pm_views_pre_render(&$view) {
-  if (isset($view->field['operation'])
-    && $view->field['operation'] instanceof pm_handler_field_operation
-    && isset($view->field['operation']->definition['type'])
-    && $view->field['operation']->options['display_add_icon']
-  ) {
-    $i = new stdClass();
-    $i->type = $view->field['operation']->definition['type'];
-    if ($view->field['operation']->options['display_icons']) {
-      $view->attachment_before .= '<span class="pm-icon-add-view">' . pm_icon_add_node($i, $_GET) . '</span>';
-    }
-    else {
-      global $user;
-      $type = $i->type;
-      $af = $type . '_access';
-      if ($af('create', $i, $user)) {
-        $view->attachment_before .= '<span class="pm-icon-add-view">' . l(t('Add'), 'node/add/' . $type) . '</span>';
-      }
-    }
-  }
-}
-
-/**
- * Implements hook_node_access().
- */
-function pm_attribute_node_access($item = NULL, $op, $account = NULL) {
-  return NODE_ACCESS_IGNORE;
-}
-
-/**
- * @todo Convert this function to hook_node_access().
- */
-function pm_attribute_access($op, $item=NULL, $account=NULL) {
-  if (empty($account)) {
-    global $user;
-    $account = $user;
-  }
-
-  if ($op == 'create') {
-    return user_access('Project Management: access administration pages');
-  }
-
-  if ($op == 'delete') {
-    return user_access('Project Management: access administration pages');
-  }
-
-  if ($op == 'update') {
-    return user_access('Project Management: access administration pages');
-  }
-
-  return FALSE;
 }
 
 /**

@@ -62,18 +62,14 @@ class pm_handler_field_operation extends views_handler_field_node_link {
       return $value;
     }
     else {
-      global $user;
-      $type = $node->type;
-      $af = $type . '_access';
-
       $value = "";
-      if ($af('update', $node, $user)) {
+      if (drupal_valid_path('node/' . $node->nid . 'edit')) {
         $value .= l(t('edit'), "node/$node->nid/edit", array('query' => drupal_get_destination()));
       }
       if (!empty($value)) {
         $value .= '&nbsp;|&nbsp;';
       }
-      if ($af('delete', $node, $user)) {
+      if (drupal_valid_path('node/' . $node->nid . 'delete')) {
         $value .= l(t('delete'), "node/$node->nid/delete", array('query' => drupal_get_destination()));
       }
 

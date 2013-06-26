@@ -9,7 +9,7 @@
  * Provides HTML for the project node tasks list.
  */
 function theme_pmtask_tasks($form) {
-  if (count($form['tasks'])>0 && pmproject_access('update', $form['project']['#value'])) {
+  if (count($form['tasks'])>0 && drupal_valid_path('node/' . $form['project']['#value'] . '/edit')) {
     drupal_add_tabledrag('tasks', 'match', 'parent', 'task-parent-nid', 'task-parent-nid', 'task-nid', TRUE);
     drupal_add_tabledrag('tasks', 'order', 'sibling', 'task-weight');
   }
@@ -41,12 +41,12 @@ function theme_pmtask_tasks($form) {
         'class' => 'pm_list_operations',
       ),
     );
-    if (!pmproject_access('update', $form['project']['#value'])) {
+    if (!drupal_valid_path('node/' . $form['project']['#value'] . '/edit')) {
       unset($data[5]);
       unset($data[6]);
     }
     $row['data'] = $data;
-    if (pmproject_access('update', $form['project']['#value'])) {
+    if (drupal_valid_path('node/' . $form['project']['#value'] . '/edit')) {
       $row['class'] = empty($row['class']) ? 'draggable' : $row['class'] . ' draggable';
     }
     $rows[] = $row;

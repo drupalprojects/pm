@@ -248,7 +248,7 @@ function pminvoice_form(&$node, $form_state) {
       $node->project_nid = $_GET['project_nid'];
       $p = node_load($node->project_nid);
       $node->organization_nid = $p->organization_nid;
-      if (!pmorganization_node_access($node->organization_nid, 'view')) {
+      if (!drupal_valid_path('node/' . $node->organization_nid)) {
         drupal_set_message(t("You cannot add an invoice for this project, as you do not have access to view the organization's profile"));
         drupal_goto('node/' . $node->project_nid);
       }
@@ -1120,7 +1120,6 @@ function pminvoice_get_item_desc($rate_array, $node) {
   }
 
   return $description;
-
 }
 
 /**
@@ -1377,7 +1376,6 @@ function pminvoice_pm_dashboard_links($type) {
       'icon' => 'pminvoices',
       'path' => 'pm/invoices',
       'params' => array(),
-      'access_arguments' => 'Project Management invoice: access',
       'node_type' => 'pminvoice',
       'add_type' => 'pminvoice',
       'map' => array(),

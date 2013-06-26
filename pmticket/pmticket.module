@@ -256,7 +256,7 @@ function pmticket_form(&$node, $form_state) {
       $node->project_nid = $_GET['project_nid'];
       $p = node_load($node->project_nid);
       $node->organization_nid = $p->organization_nid;
-      if (!pmorganization_node_access($node->organization_nid, 'view')) {
+      if (!drupal_valid_path('node/' . $node->organization_nid)) {
         drupal_set_message(t("You cannot add a ticket for this project, as you do not have access to view the organization's profile"));
         drupal_goto('node/' . $node->project_nid);
       }
@@ -267,8 +267,8 @@ function pmticket_form(&$node, $form_state) {
       $node->organization_nid = $t->organization_nid;
       $node->project_nid = $t->project_nid;
       // $project_access deals with the case whereby the project could be blank, hence access rules not required
-      $project_access = $node->project_nid ? pmproject_access('view', $node->project_nid) : TRUE;
-      if (!pmorganization_node_access($node->organization_nid, 'view') || !pmproject_access('view', $node->project_nid)) {
+      $project_access = $node->project_nid ? drupal_valid_path('node/' . $node->project_nid) : TRUE;
+      if (!drupal_valid_path('node/' . $node->organization_nid) || !$project_access) {
         drupal_set_message(t("You cannot add a ticket for this task, as you do not have access to view the both the organization and project's profile"));
         drupal_goto('node/' . $node->task_nid);
       }
@@ -306,6 +306,7 @@ function pmticket_form(&$node, $form_state) {
     ->fields('n', array('nid', 'title'))
     ->condition('n.status', 1)
     ->condition('n.type', 'pmorganization')
+    ->addTag('node_access')
     ->orderBy('n.title', 'ASC');
 
   $org_result = $org_query->execute();
@@ -1183,7 +1184,6 @@ function pmticket_pm_dashboard_links($type) {
       'icon' => 'pmtickets',
       'path' => 'pm/tickets',
       'params' => array(),
-      'access_arguments' => 'Project Management Ticket: access',
       'node_type' => 'pmticket',
       'add_type' => 'pmticket',
       'map' => array(),

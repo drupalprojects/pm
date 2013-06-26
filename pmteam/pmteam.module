@@ -614,7 +614,6 @@ function pmteam_pm_dashboard_links($type) {
       'icon' => 'pmteams',
       'path' => 'pm/teams',
       'params' => array(),
-      'access_arguments' => 'Project Management Team: access',
       'node_type' => 'pmteam',
       'add_type' => 'pmteam',
       'map' => array(),

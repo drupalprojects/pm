@@ -53,7 +53,7 @@ function pmtask_tasks($project) {
     ),
   );
 
-  if (!pmproject_access('update', $project->nid)) {
+  if (!drupal_valid_path('node/' . $project->nid . '/edit')) {
     unset($header[5]);
     unset($header[6]);
   }
@@ -308,7 +308,7 @@ function pmtask_tasks_form($form_id, $header, $tasks, $project) {
     '#value' => $project->nid,
   );
 
-  if (pmproject_access('update', $project->nid)) {
+  if (drupal_valid_path('node/' . $project->nid . '/edit')) {
     // This form is displayed for users which may not have edit permissions for the nodes displayed.
     // Furthermore, permissions can mean that the user could have edit permissions for some nodes displayed and not others.
     // Therefore, the submit button must only be displayed if the user has the permission 'edit all', which guarantees the user is allowed to edit all nodes displayed.
