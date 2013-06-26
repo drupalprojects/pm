@@ -293,17 +293,16 @@ function pmnote_form(&$node, $form_state) {
       'callback' => 'pmnote_ajax_project_nid',
       'wrapper' => 'pmnote-task-nid',
     ),
-
   );
 
-//  $tree = is_null($project_nid) ? array() : _pmtask_get_tree($project_nid);
-//  $tasks = _pmtask_plain_tree($tree);
+  $tree = is_null($project_nid) ? array() : _pmtask_get_tree($project_nid);
+  $tasks = _pmtask_plain_tree($tree);
   $form['group1']['task_nid'] = array(
     '#type' => 'select',
     '#title' => t('Task'),
     '#default_value' => isset($node->task_nid) ? $node->task_nid : NULL,
-    '#options' => array(0 => '-'),// + $tasks,
-    '#prefix' => '<div id="pmtask-project-nid">',
+    '#options' => array(0 => '-') + $tasks,
+    '#prefix' => '<div id="pmnote-task-nid">',
     '#suffix' => '</div>',
   );
 
