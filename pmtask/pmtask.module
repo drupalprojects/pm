@@ -319,25 +319,13 @@ function pmtask_pmproject_change_hierarchy($project_nid, $organization_nid, $org
  * Implements hook_form().
  */
 function pmtask_form(&$node, $form_state) {
-  $breadcrumb = array();
-  $breadcrumb[] = l(t('Project Management'), 'pm');
-
-  if (array_key_exists('project_nid', $_GET)) {
-    $breadcrumb[] = l(t('Projects'), 'pm/projects');
-    $project = node_load($_GET['project_nid']);
-    $breadcrumb[] = l(t('Project : !project', array('!project' => $project->title)), 'node/' . $project->nid);
-    $breadcrumb[] = l(t('Tasks'), 'node/' . $project->nid . '/tasks');
-  }
-  else {
-    $breadcrumb[] = l(t('Tasks'), 'pm/tasks');
-  }
-
+  $breadcrumb = array(
+    l(t('Project Management'), 'pm'),
+    l(t('Tasks'), 'pm/tasks'),
+  );
   drupal_set_breadcrumb($breadcrumb);
 
   if (arg(1)=='add') {
-    $node->datebegin = time();
-    $node->dateend = time();
-
     if (array_key_exists('organization_nid', $_GET) && !$node->organization_nid) {
       $node->organization_nid = $_GET['organization_nid'];
     }
@@ -365,21 +353,14 @@ function pmtask_form(&$node, $form_state) {
         drupal_goto('node/' . $node->parent_nid);
       }
     }
-
-    if (isset($_SESSION['pmtask_list_filter']['organization_nid']) && $_SESSION['pmtask_list_filter']['organization_nid'] && !$node->organization_nid) {
-      $node->organization_nid = $_SESSION['pmtask_list_filter']['organization_nid'];
-    }
-    if (isset($_SESSION['pmtask_list_filter']['project_nid']) && $_SESSION['pmtask_list_filter']['project_nid'] && !$node->project_nid) {
-      $node->project_nid = $_SESSION['pmtask_list_filter']['project_nid'];
-    }
-
-    $node->billable = variable_get('pmtask_billable_default', FALSE);
   }
 
   $type = node_type_get_type($node);
   $info = field_info_extra_fields('node', 'pmtask', 'form');
 
   $form['#attributes']['class'] = 'pmcomponent_node_form';
+  $form['#prefix'] = '<div id="pmtask-form">';
+  $form['#suffix'] = '</div>';
 
   $form['group1'] = array(
     '#type' => 'markup',
@@ -410,8 +391,8 @@ function pmtask_form(&$node, $form_state) {
     '#options' => $organizations,
     '#required' => TRUE,
     '#ajax' => array(
-      'callback' => 'pmtask_ajax_organization_nid',
-      'wrapper' => 'pmtask-project-nid',
+      'callback' => 'pmtask_form_ajax',
+      'wrapper' => 'pmtask-form',
     ),
   );
 
@@ -448,8 +429,8 @@ function pmtask_form(&$node, $form_state) {
     '#prefix' => '<div id="pmtask-project-nid">',
     '#suffix' => '</div>',
     '#ajax' => array(
-      'callback' => 'pmtask_ajax_project_nid',
-      'wrapper' => 'pmtask-parent-nid',
+      'callback' => 'pmtask_form_ajax',
+      'wrapper' => 'pmtask-form',
     ),
   );
 
@@ -466,7 +447,7 @@ function pmtask_form(&$node, $form_state) {
     $project_nid = NULL;
   }
 
-  $tree = _pmtask_get_tree($project_nid);
+  $tree = is_null($project_nid) ? array() : _pmtask_get_tree($project_nid);
   $parent_tasks = _pmtask_plain_tree($tree);
   $form['group1']['parent_nid'] = array(
     '#type' => 'select',
@@ -539,14 +520,14 @@ function pmtask_form(&$node, $form_state) {
     '#type' => 'dateext',
     '#title' => t('Date begin'),
     '#withnull' => TRUE,
-    '#default_value' => $node->datebegin,
+    '#default_value' => isset($node->datebegin) ? $node->datebegin : time(),
   );
 
   $form['group3']['dateend'] = array(
     '#type' => 'dateext',
     '#title' => t('Date end'),
     '#withnull' => TRUE,
-    '#default_value' => $node->dateend,
+    '#default_value' => isset($node->dateend) ? $node->dateend : time(),
   );
 
   $durationunit_list = pm_attributes_bydomain('Duration unit');
@@ -599,13 +580,15 @@ function pmtask_form(&$node, $form_state) {
     '#weight' => $info['group5']['weight'],
   );
 
-  $options = pm_get_assignment_options($node->organization_nid, $node->project_nid);
+  $options = pm_get_assignment_options($organization_nid, $project_nid);
+
+  $assigned_nid = isset($form_state['values']['assigned_nid']) ? $form_state['values']['assigned_nid'] : (isset($node->assigned_nid) ? $node->assigned_nid : 0);
 
   $form['group5']['assigned_nid'] = array(
     '#type' => 'select',
     '#title' => t('Assigned to'),
     '#options' => $options,
-    '#default_value' => isset($node->assigned_nid) ? $node->assigned_nid : 0,
+    '#default_value' => $assigned_nid,
   );
 
   $form['group6'] = array(
@@ -648,17 +631,10 @@ function pmtask_form(&$node, $form_state) {
 }
 
 /**
- * Ajax callback for the organization nid field on a pmtask node.
+ * Ajax callback for the pmtask node form.
  */
-function pmtask_ajax_organization_nid(&$form, &$form_state) {
-  return $form['group1']['project_nid'];
-}
-
-/**
- * Ajax callback for the project nid field on a pmtask node.
- */
-function pmtask_ajax_project_nid(&$form, &$form_state) {
-  return $form['group1']['parent_nid'];
+function pmtask_form_ajax(&$form, &$form_state) {
+  return $form;
 }
 
 /**
@@ -796,8 +772,8 @@ function _pmtask_beforesave(&$node) {
   $node->assigned_title = isset($assigned->title) ? $assigned->title : NULL;
 
   // Allow use of comma when inputting numerical values - str_replace with period decimal
-  $node->duration = str_replace(',', '.', $node->duration);
-  $node->price = str_replace(',', '.', $node->price);
+  $node->duration = floatval(str_replace(',', '.', $node->duration));
+  $node->price = floatval(str_replace(',', '.', $node->price));
 
   if (is_array($node->datebegin)) {
       $node->datebegin = _pm_date_to_gmtimestamp($node->datebegin);

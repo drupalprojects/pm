@@ -241,14 +241,13 @@ function pmticket_pmtask_change_hierarchy($task_nid, $organization_nid, $organiz
  * Implements hook_form().
  */
 function pmticket_form(&$node, $form_state) {
-  $breadcrumb = array();
-  $breadcrumb[] = l(t('Project Management'), 'pm');
-  $breadcrumb[] = l(t('Tickets'), 'pm/tickets');
+  $breadcrumb = array(
+    l(t('Project Management'), 'pm'),
+    l(t('Tickets'), 'pm/tickets'),
+  );
   drupal_set_breadcrumb($breadcrumb);
 
   if (arg(1)=='add') {
-    $node->datebegin = time();
-
     if (array_key_exists('organization_nid', $_GET) && !$node->organization_nid) {
       $node->organization_nid = $_GET['organization_nid'];
     }
@@ -274,16 +273,6 @@ function pmticket_form(&$node, $form_state) {
       }
     }
 
-    if (isset($_SESSION['pmticket_list_filter']['organization_nid']) && !$node->organization_nid) {
-      $node->organization_nid = $_SESSION['pmticket_list_filter']['organization_nid'];
-    }
-    if (isset($_SESSION['pmticket_list_filter']['project_nid']) && !$node->project_nid) {
-      $node->project_nid = $_SESSION['pmticket_list_filter']['project_nid'];
-    }
-    if (isset($_SESSION['pmticket_list_filter']['task_nid']) && !$node->task_nid) {
-      $node->task_nid = $_SESSION['pmticket_list_filter']['task_nid'];
-    }
-
     if (array_key_exists('organization_nid', $_GET)) $node->organization_nid = $_GET['organization_nid'];
     if (array_key_exists('project_nid', $_GET)) $node->project_nid = $_GET['project_nid'];
     if (array_key_exists('task_nid', $_GET)) $node->task_nid = $_GET['task_nid'];
@@ -293,6 +282,8 @@ function pmticket_form(&$node, $form_state) {
   $info = field_info_extra_fields('node', 'pmticket', 'form');
 
   $form['#attributes']['class'] = 'pmcomponent_node_form';
+  $form['#prefix'] = '<div id="pmticket-form">';
+  $form['#suffix'] = '</div>';
 
   $form['group1'] = array(
     '#type' => 'markup',
@@ -325,8 +316,8 @@ function pmticket_form(&$node, $form_state) {
     '#options' => $organizations,
     '#required' => TRUE,
     '#ajax' => array(
-      'callback' => 'pmticket_ajax_organization_nid',
-      'wrapper' => 'pmticket-project-nid',
+      'callback' => 'pmticket_form_ajax',
+      'wrapper' => 'pmticket-form',
     ),
   );
 
@@ -360,8 +351,8 @@ function pmticket_form(&$node, $form_state) {
     '#prefix' => '<div id="pmticket-project-nid">',
     '#suffix' => '</div>',
     '#ajax' => array(
-      'callback' => 'pmticket_ajax_project_nid',
-      'wrapper' => 'pmticket-task-nid',
+      'callback' => 'pmticket_form_ajax',
+      'wrapper' => 'pmticket-form',
     ),
   );
 
@@ -431,7 +422,7 @@ function pmticket_form(&$node, $form_state) {
     '#type' => 'dateext',
     '#title' => t('Date begin'),
     '#withnull' => TRUE,
-    '#default_value' => $node->datebegin,
+    '#default_value' => isset($node->datebegin) ? $node->datebegin : NULL,
   );
 
   $form['group3']['dateend'] = array(
@@ -492,7 +483,7 @@ function pmticket_form(&$node, $form_state) {
     '#weight' => $info['group5']['weight'],
   );
 
-  $options = isset($project_nid) ? pm_get_assignment_options($node->organization_nid, $project_nid) : pm_get_assignment_options($node->organization_nid);
+  $options = isset($project_nid) ? pm_get_assignment_options($organization_nid, $project_nid) : pm_get_assignment_options($organization_nid);
 
   $form['group5']['assigned_nid'] = array(
     '#type' => 'select',
@@ -536,17 +527,10 @@ function pmticket_form(&$node, $form_state) {
 }
 
 /**
- * Ajax callback for the organization nid field on a pmticket node.
+ * Ajax callback for the pmticket node form.
  */
-function pmticket_ajax_organization_nid(&$form, &$form_state) {
-  return $form['group1']['project_nid'];
-}
-
-/**
- * Ajax callback for the project nid field on a pmticket node.
- */
-function pmticket_ajax_project_nid(&$form, &$form_state) {
-  return $form['group1']['task_nid'];
+function pmticket_form_ajax(&$form, &$form_state) {
+  return $form;
 }
 
 /**
