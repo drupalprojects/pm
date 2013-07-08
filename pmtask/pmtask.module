@@ -296,7 +296,7 @@ function pmtask_pmorganization_change($organization_nid, $organization_title) {
  * Implements hook_pmproject_change().
  */
 function pmtask_pmproject_change($project_nid, $project_title) {
-  db_update('pmproject')
+  db_update('pmtask')
     ->fields(array('project_title' => $project_title))
     ->condition('project_nid', $project_nid)
     ->execute();

@@ -59,7 +59,7 @@ function theme_pmproject_view($variables) {
     $node->content['links']['auto_invoice'] = array(
       '#prefix' => variable_get('pm_icons_display', TRUE) ? '<dt id="pminvoices" class="pmcomponent">' : '<dt class="pmcomponent">',
       '#suffix' => '</dt>',
-      '#value' => theme('pminvoice_autoadd_links', $node->nid, $node->billable, $node->billed),
+      '#value' => theme('pminvoice_autoadd_links', array('nid' => $node->nid, 'billable' => $node->billable, 'billed' => $node->billed)),
       '#weight' => $l_pos++,
     );
   }

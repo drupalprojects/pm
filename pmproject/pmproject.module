@@ -532,12 +532,12 @@ function pmproject_insert($node) {
       'projectstatus' => $node->projectstatus,
       'projectpriority' => $node->projectpriority,
       'pricemode' => $node->pricemode,
-//      'price' => $node->price,
+      'price' => $node->price,
       'currency' => $node->currency,
-//      'datebegin' => $node->datebegin,
-//      'dateend' => $node->dateend,
+      // 'datebegin' => $node->datebegin,
+      // 'dateend' => $node->dateend,
       'durationunit' => $node->durationunit,
-//      'duration' => $node->duration,
+      'duration' => $node->duration,
       'manager_nid' => $node->manager_nid,
       'manager_title' => $manager->title,
       'assigned_nid' => $node->assigned_nid,
@@ -575,15 +575,17 @@ function pmproject_update($node) {
     $per_result = db_select('node', 'n')
       ->fields('n', array('title'))
       ->condition('n.type', 'pmperson')
-      ->condition('n.nid', '$node->manager_nid')
+      ->condition('n.nid', $node->manager_nid)
       ->execute();
     $manager = $per_result->fetchObject();
     if (!$manager) {
+      $manger = new stdClass();
       $manager->title = '';
     }
 
     $assigned = node_load($node->assigned_nid);
     if (!$assigned) {
+      $assigned = new stdClass();
       $assigned->title = '';
     }
 
@@ -596,12 +598,12 @@ function pmproject_update($node) {
         'projectstatus' => $node->projectstatus,
         'projectpriority' => $node->projectpriority,
         'pricemode' => $node->pricemode,
-//        'price' => $node->price,
+        'price' => $node->price,
         'currency' => $node->currency,
-//        'datebegin' => $node->datebegin,
-//        'dateend' => $node->dateend,
+        // 'datebegin' => $node->datebegin,
+        // 'dateend' => $node->dateend,
         'durationunit' => $node->durationunit,
-//        'duration' => $node->duration,
+        'duration' => $node->duration,
         'manager_nid' => $node->manager_nid,
         'manager_title' => $manager->title,
         'assigned_nid' => $node->assigned_nid,
@@ -625,6 +627,12 @@ function _pmproject_beforesave(&$node) {
   // Allow use of comma when inputting numerical values - str_replace with period decimal
   $node->duration = str_replace(',', '.', $node->duration);
   $node->price = str_replace(',', '.', $node->price);
+  if (!is_numeric($node->duration)) {
+    $node->duration = 0;
+  }
+  if (!is_numeric($node->price)) {
+    $node->price = 0;
+  }
 
   if (is_array($node->datebegin)) {
       $node->datebegin = _pm_date_to_gmtimestamp($node->datebegin);

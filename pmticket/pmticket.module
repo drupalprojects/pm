@@ -556,9 +556,9 @@ function pmticket_insert($node) {
       // 'datebegin' => $node->datebegin,
       // 'dateend' => $node->dateend,
       'durationunit' => $node->durationunit,
-//      'duration' => $node->duration,
+      'duration' => $node->duration,
       'pricemode' => $node->pricemode,
-//      'price' => $node->price,
+      'price' => $node->price,
       'currency' => $node->currency,
       'assigned_nid' => $node->assigned_nid,
       'assigned_title' => $node->assigned_title,
@@ -592,7 +592,12 @@ function pmticket_update($node) {
     ->execute();
 
   $p = $pro_result->fetchObject();
-  $node->project_title = $p->title;
+  if ($p) {
+    $node->project_title = $p->title;
+  }
+  else {
+    $node->project_title = '';
+  }
 
   $task_query = db_select('node', 'n');
   $task_query->join('pmtask', 'sta', 'n.vid = sta.vid');
@@ -634,7 +639,7 @@ function pmticket_update($node) {
         'durationunit' => $node->durationunit,
         'duration' => $node->duration,
         'pricemode' => $node->pricemode,
-//        'price' => $node->price,
+        'price' => $node->price,
         'currency' => $node->currency,
         'assigned_nid' => $node->assigned_nid,
         'assigned_title' => $node->assigned_title,
@@ -692,6 +697,12 @@ function _pmticket_beforesave(&$node) {
   // Allow use of comma when inputting numerical values - str_replace with period decimal
   $node->duration = str_replace(',', '.', $node->duration);
   $node->price = str_replace(',', '.', $node->price);
+  if (!is_numeric($node->duration)) {
+    $node->duration = 0;
+  }
+  if (!is_numeric($node->price)) {
+    $node->price = 0;
+  }
 
   // if (is_array($node->datebegin)) $node->datebegin = _pm_date_to_gmtimestamp($node->datebegin);
   // if (is_array($node->dateend)) $node->dateend = _pm_date_to_gmtimestamp($node->dateend);
