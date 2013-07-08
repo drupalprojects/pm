@@ -1,6 +1,8 @@
 ** New issues added should be added at the TOP of the list for each version as they are committed. **
 
 Version 7.x-1.x-dev:
-- Task #510742: Port to Drupal 7. No functionality changes.
+- Issue #2036773 by Raphael Dürst | gapa: Fixed Error viewing Ticket.
+- Issue #1994568 by juliangb, Raphael Dürst | jandewit6: Fixed Warning on saving ticket.
 
-[Changelog begins at version 6.x-2.0]
+Version 7.x-1.0-alpha1:
+- Task #510742: Port to Drupal 7. No functionality changes.
