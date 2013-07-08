@@ -553,8 +553,8 @@ function pmticket_insert($node) {
       'ticketcategory' => $node->ticketcategory,
       'ticketstatus' => $node->ticketstatus,
       'ticketpriority' => $node->ticketpriority,
-      'datebegin' => $node->datebegin,
-      'dateend' => $node->dateend,
+      // 'datebegin' => $node->datebegin,
+      // 'dateend' => $node->dateend,
       'durationunit' => $node->durationunit,
 //      'duration' => $node->duration,
       'pricemode' => $node->pricemode,
@@ -629,8 +629,8 @@ function pmticket_update($node) {
         'ticketcategory' => $node->ticketcategory,
         'ticketstatus' => $node->ticketstatus,
         'ticketpriority' => $node->ticketpriority,
-        'datebegin' => $node->datebegin,
-        'dateend' => $node->dateend,
+        // 'datebegin' => $node->datebegin,
+        // 'dateend' => $node->dateend,
         'durationunit' => $node->durationunit,
         'duration' => $node->duration,
         'pricemode' => $node->pricemode,
@@ -693,8 +693,8 @@ function _pmticket_beforesave(&$node) {
   $node->duration = str_replace(',', '.', $node->duration);
   $node->price = str_replace(',', '.', $node->price);
 
-  if (is_array($node->datebegin)) $node->datebegin = _pm_date_to_gmtimestamp($node->datebegin);
-  if (is_array($node->dateend)) $node->dateend = _pm_date_to_gmtimestamp($node->dateend);
+  // if (is_array($node->datebegin)) $node->datebegin = _pm_date_to_gmtimestamp($node->datebegin);
+  // if (is_array($node->dateend)) $node->dateend = _pm_date_to_gmtimestamp($node->dateend);
 }
 
 /**
