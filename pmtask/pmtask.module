@@ -90,32 +90,6 @@ function pmtask_node_access($node, $op, $account = NULL) {
  * Implements hook_menu().
  */
 function pmtask_menu() {
-  $items['node/%node/tasks'] = array(
-    'title' => 'Tasks',
-    'page callback' => 'pmtask_tasks',
-    'page arguments' => array(1),
-    'access callback' => '_pmtask_tasks_access',
-    'access arguments' => array(1),
-    'file' => 'pmtask.admin.inc',
-    'type' => MENU_LOCAL_TASK,
-    'weight' => 4
-  );
-  $items['pm/project_tasks_js/%'] = array(
-    'title' => 'Tasks',
-    'page callback' => '_pmtask_project_tasks_js',
-    'page arguments' => array(2),
-    'access callback' => TRUE,
-    'file' => 'pmtask.admin.inc',
-    'type' => MENU_CALLBACK,
-  );
-  $items['pm/project_assignments_js/%'] = array(
-    'title' => 'Assignments',
-    'page callback' => '_pmtask_project_assignments_js',
-    'page arguments' => array(2, 3),
-    'access callback' => TRUE,
-    'file' => 'pmtask.admin.inc',
-    'type' => MENU_CALLBACK,
-  );
   $items['admin/config/pm/task'] = array(
     'title' => 'Project Management Task',
     'description' => 'Project Management Task administration page',
@@ -142,71 +116,7 @@ function pmtask_admin_settings() {
     '#size' => 5,
   );
 
-  $form['pmtask_enable_ganttchart'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Enable Gantt Charts (experimental feature)'),
-    '#default_value' => variable_get('pmtask_enable_ganttchart', False),
-  );
-
-  $form['pmtask_jsgantt_options'] = array(
-    '#type' => 'checkboxes',
-    '#title' => t('Chart display options'),
-    '#default_value' => variable_get('pmtask_jsgantt_options', array('ShowStartDate', 'ShowEndDate', 'ShowDur')),
-    '#options' => array(
-      'ShowStartDate' => t('Show start date'),
-      'ShowEndDate' => t('Show end date'),
-      'ShowDur' => t('Show duration'),
-    ),
-    '#description' => t('Choose display options for gantt chart.'),
-  );
-
-  $form['pmtask_jsgantt_color'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Gantt chart default color'),
-    '#default_value' => variable_get('pmtask_jsgantt_color', '666666'),
-    '#description' => t('Enter default color for gantt chart bars.'),
-    '#size' => 6,
-  );
-  $form['pmtask_jsgantt_color_completed'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Gantt chart "completed" color'),
-    '#default_value' => variable_get('pmtask_jsgantt_color_completed', '0DFF24'),
-    '#description' => t('Enter "completed" color for gantt chart bars.'),
-    '#size' => 6,
-  );
-  $form['pmtask_jsgantt_color_in_progress'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Gantt chart "in progress" color'),
-    '#default_value' => variable_get('pmtask_jsgantt_color_in_progress', '00CCFF'),
-    '#description' => t('Enter "in progress" color for gantt chart bars.'),
-    '#size' => 6,
-  );
-  $form['pmtask_jsgantt_color_on_hold'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Gantt chart "on hold" color'),
-    '#default_value' => variable_get('pmtask_jsgantt_color_on_hold', 'FFF60D'),
-    '#description' => t('Enter "on hold" color for gantt chart bars.'),
-    '#size' => 6,
-  );
-  $form['pmtask_jsgantt_color_overdue'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Gantt chart "overdue" color'),
-    '#default_value' => variable_get('pmtask_jsgantt_color_overdue', 'FF0D0D'),
-    '#description' => t('Enter "overdue" color for gantt chart bars.'),    '#size' => 6,
-  );
-
   return system_settings_form($form);
-}
-
-/**
- * Checks that the JSGantt library is present.
- */
-function jsgantt_check_directory($form_element) {
-  $file = $form_element['#value'] . "/jsgantt.js";
-  if (!file_exists($file)) {
-    form_set_error($form_element['#name'], t('The file %file does not exist.', array('%file' => $file)));
-  }
-  return $form_element;
 }
 
 /**
@@ -214,10 +124,6 @@ function jsgantt_check_directory($form_element) {
  */
 function pmtask_theme() {
   return array(
-    'pmtask_tasks' => array(
-      'file'      => 'pmtask.theme.inc',
-      'arguments' => array('form'),
-    ),
     'pmtask_view' => array(
       'file'      => 'pmtask.theme.inc',
       'variables' => array('node', 'view_mode'),

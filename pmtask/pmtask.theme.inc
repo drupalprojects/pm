@@ -6,55 +6,6 @@
  */
 
 /**
- * Provides HTML for the project node tasks list.
- */
-function theme_pmtask_tasks($form) {
-  if (count($form['tasks'])>0 && drupal_valid_path('node/' . $form['project']['#value'] . '/edit')) {
-    drupal_add_tabledrag('tasks', 'match', 'parent', 'task-parent-nid', 'task-parent-nid', 'task-nid', TRUE);
-    drupal_add_tabledrag('tasks', 'order', 'sibling', 'task-weight');
-  }
-
-  $header = array();
-  $row = array();
-
-  $header = $form['header']['#value'];
-  unset($form['header']);
-
-  foreach (element_children($form['tasks']) as $key) {
-    $form['tasks'][$key]['task_parent-nid_' . $key]['#attributes']['class'] = 'task-parent-nid';
-    $form['tasks'][$key]['task_nid_' . $key]['#attributes']['class'] = 'task-nid';
-    $form['tasks'][$key]['task_weight_' . $key]['#attributes']['class'] = 'task-weight';
-    $durationunit = $form['tasks'][$key]['task_durationunit_' . $key]['#value'];
-
-    $data = array(
-      theme('indentation', $form['tasks'][$key]['task_depth_' . $key]['#value']) . drupal_render($form['tasks'][$key]['task_description_' . $key]),
-      drupal_render($form['tasks'][$key]['task_category_' . $key]),
-      drupal_render($form['tasks'][$key]['task_status_' . $key]),
-      drupal_render($form['tasks'][$key]['task_priority_' . $key]),
-      array(
-        'data' => sprintf('%.2f', drupal_render($form['tasks'][$key]['task_duration_' . $key])) . ' ' . substr($durationunit, 0, 1),
-        'style' => 'text-align: right'),
-      drupal_render($form['tasks'][$key]['task_parent-nid_' . $key]) . drupal_render($form['tasks'][$key]['task_nid_' . $key]),
-      drupal_render($form['tasks'][$key]['task_weight_' . $key]),
-      array(
-        'data' => drupal_render($form['tasks'][$key]['task_operations_' . $key]),
-        'class' => 'pm_list_operations',
-      ),
-    );
-    if (!drupal_valid_path('node/' . $form['project']['#value'] . '/edit')) {
-      unset($data[5]);
-      unset($data[6]);
-    }
-    $row['data'] = $data;
-    if (drupal_valid_path('node/' . $form['project']['#value'] . '/edit')) {
-      $row['class'] = empty($row['class']) ? 'draggable' : $row['class'] . ' draggable';
-    }
-    $rows[] = $row;
-  }
-  return theme('table', array('header' => $header, 'rows' => $rows));
-}
-
-/**
  * Provides HTML for the task node view.
  */
 function theme_pmtask_view($variables) {
