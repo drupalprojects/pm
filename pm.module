@@ -379,27 +379,34 @@ function pm_pm_dashboard_types() {
 }
 
 /**
- * Implements hook_block().
+ * Implements hook_block_info().
  */
-function pm_block($op = 'list', $delta = 0) {
-  switch ($op) {
-    case 'list' :
-      // DASHBOARD AS TOP NAVIGATION
-      $blocks['pm_dashboard_block']['info'] = t('Project Management dashboard block');
-      return $blocks;
-      break;
-    case 'view':
-      switch ($delta) {
-        // DASHBOARD AS BLOCK
-        case 'pm_dashboard_block':
-          $block = array(
-            'subject' => '',
-            'content' => pm_dashboard('block'),
-          );
-          return $block;
-      }
-      break;
+function pm_block_info() {
+  // Register Project Managment menu block
+  $blocks['pm_menu'] = array(
+    'info' => t('Project Management Menu'),
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function pm_block_view($delta = '') {
+  // Define Project Management menu block
+  $block = array();
+
+  switch ($delta) {
+    case 'pm_menu':
+      $block = array(
+        'subject' => 'Project Management',
+        'content' => pm_dashboard('block'),
+      );
+    break;
   }
+
+  return $block;
 }
 
 /**
