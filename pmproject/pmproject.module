@@ -112,8 +112,8 @@ function pmproject_menu() {
   );
 
   $items['admin/config/pm/project'] = array(
-    'title' => 'Project Management project',
-    'description' => 'Project Management project administration page',
+    'title' => 'PM Project',
+    'description' => 'Administer Project Management Project.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('pmproject_admin_settings'),
     'access arguments' => array('Project Management: access administration pages'),

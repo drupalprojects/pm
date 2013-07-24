@@ -96,8 +96,8 @@ function pmticket_menu() {
   $items = array();
 
   $items['admin/config/pm/ticket'] = array(
-    'title' => 'Project Management Ticket',
-    'description' => 'Project Management Ticket administration page',
+    'title' => 'PM Ticket',
+    'description' => 'Administer Project Management Ticket.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('pmticket_admin_settings'),
     'access arguments' => array('Project Management: access administration pages'),

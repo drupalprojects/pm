@@ -87,8 +87,8 @@ function pmexpense_menu() {
   );
 
   $items['admin/config/pm/expense'] = array(
-    'title' => 'Project Management Expense',
-    'description' => 'Project Management Expense administration page',
+    'title' => 'PM Expense',
+    'description' => 'Administer Project Management Expense.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('pmexpense_admin_settings'),
     'access arguments' => array('Project Management: access administration pages'),

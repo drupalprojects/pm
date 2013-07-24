@@ -90,8 +90,8 @@ function pmorganization_menu() {
     'file' => 'pmorganization.admin.inc',
   );
   $items['admin/config/pm/organization'] = array(
-    'title' => 'Project Management organization',
-    'description' => 'Project Management organization administration page',
+    'title' => 'PM Organization',
+    'description' => 'Administer Project Management Organization.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('pmorganization_admin_settings'),
     'access arguments' => array('Project Management: access administration pages'),
