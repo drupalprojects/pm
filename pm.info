@@ -6,5 +6,6 @@ configure = admin/config/pm
 
 files[] = pm.test
 
+dependencies[] = date
 dependencies[] = entityreference
 dependencies[] = views
