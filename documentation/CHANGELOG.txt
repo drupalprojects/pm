@@ -1,6 +1,6 @@
 ** New issues added should be added at the TOP of the list for each version as they are committed. **
 
-Version 7.x-1.x-dev:
+Version 7.x-1.0-alpha2:
 - Issue #2047761 by juliangb: Improve configuration pages.
 - Issue #2044525 by juliangb | modctek: Port Dashboard block to Drupal 7 version.
 - Issue #2037411 by juliangb | gapa: Fixed Remove tasks tab from project node.
