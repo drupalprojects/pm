@@ -1,6 +1,7 @@
 ** New issues added should be added at the TOP of the list for each version as they are committed. **
 
 Version 7.x-1.x-dev:
+- Issue #2062955 by juliangb | MoneyTalks: Fixed pm organization module has wrong conditional with person.
 - Issue #2059623 by juliangb: Change module names from 'Project Management XYZ" to "PM XYZ".
 - Issue #2064515 by juliangb | plepnev: Fixed Error on editing project.
 - Issue #1848938 by juliangb | willwh: Fixed View handlers missing.

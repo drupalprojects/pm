@@ -628,9 +628,9 @@ function pmorganization_node_grants($account, $op) {
   $is_pmperson = FALSE;
   if (!isset($account->pmorganization_nid) && module_exists('pmperson')) {
     _pmperson_user_load($account);
-    if (isset($account->pmperson_nid) AND $account->pmperson_nid > 0) {
-      $is_pmperson = TRUE;
-    }
+  }
+  if (isset($account->pmperson_nid) AND $account->pmperson_nid > 0) {
+    $is_pmperson = TRUE;
   }
   $grants = array();
   switch ($op) {
