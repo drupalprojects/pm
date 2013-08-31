@@ -1,4 +1,4 @@
-name = Project Management Organization
+name = PM Organization
 description = "Allows storing of organizations for use within Project Management"
 dependencies[] = pm
 dependencies[] = views

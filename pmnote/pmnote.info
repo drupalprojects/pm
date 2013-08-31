@@ -1,4 +1,4 @@
-name = Project Management Note
+name = PM Note
 description = "Allows creation of notes about organizations, projects or tasks."
 dependencies[] = views
 dependencies[] = pm

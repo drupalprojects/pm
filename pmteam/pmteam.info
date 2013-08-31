@@ -1,4 +1,4 @@
-name = Project Management Team
+name = PM Team
 description = "Allows recording of teams made up of Organizations and People."
 core = 7.x
 package = Project Management

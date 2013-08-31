@@ -1,4 +1,4 @@
-name = Project Management Person
+name = PM Person
 description = "Allows storage of people within organizations, and linking of these to Drupal user accounts."
 dependencies[] = pm
 dependencies[] = pmorganization

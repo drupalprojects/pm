@@ -1,4 +1,4 @@
-name = Project Management Expense
+name = PM Expense
 description = "Allows recording of expenses based on organizations, projects, tasks and tickets."
 dependencies[] = pm
 dependencies[] = pmorganization

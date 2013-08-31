@@ -1,4 +1,4 @@
-name = Project Management Ticket
+name = PM Ticket
 description = "Allows creation of tickets for Projects and Tasks"
 dependencies[] = pm
 dependencies[] = pmorganization
