@@ -1,6 +1,7 @@
 ** New issues added should be added at the TOP of the list for each version as they are committed. **
 
 Version 7.x-1.x-dev:
+- Issue #2064515 by juliangb | plepnev: Fixed Error on editing project.
 - Issue #1848938 by juliangb | willwh: Fixed View handlers missing.
 
 Version 7.x-1.0-alpha2:

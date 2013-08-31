@@ -128,7 +128,7 @@ function pmnote_pmorganization_change($organization_nid, $organization_title) {
  */
 function pmnote_pmproject_change($project_nid, $project_title) {
   db_update('pmnote')
-    ->fields(array('project_title', $project_title))
+    ->fields(array('project_title' => $project_title))
     ->condition('project_nid', $project_nid)
     ->execute();
 }
