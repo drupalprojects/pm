@@ -19,37 +19,48 @@ function pmexpense_help($path, $arg) {
 function pmexpense_permission() {
   return array(
     'Project Management expense: access' => array(
-      'title' => t('Access Project Management Expense'),
+      'title' => t('Access PM Expense'),
+      'description' => t('Allows the user to see pages and blocks associated with the PM Expense module, but does not control which expenses are shown within them.'),
     ),
     'Project Management expense: add' => array(
-      'title' => t('Add Project Management Expense'),
+      'title' => t('Add PM Expense'),
+      'description' => t('Allows the user to create an expense.'),
     ),
     'Project Management expense: delete all' => array(
-      'title' => t('Delete Any Project Management Expense'),
+      'title' => t('Delete Any PM Expense'),
+      'description' => t('Allows the user to delete any expense.'),
     ),
     'Project Management expense: delete own' => array(
-      'title' => t('Delete Authored Project Management Expenses'),
+      'title' => t('Delete Authored PM Expense'),
+      'description' => t('For expenses authored by the user, allows the user to delete the expense.'),
     ),
     'Project Management expense: delete of user organization' => array(
-      'title' => t('Delete  Project Management Expenses in own Organization'),
+      'title' => t('Delete PM Expense in own Organization'),
+      'description' => t('For expenses assigned to the same PM Organization as a PM Person, allows the user associated with that Person to delete the expense.'),
     ),
     'Project Management expense: edit all' => array(
-      'title' => t('Edit Any Project Management Expense'),
+      'title' => t('Edit Any PM Expense'),
+      'description' => t('Allows the user to edit any expense.'),
     ),
     'Project Management expense: edit own' => array(
-      'title' => t('Edit Authored Project Management Expenses'),
+      'title' => t('Edit Authored PM Expense'),
+      'description' => t('For expenses authored by the user, allows the user to edit the expense.'),
     ),
     'Project Management expense: edit of user organization' => array(
-      'title' => t('Edit Project Management Expenses in own Organization'),
+      'title' => t('Edit PM Expense in own Organization'),
+      'description' => t('For expenses assigned to the same PM Organization as a PM Person, allows the user associated with that Person to edit the expense.'),
     ),
     'Project Management expense: view all' => array(
-      'title' => t('View Any Project Management Expense'),
+      'title' => t('View Any PM Expense'),
+      'description' => t('Allows the user to view any expense and see any expense in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management expense: view own' => array(
-      'title' => t('View Authored Project Management Expenses'),
+      'title' => t('View Authored PM Expense'),
+      'description' => t('For expenses authored by the user, allows the user to view the expense and see the expense in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management expense: view of user organization' => array(
-      'title' => t('View Project Management Expenses in own Organization'),
+      'title' => t('View PM Expense in own Organization'),
+      'description' => t('For expenses assigned to the same PM Organization as a PM Person, allows the user associated with that Person to view the expense and see the expense in lists or dropdowns elsewhere on the site.'),
     ),
   );
 }

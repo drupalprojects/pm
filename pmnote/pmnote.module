@@ -19,37 +19,48 @@ function pmnote_help($path, $arg) {
 function pmnote_permission() {
   return array(
     'Project Management note: access' => array(
-      'title' => t('Access Project Management Note'),
+      'title' => t('Access PM Note'),
+      'description' => t('Allows the user to see pages and blocks associated with the PM Note module, but does not control which notes are shown within them.'),
     ),
     'Project Management note: add' => array(
-      'title' => t('Add Project Management Notes'),
+      'title' => t('Add PM Note'),
+      'description' => t('Allows the user to create a note.'),
     ),
     'Project Management note: delete all' => array(
-      'title' => t('Delete Any Project Management Note'),
+      'title' => t('Delete Any PM Note'),
+      'description' => t('Allows the user to delete any note.'),
     ),
     'Project Management note: delete own' => array(
-      'title' => t('Delete Authored Project Management Notes'),
+      'title' => t('Delete Authored PM Note'),
+      'description' => t('For notes authored by the user, allows the user to delete the note.'),
     ),
     'Project Management note: delete of user organization' => array(
-      'title' => t('Delete Project Management Note in own Organization'),
+      'title' => t('Delete PM Note in own Organization'),
+      'description' => t('For notes assigned to the same PM Organization as a PM Person, allows the user associated with that Person to delete the note.'),
     ),
     'Project Management note: edit all' => array(
-      'title' => t('Edit Any Project Management Note'),
+      'title' => t('Edit Any PM Note'),
+      'description' => t('Allows the user to edit any note.'),
     ),
     'Project Management note: edit own' => array(
-      'title' => t('Edit Authored Project Management Notes'),
+      'title' => t('Edit Authored PM Note'),
+      'description' => t('For notes authored by the user, allows the user to edit the note.'),
     ),
     'Project Management note: edit of user organization' => array(
-      'title' => t('Edit Project Management Notes in own Organization'),
+      'title' => t('Edit PM Notes in own Organization'),
+      'description' => t('For notes assigned to the same PM Organization as a PM Person, allows the user associated with that Person to edit the note.'),
     ),
     'Project Management note: view all' => array(
-      'title' => t('View Any Project Management Note'),
+      'title' => t('View Any PM Note'),
+      'description' => t('Allows the user to view any note and see any note in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management note: view own' => array(
-      'title' => t('View Authored Project Management Notes'),
+      'title' => t('View Authored PM Note'),
+      'description' => t('For notes authored by the user, allows the user to view the note and see the note in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management note: view of user organization' => array(
-      'title' => t('View Project Management Notes in own Organization'),
+      'title' => t('View PM Notes in own Organization'),
+      'description' => t('For notes assigned to the same PM Organization as a PM Person, allows the user associated with that Person to view the note and see the note in lists or dropdowns elsewhere on the site.'),
     ),
   );
 }

@@ -49,9 +49,11 @@ function pm_permission() {
   return array(
     'Project Management: access dashboard' => array(
       'title' => t('Access Dashboard'),
+      'description' => t('Allows the user to access the Project Management dashboard. The items included on the dashboard are set through permissions on the individual modules that provide those links.'),
     ),
     'Project Management: access administration pages' => array(
       'title' => t('Administer Project Management'),
+      'description' => t('Allow the user to perform administrative tasks on Project Management modules, such as altering configuration and add/edit/delete of attribute values.'),
     ),
   );
 }

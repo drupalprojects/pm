@@ -34,37 +34,48 @@ function pminvoice_help($path, $arg) {
 function pminvoice_permission() {
   return array(
     'Project Management invoice: access' => array(
-      'title' => t('Access Project Management Invoice'),
+      'title' => t('Access PM Invoice'),
+      'description' => t('Allows the user to see pages and blocks associated with the PM Invoice module, but does not control which invoices are shown within them.'),
     ),
     'Project Management invoice: add' => array(
-      'title' => t('Add Project Management Invoices'),
+      'title' => t('Add PM Invoice'),
+      'description' => t('Allows the user to create an invoice.'),
     ),
     'Project Management invoice: delete all' => array(
-      'title' => t('Delete Any Project Management Invoice'),
+      'title' => t('Delete Any PM Invoice'),
+      'description' => t('Allows the user to delete any invoice.'),
     ),
     'Project Management invoice: delete own' => array(
-      'title' => t('Delete Authored Project Management Invoices'),
+      'title' => t('Delete Authored PM Invoice'),
+      'description' => t('For invoices authored by the user, allows the user to delete the invoice.'),
     ),
     'Project Management invoice: delete of user organization' => array(
-      'title' => t('Delete Project Management Invoices in own Organization'),
+      'title' => t('Delete PM Invoice in own Organization'),
+      'description' => t('For invoices assigned to the same PM Organization as a PM Person, allows the user associated with that Person to delete the invoice.'),
     ),
     'Project Management invoice: edit all' => array(
-      'title' => t('Edit Any Project Management Invoice'),
+      'title' => t('Edit Any PM Invoice'),
+      'description' => t('Allows the user to edit any invoice.'),
     ),
     'Project Management invoice: edit own' => array(
-      'title' => t('Edit Authored Project Management Invoices'),
+      'title' => t('Edit Authored PM Invoice'),
+      'description' => t('For invoices authored by the user, allows the user to edit the invoices.'),
     ),
     'Project Management invoice: edit of user organization' => array(
-      'title' => t('Edit Project Management Invoices in own Organization'),
+      'title' => t('Edit PM Invoice in own Organization'),
+      'description' => t('For invoices assigned to the same PM Organization as a PM Person, allows the user associated with that Person to edit the invoice.'),
     ),
     'Project Management invoice: view all' => array(
-      'title' => t('View Any Project Management Invoice'),
+      'title' => t('View Any PM Invoice'),
+      'description' => t('Allows the user to view any invoice and see any invoice in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management invoice: view own' => array(
-      'title' => t('View Authored Project Management Invoices'),
+      'title' => t('View Authored PM Invoices'),
+      'description' => t('For invoices authored by the user, allows the user to view the invoice and see the invoice in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management invoice: view of user organization' => array(
-      'title' => t('View Project Management Invoices in own Organization'),
+      'title' => t('View PM Invoices in own Organization'),
+      'description' => t('For invoices assigned to the same PM Organization as a PM Person, allows the user associated with that Person to view the invoice and see the invoice in lists or dropdowns elsewhere on the site.'),
     ),
   );
 }

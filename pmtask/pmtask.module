@@ -24,46 +24,60 @@ function pmtask_help($path, $arg) {
 function pmtask_permission() {
   return array(
     'Project Management Task: access' => array(
-      'title' => t('Access Project Management Task'),
+      'title' => t('Access PM Task'),
+      'description' => t('Allows the user to see pages and blocks associated with the PM Task module, but does not control which tasks are shown within them.'),
     ),
     'Project Management Task: add' => array(
-      'title' => t('Add Project Management Tasks'),
+      'title' => t('Add PM Task'),
+      'description' => t('Allows the user to create a task.'),
     ),
     'Project Management Task: delete all' => array(
-      'title' => t('Delete Any Project Management Task'),
+      'title' => t('Delete Any PM Task'),
+      'description' => t('Allows the user to delete any task.'),
     ),
     'Project Management Task: delete own' => array(
-      'title' => t('Delete Authored Project Management Task'),
+      'title' => t('Delete Authored PM Task'),
+      'description' => t('For tasks authored by the user, allows the user to delete the task.'),
     ),
     'Project Management Task: delete of user organization' => array(
-      'title' => t('Delete Project Management Task in own Organization'),
+      'title' => t('Delete PM Task in own Organization'),
+      'description' => t('For tasks assigned to the same PM Organization as a PM Person, allows the user associated with that Person to delete the task.'),
     ),
     'Project Management Task: delete if assigned to task' => array(
-      'title' => t('Delete Project Management Task if user assigned to task'),
+      'title' => t('Delete PM Task if user assigned to task'),
+      'description' => t('For tasks assigned to a PM Person or Team, allows users associated with that Person or Team to delete the task.'),
     ),
     'Project Management Task: edit all' => array(
-      'title' => t('Edit Any Project Management Task'),
+      'title' => t('Edit Any PM Task'),
+      'description' => t('Allows the user to edit any task.'),
     ),
     'Project Management Task: edit own' => array(
-      'title' => t('Edit Authored Project Management Task'),
+      'title' => t('Edit Authored PM Task'),
+      'description' => t('For tasks authored by the user, allows the user to edit the task.'),
     ),
-    'Project Management Task: edit of user organization' => array(
-      'title' => t('Edit Project Management Task in own Organization'),
+    'Project Managenet Task: edit of user organization' => array(
+      'title' => t('Edit PM Task in own Organization'),
+      'description' => t('For tasks assigned to the same PM Organization as a PM Person, allows the user associated with that Person to edit the task.'),
     ),
     'Project Management Task: edit if assigned to task' => array(
       'title' => t('Edit Project Management Task if user assigned to task'),
+      'description' => t('For tasks assigned to a PM Person or Team, allows users associated with that Person or Team to edit the task.'),
     ),
     'Project Management Task: view all' => array(
-      'title' => t('View Any Project Management Task'),
+      'title' => t('View Any PM Task'),
+      'description' => t('Allows the user to view any task and see any task in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management Task: view own' => array(
-      'title' => t('View Authored'),
+      'title' => t('View Authored PM Task'),
+      'description' => t('For tasks authored by the user, allows the user to view the task and see the task in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management Task: view of user organization' => array(
-      'title' => t('View Project Management Task in own Organization'),
+      'title' => t('View PM Task in own Organization'),
+      'description' => t('For tasks assigned to the same PM Organization as a PM Person, allows the user associated with that Person to view the task and see the task in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management Task: view if assigned to task' => array(
       'title' => t('View Project Management Task if user assigned to task'),
+      'description' => t('For tasks assigned to a PM Person or Team, allows users associated with that Person or Team to view the task and see the task in lists or dropdowns elsewhere on the site.'),
     ),
   );
 }

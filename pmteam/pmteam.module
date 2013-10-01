@@ -17,37 +17,48 @@
 function pmteam_permission() {
   return array(
     'Project Management Team: access' => array(
-      'title' => t('Access Project Management Team'),
+      'title' => t('Access PM Team'),
+      'description' => t('Allows the user to see pages and blocks associated with the PM Team module, but does not control which teams are shown within them.'),
     ),
     'Project Management Team: add' => array(
-      'title' => t('Add Project Management Team'),
+      'title' => t('Add PM Team'),
+      'description' => t('Allows the user to create a team.'),
     ),
     'Project Management Team: view all' => array(
-      'title' => t('View Any Project Management Team'),
+      'title' => t('View Any PM Team'),
+      'description' => t('Allows the user to view any team and see any team in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management Team: view own' => array(
-      'title' => t('View Authored Project Management Team'),
+      'title' => t('View Authored PM Team'),
+      'description' => t('For teams authored by the user, allows the user to view the team and see the team in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management Team: view belonged' => array(
-      'title' => t('View Project Management Team if belonged to'),
+      'title' => t('View Belonged PM Team'),
+      'description' => t('Allows users assigned to a PM Person linked to a team to view that team and see that team in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management Team: edit all' => array(
-      'title' => t('Edit Any Project Management Team'),
+      'title' => t('Edit Any PM Team'),
+      'description' => t('Allows the user to edit any team.'),
     ),
     'Project Management Team: edit own' => array(
-      'title' => t('Edit Authored Project Management Team'),
+      'title' => t('Edit Authored PM Team'),
+      'description' => t('For teams authored by the user, allows the user to edit the team.'),
     ),
     'Project Management Team: edit belonged' => array(
-      'title' => t('Edit Project Management Team if belonged to'),
+      'title' => t('Edit Belonged PM Team'),
+      'description' => t('Allows users assigned to a PM Person linked to an organization to edit that team.'),
     ),
     'Project Management Team: delete all' => array(
-      'title' => t('Edit Any Project Management Team'),
+      'title' => t('Edit Any PM Team'),
+      'description' => t('Allows the user to delete any team.'),
     ),
     'Project Management Team: delete own' => array(
-      'title' => t('Delete Authored Project Management Team'),
+      'title' => t('Delete Authored PM Team'),
+      'description' => t('For teams authored by the user, allows the user to delete the team.'),
     ),
     'Project Management Team: delete belonged' => array(
-      'title' => t('Delete Project Management Team if belonged to'),
+      'title' => t('Delete Belonged PM Team'),
+      'description' => t('Allows users assigned to a PM Person linked to an organization to delete that team.'),
     ),
   );
 }

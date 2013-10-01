@@ -24,34 +24,44 @@ function pmorganization_help($path, $arg) {
 function pmorganization_permission() {
   return array(
     'Project Management Organization: access' => array(
-      'title' => t('Access Project Management Organization'),
+      'title' => t('Access PM Organization'),
+      'description' => t('Allows the user to see pages and blocks associated with the PM Organization module, but does not control which organizations are shown within them.'),
     ),
     'Project Management Organization: add' => array(
-      'title' => t('Add Project Management Organization'),
+      'title' => t('Add PM Organization'),
+      'description' => t('Allows the user to create an organization.'),
     ),
     'Project Management Organization: delete all' => array(
-      'title' => t('Delete Any Project Management Organization'),
+      'title' => t('Delete Any PM Organization'),
+      'description' => t('Allows the user to delete any organization.'),
     ),
     'Project Management Organization: delete own' => array(
-      'title' => t('Delete Authored Project Management Organizations'),
+      'title' => t('Delete Authored PM Organization'),
+      'description' => t('For organizations authored by the user, allows the user to delete the organization.'),
     ),
     'Project Management Organization: edit all' => array(
-      'title' => t('Edit Any Project Management Organization'),
+      'title' => t('Edit Any PM Organization'),
+      'description' => t('Allows the user to edit any organization.'),
     ),
     'Project Management Organization: edit own' => array(
-      'title' => t('Edit Authored Project Management Organizations'),
+      'title' => t('Edit Authored PM Organization'),
+      'description' => t('For organizations authored by the user, allows the user to edit the organization.'),
     ),
     'Project Management Organization: edit belonged' => array(
-      'title' => t('Edit Belonged Project Management Organization'),
+      'title' => t('Edit Belonged PM Organization'),
+      'description' => t('Allows users assigned to a PM Person linked to an organization to edit that organization.'),
     ),
     'Project Management Organization: view all' => array(
-      'title' => t('View Any Project Management Organization'),
+      'title' => t('View Any PM Organization'),
+      'description' => t('Allows the user to view any organization and see any organization in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management Organization: view own' => array(
-      'title' => t('View Authored Project Management Organizations'),
+      'title' => t('View Authored PM Organization'),
+      'description' => t('For organizations authored by the user, allows the user to view the organization and see the organization in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management Organization: view belonged' => array(
-      'title' => t('View Belonged Project Management Organization'),
+      'title' => t('View Belonged PM Organization'),
+      'description' => t('Allows users assigned to a PM Person linked to an organization to view that organization and see that organization in lists or dropdowns elsewhere on the site.'),
     ),
   );
 }

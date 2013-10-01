@@ -27,46 +27,60 @@ function pmticket_help($path, $arg) {
 function pmticket_permission() {
   return array(
     'Project Management Ticket: access' => array(
-      'title' => t('Access Project Management Ticket lists'),
+      'title' => t('Access PM Ticket'),
+      'description' => t('Allows the user to see pages and blocks associated with the PM Ticket module, but does not control which tickets are shown within them.'),
     ),
     'Project Management Ticket: add' => array(
-      'title' => t('Add Project Management Tickets'),
+      'title' => t('Add PM Ticket'),
+      'description' => t('Allows the user to create a ticket.'),
     ),
     'Project Management Ticket: delete all' => array(
-      'title' => t('Delete Any Project Management Ticket'),
+      'title' => t('Delete Any PM Ticket'),
+      'description' => t('Allows the user to delete any ticket.'),
     ),
     'Project Management Ticket: delete own' => array(
-      'title' => t('Delete Authored Project Management Ticket'),
+      'title' => t('Delete Authored PM Ticket'),
+      'description' => t('For tickets authored by the user, allows the user to delete the ticket.'),
     ),
     'Project Management Ticket: delete of user organization' => array(
-      'title' => t('Delete Project Management Ticket in own organization'),
+      'title' => t('Delete PM Ticket in own organization'),
+      'description' => t('For tickets assigned to the same PM Organization as a PM Person, allows the user associated with that Person to delete the ticket.'),
     ),
     'Project Management Ticket: delete if assigned to ticket' => array(
-      'title' => t('Delete Project Management Ticket if user assigned to ticket'),
+      'title' => t('Delete PM Ticket if user assigned to ticket'),
+      'description' => t('For tickets assigned to a PM Person or Team, allows users associated with that Person or Team to delete the ticket.'),
     ),
     'Project Management Ticket: edit all' => array(
-      'title' => t('Edit Any Project Management Ticket'),
+      'title' => t('Edit Any PM Ticket'),
+      'description' => t('Allows the user to edit any ticket.'),
     ),
     'Project Management Ticket: edit own' => array(
-      'title' => t('Edit Authored Project Management Ticket'),
+      'title' => t('Edit Authored PM Ticket'),
+      'description' => t('For tickets authored by the user, allows the user to edit the ticket.'),
     ),
     'Project Management Ticket: edit of user organization' => array(
-      'title' => t('Edit Project Management Ticket in own Organization'),
+      'title' => t('Edit PM Ticket in own Organization'),
+      'description' => t('For tickets assigned to the same PM Organization as a PM Person, allows the user associated with that Person to edit the ticket.'),
     ),
     'Project Management Ticket: edit if assigned to ticket' => array(
-      'title' => t('Edit Project Management Ticket if assigned to ticket'),
+      'title' => t('Edit PM Ticket if assigned to ticket'),
+      'description' => t('For tickets assigned to a PM Person or Team, allows users associated with that Person or Team to edit the ticket.'),
     ),
     'Project Management Ticket: view all' => array(
-      'title' => t('View Any Project Management Ticket'),
+      'title' => t('View Any PM Ticket'),
+      'description' => t('Allows the user to view any ticket and see any ticket in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management Ticket: view own' => array(
-      'title' => t('View Authored Project Management Ticket'),
+      'title' => t('View Authored PM Ticket'),
+      'description' => t('For tickets authored by the user, allows the user to view the ticket and see the ticket in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management Ticket: view of user organization' => array(
-      'title' => t('View Project Management Ticket in own Organization'),
+      'title' => t('View PM Ticket in own Organization'),
+      'description' => t('For tickets assigned to the same PM Organization as a PM Person, allows the user associated with that Person to view the ticket and see the ticket in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management Ticket: view if assigned to ticket' => array(
-      'title' => t('View Project Management Ticket if assigned to user'),
+      'title' => t('View PM Ticket if assigned to user'),
+      'description' => t('For tickets assigned to a PM Person or Team, allows users associated with that Person or Team to view the ticket and see the ticket in lists or dropdowns elsewhere on the site.'),
     ),
   );
 }

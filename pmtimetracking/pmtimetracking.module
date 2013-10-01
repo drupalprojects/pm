@@ -25,37 +25,48 @@ function pmtimetracking_help($path, $arg) {
 function pmtimetracking_permission() {
   return array(
     'Project Management Timetracking: access' => array(
-      'title' => t('Access Project Management Timetracking'),
+      'title' => t('Access PM Timetracking'),
+      'description' => t('Allows the user to see pages and blocks associated with the PM Timetracking module, but does not control which timetrackings are shown within them.'),
     ),
     'Project Management Timetracking: add' => array(
-      'title' => t('Add Project Management Timetracking'),
+      'title' => t('Add PM Timetracking'),
+      'description' => t('Allows the user to create a timetracking.'),
     ),
     'Project Management Timetracking: delete all' => array(
-      'title' => t('Delete Any Project Management Timetracking'),
+      'title' => t('Delete Any PM Timetracking'),
+      'description' => t('Allows the user to delete any timetracking.'),
     ),
     'Project Management Timetracking: delete own' => array(
-      'title' => t('Delete Authored Project Management Timetrackings'),
+      'title' => t('Delete Authored PM Timetrackings'),
+      'description' => t('For timetrackings authored by the user, allows the user to delete the timetracking.'),
     ),
     'Project Management Timetracking: delete of user organization' => array(
-      'title' => t('Delete Project Management Timetrackings in own Organization'),
+      'title' => t('Delete PM Timetrackings in own Organization'),
+      'description' => t('For timetrackings assigned to the same PM Organization as a PM Person, allows the user associated with that Person to delete the timetracking.'),
     ),
     'Project Management Timetracking: edit all' => array(
-      'title' => t('Edit Any Project Management Timetracking'),
+      'title' => t('Edit Any PM Timetracking'),
+      'description' => t('Allows the user to edit any timetracking.'),
     ),
     'Project Management Timetracking: edit own' => array(
-      'title' => t('Edit Authored Project Management Timetrackings'),
+      'title' => t('Edit Authored PM Timetracking'),
+      'description' => t('For timetrackings authored by the user, allows the user to edit the timetracking.'),
     ),
     'Project Management Timetracking: edit of user organization' => array(
-      'title' => t('Edit Project Management Timetrackings in own Organization'),
+      'title' => t('Edit PM Timetrackings in own Organization'),
+      'description' => t('For timetrackings assigned to the same PM Organization as a PM Person, allows the user associated with that Person to edit the timetracking.'),
     ),
     'Project Management Timetracking: view all' => array(
-      'title' => t('View Any Project Management Timetracking'),
+      'title' => t('View Any PM Timetracking'),
+      'description' => t('Allows the user to view any timetracking and see any timetracking in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management Timetracking: view own' => array(
-      'title' => t('View Authored Project Management Timetrackings'),
+      'title' => t('View Authored PM Timetrackings'),
+      'description' => t('For timetrackings authored by the user, allows the user to view the timetracking and see the timetracking in lists or dropdowns elsewhere on the site.'),
     ),
     'Project Management Timetracking: view of user organization' => array(
-      'title' => t('View Project Management Timetrackings in own Organization'),
+      'title' => t('View PM Timetrackings in own Organization'),
+      'description' => t('For timetrackings assigned to the same PM Organization as a PM Person, allows the user associated with that Person to view the timetracking and see the timetracking in lists or dropdowns elsewhere on the site.'),
     ),
   );
 }
