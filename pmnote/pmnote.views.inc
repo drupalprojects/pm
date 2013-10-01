@@ -1,7 +1,11 @@
 <?php
 /**
  * @file
- * Functions to expose pm note module data to views
+ * Functions to expose PM Note module data to views.
+ */
+
+/**
+ * Implements hook_views_data().
  */
 function pmnote_views_data() {
   $data['pmnote']['table']['group']  = t('Project Management Note');
@@ -125,6 +129,9 @@ function pmnote_views_data() {
   return $data;
 }
 
+/**
+ * Implements hook_views_handlers().
+ */
 function pmnote_views_handlers() {
   return array(
     'info' => array(

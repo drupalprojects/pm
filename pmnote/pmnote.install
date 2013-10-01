@@ -1,6 +1,7 @@
 <?php
 /**
  * @file
+ * Functions for the PM Note module.
  */
 
 /**
@@ -68,15 +69,14 @@ function pmnote_schema() {
 }
 
 /**
- * @function
- * Implements hook_update_last_removed()
+ * Implements hook_update_last_removed().
  */
 function pmnote_update_last_removed() {
   return 6201;
 }
 
 /**
- * Allow Project Management to override the default Note content type CRUD permissions
+ * Disable the default PM Note CRUD permissions so that they can be overridden.
  */
 function pmnote_update_7101() {
   variable_set('node_permissions_pmnote', 0);

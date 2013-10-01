@@ -1,7 +1,11 @@
 <?php
-
 /**
  * @file
+ * Theme functions for the PM Note module.
+ */
+
+/**
+ * Theme function defining PM Note node view.
  */
 function theme_pmnote_view($variables) {
   $node = $variables['node'];
@@ -26,21 +30,21 @@ function theme_pmnote_view($variables) {
   $node->content['group1']['organization'] = array(
     '#prefix' => '<div class="organization">',
     '#suffix' => '</div>',
-    '#value' => theme('pm_view_item', array('label' => t('Organization'), 'value' => l($node->organization_title, 'node/'. $node->organization_nid))),
+    '#value' => theme('pm_view_item', array('label' => t('Organization'), 'value' => l($node->organization_title, 'node/' . $node->organization_nid))),
     '#weight' => 1,
   );
 
   $node->content['group1']['project'] = array(
     '#prefix' => '<div class="project">',
     '#suffix' => '</div>',
-    '#value' => theme('pm_view_item', array('label' => t('Project'), 'value' => l($node->project_title, 'node/'. $node->project_nid))),
+    '#value' => theme('pm_view_item', array('label' => t('Project'), 'value' => l($node->project_title, 'node/' . $node->project_nid))),
     '#weight' => 2,
   );
 
   $node->content['group1']['task'] = array(
     '#prefix' => '<div class="task">',
     '#suffix' => '</div>',
-    '#value' => theme('pm_view_item', array('label' => t('Task'), 'value' => l($node->task_title, 'node/'. $node->task_nid))),
+    '#value' => theme('pm_view_item', array('label' => t('Task'), 'value' => l($node->task_title, 'node/' . $node->task_nid))),
     '#weight' => 3,
   );
 

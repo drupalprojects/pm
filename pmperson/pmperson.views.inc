@@ -1,7 +1,11 @@
 <?php
 /**
  * @file
- * Functions to expose Project Management Person module data to the Views module.
+ * Functions to expose PM Person data to the Views module.
+ */
+
+/**
+ * Implements hook_views_data().
  */
 function pmperson_views_data() {
   $data['pmperson']['table']['group']  = 'Project Management Person';
@@ -148,6 +152,9 @@ function pmperson_views_data() {
   return $data;
 }
 
+/**
+ * Implements hook_views_handlers().
+ */
 function pmperson_views_handlers() {
   return array(
     'info' => array(

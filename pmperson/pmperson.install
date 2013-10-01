@@ -69,35 +69,34 @@ function pmperson_schema() {
 }
 
 /**
- * @function
- * Implements hook_update_last_removed()
+ * Implements hook_update_last_removed().
  */
 function pmperson_update_last_removed() {
   return 6201;
 }
 
 /**
- * Adds Drupal 7 style body field to Project Management Person nodes
+ * Adds Drupal 7 style body field to Project Management Person nodes.
  */
 function pmperson_update_7100() {
   // Uncache node types
   node_types_rebuild();
   // Fetch list of current node types and add body field to pm person
   $types = node_type_get_types();
-  node_add_body_field($types['pmperson'],'Description');
+  node_add_body_field($types['pmperson'], 'Description');
 
   return 'Added D7 style body field to pm person nodes';
 }
 
 /**
- * Deletes fullname field from the person table. This field has been deprecated since 6.x-2.x
+ * Deletes fullname field from the person table (deprecated since 6.x-2.x).
  */
 function pmperson_update_7101() {
   db_drop_field('pmperson', 'fullname');
 }
 
 /**
- * Allow Project Management to override the default Person content type CRUD permissions
+ * Allow Project Management to override the default Person content type CRUD.
  */
 function pmperson_update_7102() {
   variable_set('node_permissions_pmperson', 0);

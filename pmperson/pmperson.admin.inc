@@ -1,9 +1,12 @@
 <?php
-
 /**
  * @file
+ * Other functions for the PM Person module.
  */
 
+/**
+ * Provides list of PM Persons in a given PM Organization.
+ */
 function _pmperson_organization_people_js($organization_nid=0) {
   $people = array();
 
@@ -17,7 +20,7 @@ function _pmperson_organization_people_js($organization_nid=0) {
         ->addTag('node_access');
 
   $result = $query->execute();
-    foreach($result as $row) {
+    foreach ($result as $row) {
       $nid = $row->name;
       $people[$nid] = $row->title;
     }

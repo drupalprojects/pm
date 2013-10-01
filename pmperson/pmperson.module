@@ -12,7 +12,7 @@ function pmperson_help($path, $arg) {
 
   switch ($path) {
     case "admin/help#pmperson":
-      $o = '<p>'. t("Provides person support for Project Management") .'</p>';
+      $o = '<p>' . t("Provides person support for Project Management") . '</p>';
       break;
   }
 
@@ -141,6 +141,9 @@ function pmperson_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_theme().
+ */
 function pmperson_theme() {
   return array(
     'pmperson_people' => array(
@@ -154,6 +157,9 @@ function pmperson_theme() {
   );
 }
 
+/**
+ * Implements hook_node_info().
+ */
 function pmperson_node_info() {
   return array(
     'pmperson' => array(
@@ -166,6 +172,9 @@ function pmperson_node_info() {
   );
 }
 
+/**
+ * Implements hook_field_extra_fields().
+ */
 function pmperson_field_extra_fields() {
   $extra['node']['pmperson'] = array(
     'form' => array(
@@ -190,10 +199,16 @@ function pmperson_field_extra_fields() {
   return $extra;
 }
 
+/**
+ * Implements hook_field_extra_fields_alter().
+ */
 function pmperson_field_extra_fields_alter(&$info) {
   $info['node']['pmperson']['form']['title']['weight'] = -21;
 }
 
+/**
+ * Implements hook_pmorganization_chane().
+ */
 function pmperson_pmorganization_change($organization_nid, $organization_title) {
   db_update('pmperson')
     ->fields(array('organization_title' => $organization_title))
@@ -201,6 +216,9 @@ function pmperson_pmorganization_change($organization_nid, $organization_title) 
     ->execute();
 }
 
+/**
+ * Implements hook_form().
+ */
 function pmperson_form(&$node) {
   $breadcrumb = array();
   $breadcrumb[] = l(t('Project Management'), 'pm');
@@ -265,7 +283,9 @@ function pmperson_form(&$node) {
     if (!isset($node->organization_nid)) $node->organization_nid = $organization->nid;
   }
   if (empty($organizations)) {
-    $message = t('Before you add a Person, you must first !link.', array('!link' => l('add an Organization', 'node/add/pmorganization')));
+    $message = t('Before you add a Person, you must first !link.', array('!link' => l(t('add an Organization'), 'node/add/pmorganization')));
+    // No user entered text in $message, so ignore coder warning.
+    // @ignore security_dsm
     drupal_set_message($message, 'error');
   }
 
@@ -296,6 +316,8 @@ function pmperson_form(&$node) {
     '#type' => 'textfield',
     '#title' => t('E-mail'),
     '#size' => 30,
+    // Ignore use of $node->email rather than $node->mail.
+    // @ignore coder_tough_love_8
     '#default_value' => isset($node->email) ? $node->email : '',
   );
 
@@ -326,9 +348,9 @@ function pmperson_form(&$node) {
     '#default_value' => isset($node->im) ? $node->im : '',
   );
 
-  //Check to see if the body field is still there, if so, display it.
-  $body = field_get_items('pmperson',$node,'body');
-  if($body) {
+  // Check to see if the body field is still there, if so, display it.
+  $body = field_get_items('pmperson', $node, 'body');
+  if ($body) {
     $form['body_field'] = $body;
   }
 
@@ -340,10 +362,13 @@ function pmperson_form(&$node) {
   return $form;
 }
 
+/**
+ * Implements hook_validate().
+ */
 function pmperson_validate($node, $form, &$form_state) {
   if (!empty($node->user_name)) {
     $username = $node->user_name;
-    if($ass_user = user_load_by_name($username)){
+    if ($ass_user = user_load_by_name($username)) {
       $query = db_select('node', 'n');
 
       $query->fields('n', array('nid', 'title'))
@@ -378,13 +403,16 @@ function pmperson_user_autocomplete($string = '') {
     $query->condition('uid', $subquery, 'NOT IN');
     $result = $query->execute();
 
-    foreach($result as $row) {
+    foreach ($result as $row) {
       $matches[$row->name] = check_plain($row->name);
     }
     drupal_json_output($matches);
   }
 }
 
+/**
+ * Implements hook_insert().
+ */
 function pmperson_insert($node) {
   _pmperson_beforesave($node);
 
@@ -395,6 +423,8 @@ function pmperson_insert($node) {
       'organization_nid' => $node->organization_nid,
       'organization_title' => $node->organization_title,
       'prefix' => $node->prefix,
+      // Ignore use of $node->email rather than $node->mail.
+      // @ignore coder_tough_love_8
       'email' => $node->email,
       'www' => $node->www,
       'phone' => $node->phone,
@@ -406,6 +436,9 @@ function pmperson_insert($node) {
   _pmperson_aftersave($node);
 }
 
+/**
+ * Implements hook_update().
+ */
 function pmperson_update($node) {
   // if this is a new node or we're adding a new revision,
   if ($node->revision) {
@@ -419,6 +452,8 @@ function pmperson_update($node) {
         'organization_nid' => $node->organization_nid,
         'organization_title' => $node->organization_title,
         'prefix' => $node->prefix,
+        // Ignore use of $node->email rather than $node->mail.
+        // @ignore coder_tough_love_8
         'email' => $node->email,
         'www' => $node->www,
         'phone' => $node->phone,
@@ -436,11 +471,18 @@ function pmperson_update($node) {
   }
 }
 
+/**
+ * Pre-processing for PM Person node (before saving).
+ */
 function _pmperson_beforesave(&$node) {
   $username = $node->user_name;
   $ass_user = user_load_by_name($username);
   $node->user_uid = $ass_user->uid;
+  // Ignore use of $node->email rather than $node->mail.
+  // @ignore coder_tough_love_8
   if (!$node->email) {
+    // Ignore use of $node->email rather than $node->mail.
+    // @ignore coder_tough_love_8
     $node->email = $ass_user->mail;
   }
 
@@ -457,6 +499,9 @@ function _pmperson_beforesave(&$node) {
   $node->organization_title = $record['title'];
 }
 
+/**
+ * Post-processing for PM Person node (after saving).
+ */
 function _pmperson_aftersave(&$node) {
   global $user;
   if ($user->uid == $node->user_uid) {
@@ -465,6 +510,9 @@ function _pmperson_aftersave(&$node) {
   }
 }
 
+/**
+ * Implements hook_node_revision_delete().
+ */
 function pmperson_node_revision_delete($node) {
   // Notice that we're matching a single revision based on the node's vid.
   db_delete('pmperson')
@@ -472,6 +520,9 @@ function pmperson_node_revision_delete($node) {
     ->execute();
 }
 
+/**
+ * Implements hook_delete().
+ */
 function pmperson_delete($node) {
   // Notice that we're matching all revision, by using the node's nid.
   db_delete('pmperson')
@@ -485,6 +536,9 @@ function pmperson_delete($node) {
   }
 }
 
+/**
+ * Implements hook_load().
+ */
 function pmperson_load($nodes) {
   foreach ($nodes as $nid => &$node) {
     $result = db_select('pmperson', 'spe')
@@ -503,6 +557,9 @@ function pmperson_load($nodes) {
   }
 }
 
+/**
+ * Implements hook_view().
+ */
 function pmperson_view($node, $view_mode) {
   $breadcrumb = array();
   $breadcrumb[] = l(t('Project Management'), 'pm');
@@ -512,12 +569,18 @@ function pmperson_view($node, $view_mode) {
   return theme('pmperson_view', array('node' => $node, 'view_mode' => $view_mode));
 }
 
+/**
+ * Detects a node of type PM Organization.
+ */
 function _pmperson_people_access($node=NULL) {
   if ($node == NULL) return FALSE;
   if ($node->type == 'pmorganization') return TRUE;
   return FALSE;
 }
 
+/**
+ * Implements hook_user().
+ */
 function pmperson_user($type, &$edit, &$account, $category = NULL) {
   switch ($type) {
     case 'load':
@@ -527,6 +590,9 @@ function pmperson_user($type, &$edit, &$account, $category = NULL) {
   }
 }
 
+/**
+ * Finds PM Person nodes attached to a given user account.
+ */
 function _pmperson_user_load(&$account) {
   static $loaded_persons = array();
   if (isset($loaded_persons[$account->uid])) {
@@ -567,10 +633,16 @@ function _pmperson_user_load(&$account) {
   }
 }
 
+/**
+ * Removes references to deleted user accounts.
+ */
 function _pmperson_user_delete(&$account) {
   db_query("UPDATE {pmperson} SET user_uid=NULL WHERE user_uid=%d", $account->uid);
 }
 
+/**
+ * Implements hook_views_api().
+ */
 function pmperson_views_api() {
   return array(
     'api' => 2,
@@ -579,7 +651,6 @@ function pmperson_views_api() {
 }
 
 /**
- * @function
  * A helper function to return the email address of a pmperson
  */
 function pmperson_primary_email($node) {
@@ -592,7 +663,11 @@ function pmperson_primary_email($node) {
     return $pmperson_person->mail;
   }
   // Else use the pmperson email
+  // Ignore use of $node->email rather than $node->mail.
+  // @ignore coder_tough_love_8
   elseif ($node->email) {
+    // Ignore use of $node->email rather than $node->mail.
+    // @ignore coder_tough_love_8
     return $node->email;
   }
 }

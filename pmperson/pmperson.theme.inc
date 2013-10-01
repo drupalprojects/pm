@@ -1,9 +1,12 @@
 <?php
-
 /**
  * @file
+ * Theme functions for the PM Person module.
  */
 
+/**
+ * Theme function for PM Person node view.
+ */
 function theme_pmperson_view($variables) {
   $node = $variables['node'];
 
@@ -24,7 +27,7 @@ function theme_pmperson_view($variables) {
   $node->content['group1']['organization'] = array(
     '#prefix' => '<div id="organization">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Organization'), 'value' => l($node->organization_title, 'node/'. $node->organization_nid))),
+    '#markup' => theme('pm_view_item', array('label' => t('Organization'), 'value' => l($node->organization_title, 'node/' . $node->organization_nid))),
     '#weight' => 1,
   );
 
@@ -37,7 +40,9 @@ function theme_pmperson_view($variables) {
   $node->content['group3']['email'] = array(
     '#prefix' => '<div id="email">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('E-mail'), 'value' => l($node->email, 'mailto:'. $node->email, array('absolute' => TRUE)))),
+    // Ignore use of $node->email rather than $node->mail.
+    // @ignore coder_tough_love_8
+    '#markup' => theme('pm_view_item', array('label' => t('E-mail'), 'value' => l($node->email, 'mailto:' . $node->email, array('absolute' => TRUE)))),
     '#weight' => 1,
   );
 

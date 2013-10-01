@@ -717,9 +717,6 @@ function _pmticket_beforesave(&$node) {
   if (!is_numeric($node->price)) {
     $node->price = 0;
   }
-
-  // if (is_array($node->datebegin)) $node->datebegin = _pm_date_to_gmtimestamp($node->datebegin);
-  // if (is_array($node->dateend)) $node->dateend = _pm_date_to_gmtimestamp($node->dateend);
 }
 
 /**

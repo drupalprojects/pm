@@ -1,5 +1,12 @@
 <?php
+/**
+ * @file
+ * Definition of PM Person default views.
+ */
 
+/**
+ * Implements hook_views_default_views().
+ */
 function pmperson_views_default_views() {
   $views = array();
 

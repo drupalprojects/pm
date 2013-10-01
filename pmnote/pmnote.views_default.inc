@@ -1,4 +1,12 @@
 <?php
+/**
+ * @file
+ * Functions to define default views for the PM Note module.
+ */
+
+/**
+ * Implements hook_views_default_views().
+ */
 function pmnote_views_default_views() {
   $views = array();
 
@@ -7,7 +15,7 @@ function pmnote_views_default_views() {
   $view->description = '';
   $view->tag = 'pm';
   $view->base_table = 'node';
-  $view->human_name = 'Project Management Note List';
+  $view->human_name = 'PM Note list';
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
