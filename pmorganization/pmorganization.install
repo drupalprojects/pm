@@ -27,6 +27,7 @@ function pmorganization_install() {
 
   $attributes['Currency'] = array(
     'USD' => 'US Dollar',
+    'AUD' => 'Australian Dollar',
     'CAD' => 'Canadian Dollar',
     'EUR' => 'Euro',
     'GBP' => 'British Pound',
