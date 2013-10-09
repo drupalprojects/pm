@@ -51,11 +51,11 @@ function pminvoice_schema() {
       'requestdate'         => array('type' => 'int'),
       'duedate'             => array('type' => 'int'),
       'paymentdate'         => array('type' => 'int'),
-      'amount'              => array('type' => 'float'),
-      'tax1'                => array('type' => 'float'),
-      'tax2'                => array('type' => 'float'),
-      'total'               => array('type' => 'float'),
-      'totalcustomercurr'   => array('type' => 'float'),
+      'amount'              => array('type' => 'numeric', 'precision' => 19, 'scale' => 4),
+      'tax1'                => array('type' => 'numeric', 'precision' => 19, 'scale' => 4),
+      'tax2'                => array('type' => 'numeric', 'precision' => 19, 'scale' => 4),
+      'total'               => array('type' => 'numeric', 'precision' => 19, 'scale' => 4),
+      'totalcustomercurr'   => array('type' => 'numeric', 'precision' => 19, 'scale' => 4),
       'taxexempt'           => array('type' => 'int', 'size' => 'tiny'),
       'src_nid'             => array('type' => 'int'),
       'src_vid'             => array('type' => 'int'),
@@ -74,14 +74,14 @@ function pminvoice_schema() {
       'invoice_vid'         => array('type' => 'int'),
       'weight'              => array('type' => 'int'),
       'description'         => array('type' => 'varchar', 'length' => 128),
-      'amount'              => array('type' => 'float'),
+      'amount'              => array('type' => 'numeric', 'precision' => 19, 'scale' => 4),
       'tax1app'             => array('type' => 'int'),
       'tax1percent'         => array('type' => 'float'),
-      'tax1'                => array('type' => 'float'),
+      'tax1'                => array('type' => 'numeric', 'precision' => 19, 'scale' => 4),
       'tax2app'             => array('type' => 'int'),
       'tax2percent'         => array('type' => 'float'),
-      'tax2'                => array('type' => 'float'),
-      'total'               => array('type' => 'float'),
+      'tax2'                => array('type' => 'numeric', 'precision' => 19, 'scale' => 4),
+      'total'               => array('type' => 'numeric', 'precision' => 19, 'scale' => 4),
       'src_nid'             => array('type' => 'int'),
       'src_vid'             => array('type' => 'int'),
     ),
@@ -114,4 +114,65 @@ function pminvoice_update_7100() {
  */
 function pminvoice_update_7101() {
   node_access_needs_rebuild(TRUE);
+}
+
+/**
+ * Change price field types to fixed precision database columns.
+ */
+function pminvoice_update_7102() {
+  // Table: pminvoice.
+  db_change_field('pminvoice', 'amount', 'amount', array(
+    'type' => 'numeric',
+    'precision' => 19,
+    'scale' => 4,
+  ));
+
+  db_change_field('pminvoice', 'tax1', 'tax1', array(
+    'type' => 'numeric',
+    'precision' => 19,
+    'scale' => 4,
+  ));
+
+  db_change_field('pminvoice', 'tax2', 'tax2', array(
+    'type' => 'numeric',
+    'precision' => 19,
+    'scale' => 4,
+  ));
+
+  db_change_field('pminvoice', 'total', 'total', array(
+    'type' => 'numeric',
+    'precision' => 19,
+    'scale' => 4,
+  ));
+
+  db_change_field('pminvoice', 'totalcustomercurr', 'totalcustomercurr', array(
+    'type' => 'numeric',
+    'precision' => 19,
+    'scale' => 4,
+  ));
+
+ // Table: pminvoice_items.
+  db_change_field('pminvoice_items', 'amount', 'amount', array(
+    'type' => 'numeric',
+    'precision' => 19,
+    'scale' => 4,
+  ));
+
+  db_change_field('pminvoice_items', 'tax1', 'tax1', array(
+    'type' => 'numeric',
+    'precision' => 19,
+    'scale' => 4,
+  ));
+
+  db_change_field('pminvoice_items', 'tax2', 'tax2', array(
+    'type' => 'numeric',
+    'precision' => 19,
+    'scale' => 4,
+  ));
+
+  db_change_field('pminvoice_items', 'total', 'total', array(
+    'type' => 'numeric',
+    'precision' => 19,
+    'scale' => 4,
+  ));
 }

@@ -1,7 +1,10 @@
 ** New issues added should be added at the TOP of the list for each version as they are committed. **
 
 Version 7.x-1.x-dev:
+- Issue #1804270 by Raphael Dürst, juliangb: Fixed MySQL datatype (FLOAT) for prices is not precise enough.
 - Issue #2102671 by purencool: Add Australia to the attribute currency pmorganization array.
+- Issue #1984336 by juliangb, Raphael Dürst: Cleanup: Resolve Coder Warnings.
+- Issue #1987950 by juliangb | D34dMan: Consistency in 'Access Project Management XYZ' permissions.
 
 Version 7.x-1.0-alpha3:
 - Issue #2062955 by juliangb | MoneyTalks: Fixed pm organization module has wrong conditional with person.
