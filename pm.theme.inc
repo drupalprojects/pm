@@ -51,7 +51,7 @@ function theme_dateext($element) {
  * Provides HTML to theme Project Management fields.
  */
 function theme_pm_view_item($variables) {
-  $o = '<div class="label"><span class="label">' . $variables['label'] . ':&nbsp;</span></div><div class="value">' . $variables['value'] . '&nbsp;</div>';
+  $o = '<div class="label field-label"><span class="label field-label">' . $variables['label'] . ':&nbsp;</span></div><div class="value">' . $variables['value'] . '&nbsp;</div>';
   return $o;
 }
 

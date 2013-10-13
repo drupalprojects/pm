@@ -129,7 +129,6 @@ function pmtimetracking_node_info() {
       'base' => 'pmtimetracking',
       'description' => t("A timetracking for Project Management."),
       'title_label' => t("Title"),
-      'body_label' => t("Description"),
     )
   );
 }
@@ -151,10 +150,6 @@ function pmtimetracking_field_extra_fields() {
       'group3' => array(
         'label' => 'Time / Duration Group',
         'weight' => -18,
-      ),
-      'group4' => array(
-        'label' => 'Billable / Billed Group',
-        'weight' => -17,
       ),
     ),
   );
@@ -554,26 +549,6 @@ function pmtimetracking_form(&$node, $form_state) {
     '#weight' => 4,
   );
 
-  $form['group4'] = array(
-    '#type' => 'markup',
-    '#theme' => 'pm_form_group',
-    '#weight' => $info['group4']['weight'],
-  );
-
-  $form['group4']['billable'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Billable'),
-    '#default_value' => isset($node->billable) ? $node->billable : TRUE,
-    '#weight' => 1,
-  );
-
-  $form['group4']['billed'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Billed'),
-    '#default_value' => isset($node->billed) ? $node->billed : FALSE,
-    '#weight' => 2,
-  );
-
   // Check to see if the body field is still there, if so, display it.
   $body = field_get_items('pmtimetracking', $node, 'body');
   if ($body) {
@@ -628,8 +603,6 @@ function pmtimetracking_insert($node) {
       'timeend' => $node->timeend,
       'duration' => $node->duration,
       'billing_duration' => $node->billing_duration,
-      'billable' => $node->billable,
-      'billed' => $node->billed,
     ))
     ->execute();
 }
@@ -784,14 +757,6 @@ function pmtimetracking_admin_settings() {
     '#title' => t('Always set billing duration to duration value.'),
     '#default_value' => variable_get('pmtimetracking_auto_duration', TRUE),
     '#description' => t('When checked, Project Management will set the billing duration equal to the duration each time the node is saved. The duration is always calculated from the start and end times.'),
-    '#size' => 5,
-  );
-
-  $form['pmtimetracking_billable_default'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Default Value for billable field.'),
-    '#default_value' => variable_get('pmtimetracking_billable_default', FALSE),
-    '#description' => t('When checked, Project Management will set the timetracking to billable by default'),
     '#size' => 5,
   );
 

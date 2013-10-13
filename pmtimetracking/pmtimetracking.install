@@ -1,6 +1,7 @@
 <?php
 /**
  * @file
+ * Install functions for PM Timetracking.
  */
 
 /**
@@ -13,8 +14,32 @@ function pmtimetracking_install() {
   // Uncache node types
   node_types_rebuild();
 
-  // Fetch list of current node types and add body field to pm timetracking
+  // Set up instance of billing status field.
+  field_create_instance(array(
+    'field_name' => 'pm_billing_status',
+    'label' => 'Billing status',
+    'entity_type' => 'node',
+    'bundle' => 'pmtimetracking',
+    'widget' => array(
+      'weight' => -17,
+      'type' => 'options_select',
+      'module' => 'options',
+      'active' => 1,
+      'settings' => array(),
+    ),
+    'required' => 1,
+    'description' => '',
+    'default_value' => array(
+      array(
+        'value' => variable_get('pmtimetracking_billable_default', 0) ? 'Billable' : 'Not billable',
+      ),
+    ),
+  ));
+
+  // Fetch list of current node types.
   $types = node_type_get_types();
+
+  // Add body field to PM Timetracking content type.
   node_add_body_field($types['pmtimetracking'], 'Description');
 }
 
@@ -62,8 +87,6 @@ function pmtimetracking_schema() {
       'timeend'             => array('type' => 'varchar', 'length' => 5),
       'duration'            => array('type' => 'float'),
       'billing_duration'    => array('type' => 'float'),
-      'billable'            => array('type' => 'int'),
-      'billed'              => array('type' => 'int'),
     ),
     'primary key' => array('vid'),
     'indexes'     => array(
@@ -87,6 +110,18 @@ function pmtimetracking_update_last_removed() {
 }
 
 /**
+ * Implements hook_update_dependencies().
+ */
+function pmtimetracking_update_dependencies() {
+  // Ensure that billing status field is created before instance.
+  $dependencies['pmtimetracking'][7104] = array(
+    'pm' => 7101,
+  );
+
+  return $dependencies;
+}
+
+/**
  * Allow Project Management to override the default content type permissions.
  */
 function pmtimetracking_update_7101() {
@@ -102,7 +137,7 @@ function pmtimetracking_update_7102() {
 }
 
 /**
- * Adds Drupal 7 style body field to pm timetracking node
+ * Adds Drupal 7 style body field to PM Timetracking content type.
  */
 function pmtimetracking_update_7103() {
   // Uncache node types
@@ -113,4 +148,59 @@ function pmtimetracking_update_7103() {
   node_add_body_field($types['pmtimetracking'], 'Description');
 
   return 'Added D7 style body field to pm timetracking nodes';
+}
+
+/**
+ * Adds billing status instance to PM Timetracking content type.
+ */
+function pmtimetracking_update_7104() {
+  // Uncache node types
+  node_types_rebuild();
+
+  // Set up instance of billing status field.
+  field_create_instance(array(
+    'field_name' => 'pm_billing_status',
+    'label' => 'Billing status',
+    'entity_type' => 'node',
+    'bundle' => 'pmtimetracking',
+    'widget' => array(
+      'weight' => -17,
+      'type' => 'options_select',
+      'module' => 'options',
+      'active' => 1,
+      'settings' => array(),
+    ),
+    'required' => 1,
+    'description' => '',
+    'default_value' => array(
+      array(
+        'value' => variable_get('pmtimetracking_billable_default', 0) ? 'Billable' : 'Not billable',
+      ),
+    ),
+  ));
+
+  // Delete the default field value. This is now set via the core field UI.
+  variable_del('pmtimetracking_billable_default');
+
+  // Get existing field values.
+  $query = db_select('pmtimetracking', 'pmtt');
+  $query->join('node', 'n', 'n.vid = pmtt.vid');
+  $result = $query
+    ->fields('pmtt', array('nid', 'vid', 'billable', 'billed'))
+    ->execute();
+
+  // Save existing field value into Field API field.
+  foreach ($result as $record) {
+    $node = node_load($record->nid);
+
+    $new_value = $record->billed ? 'Billed' : ($record->billable ? 'Billable' : 'Not billable');
+
+    $node->pm_billing_status[LANGUAGE_NONE][0]['value'] = $new_value;
+    field_attach_presave('node', $node);
+    field_attach_update('node', $node);
+  }
+
+  // Remove existing field from custom database table.
+  db_drop_field('pmtimetracking', 'billable');
+  db_drop_field('pmtimetracking', 'billed');
 }

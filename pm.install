@@ -12,6 +12,19 @@ function pm_install() {
   variable_set('pm_organization_nid', 0);
   variable_set('pm_yearsrangebegin', 2001);
   variable_set('pm_yearsrangeend', 2015);
+
+  // Set up billing status field.
+  field_create_field(array(
+    'field_name' => 'pm_billing_status',
+    'type' => 'list_text',
+    'settings' => array(
+      'allowed_values' => array(
+        'Not billable' => 'Not billable',
+        'Billable' => 'Billable',
+        'Billed' => 'Billed',
+      ),
+    ),
+  ));
 }
 
 /**
@@ -55,4 +68,22 @@ function pm_schema() {
  */
 function pm_update_last_removed() {
   return 6202;
+}
+
+/**
+ * Make billing status field available to PM content types.
+ */
+function pm_update_7101() {
+  // Set up billing status field.
+  field_create_field(array(
+    'field_name' => 'pm_billing_status',
+    'type' => 'list_text',
+    'settings' => array(
+      'allowed_values' => array(
+        'Not billable' => 'Not billable',
+        'Billable' => 'Billable',
+        'Billed' => 'Billed',
+      ),
+    ),
+  ));
 }

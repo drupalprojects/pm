@@ -11,4 +11,5 @@ files[] = pm_handler_filter_attributes_domain.inc
 
 dependencies[] = date
 dependencies[] = entityreference
+dependencies[] = list
 dependencies[] = views
