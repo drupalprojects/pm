@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Themable functions for Project Management invoice component.
+ * Theme functions for PM Invoice.
  */
 
 /**
@@ -20,13 +20,8 @@ function theme_pminvoice_view($variables) {
   $node = $variables['node'];
   $view_mode = $variables['view_mode'];
 
-  // Add generic Project Management node CSS
-  drupal_add_css(drupal_get_path('module', 'pm') . '/pm-node.css');
-  // Adds CSS for Project Management Invoice node view
-  drupal_add_css(drupal_get_path('module', 'pminvoice') . '/pminvoice-nodeview.css');
-
   $node->content['group1'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
   );
@@ -39,7 +34,7 @@ function theme_pminvoice_view($variables) {
   );
 
   $node->content['group2'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group2') : -19,
   );
@@ -68,39 +63,16 @@ function theme_pminvoice_view($variables) {
   }
 
   $node->content['group3'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group3') : -18,
   );
 
-  $node->content['group3']['requestdate'] = array(
-    '#prefix' => '<div class="requestdate">',
-    '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Request date'), 'value' => format_date($node->requestdate, 'custom', 'Y-m-d'))),
-    '#weight' => 1,
-  );
-
-  $node->content['group3']['duedate'] = array(
-    '#prefix' => '<div class="duedate">',
-    '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Due date'), 'value' => format_date($node->duedate, 'custom', 'Y-m-d'))),
-    '#weight' => 2,
-  );
-
-  if ($node->paymentdate) {
-    $node->content['group3']['paymentdate'] = array(
-      '#prefix' => '<div class="paymentdate">',
-      '#suffix' => '</div>',
-      '#markup' => theme('pm_view_item', array('label' => t('Payment date'), 'value' => format_date($node->paymentdate, 'custom', 'Y-m-d'))),
-      '#weight' => 3,
-    );
-  }
-
   $status = 'open';
-  if ($node->paymentdate) {
+  if ($node->pminvoice_paymentdate[LANGUAGE_NONE][0]['value']) {
     $status = 'paid';
   }
-  elseif ($node->duedate < time()) {
+  elseif ($node->pminvoice_duedate[LANGUAGE_NONE][0]['value'] < time()) {
     $status = 'overdue';
   }
   $node->content['group3']['status'] = array(
@@ -176,14 +148,14 @@ function theme_pminvoice_view($variables) {
   }
 
   $node->content['group4'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#markup' => theme('table', $header, $invoice_items),
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group4') : -17,
   );
 
   $node->content['group5'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group5') : -16,
   );

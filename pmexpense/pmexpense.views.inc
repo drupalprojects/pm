@@ -169,21 +169,6 @@ function pmexpense_views_data() {
     ),
   );
 
-  $data['pmexpense']['expensedate'] = array(
-    'title' => t('Date'),
-    'help' => t('Project Management Expense Date'),
-    'field' => array(
-      'click sortable' => TRUE,
-      'handler' => 'views_handler_field_date',
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort_date',
-    ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_date',
-    ),
-  );
-
   $data['pmexpense']['amount'] = array(
     'title' => t('Amount'),
     'help' => t('Project Management Expense Amount'),

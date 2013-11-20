@@ -1,6 +1,7 @@
 <?php
 /**
  * @file
+ * Installation functions for PM Invoice.
  */
 
 /**
@@ -10,6 +11,115 @@ function pminvoice_install() {
   variable_set('node_options_pminvoice', array('status'));
   variable_set('node_options_pminvoiceitem', array('status'));
   variable_set('node_permissions_pminvoice', 0);
+
+  // Request date field.
+  field_create_field(array(
+    'type' => 'datetime',
+    'field_name' => 'pminvoice_requestdate',
+    'settings' => array(
+      'granularity' => array(
+        'year' => 'year',
+        'month' => 'month',
+        'day' => 'day',
+        'hour' => 0,
+        'minute' => 0,
+        'second' => 0,
+      ),
+      'tz_handling' => '',
+      'timezone_db' => '',
+      'todate' => '',
+    ),
+    'cardinality' => '1',
+  ));
+
+  field_create_instance(array(
+    'field_name' => 'pminvoice_requestdate',
+    'bundle' => 'pminvoice',
+    'label' => 'Request Date',
+    'required' => 1,
+    'entity_type' => 'node',
+    'widget' => array(
+      'weight' => '-17',
+      'type' => 'date_text',
+      'active' => 1,
+    ),
+    'settings' => array(
+      'default_value' => 'now',
+    ),
+  ));
+
+  // Due date field.
+  field_create_field(array(
+    'type' => 'datetime',
+    'field_name' => 'pminvoice_duedate',
+    'settings' => array(
+      'granularity' => array(
+        'year' => 'year',
+        'month' => 'month',
+        'day' => 'day',
+        'hour' => 0,
+        'minute' => 0,
+        'second' => 0,
+      ),
+      'tz_handling' => '',
+      'timezone_db' => '',
+      'todate' => '',
+    ),
+    'cardinality' => '1',
+  ));
+
+  field_create_instance(array(
+    'field_name' => 'pminvoice_duedate',
+    'bundle' => 'pminvoice',
+    'label' => 'Due Date',
+    'required' => 1,
+    'entity_type' => 'node',
+    'widget' => array(
+      'weight' => '-16',
+      'type' => 'date_text',
+      'active' => 1,
+    ),
+    'settings' => array(
+      'default_value' => 'strtotime',
+      'default_value_code' => '+28 days',
+    ),
+  ));
+
+  // Payment date field.
+  field_create_field(array(
+    'type' => 'datetime',
+    'field_name' => 'pminvoice_paymentdate',
+    'settings' => array(
+      'granularity' => array(
+        'year' => 'year',
+        'month' => 'month',
+        'day' => 'day',
+        'hour' => 0,
+        'minute' => 0,
+        'second' => 0,
+      ),
+      'tz_handling' => '',
+      'timezone_db' => '',
+      'todate' => '',
+    ),
+    'cardinality' => '1',
+  ));
+
+  field_create_instance(array(
+    'field_name' => 'pminvoice_paymentdate',
+    'bundle' => 'pminvoice',
+    'label' => 'Payment Date',
+    'required' => 0,
+    'entity_type' => 'node',
+    'widget' => array(
+      'weight' => '-15',
+      'type' => 'date_text',
+      'active' => 1,
+    ),
+    'settings' => array(
+      'default_value' => 'blank',
+    ),
+  ));
 }
 
 /**
@@ -48,9 +158,6 @@ function pminvoice_schema() {
       'organization_title'  => array('type' => 'varchar', 'length' => 128),
       'project_nid'         => array('type' => 'int'),
       'project_title'       => array('type' => 'varchar', 'length' => 128),
-      'requestdate'         => array('type' => 'int'),
-      'duedate'             => array('type' => 'int'),
-      'paymentdate'         => array('type' => 'int'),
       'amount'              => array('type' => 'numeric', 'precision' => 19, 'scale' => 4),
       'tax1'                => array('type' => 'numeric', 'precision' => 19, 'scale' => 4),
       'tax2'                => array('type' => 'numeric', 'precision' => 19, 'scale' => 4),
@@ -175,4 +282,140 @@ function pminvoice_update_7102() {
     'precision' => 19,
     'scale' => 4,
   ));
+}
+
+/**
+ * Convert request date, due date and payment date to Field API.
+ */
+function pminvoice_update_7103() {
+  // Request date field.
+  field_create_field(array(
+    'type' => 'datetime',
+    'field_name' => 'pminvoice_requestdate',
+    'settings' => array(
+      'granularity' => array(
+        'year' => 'year',
+        'month' => 'month',
+        'day' => 'day',
+        'hour' => 0,
+        'minute' => 0,
+        'second' => 0,
+      ),
+      'tz_handling' => '',
+      'timezone_db' => '',
+      'todate' => '',
+    ),
+    'cardinality' => '1',
+  ));
+
+  field_create_instance(array(
+    'field_name' => 'pminvoice_requestdate',
+    'bundle' => 'pminvoice',
+    'label' => 'Request Date',
+    'required' => 1,
+    'entity_type' => 'node',
+    'widget' => array(
+      'weight' => '-17',
+      'type' => 'date_text',
+      'active' => 1,
+    ),
+    'settings' => array(
+      'default_value' => 'now',
+    ),
+  ));
+
+  // Due date field.
+  field_create_field(array(
+    'type' => 'datetime',
+    'field_name' => 'pminvoice_duedate',
+    'settings' => array(
+      'granularity' => array(
+        'year' => 'year',
+        'month' => 'month',
+        'day' => 'day',
+        'hour' => 0,
+        'minute' => 0,
+        'second' => 0,
+      ),
+      'tz_handling' => '',
+      'timezone_db' => '',
+      'todate' => '',
+    ),
+    'cardinality' => '1',
+  ));
+
+  field_create_instance(array(
+    'field_name' => 'pminvoice_duedate',
+    'bundle' => 'pminvoice',
+    'label' => 'Due Date',
+    'required' => 1,
+    'entity_type' => 'node',
+    'widget' => array(
+      'weight' => '-16',
+      'type' => 'date_text',
+      'active' => 1,
+    ),
+    'settings' => array(
+      'default_value' => 'strtotime',
+      'default_value_code' => '+30 days',
+    ),
+  ));
+
+  // Payment date field.
+  field_create_field(array(
+    'type' => 'datetime',
+    'field_name' => 'pminvoice_paymentdate',
+    'settings' => array(
+      'granularity' => array(
+        'year' => 'year',
+        'month' => 'month',
+        'day' => 'day',
+        'hour' => 0,
+        'minute' => 0,
+        'second' => 0,
+      ),
+      'tz_handling' => '',
+      'timezone_db' => '',
+      'todate' => '',
+    ),
+    'cardinality' => '1',
+  ));
+
+  field_create_instance(array(
+    'field_name' => 'pminvoice_paymentdate',
+    'bundle' => 'pminvoice',
+    'label' => 'Payment Date',
+    'required' => 0,
+    'entity_type' => 'node',
+    'widget' => array(
+      'weight' => '-15',
+      'type' => 'date_text',
+      'active' => 1,
+    ),
+    'settings' => array(
+      'default_value' => 'blank',
+    ),
+  ));
+
+  // Migrate data
+  $query = db_select('pminvoice', 'pmin');
+  $query->join('node', 'n', 'n.vid = pmin.vid');
+  $result = $query
+    ->fields('pmin', array('nid', 'vid', 'requestdate', 'duedate', 'paymentdate'))
+    ->execute();
+
+  foreach ($result as $record) {
+    $node = node_load($record->nid);
+
+    $node->pminvoice_requestdate[LANGUAGE_NONE][0]['value'] = date('Y-m-d H:i:s', $record->requestdate);
+    $node->pminvoice_duedate[LANGUAGE_NONE][0]['value'] = date('Y-m-d H:i:s', $record->duedate);
+    $node->pminvoice_paymentdate[LANGUAGE_NONE][0]['value'] = date('Y-m-d H:i:s', $record->paymentdate);
+    field_attach_presave('node', $node);
+    field_attach_update('node', $node);
+  }
+
+  // Delete columns from existing database table.
+  db_drop_field('pminvoice', 'requestdate');
+  db_drop_field('pminvoice', 'duedate');
+  db_drop_field('pminvoice', 'paymentdate');
 }

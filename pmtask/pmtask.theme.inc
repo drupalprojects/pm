@@ -1,8 +1,7 @@
 <?php
-
 /**
  * @file
- * Theme functions for the Project Management Task module.
+ * Theme functions for PM Task.
  */
 
 /**
@@ -10,8 +9,6 @@
  */
 function theme_pmtask_view($variables) {
   $node = $variables['node'];
-
-  drupal_add_css(drupal_get_path('module', 'pm') . '/pm-node.css', 'module');
 
   $l_pos = 1; // Used to increase the link position number (see issue 814820)
 
@@ -38,7 +35,7 @@ function theme_pmtask_view($variables) {
   }
 
   $node->content['group1'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
   );
@@ -65,7 +62,7 @@ function theme_pmtask_view($variables) {
   );
 
   $node->content['group2'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group2') : -19,
   );
@@ -92,7 +89,7 @@ function theme_pmtask_view($variables) {
   );
 
   $node->content['group5'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group5') : -16,
   );

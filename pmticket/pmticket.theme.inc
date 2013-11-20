@@ -1,48 +1,14 @@
 <?php
-
 /**
  * @file
+ * Theme functions for PM Ticket.
  */
-
-/**
- * Provides HTML markup for a pmticket list.
- */
-function theme_pmticket_list($variables) {
-  $header = $variables['header'];
-  $tickets = $variables['tickets'];
-
-  $rows = array();
-  foreach ($tickets as $ticket) {
-    $n = new stdClass();
-    $n->nid = $ticket->nid;
-    $n->uid = $ticket->uid;
-    $n->organization_nid = $ticket->organization_nid;
-    $n->type = 'pmticket';
-
-    $rows[] = array(
-      pm_icon('category_' . $ticket->ticketcategory, pm_attribute_value('Ticket category', $ticket->ticketcategory)),
-      l($ticket->organization_title, 'node/' . $ticket->organization_nid),
-      l($ticket->project_title, 'node/' . $ticket->project_nid),
-      l($ticket->title, 'node/' . $ticket->nid) . theme('mark', array('type' => node_mark($ticket->nid, $ticket->changed))),
-      format_date($ticket->created, 'small'),
-      pm_icon('status_' . $ticket->ticketstatus, pm_attribute_value('Ticket status', $ticket->ticketstatus)),
-      pm_icon('priority_' . $ticket->ticketpriority, pm_attribute_value('Ticket priority', $ticket->ticketpriority)),
-      array(
-        'data' => pm_icon_edit_node($n, $_GET) . '&nbsp;' . pm_icon_delete_node($n, $_GET),
-//        'class' => 'pm_list_operations',
-      ),
-    );
-  }
-  return theme('table', array('header' => $header, 'rows' => $rows));
-}
 
 /**
  * Provides HTML markup for a pmticket node view.
  */
 function theme_pmticket_view($variables) {
   $node = $variables['node'];
-
-  drupal_add_css(drupal_get_path('module', 'pm') . '/pm-node.css');
 
   $node->content['links'] = array(
     '#prefix' => '<div class="pmlinks"><dl>',
@@ -65,7 +31,7 @@ function theme_pmticket_view($variables) {
   }
 
   $node->content['group1'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
   );
@@ -92,7 +58,7 @@ function theme_pmticket_view($variables) {
   );
 
   $node->content['group2'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group2') : -19,
   );
@@ -119,7 +85,7 @@ function theme_pmticket_view($variables) {
   );
 
   $node->content['group5'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group2') : -16,
   );

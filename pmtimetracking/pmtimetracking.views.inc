@@ -141,43 +141,6 @@ function pmtimetracking_views_data() {
     ),
   );
 
-  $data['pmtimetracking']['trackingdate'] = array(
-    'title' => t('Tracking date'),
-    'help' => t('Project Management Timetracking Tracking Date'),
-    'field' => array(
-      'click sortable' => TRUE,
-      'handler' => 'views_handler_field_date',
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort_date',
-    ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_date',
-    ),
-  );
-
-  $data['pmtimetracking']['timebegin'] = array(
-    'title' => t('Time begin'),
-    'help' => t('Project Management Timetracking Time Begin'),
-    'field' => array(
-      'click sortable' => TRUE,
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort',
-    ),
-  );
-
-  $data['pmtimetracking']['timeend'] = array(
-    'title' => t('Time end'),
-    'help' => t('Project Management Timetracking Time End'),
-    'field' => array(
-      'click sortable' => TRUE,
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort',
-    ),
-  );
-
   $data['pmtimetracking']['duration'] = array(
     'title' => t('Duration'),
     'help' => t('Project Management Timetracking Duration'),
@@ -258,31 +221,4 @@ function pmtimetracking_views_handlers() {
       ),
     ),
   );
-}
-
-/**
- * Implements hook_date_api_fields().
- */
-function pmtimetracking_date_api_fields($field) {
-  $values = array(
-    'sql_type' => DATE_UNIX,
-    'tz_handling' => 'site',
-    'timezone_field' => '',
-    'offset_field' => '',
-    'related_fields' => array(),
-    'granularity' => array('year', 'month', 'day'),
-  );
-
-  switch ($field) {
-    case 'pmtimetracking.trackingdate':
-      return $values;
-  }
-
-}
-
-/**
- * Implements hook_date_api_tables().
- */
-function pmtimetracking_date_api_tables() {
-  return array('pmtimetracking');
 }

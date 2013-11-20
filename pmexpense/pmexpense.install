@@ -11,6 +11,42 @@ function pmexpense_install() {
   variable_set('node_options_pmexpense', array('status'));
   variable_set('node_permissions_pmexpense', 0);
 
+  // Expense date field.
+  field_create_field(array(
+    'type' => 'datetime',
+    'field_name' => 'pmexpense_date',
+    'settings' => array(
+      'granularity' => array(
+        'year' => 'year',
+        'month' => 'month',
+        'day' => 'day',
+        'hour' => 0,
+        'minute' => 0,
+        'second' => 0,
+      ),
+      'tz_handling' => '',
+      'timezone_db' => '',
+      'todate' => '',
+    ),
+    'cardinality' => '1',
+  ));
+
+  field_create_instance(array(
+    'field_name' => 'pmexpense_date',
+    'bundle' => 'pmexpense',
+    'label' => 'Expense Date',
+    'required' => 1,
+    'entity_type' => 'node',
+    'widget' => array(
+      'weight' => '-18',
+      'type' => 'date_text',
+      'active' => 1,
+    ),
+    'settings' => array(
+      'default_value' => 'now',
+    ),
+  ));
+
   $attributes = array();
 
   $attributes['Expense status'] = array(
@@ -60,6 +96,9 @@ function pmexpense_disable() {
   drupal_set_message(t('Nodes of type "Expense" have not been deleted on disabling Project Management Expense. Please note that they will now have reduced functionality, and will not be protected by Project Management Expense access controls.'), 'warning');
 }
 
+/**
+ * Implements hook_uninstall().
+ */
 function pmexpense_uninstall() {
   drupal_uninstall_schema('pmexpense');
 
@@ -68,6 +107,9 @@ function pmexpense_uninstall() {
     ->execute();
 }
 
+/**
+ * Implements hook_schema().
+ */
 function pmexpense_schema() {
   $schema['pmexpense'] = array(
     'fields'                => array(
@@ -84,7 +126,6 @@ function pmexpense_schema() {
       'ticket_title'        => array('type' => 'varchar', 'length' => 128),
       'provider_nid'        => array('type' => 'int'),
       'provider_title'      => array('type' => 'varchar', 'length' => 128),
-      'expensedate'         => array('type' => 'int'),
       'expensestatus'       => array('type' => 'varchar', 'length' => 128),
       'amount'              => array('type' => 'float'),
       'tax1app'             => array('type' => 'int'),
@@ -112,6 +153,9 @@ function pmexpense_schema() {
   return $schema;
 }
 
+/**
+ * Implements hook_update_last_removed().
+ */
 function pmexpense_update_last_removed() {
   return 6202;
 }
@@ -143,4 +187,63 @@ function pmexpense_update_7101() {
  */
 function pmexpense_update_7102() {
   node_access_needs_rebuild(TRUE);
+}
+
+/**
+ * Convert Expense Date field to Field API.
+ */
+function pmexpense_update_7103() {
+  // Expense date field.
+  field_create_field(array(
+    'type' => 'datetime',
+    'field_name' => 'pmexpense_date',
+    'settings' => array(
+      'granularity' => array(
+        'year' => 'year',
+        'month' => 'month',
+        'day' => 'day',
+        'hour' => 0,
+        'minute' => 0,
+        'second' => 0,
+      ),
+      'tz_handling' => '',
+      'timezone_db' => '',
+      'todate' => '',
+    ),
+    'cardinality' => '1',
+  ));
+
+  field_create_instance(array(
+    'field_name' => 'pmexpense_date',
+    'bundle' => 'pmexpense',
+    'label' => 'Expense Date',
+    'required' => 1,
+    'entity_type' => 'node',
+    'widget' => array(
+      'weight' => '-18',
+      'type' => 'date_text',
+      'active' => 1,
+    ),
+    'settings' => array(
+      'default_value' => 'now',
+    ),
+  ));
+
+  // Migrate data.
+  $query = db_select('pmexpense', 'pmex');
+  $query->join('node', 'n', 'n.vid = pmex.vid');
+  $result = $query
+    ->fields('pmex', array('nid', 'vid', 'expensedate'))
+    ->execute();
+
+  foreach ($result as $record) {
+    $node = node_load($record->nid);
+
+    $node->pmexpense_date[LANGUAGE_NONE][0]['value'] = date('Y-m-d H:i:s', $record->expensedate);
+    field_attach_presave('node', $node);
+    field_attach_update('node', $node);
+  }
+
+  // Delete columns from existing database table.
+  db_drop_field('pmexpense', 'expensedate');
 }

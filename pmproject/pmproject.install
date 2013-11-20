@@ -18,6 +18,57 @@ function pmproject_install() {
   $types = node_type_get_types();
   node_add_body_field($types['pmproject'], 'Description');
 
+  // Add instance of date field.
+  field_create_instance(array(
+    'field_name' => 'pm_date',
+    'label' => 'Date',
+    'widget' => array(
+      'weight' => '-18',
+      'type' => 'date_text',
+      'module' => 'date',
+      'active' => 1,
+      'settings' => array(
+        'input_format' => 'm/d/Y - H:i:s',
+        'input_format_custom' => '',
+        'year_range' => '-3:+3',
+        'increment' => 15,
+        'label_position' => 'above',
+        'text_parts' => array(),
+      ),
+    ),
+    'settings' => array(
+      'default_value' => 'now',
+      'default_value_code' => '',
+      'default_value2' => 'same',
+      'default_value_code2' => '',
+      'user_register_form' => FALSE,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'type' => 'date_default',
+        'settings' => array(
+          'format_type' => 'long',
+          'multiple_number' => '',
+          'multiple_from' => '',
+          'multiple_to' => '',
+          'fromto' => 'both',
+        ),
+        'module' => 'date',
+        'weight' => 1,
+      ),
+      'teaser' => array(
+        'type' => 'hidden',
+        'label' => 'above',
+        'settings' => array(),
+        'weight' => 0,
+      ),
+    ),
+    'required' => 0,
+    'entity_type' => 'node',
+    'bundle' => 'pmproject',
+  ));
+
   $attributes = array();
 
   $attributes['Project status'] = array(
@@ -128,8 +179,6 @@ function pmproject_schema() {
       'pricemode'           => array('type' => 'varchar', 'length' => 100),
       'price'               => array('type' => 'float'),
       'currency'            => array('type' => 'varchar', 'length' => 100),
-      'datebegin'           => array('type' => 'int', 'default' => 0),
-      'dateend'             => array('type' => 'int', 'default' => 0),
       'durationunit'        => array('type' => 'varchar', 'length' => 100),
       'duration'            => array('type' => 'float', 'default' => 0),
       'manager_nid'         => array('type' => 'int'),
@@ -159,6 +208,18 @@ function pmproject_update_last_removed() {
 }
 
 /**
+ * Implements hook_update_dependencies().
+ */
+function pmproject_update_dependencies() {
+  // Ensure that billing status field is created before instance.
+  $dependencies['pmproject'][7103] = array(
+    'pm' => 7102,
+  );
+
+  return $dependencies;
+}
+
+/**
  * Adds Drupal 7 style body field to pm project node
  */
 function pmproject_update_7100() {
@@ -184,4 +245,80 @@ function pmproject_update_7101() {
  */
 function pmproject_update_7102() {
   node_access_needs_rebuild(TRUE);
+}
+
+/**
+ * Add date field to PM Project.
+ */
+function pmproject_update_7103() {
+  // Create field instance.
+  field_create_instance(array(
+    'field_name' => 'pm_date',
+    'label' => 'Date',
+    'widget' => array(
+      'weight' => '-18',
+      'type' => 'date_text',
+      'module' => 'date',
+      'active' => 1,
+      'settings' => array(
+        'input_format' => 'm/d/Y - H:i:s',
+        'input_format_custom' => '',
+        'year_range' => '-3:+3',
+        'increment' => 15,
+        'label_position' => 'above',
+        'text_parts' => array(),
+      ),
+    ),
+    'settings' => array(
+      'default_value' => 'now',
+      'default_value_code' => '',
+      'default_value2' => 'same',
+      'default_value_code2' => '',
+      'user_register_form' => FALSE,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'type' => 'date_default',
+        'settings' => array(
+          'format_type' => 'long',
+          'multiple_number' => '',
+          'multiple_from' => '',
+          'multiple_to' => '',
+          'fromto' => 'both',
+        ),
+        'module' => 'date',
+        'weight' => 1,
+      ),
+      'teaser' => array(
+        'type' => 'hidden',
+        'label' => 'above',
+        'settings' => array(),
+        'weight' => 0,
+      ),
+    ),
+    'required' => 0,
+    'entity_type' => 'node',
+    'bundle' => 'pmproject',
+  ));
+
+  // Migrate data
+  $query = db_select('pmproject', 'pmpr');
+  $query->join('node', 'n', 'n.vid = pmpr.vid');
+  $result = $query
+    ->fields('pmpr', array('nid', 'vid', 'datebegin', 'dateend'))
+    ->execute();
+
+  foreach ($result as $record) {
+    $node = node_load($record->nid);
+
+    $node->pm_date[LANGUAGE_NONE][0]['value'] = date('Y-m-d H:i:s', $record->datebegin);
+    $node->pm_date[LANGUAGE_NONE][0]['value2'] = date('Y-m-d H:i:s', $record->dateend);
+    field_attach_presave('node', $node);
+    field_attach_update('node', $node);
+  }
+
+  // Delete columns from existing database table.
+  db_drop_field('pmproject', 'datebegin');
+  db_drop_field('pmproject', 'dateend');
 }

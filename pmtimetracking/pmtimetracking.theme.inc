@@ -10,25 +10,6 @@
 function theme_pmtimetracking_view($variables) {
   $node = $variables['node'];
 
-  $l_pos = 1; // Used to increase the link position number (see issue 814820)
-
-  $node->content['links'] = array(
-    '#prefix' => '<div class="pmlinks"><dl>',
-    '#suffix' => '</dl></div>',
-    '#weight' => -25,
-  );
-
-  // Code to create invoice auto_add link
-  if (module_exists('pminvoice')) {
-
-    $node->content['links']['auto_invoice'] = array(
-      '#prefix' => variable_get('pm_icons_display', TRUE) ? '<dt id="pminvoices" class="pmcomponent">' : '<dt class="pmcomponent">',
-      '#suffix' => '</dt>',
-      '#markup' => theme('pminvoice_autoadd_links', array($node->nid, $node->billable, $node->billed)),
-      '#weight' => $l_pos++,
-    );
-  }
-
   $node->content['group1'] = array(
     '#prefix' => '<div class="field">',
     '#suffix' => '</div>',

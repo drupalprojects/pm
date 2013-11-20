@@ -143,12 +143,8 @@ function pmtimetracking_field_extra_fields() {
         'label' => 'Organization/Project/Task/Ticket Group',
         'weight' => -20,
       ),
-      'group2' => array(
-        'label' => 'Date',
-        'weight' => -19,
-      ),
       'group3' => array(
-        'label' => 'Time / Duration Group',
+        'label' => 'Duration Group',
         'weight' => -18,
       ),
     ),
@@ -341,30 +337,6 @@ function pmtimetracking_form(&$node, $form_state) {
     if (array_key_exists('project_nid', $_GET)) $node->project_nid = $_GET['project_nid'];
     if (array_key_exists('task_nid', $_GET)) $node->task_nid = $_GET['task_nid'];
     if (array_key_exists('ticket_nid', $_GET)) $node->ticket_nid = $_GET['ticket_nid'];
-
-    // @todo This line of code causes timezone issues, which needs to be fixed as part of the move to Fields API.
-    $node->trackingdate = time();
-
-    $today = _pm_gmtimestamp_without_time(time());
-
-    $query = db_select('node', 'n');
-    $query->leftJoin('pmtimetracking', 'pmtt', 'n.nid = pmtt.nid');
-    $query->condition('pmtt.trackingdate', time() - (60 * 60 * 24), '>=')
-      ->condition('pmtt.trackingdate', time() , '<=')
-      ->condition('n.uid', $node->uid , '=')
-      ->addExpression('MAX(pmtt.timeend)', 'lastTimeEndToday');
-    $query->addTag('node_access');
-    $val = $query->execute();
-    $timebegin = $val->fetchObject();
-    $node->timebegin = $timebegin->lastTimeEndToday;
-    $node->timeend = format_date(time(), 'custom', 'H:i');
-
-    $timebegin = _pm_strtotime($node->timebegin);
-    $timeend = _pm_strtotime($node->timeend);
-    if ($timeend['hour'] && $timebegin['hour']) {
-      $node->duration = ($timeend['hour'] - $timebegin['hour'] + ($timeend['minute'] - $timebegin['minute']) / 60);
-    }
-    $node->billable = variable_get('pmtimetracking_billable_default', FALSE);
   }
 
   $type = node_type_get_type($node);
@@ -493,40 +465,10 @@ function pmtimetracking_form(&$node, $form_state) {
     '#suffix' => '</div>',
   );
 
-  $form['group2'] = array(
-    '#type' => 'markup',
-    '#theme' => 'pm_form_group',
-    '#weight' => $info['group2']['weight'],
-  );
-
-  $form['group2']['trackingdate'] = array(
-    '#type' => 'dateext',
-    '#title' => t('Date'),
-    '#default_value' => $node->trackingdate,
-  );
-
   $form['group3'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
     '#weight' => $info['group3']['weight'],
-  );
-
-  $form['group3']['timebegin'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Time begin'),
-    '#size' => 5,
-    '#maxlength' => 5,
-    '#default_value' => $node->timebegin,
-    '#weight' => 1,
-  );
-
-  $form['group3']['timeend'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Time end'),
-    '#size' => 5,
-    '#maxlength' => 5,
-    '#default_value' => $node->timeend,
-    '#weight' => 2,
   );
 
   $duration = isset($node->duration) ? sprintf("%01.2f", $node->duration) : sprintf("%01.2f", 0);
@@ -598,9 +540,6 @@ function pmtimetracking_insert($node) {
       'task_stepno' => $node->task_stepno,
       'ticket_nid' => $node->ticket_nid,
       'ticket_title' => $node->ticket_title,
-      'trackingdate' => $node->trackingdate,
-      'timebegin' => $node->timebegin,
-      'timeend' => $node->timeend,
       'duration' => $node->duration,
       'billing_duration' => $node->billing_duration,
     ))
@@ -631,13 +570,8 @@ function pmtimetracking_update($node) {
         'task_stepno' => $node->task_stepno,
         'ticket_nid' => $node->ticket_nid,
         'ticket_title' => $node->ticket_title,
-        'trackingdate' => $node->trackingdate,
-        'timebegin' => $node->timebegin,
-        'timeend' => $node->timeend,
         'duration' => $node->duration,
         'billing_duration' => $node->billing_duration,
-        'billable' => $node->billable,
-        'billed' => $node->billed,
       ))
       ->condition('vid', $node->vid)
       ->execute();
@@ -648,20 +582,10 @@ function pmtimetracking_update($node) {
  * Prepares pmtimetracking nodes for save operations.
  */
 function _pmtimetracking_beforesave(&$node) {
-  $timebegin = _pm_strtotime($node->timebegin);
-  $timeend = _pm_strtotime($node->timeend);
-
-  if (is_array($node->trackingdate)) {
-    $node->trackingdate = _pm_datetime_to_gmtimestamp($node->trackingdate + $timebegin);
-  }
-
-  $node->timebegin = _timetostr($timebegin);
-  $node->timeend = _timetostr($timeend);
-
-  $node->duration = ($timeend['hour'] - $timebegin['hour'] + ($timeend['minute'] - $timebegin['minute']) / 60);
-  if ($node->timeend < $node->timebegin) {
-    $node->duration += 24;
-  }
+  // Set duration field based on start and end dates.
+  $duration_in_seconds = strtotime($node->pm_date['und'][0]['value2']) - strtotime($node->pm_date['und'][0]['value']);
+  // Convert to hours
+  $node->duration = $duration_in_seconds / 60 / 60;
 
   if (variable_get('pmtimetracking_auto_duration', TRUE)) {
     $node->billing_duration = $node->duration;

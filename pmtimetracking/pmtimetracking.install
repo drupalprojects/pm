@@ -14,6 +14,57 @@ function pmtimetracking_install() {
   // Uncache node types
   node_types_rebuild();
 
+  // Add instance of date field.
+  field_create_instance(array(
+    'field_name' => 'pm_date',
+    'label' => 'Date',
+    'widget' => array(
+      'weight' => '-18',
+      'type' => 'date_text',
+      'module' => 'date',
+      'active' => 1,
+      'settings' => array(
+        'input_format' => 'm/d/Y - H:i:s',
+        'input_format_custom' => '',
+        'year_range' => '-3:+3',
+        'increment' => 15,
+        'label_position' => 'above',
+        'text_parts' => array(),
+      ),
+    ),
+    'settings' => array(
+      'default_value' => 'now',
+      'default_value_code' => '',
+      'default_value2' => 'same',
+      'default_value_code2' => '',
+      'user_register_form' => FALSE,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'type' => 'date_default',
+        'settings' => array(
+          'format_type' => 'long',
+          'multiple_number' => '',
+          'multiple_from' => '',
+          'multiple_to' => '',
+          'fromto' => 'both',
+        ),
+        'module' => 'date',
+        'weight' => 1,
+      ),
+      'teaser' => array(
+        'type' => 'hidden',
+        'label' => 'above',
+        'settings' => array(),
+        'weight' => 0,
+      ),
+    ),
+    'required' => 0,
+    'entity_type' => 'node',
+    'bundle' => 'pmtimetracking',
+  ));
+
   // Set up instance of billing status field.
   field_create_instance(array(
     'field_name' => 'pm_billing_status',
@@ -82,9 +133,6 @@ function pmtimetracking_schema() {
       'task_title'          => array('type' => 'varchar', 'length' => 128),
       'ticket_nid'          => array('type' => 'int'),
       'ticket_title'        => array('type' => 'varchar', 'length' => 128),
-      'trackingdate'        => array('type' => 'int'),
-      'timebegin'           => array('type' => 'varchar', 'length' => 5),
-      'timeend'             => array('type' => 'varchar', 'length' => 5),
       'duration'            => array('type' => 'float'),
       'billing_duration'    => array('type' => 'float'),
     ),
@@ -95,7 +143,6 @@ function pmtimetracking_schema() {
       'project_nid'       => array('project_nid'),
       'task_nid'          => array('task_nid'),
       'ticket_nid'        => array('ticket_nid'),
-      'trackingdate'      => array('trackingdate'),
     ),
   );
 
@@ -116,6 +163,11 @@ function pmtimetracking_update_dependencies() {
   // Ensure that billing status field is created before instance.
   $dependencies['pmtimetracking'][7104] = array(
     'pm' => 7101,
+  );
+
+  // Ensure that date range field is created before instance.
+  $dependencies['pmtimetracking'][7105] = array(
+    'pm' => 7102,
   );
 
   return $dependencies;
@@ -203,4 +255,84 @@ function pmtimetracking_update_7104() {
   // Remove existing field from custom database table.
   db_drop_field('pmtimetracking', 'billable');
   db_drop_field('pmtimetracking', 'billed');
+}
+
+/**
+ * Add date field to PM Timetracking.
+ */
+function pmtimetracking_update_7105() {
+  // Create field instance.
+  field_create_instance(array(
+    'field_name' => 'pm_date',
+    'label' => 'Date',
+    'widget' => array(
+      'weight' => '-18',
+      'type' => 'date_text',
+      'module' => 'date',
+      'active' => 1,
+      'settings' => array(
+        'input_format' => 'm/d/Y - H:i:s',
+        'input_format_custom' => '',
+        'year_range' => '-3:+3',
+        'increment' => 15,
+        'label_position' => 'above',
+        'text_parts' => array(),
+      ),
+    ),
+    'settings' => array(
+      'default_value' => 'now',
+      'default_value_code' => '',
+      'default_value2' => 'same',
+      'default_value_code2' => '',
+      'user_register_form' => FALSE,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'type' => 'date_default',
+        'settings' => array(
+          'format_type' => 'long',
+          'multiple_number' => '',
+          'multiple_from' => '',
+          'multiple_to' => '',
+          'fromto' => 'both',
+        ),
+        'module' => 'date',
+        'weight' => 1,
+      ),
+      'teaser' => array(
+        'type' => 'hidden',
+        'label' => 'above',
+        'settings' => array(),
+        'weight' => 0,
+      ),
+    ),
+    'required' => 0,
+    'entity_type' => 'node',
+    'bundle' => 'pmtimetracking',
+  ));
+
+  // Migrate data
+  $query = db_select('pmtimetracking', 'pmtt');
+  $query->join('node', 'n', 'n.vid = pmtt.vid');
+  $result = $query
+    ->fields('pmtt', array('nid', 'vid', 'trackingdate', 'timebegin', 'timeend'))
+    ->execute();
+
+  foreach ($result as $record) {
+    $node = node_load($record->nid);
+
+    $datebegin = $record->trackingdate + strtotime($record->timebegin);
+    $dateend = $record->trackingdate + strtotime($record->timeend);
+
+    $node->pm_date[LANGUAGE_NONE][0]['value'] = date('Y-m-d H:i:s', $datebegin);
+    $node->pm_date[LANGUAGE_NONE][0]['value2'] = date('Y-m-d H:i:s', $dateend);
+    field_attach_presave('node', $node);
+    field_attach_update('node', $node);
+  }
+
+  // Delete columns from existing database table.
+  db_drop_field('pmtimetracking', 'trackingdate');
+  db_drop_field('pmtimetracking', 'timebegin');
+  db_drop_field('pmtimetracking', 'timeend');
 }

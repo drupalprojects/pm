@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  */
@@ -182,20 +181,20 @@ function pmproject_field_extra_fields() {
         'weight' => -19,
       ),
       'group3' => array(
-        'label' => 'Date/Duration Group',
-        'weight' => -18,
+        'label' => 'Duration Group',
+        'weight' => -17,
       ),
       'group4' => array(
         'label' => 'Price Group',
-        'weight' => -17,
+        'weight' => -16,
       ),
       'group5' => array(
         'label' => 'Manager / Assigned to Group',
-        'weight' => -16,
+        'weight' => -15,
       ),
       'group6' => array(
         'label' => 'Billable / Billed Group',
-        'weight' => -15,
+        'weight' => -14,
       ),
     ),
   );
@@ -246,10 +245,7 @@ function pmproject_form(&$node) {
   drupal_set_breadcrumb($breadcrumb);
 
   if (arg(1)=='add') {
-    $node->datebegin = time();
-    $node->dateend = time();
-
-    if (array_key_exists('organization_nid', $_GET) && !$node->organization) {
+    if (array_key_exists('organization_nid', $_GET) && !isset($node->organization_nid)) {
       $node->organization_nid = $_GET['organization_nid'];
     }
     if (isset($_SESSION['pmproject_list_filter']['organization_nid']) && !$node->organization_nid) {
@@ -353,20 +349,6 @@ function pmproject_form(&$node) {
     '#type' => 'markup',
     '#theme' => 'pm_form_group',
     '#weight' => $info['group3']['weight'],
-  );
-
-  $form['group3']['datebegin'] = array(
-    '#type' => 'dateext',
-    '#title' => t('Date begin'),
-    '#withnull' => TRUE,
-    '#default_value' => $node->datebegin,
-  );
-
-  $form['group3']['dateend'] = array(
-    '#type' => 'dateext',
-    '#title' => t('Date end'),
-    '#withnull' => TRUE,
-    '#default_value' => $node->dateend,
   );
 
   $durationunit_list = pm_attributes_bydomain('Duration unit');
@@ -551,8 +533,6 @@ function pmproject_insert($node) {
       'pricemode' => $node->pricemode,
       'price' => $node->price,
       'currency' => $node->currency,
-      // 'datebegin' => $node->datebegin,
-      // 'dateend' => $node->dateend,
       'durationunit' => $node->durationunit,
       'duration' => $node->duration,
       'manager_nid' => $node->manager_nid,
@@ -617,8 +597,6 @@ function pmproject_update($node) {
         'pricemode' => $node->pricemode,
         'price' => $node->price,
         'currency' => $node->currency,
-        // 'datebegin' => $node->datebegin,
-        // 'dateend' => $node->dateend,
         'durationunit' => $node->durationunit,
         'duration' => $node->duration,
         'manager_nid' => $node->manager_nid,
@@ -649,20 +627,6 @@ function _pmproject_beforesave(&$node) {
   }
   if (!is_numeric($node->price)) {
     $node->price = 0;
-  }
-
-  if (is_array($node->datebegin)) {
-      $node->datebegin = _pm_date_to_gmtimestamp($node->datebegin);
-  }
-  elseif (is_string($node->datebegin)) {
-      $node->datebegin = strtotime($node->datebegin);
-  }
-
-  if (is_array($node->dateend)) {
-      $node->dateend = _pm_date_to_gmtimestamp($node->dateend);
-  }
-  elseif (is_string($node->dateend)) {
-      $node->dateend = strtotime($node->dateend);
   }
 }
 
@@ -858,8 +822,6 @@ function pmproject_token_list($type='all') {
     $tokens['node']['pmproject-projectpriority'] = t('Project Management Project: Project Priority.');
     $tokens['node']['pmproject-durationunit'] = t('Project Management Project: Project Duration Unit.');
     $tokens['node']['pmproject-duration'] = t('Project Management Project: Project Duration.');
-    $tokens['node']['pmproject-datebegin'] = t('Project Management Project: Project Begin Date.');
-    $tokens['node']['pmproject-dateend'] = t('Project Management Project: Project End Date.');
     $tokens['node']['pmproject-billable'] = t('Project Management Project: Project Billable.');
     $tokens['node']['pmproject-billed'] = t('Project Management Project: Project Billed.');
     $tokens['node']['pmproject-price'] = t('Project Management Project: Project Price.');
@@ -895,8 +857,6 @@ function pmproject_token_values($type, $object = NULL) {
     $values['pmproject-projectcategory'] = $node->projectcategory;
     $values['pmproject-durationunit'] = $node->durationunit;
     $values['pmproject-duration'] = $node->duration;
-    $values['pmproject-datebegin'] = format_date($node->datebegin, 'medium', '', variable_get('date_default_timezone', NULL));
-    $values['pmproject-dateend'] = format_date($node->dateend, 'medium', '', variable_get('date_default_timezone', NULL));
     $values['pmproject-price'] = $node->price;
     $values['pmproject-pricemode'] = $node->pricemode;
     $values['pmproject-billable'] = $node->billable;

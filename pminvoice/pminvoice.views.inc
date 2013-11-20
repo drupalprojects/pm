@@ -107,51 +107,6 @@ function pminvoice_views_data() {
     ),
   );
 
-  $data['pminvoice']['requestdate'] = array(
-    'title' => t('Request date'),
-    'help' => t('Project Management Invoice Request Date'),
-    'field' => array(
-      'click sortable' => TRUE,
-      'handler' => 'views_handler_field_date',
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort_date',
-    ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_date',
-    ),
-  );
-
-  $data['pminvoice']['duedate'] = array(
-    'title' => t('Due date'),
-    'help' => t('Project Management Invoice Due Date'),
-    'field' => array(
-      'click sortable' => TRUE,
-      'handler' => 'views_handler_field_date',
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort_date',
-    ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_date',
-    ),
-  );
-
-  $data['pminvoice']['paymentdate'] = array(
-    'title' => t('Payment date'),
-    'help' => t('Project Management Invoice Payment Date'),
-    'field' => array(
-      'click sortable' => TRUE,
-      'handler' => 'views_handler_field_date',
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort_date',
-    ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_date',
-    ),
-  );
-
   $data['pminvoice']['amount'] = array(
     'title' => t('Amount'),
     'help' => t('Project Management Invoice Amount'),
@@ -444,31 +399,3 @@ function pminvoice_views_handlers() {
   );
 }
 
-/**
- * Implements hook_date_api_fields().
- */
-function pminvoice_date_api_fields($field) {
-  $values = array(
-    'sql_type' => DATE_UNIX,
-    'tz_handling' => 'site',
-    'timezone_field' => '',
-    'offset_field' => '',
-    'related_fields' => array(),
-    'granularity' => array('year', 'month', 'day'),
-  );
-
-  switch ($field) {
-    case 'pminvoice.paymentdate':
-    case 'pminvoice.duedate':
-    case 'pminvoice.requestdate':
-      return $values;
-  }
-
-}
-
-/**
- * Implements hook_date_api_tables().
- */
-function pminvoice_date_api_tables() {
-  return array('pminvoice');
-}

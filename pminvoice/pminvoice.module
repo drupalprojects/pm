@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  *
@@ -156,23 +155,19 @@ function pminvoice_field_extra_fields() {
     'form' => array(
       'group1' => array(
         'label' => 'Number',
-        'weight' => -20,
+        'weight' => -19,
       ),
       'group2' => array(
         'label' => 'Organization/Project/Reference Group',
-        'weight' => -19,
-      ),
-      'group3' => array(
-        'label' => 'Date Group',
         'weight' => -18,
       ),
       'group4' => array(
         'label' => 'Invoice Items',
-        'weight' => -16,
+        'weight' => -14,
       ),
       'group5' => array(
         'label' => 'Price Group',
-        'weight' => -15,
+        'weight' => -13,
       ),
     ),
   );
@@ -183,7 +178,7 @@ function pminvoice_field_extra_fields() {
  * Implements hook_field_extra_fields_alter().
  */
 function pminvoice_field_extra_fields_alter(&$info) {
-  $info['node']['pminvoice']['form']['title']['weight'] = -17;
+  $info['node']['pminvoice']['form']['title']['weight'] = -20;
 }
 
 /**
@@ -247,10 +242,7 @@ function pminvoice_form(&$node, $form_state) {
   drupal_set_breadcrumb($breadcrumb);
 
   if (arg(1)=='add') {
-    $node->requestdate = time();
-    $node->duedate = $node->requestdate + (variable_get('pminvoice_payment_days', 30) * 86400);
-    $node->number = pminvoice_get_invoice_number($node->requestdate);
-    $node->paymentdate = NULL;
+    $node->number = pminvoice_get_invoice_number();
 
     if (array_key_exists('organization_nid', $_GET) && !$node->organization_nid) {
       $node->organization_nid = $_GET['organization_nid'];
@@ -372,33 +364,6 @@ function pminvoice_form(&$node, $form_state) {
     '#title' => t('Reference'),
     '#default_value' => isset($node->reference) ? $node->reference : NULL,
     '#size' => 40,
-  );
-
-  $form['group3'] = array(
-    '#type' => 'markup',
-    '#theme' => 'pm_form_group',
-    '#weight' => $info['group3']['weight'],
-  );
-
-  $form['group3']['requestdate'] = array(
-    '#type' => 'dateext',
-    '#withnull' => 'true',
-    '#title' => t('Request date'),
-    '#default_value' => $node->requestdate,
-  );
-
-  $form['group3']['duedate'] = array(
-    '#type' => 'dateext',
-    '#withnull' => 'true',
-    '#title' => t('Due date'),
-    '#default_value' => $node->duedate,
-  );
-
-  $form['group3']['paymentdate'] = array(
-    '#type' => 'dateext',
-    '#withnull' => 'true',
-    '#title' => t('Payment date'),
-    '#default_value' => $node->paymentdate,
   );
 
   $form['group4'] = array(
@@ -610,9 +575,6 @@ function pminvoice_insert($node) {
     'organization_title' => $node->organization_title,
     'project_nid' => $node->project_nid,
     'project_title' => $node->project_title,
-    'requestdate' => $node->requestdate,
-    'duedate' => $node->duedate,
-    'paymentdate' => $node->paymentdate,
     'taxexempt' => $node->taxexempt,
     'src_nid' => $node->src_nid,
     'src_vid' => $node->src_vid,
@@ -648,9 +610,6 @@ function pminvoice_update($node) {
       'tax2' => $node->tax2,
       'total' => $node->total,
       'totalcustomercurr' => $node->totalcustomercurr,
-      'requestdate' => $node->requestdate,
-      'duedate' => $node->duedate,
-      'paymentdate' => $node->paymentdate,
       'taxexempt' => $node->taxexempt,
       'src_nid' => $node->src_nid,
       'src_vid' => $node->src_vid,
@@ -679,10 +638,6 @@ function _pminvoice_beforesave(&$node) {
   $node->tax2 = floatval(str_replace(',', '.', $node->tax2));
   $node->total = floatval(str_replace(',', '.', $node->total));
   $node->totalcustomercurr = floatval(str_replace(',', '.', $node->totalcustomercurr));
-
-  if (is_array($node->requestdate)) $node->requestdate = _pm_date_to_gmtimestamp($node->requestdate);
-  if (is_array($node->duedate)) $node->duedate = _pm_date_to_gmtimestamp($node->duedate);
-  if (is_array($node->paymentdate)) $node->paymentdate = _pm_date_to_gmtimestamp($node->paymentdate);
 
   $org_result = db_select('node', 'n')
     ->fields('n', array('title'))
@@ -876,18 +831,10 @@ function pminvoice_view($node, $view_mode) {
 }
 
 /**
- * Admin settings form for pmproject module
+ * Admin settings form for pminvoice module
  */
 function pminvoice_admin_settings() {
   $form = array();
-
-  $form['pminvoice_payment_days'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Number of days for invoice payment'),
-    '#default_value' => variable_get('pminvoice_payment_days', 30),
-    '#description' => t('Default number of days for invoice payment'),
-    '#size' => 5,
-  );
 
   $form['pminvoice_hours_per_day'] = array(
     '#type' => 'textfield',
@@ -927,14 +874,6 @@ function pminvoice_admin_settings() {
     '#size' => 50,
   );
 
-  $form['pminvoice_tcpdf_location'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Location of tcpdf library'),
-    '#default_value' => variable_get('pminvoice_tcpdf_location', t('sites/all/libraries/tcpdf')),
-    '#description' => t('The directory that contains the !link (sites/all/libraries/tcpdf is recommended).', array('!link' => l(t('TCPDF library'), 'http://sourceforge.net/projects/tcpdf/files/'))),
-    '#size' => 50,
-  );
-
   return system_settings_form($form);
 }
 
@@ -968,8 +907,8 @@ function pminvoice_getitems($invoice_vid) {
  * @return
  *   varchar text value of the calculated invoice number
  */
-function pminvoice_get_invoice_number($requestdate) {
-  $date = getdate($requestdate);
+function pminvoice_get_invoice_number() {
+  $date = getdate();
 
   $result = db_select('pminvoice', 'sin')
   ->fields('sin', array('number'))
@@ -1177,9 +1116,6 @@ function pminvoice_token_list($type='all') {
     $tokens['node']['pminvoice-organization-title'] = t('Project Management Invoice: Organization Title.');
     $tokens['node']['pminvoice-project-nid'] = t('Project Management Invoice: Project Node ID.');
     $tokens['node']['pminvoice-project-title'] = t('Project Management Invoice: Project Title.');
-    $tokens['node']['pminvoice-requestdate'] = t('Project Management Invoice: Request Date.');
-    $tokens['node']['pminvoice-duedate'] = t('Project Management Invoice: Due Date.');
-    $tokens['node']['pminvoice-paymentdate'] = t('Project Management Invoice: Payment Date.');
     $tokens['node']['pminvoice-amount'] = t('Project Management Invoice: Amount.');
     $tokens['node']['pminvoice-total'] = t('Project Management Invoice: Total.');
     $tokens['node']['pminvoice-totalcustomer'] = t('Project Management Invoice: Total in customer currency.');
@@ -1207,9 +1143,6 @@ function pminvoice_token_values($type, $object = NULL) {
     $values['pminvoice-organization-title'] = $node->organization_title;
     $values['pminvoice-project-nid'] = $node->project_nid;
     $values['pminvoice-project-title'] = $node->project_title;
-    $values['pminvoice-requestdate'] = format_date($node->requestdate, 'medium', '', variable_get('date_default_timezone', NULL));
-    $values['pminvoice-payment'] = format_date($node->paymentdate, 'medium', '', variable_get('date_default_timezone', NULL));
-    $values['pminvoice-duedate'] = format_date($node->duedate, 'medium', '', variable_get('date_default_timezone', NULL));
     $values['pminvoice-amount'] = $node->amount;
     $values['pminvoice-total'] = $node->total;
     $values['pminvoice-totalcustomer'] = $node->totalcustomer;

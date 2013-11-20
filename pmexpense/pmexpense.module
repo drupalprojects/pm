@@ -1,7 +1,7 @@
 <?php
-
 /**
  * @file
+ * Hook implementations and main functions for PM Expense.
  */
 
 function pmexpense_help($path, $arg) {
@@ -144,20 +144,20 @@ function pmexpense_field_extra_fields() {
         'weight' => -20,
       ),
       'group2' => array(
-        'label' => 'Date/Provider Group',
-        'weight' => -19,
+        'label' => 'Provider Group',
+        'weight' => -18,
       ),
       'group3' => array(
         'label' => 'Amount',
-        'weight' => -18,
+        'weight' => -17,
       ),
       'group4' => array(
         'label' => 'Tax Group',
-        'weight' => -17,
+        'weight' => -16,
       ),
       'group5' => array(
         'label' => 'Billable / Billed Group',
-        'weight' => -16,
+        'weight' => -15,
       ),
     ),
   );
@@ -254,8 +254,6 @@ function pmexpense_form($node, $form_state) {
   drupal_set_breadcrumb($breadcrumb);
 
   if (arg(1) == 'add') {
-    $node->expensedate = time();
-
     if (array_key_exists('organization_nid', $_GET) && !$node->organization_nid) {
       $node->organization_nid = $_GET['organization_nid'];
     }
@@ -470,12 +468,6 @@ function pmexpense_form($node, $form_state) {
     '#weight' => $info['group2']['weight'],
   );
 
-  $form['group2']['expensedate'] = array(
-    '#type' => 'dateext',
-    '#title' => t('Date'),
-    '#default_value' => isset($node->expensedate) ? $node->expensedate : time(),
-  );
-
   $form['group2']['provider_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Provider'),
@@ -620,7 +612,6 @@ function pmexpense_insert($node) {
       'ticket_title' => (isset($node->ticket_title)) ? $node->ticket_title : NULL,
       'provider_nid' => (isset($node->provider_nid)) ? $node->provider_nid : NULL,
       'provider_title' => $node->provider_title,
-      'expensedate' => $node->expensedate,
       'amount' => $node->amount,
       'tax1app' => $node->tax1app,
       'tax1percent' => $node->tax1percent,
@@ -658,7 +649,6 @@ function pmexpense_update($node) {
         'ticket_title' => (isset($node->ticket_title)) ? $node->ticket_title : NULL,
         'provider_nid' => (isset($node->provider_nid)) ? $node->provider_nid : NULL,
         'provider_title' => $node->provider_title,
-        'expensedate' => $node->expensedate,
         'amount' => $node->amount,
         'tax1app' => $node->tax1app,
         'tax1percent' => $node->tax1percent,
@@ -686,13 +676,6 @@ function _pmexpense_beforesave(&$node) {
   $node->amount = str_replace(',', '.', $node->amount);
   $node->tax1percent = str_replace(',', '.', $node->tax1percent);
   $node->tax2percent = str_replace(',', '.', $node->tax2percent);
-
-  if (!!is_numeric($node->expensedate) && is_array($node->expensedate)) {
-    $node->expensedate = _pm_date_to_gmtimestamp($node->expensedate);
-  }
-  elseif (!is_numeric($node->expensedate) && is_string($node->expensedate)) {
-    $node->expensedate = strtotime($node->expensedate);
-  }
 
   pm_taxation($node);
 

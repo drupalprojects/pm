@@ -1,7 +1,7 @@
 <?php
-
 /**
  * @file
+ * Theme functions for PM Expense.
  */
 
 /**
@@ -18,7 +18,6 @@ function theme_pmexpense_view($variables) {
 
   // Used to increase the link position number (see issue 814820)
   $l_pos = 1;
-  drupal_add_css(drupal_get_path('module', 'pm') . '/pm-node.css');
 
   $node->content['links'] = array(
     '#prefix' => '<div class="pmlinks"><dl>',
@@ -43,7 +42,7 @@ function theme_pmexpense_view($variables) {
   }
 
   $node->content['group1'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
   );
@@ -77,16 +76,9 @@ function theme_pmexpense_view($variables) {
   );
 
   $node->content['group2'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group2') : -19,
-  );
-
-  $node->content['group2']['expensedate'] = array(
-    '#prefix' => '<div class="expensedate">',
-    '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Date'), 'value' => format_date($node->expensedate, 'custom', 'Y-m-d'))),
-    '#weight' => 1,
   );
 
   $node->content['group2']['provider'] = array(
@@ -97,7 +89,7 @@ function theme_pmexpense_view($variables) {
   );
 
   $node->content['group3'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group3') : -18,
   );
@@ -110,7 +102,7 @@ function theme_pmexpense_view($variables) {
   );
 
   $node->content['group4'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group4') : -17,
   );

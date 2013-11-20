@@ -1,42 +1,14 @@
 <?php
-
 /**
  * @file
+ * Theme functions for PM Project.
  */
-
-/**
- * Provides HTML markup for a pmtimetracking list.
- */
-function theme_pmproject_list($variables) {
-  $header = $variables['header'];
-  $projects = $variables['projects'];
-
-  drupal_add_css(drupal_get_path('module', 'pm') . '/pm.css', 'module');
-
-  $rows = array();
-  foreach ($projects as $key => $project) {
-    $rows[] = array(
-      pm_icon('projectcategory_' . $project->projectcategory, pm_attribute_value('Project category', $project->projectcategory)),
-      l($project->organization_title, 'node/' . $project->organization_nid),
-      l($project->title, 'node/' . $project->nid) . theme('mark', array('type' => node_mark($project->nid, $project->changed))),
-      pm_icon('status_' . $project->projectstatus, pm_attribute_value('Project status', $project->projectstatus)),
-      pm_icon('priority_' . $project->projectpriority, pm_attribute_value('Project priority', $project->projectpriority)),
-      array(
-        'data' => pm_icon_edit_node($project, $_GET) . '&nbsp;' . pm_icon_delete_node($project, $_GET),
-        'class' => 'pm_list_operations',
-      ),
-    );
-  }
-  return theme('table', array('header' => $header, 'rows' => $rows));
-}
 
 /**
  * Provides HTML markup for a pmproject node view.
  */
 function theme_pmproject_view($variables) {
   $node = $variables['node'];
-
-  drupal_add_css(drupal_get_path('module', 'pm') . '/pm-node.css');
 
   $l_pos = 1; // Used to increase the link position number (see issue 814820)
 
@@ -64,9 +36,8 @@ function theme_pmproject_view($variables) {
     );
   }
 
-
   $node->content['group1'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group1') : -20,
   );
@@ -79,7 +50,7 @@ function theme_pmproject_view($variables) {
   );
 
   $node->content['group2'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group2') : -19,
   );
@@ -106,7 +77,7 @@ function theme_pmproject_view($variables) {
   );
 
   $node->content['group5'] = array(
-    '#prefix' => '<div class="pmfields">',
+    '#prefix' => '<div class="field">',
     '#suffix' => '</div>',
     '#weight' => module_exists('content') ? content_extra_field_weight($node->type, 'group5') : -16,
   );

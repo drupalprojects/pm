@@ -149,36 +149,6 @@ function pmproject_views_data() {
     ),
   );
 
-  $data['pmproject']['datebegin'] = array(
-    'title' => t('Date begin'),
-    'help' => t('Project Management Project Date Begin'),
-    'field' => array(
-      'click sortable' => TRUE,
-      'handler' => 'views_handler_field_date',
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort_date',
-    ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_date',
-    ),
-  );
-
-  $data['pmproject']['dateend'] = array(
-    'title' => t('Date end'),
-    'help' => t('Project Management Project Date End'),
-    'field' => array(
-      'click sortable' => TRUE,
-      'handler' => 'views_handler_field_date',
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort_date',
-    ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_date',
-    ),
-  );
-
   $data['pmproject']['duration unit'] = array(
     'title' => t('Duration unit'),
     'help' => t('Project Management Project Duration Unit'),
@@ -330,38 +300,4 @@ function pmproject_views_handlers() {
       ),
     ),
   );
-}
-
-
-/**
- * Implements hook_date_api_fields().
- *
- * All modules that create custom fields that use the
- * 'views_handler_field_date' handler can provide
- * additional information here about the type of
- * date they create so the date can be used by
- * the Date API views date argument and date filter.
- */
-function pmproject_date_api_fields($field) {
-  $values = array(
-    'sql_type' => DATE_UNIX,
-    'tz_handling' => 'site',
-    'timezone_field' => '',
-    'offset_field' => '',
-    'related_fields' => array(),
-    'granularity' => array('year', 'month', 'day', 'hour', 'minute', 'second'),
-  );
-
-  switch ($field) {
-    case 'pmproject.datebegin':
-    case 'pmproject.dateend':
-      return $values;
-  }
-}
-
-/**
- * Implement hook_date_api_tables().
- */
-function pmproject_date_api_tables() {
-  return array('pmproject');
 }

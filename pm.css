@@ -31,37 +31,6 @@ text-align: right;
 white-space: nowrap;
 }
 
-div.pm_popup {
-display:none;
-z-index: 100;
-border: 1px solid black;
-background-color: #fff;
-}
-
-div.pm_popup_inner {
-text-align: center;
-}
-
-div.pm_popup_inner form div div.form-item {
-margin: 0;
-}
-
-div.pm_popup_inner form div input.form-submit {
-margin: 5px 0 0 0;
-}
-
-div.pm_popup_title {
-float: left;
-text-align: center;
-color: #fff;
-width: 100%;
-background-color: #5294C1;
-}
-
-div.pm_popup_inner {
-clear: both;
-}
-
 div.pm_quick_shortcuts {
 clear: both;
 }
@@ -87,10 +56,6 @@ height: 20px;
 text-align: center;
 font-weight: bold;
 color: #ffffff;
-}
-
-form.pmcomponent_node_form #edit-preview {
-  display: none;
 }
 
 tr.formgroup {

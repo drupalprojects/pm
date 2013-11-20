@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  *
@@ -163,20 +162,20 @@ function pmticket_field_extra_fields() {
         'weight' => -19,
       ),
       'group3' => array(
-        'label' => 'Date/Duration Group',
-        'weight' => -17,
+        'label' => 'Duration Group',
+        'weight' => -16,
       ),
       'group4' => array(
         'label' => 'Price Group',
-        'weight' => -16,
+        'weight' => -15,
       ),
       'group5' => array(
         'label' => 'Assigned to',
-        'weight' => -15,
+        'weight' => -14,
       ),
       'group6' => array(
         'label' => 'Billable / Billed Group',
-        'weight' => -14,
+        'weight' => -13,
       ),
     )
   );
@@ -432,20 +431,6 @@ function pmticket_form(&$node, $form_state) {
     '#weight' => $info['group3']['weight'],
   );
 
-  $form['group3']['datebegin'] = array(
-    '#type' => 'dateext',
-    '#title' => t('Date begin'),
-    '#withnull' => TRUE,
-    '#default_value' => isset($node->datebegin) ? $node->datebegin : NULL,
-  );
-
-  $form['group3']['dateend'] = array(
-    '#type' => 'dateext',
-    '#title' => t('Date end'),
-    '#withnull' => TRUE,
-    '#default_value' => isset($node->dateend) ? $node->dateend : NULL,
-  );
-
   $durationunits = pm_attributes_bydomain('Duration unit');
   $form['group3']['durationunit'] = array(
     '#type' => 'select',
@@ -567,8 +552,6 @@ function pmticket_insert($node) {
       'ticketcategory' => $node->ticketcategory,
       'ticketstatus' => $node->ticketstatus,
       'ticketpriority' => $node->ticketpriority,
-      // 'datebegin' => $node->datebegin,
-      // 'dateend' => $node->dateend,
       'durationunit' => $node->durationunit,
       'duration' => $node->duration,
       'pricemode' => $node->pricemode,
@@ -648,8 +631,6 @@ function pmticket_update($node) {
         'ticketcategory' => $node->ticketcategory,
         'ticketstatus' => $node->ticketstatus,
         'ticketpriority' => $node->ticketpriority,
-        // 'datebegin' => $node->datebegin,
-        // 'dateend' => $node->dateend,
         'durationunit' => $node->durationunit,
         'duration' => $node->duration,
         'pricemode' => $node->pricemode,
@@ -906,8 +887,6 @@ function pmticket_token_list($type='all') {
     $tokens['node']['pmticket-ticketpriority'] = t('Project Management Ticket: Ticket Priority.');
     $tokens['node']['pmticket-durationunit'] = t('Project Management Ticket: Ticket Duration Unit.');
     $tokens['node']['pmticket-duration'] = t('Project Management Ticket: Ticket Duration.');
-    $tokens['node']['pmticket-datebegin'] = t('Project Management Ticket: Ticket Begin Date.');
-    $tokens['node']['pmticket-dateend'] = t('Project Management Ticket: Ticket End Date.');
     $tokens['node']['pmticket-billable'] = t('Project Management Ticket: Ticket Billable.');
     $tokens['node']['pmticket-billed'] = t('Project Management Ticket: Ticket Billed.');
     $tokens['node']['pmticket-price'] = t('Project Management Ticket: Ticket Price.');
@@ -937,8 +916,6 @@ function pmticket_token_values($type, $object = NULL) {
     $values['pmticket-ticketcategory'] = $node->ticketcategory;
     $values['pmticket-durationunit'] = $node->durationunit;
     $values['pmticket-duration'] = $node->duration;
-    $values['pmticket-datebegin'] = format_date($node->datebegin, 'medium', '', variable_get('date_default_timezone', NULL));
-    $values['pmticket-dateend'] = format_date($node->dateend, 'medium', '', variable_get('date_default_timezone', NULL));
     $values['pmticket-price'] = $node->price;
     $values['pmticket-pricemode'] = $node->pricemode;
     $values['pmticket-billable'] = $node->billable;

@@ -154,21 +154,6 @@ function pmticket_views_data() {
     ),
   );
 
-  $data['pmticket']['datebegin'] = array(
-    'title' => t('Date begin'),
-    'help' => t('Project Management Ticket begin date'),
-    'field' => array(
-      'click sortable' => TRUE,
-      'handler' => 'views_handler_field_date',
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort_date',
-    ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_date',
-    ),
-  );
-
   $data['pmticket']['dateend'] = array(
     'title' => t('Date end'),
     'help' => t('Project Management Ticket end date'),
@@ -304,32 +289,4 @@ function pmticket_views_handlers() {
       ),
     ),
   );
-}
-
-/**
- * Implements hook_date_api_fields().
- */
-function pmticket_date_api_fields($field) {
-  $values = array(
-    'sql_type' => DATE_UNIX,
-    'tz_handling' => 'site',
-    'timezone_field' => '',
-    'offset_field' => '',
-    'related_fields' => array(),
-    'granularity' => array('year', 'month', 'day', 'hour', 'minute', 'second'),
-  );
-
-  switch ($field) {
-    case 'pmticket.datebegin':
-    case 'pmticket.dateend':
-      return $values;
-  }
-
-}
-
-/**
- * Implements hook_date_api_tables().
- */
-function pmticket_date_api_tables() {
-  return array('pmticket');
 }

@@ -10,8 +10,6 @@
 function pm_install() {
   variable_set('pm_icons_path', drupal_get_path('module', 'pm') . '/icons');
   variable_set('pm_organization_nid', 0);
-  variable_set('pm_yearsrangebegin', 2001);
-  variable_set('pm_yearsrangeend', 2015);
 
   // Set up billing status field.
   field_create_field(array(
@@ -25,6 +23,26 @@ function pm_install() {
       ),
     ),
   ));
+
+  // Set up date field.
+  field_create_field(array(
+    'type' => 'datetime',
+    'field_name' => 'pm_date',
+    'settings' => array(
+      'granularity' => array(
+        'year' => 'year',
+        'month' => 'month',
+        'day' => 'day',
+        'hour' => 'hour',
+        'minute' => 'minute',
+        'second' => 0,
+      ),
+      'tz_handling' => 'none',
+      'timezone_db' => '',
+      'todate' => 'optional',
+    ),
+    'cardinality' => '1',
+  ));
 }
 
 /**
@@ -33,8 +51,6 @@ function pm_install() {
 function pm_uninstall() {
   variable_del('pm_icons_path');
   variable_del('pm_organization_nid');
-  variable_del('pm_yearsrangebegin');
-  variable_del('pm_yearsrangeend');
 
   drupal_uninstall_schema('pm');
 }
@@ -86,4 +102,33 @@ function pm_update_7101() {
       ),
     ),
   ));
+}
+
+/**
+ * Make date field available to PM content types.
+ */
+function pm_update_7102() {
+
+  // Set up date field.
+  field_create_field(array(
+    'type' => 'datetime',
+    'field_name' => 'pm_date',
+    'settings' => array(
+      'granularity' => array(
+        'year' => 'year',
+        'month' => 'month',
+        'day' => 'day',
+        'hour' => 'hour',
+        'minute' => 'minute',
+        'second' => 0,
+      ),
+      'tz_handling' => 'none',
+      'timezone_db' => '',
+      'todate' => 'optional',
+    ),
+    'cardinality' => '1',
+  ));
+
+  variable_del('pm_yearsrangebegin');
+  variable_del('pm_yearsrangeend');
 }

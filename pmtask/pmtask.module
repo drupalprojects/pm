@@ -175,20 +175,20 @@ function pmtask_field_extra_fields() {
         'weight' => -18,
       ),
       'group3' => array(
-        'label' => 'Date/Duration Group',
-        'weight' => -17,
+        'label' => 'Duration Group',
+        'weight' => -16,
       ),
       'group4' => array(
         'label' => 'Price Group',
-        'weight' => -16,
+        'weight' => -15,
       ),
       'group5' => array(
         'label' => 'Assigned to',
-        'weight' => -15,
+        'weight' => -14,
       ),
       'group6' => array(
         'label' => 'Billable / Billed Group',
-        'weight' => -14,
+        'weight' => -13,
       ),
     ),
   );
@@ -436,20 +436,6 @@ function pmtask_form(&$node, $form_state) {
     '#weight' => $info['group3']['weight'],
   );
 
-  $form['group3']['datebegin'] = array(
-    '#type' => 'dateext',
-    '#title' => t('Date begin'),
-    '#withnull' => TRUE,
-    '#default_value' => isset($node->datebegin) ? $node->datebegin : time(),
-  );
-
-  $form['group3']['dateend'] = array(
-    '#type' => 'dateext',
-    '#title' => t('Date end'),
-    '#withnull' => TRUE,
-    '#default_value' => isset($node->dateend) ? $node->dateend : time(),
-  );
-
   $durationunit_list = pm_attributes_bydomain('Duration unit');
   $form['group3']['durationunit'] = array(
     '#type' => 'select',
@@ -577,8 +563,6 @@ function pmtask_insert($node) {
       'project_title' => $node->project_title,
       'parent_nid' => $node->parent_nid,
       'weight' => $node->weight,
-//      'datebegin' => $node->datebegin,
-//      'dateend' => $node->dateend,
       'durationunit' => $node->durationunit,
       'duration' => $node->duration,
       'pricemode' => $node->pricemode,
@@ -640,8 +624,6 @@ function pmtask_update($node) {
       'project_title' => $node->project_title,
       'parent_nid' => $node->parent_nid,
       'weight' => $node->weight,
-//      'datebegin' => $node->datebegin,
-//      'dateend' => $node->dateend,
       'durationunit' => $node->durationunit,
       'duration' => $node->duration,
       'pricemode' => $node->pricemode,
@@ -694,20 +676,6 @@ function _pmtask_beforesave(&$node) {
   // Allow use of comma when inputting numerical values - str_replace with period decimal
   $node->duration = floatval(str_replace(',', '.', $node->duration));
   $node->price = floatval(str_replace(',', '.', $node->price));
-
-  if (is_array($node->datebegin)) {
-      $node->datebegin = _pm_date_to_gmtimestamp($node->datebegin);
-  }
-  else {
-      $node->datebegin = strtotime($node->datebegin);
-  }
-
-  if (is_array($node->dateend)) {
-      $node->dateend = _pm_date_to_gmtimestamp($node->dateend);
-  }
-  else {
-      $node->dateend = strtotime($node->dateend);
-  }
 }
 
 /**
@@ -977,8 +945,6 @@ function pmtask_token_list($type='all') {
     $tokens['node']['pmtask-taskpriority'] = t('Project Management Task: Task Priority.');
     $tokens['node']['pmtask-durationunit'] = t('Project Management Task: Task Duration Unit.');
     $tokens['node']['pmtask-duration'] = t('Project Management Task: Task Duration.');
-    $tokens['node']['pmtask-datebegin'] = t('Project Management Task: Task Begin Date.');
-    $tokens['node']['pmtask-dateend'] = t('Project Management Task: Task End Date.');
     $tokens['node']['pmtask-billable'] = t('Project Management Task: Task Billable.');
     $tokens['node']['pmtask-billed'] = t('Project Management Task: Task Billed.');
     $tokens['node']['pmtask-price'] = t('Project Management Task: Task Price.');
@@ -1010,8 +976,6 @@ function pmtask_token_values($type, $object = NULL) {
     $values['pmtask-taskcategory'] = $node->taskcategory;
     $values['pmtask-durationunit'] = $node->durationunit;
     $values['pmtask-duration'] = $node->duration;
-    $values['pmtask-datebegin'] = format_date($node->datebegin, 'medium', '', variable_get('date_default_timezone', NULL));
-    $values['pmtask-dateend'] = format_date($node->dateend, 'medium', '', variable_get('date_default_timezone', NULL));
     $values['pmtask-price'] = $node->price;
     $values['pmtask-pricemode'] = $node->pricemode;
     $values['pmtask-billable'] = $node->billable;
