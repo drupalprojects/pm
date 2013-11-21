@@ -225,16 +225,6 @@ function pmperson_form(&$node) {
   $breadcrumb[] = l(t('People'), 'pm/people');
   drupal_set_breadcrumb($breadcrumb);
 
-  if (arg(1)=='add') {
-    if (array_key_exists('organization_nid', $_GET) && !$node->organization_nid) {
-      $node->organization_nid = $_GET['organization_nid'];
-    }
-
-    if (isset($_SESSION['pmperson_list_filter']['organization_nid']) && !$node->organization_nid) {
-      $node->organization_nid = $_SESSION['pmperson_list_filter']['organization_nid'];
-    }
-  }
-
   $type = node_type_get_type($node);
   $info = field_info_extra_fields('node', 'pmperson', 'form');
 

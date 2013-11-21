@@ -241,30 +241,6 @@ function pminvoice_form(&$node, $form_state) {
   $breadcrumb[] = l(t('Invoices'), 'pm/invoices');
   drupal_set_breadcrumb($breadcrumb);
 
-  if (arg(1)=='add') {
-    $node->number = pminvoice_get_invoice_number();
-
-    if (array_key_exists('organization_nid', $_GET) && !$node->organization_nid) {
-      $node->organization_nid = $_GET['organization_nid'];
-    }
-    if (array_key_exists('project_nid', $_GET) && !$node->project_nid) {
-      $node->project_nid = $_GET['project_nid'];
-      $p = node_load($node->project_nid);
-      $node->organization_nid = $p->organization_nid;
-      if (!drupal_valid_path('node/' . $node->organization_nid)) {
-        drupal_set_message(t("You cannot add an invoice for this project, as you do not have access to view the organization's profile"));
-        drupal_goto('node/' . $node->project_nid);
-      }
-    }
-
-    if (isset($_SESSION['pminvoice_list_filter']['organization_nid']) && !$node->organization_nid) {
-      $node->organization_nid = $_SESSION['pminvoice_list_filter']['organization_nid'];
-    }
-    if (isset($_SESSION['pminvoice_list_filter']['project_nid']) && !$node->project_nid) {
-      $node->project_nid = $_SESSION['pminvoice_list_filter']['project_nid'];
-    }
-  }
-
   $type = node_type_get_type($node);
   $info = field_info_extra_fields('node', 'pminvoice', 'form');
 
@@ -281,7 +257,7 @@ function pminvoice_form(&$node, $form_state) {
     '#title' => t('Number'),
     '#required' => TRUE,
     '#size' => 10,
-    '#default_value' => $node->number,
+    '#default_value' => isset($node->number) ? $node->number : pminvoice_get_invoice_number(),
   );
 
   $form['title'] = array(

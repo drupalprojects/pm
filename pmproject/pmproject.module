@@ -245,35 +245,17 @@ function pmproject_form(&$node) {
   drupal_set_breadcrumb($breadcrumb);
 
   if (arg(1)=='add') {
-    if (array_key_exists('organization_nid', $_GET) && !isset($node->organization_nid)) {
-      $node->organization_nid = $_GET['organization_nid'];
-    }
-    if (isset($_SESSION['pmproject_list_filter']['organization_nid']) && !$node->organization_nid) {
-      $node->organization_nid = $_SESSION['pmproject_list_filter']['organization_nid'];
-    }
-    $org_query = db_select('node', 'n');
-    $org_query->join('pmorganization', 'sor', 'n.vid = sor.vid');
-    $org_query
-      ->fields('n', array('nid', 'title'))
-      ->condition('n.status', 1)
-      ->condition('n.type', 'pmorganization')
-      ->condition('sor.isactive', 1)
-      ->addTag('node_access')
-      ->orderBy('n.title', 'ASC');
-
     $node->billable = variable_get('pmproject_billable_default', FALSE);
+  }
 
-  }
-  else {
-    $org_query = db_select('node', 'n');
-    $org_query->join('pmorganization', 'sor', 'n.vid = sor.vid');
-    $org_query
-      ->fields('n', array('nid', 'title'))
-      ->condition('n.status', 1)
-      ->condition('n.type', 'pmorganization')
-      ->addTag('node_access')
-      ->orderBy('n.title', 'ASC');
-  }
+  $org_query = db_select('node', 'n');
+  $org_query->join('pmorganization', 'sor', 'n.vid = sor.vid');
+  $org_query
+    ->fields('n', array('nid', 'title'))
+    ->condition('n.status', 1)
+    ->condition('n.type', 'pmorganization')
+    ->addTag('node_access')
+    ->orderBy('n.title', 'ASC');
 
   $type = node_type_get_type($node);
   $info = field_info_extra_fields('node', 'pmproject', 'form');
