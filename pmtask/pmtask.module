@@ -248,10 +248,6 @@ function pmtask_form(&$node, $form_state) {
   $type = node_type_get_type($node);
   $info = field_info_extra_fields('node', 'pmtask', 'form');
 
-  $form['#attributes']['class'] = 'pmcomponent_node_form';
-  $form['#prefix'] = '<div id="pmtask-form">';
-  $form['#suffix'] = '</div>';
-
   $form['group1'] = array(
     '#type' => 'markup',
     '#theme' => 'pm_form_group',

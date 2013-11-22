@@ -1,6 +1,7 @@
 ** New issues added should be added at the TOP of the list for each version as they are committed. **
 
 Version 7.x-1.x-dev:
+- Issue #377680 by juliangb | Paraplegic Racehorse: Support for node preview.
 - Issue #2129575 by juliangb: Remove parent ref shortcut from hook_form.
 - Issue #1929158 by juliangb: Use date fields from the date module.
 - Issue #2047761 by juliangb: Improve configuration pages (cleanup lists section).
