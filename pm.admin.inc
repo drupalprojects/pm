@@ -460,7 +460,7 @@ function pm_attribute_delete_submit($form, &$form_state) {
       ->execute();
 
     drupal_set_message(t('Project Management attribute deleted'));
-    if ($form_state['values']['destination']) {
+    if (isset($form_state['values']['destination'])) {
       $destination = $form_state['values']['destination'];
     }
     else {
