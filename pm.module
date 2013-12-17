@@ -1010,7 +1010,7 @@ function pm_get_assignment_options($organization_nid = 0, $project_nid = 0) {
     // Only add teams that have at least the same members as persons we added so far
     if (!empty($organization_nid) && !empty($options[$people])) {
       // Add all persons that should be in the team
-      $query->condition('team.mnid', $options[$people], 'IN');
+      $query->condition('team.mnid', array_keys($options[$people]), 'IN');
       // Add a count, how many of the given persons should be in the other teams
       $count = count($options[$people]);
       $query->having('count(team.nid) = :count', array(':count' => $count));
