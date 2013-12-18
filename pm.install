@@ -87,9 +87,18 @@ function pm_update_last_removed() {
 }
 
 /**
- * Make billing status field available to PM content types.
+ * Enable new module dependencies. Make billing status field available to PM content types.
  */
 function pm_update_7101() {
+  // Enable new dependencies.
+  if (!module_enable(array('date', 'entityreference', 'list'))) {
+    throw new DrupalUpdateException('This version requires one or more modules that could not be enabled.');
+  }
+
+  // Combining these operations in one request means we have to clear the
+  // field info cache.
+  field_info_cache_clear();
+
   // Set up billing status field.
   field_create_field(array(
     'field_name' => 'pm_billing_status',
