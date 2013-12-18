@@ -383,54 +383,18 @@ function pmproject_form(&$node) {
     '#weight' => $info['group5']['weight'],
   );
 
-  if (module_exists('pmperson')) {
-    $per_query = db_select('node', 'n');
-    $per_query->join('pmperson', 'spe', 'n.vid = spe.vid');
-    $per_result = $per_query
-      ->fields('n', array('nid', 'title'))
-      ->condition('n.type', 'pmperson')
-      ->orderBy('n.title', 'ASC')
-      ->addTag('node_access')
-      ->execute();
+  $people = $options = pm_get_assignment_options(isset($node->organization_nid) ? $node->organization_nid : 0, isset($node->nid) ? $node->nid : 0);
 
-    $people = array();
-    foreach ($per_result as $person) {
-      $people[$person->nid] = $person->title;
-    }
-
-    $options = array(0 => '- none -', 'People:' => $people);
-  }
-  else {
-    $options = array(0 => '- none -');
+  if (isset($people['Teams:'])) {
+    unset($people['Teams:']);
   }
 
   $form['group5']['manager_nid'] = array(
     '#type' => module_exists('pmperson') ? 'select' : 'hidden',
     '#title' => t('Project manager'),
-    '#options' => $options,
+    '#options' => $people,
     '#default_value' => isset($node->manager_nid) ? $node->manager_nid : 0,
   );
-
-  if (module_exists('pmteam')) {
-    $team_query = db_select('node', 'n');
-    $team_query->join('pmteam', 'ste', 'n.vid = ste.vid');
-    $team_result = $team_query
-      ->fields('n', array('nid', 'title'))
-      ->condition('n.type', 'pmperson')
-      ->orderBy('n.title', 'ASC')
-      ->addTag('node_access')
-      ->execute();
-
-    $teams = array();
-    foreach ($team_result as $team) {
-      $teams[$team->nid] = $team->title;
-    }
-
-    $options = array(0 => '- unassigned -', 'Teams:' => $teams, 'People:' => $people);
-  }
-  else {
-    $options = array(0 => '- unassigned -');
-  }
 
   $form['group5']['assigned_nid'] = array(
     '#type' => module_exists('pmperson') ? 'select' : 'hidden',
