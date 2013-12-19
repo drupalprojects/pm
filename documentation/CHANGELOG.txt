@@ -1,6 +1,7 @@
 ** New issues added should be added at the TOP of the list for each version as they are committed. **
 
 Version 7.x-1.x-dev:
+- Issue #2156463 by othermachines: Enable module dependencies during update.
 - Issue #2156725 by othermachines: Teams not being loaded into 'Assigned' select field in PM Project's hook_form().
 - Issue #2148259 by othermachines | willwh: Tasks / Tickets module load problem.
 - Issue #2142325 by juliangb | sskully: Undefined index: destination in pm_attribute_delete_submit() .
