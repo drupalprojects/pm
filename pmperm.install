@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the pmperm module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function pmperm_uninstall() {
+  // db_query("DELETE FROM {variable} WHERE name LIKE 'pmperm_%'");
+  db_delete('variable')
+    ->condition('name', 'pmperm_%', 'LIKE')
+    ->execute();
+}
