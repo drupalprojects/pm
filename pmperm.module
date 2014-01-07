@@ -35,11 +35,13 @@ function pmperm_admin() {
     '#type' => 'fieldset',
     '#title' => t('Select node bundles where you want to enable PM permissions')
   );
+  $node_types = array();
   foreach (node_type_get_types() as $type => $info) {
+    $name = node_type_get_name($type);
+    $node_types[$type] = $name;
     $form['pmperm_node']["pmperm_node_{$type}_enabled"] = array(
       '#type' => 'checkbox',
-      '#title' => node_type_get_name($type),
-      '#return_value' => 1,
+      '#title' => $name,
       '#default_value' => variable_get("pmperm_node_{$type}_enabled", FALSE),
     );
   }
@@ -67,9 +69,48 @@ function pmperm_admin() {
     '#options' => $options['user'],
     '#default_value' => variable_get("pmperm_field_pm_reference", ''),
   );
-  return system_settings_form($form);
+
+  $form['pmperm_advanced'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Advanced Configuration'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $form['pmperm_advanced']['pmperm_override_core_permissions_agree'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Override default core node permissions'),
+    '#default_value' => variable_get("pmperm_override_core_permissions_agree", FALSE),
+  );
+  $form['pmperm_advanced']['pmperm_override_core_permissions'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Select nodes to override'),
+    '#default_value' => variable_get("pmperm_override_core_permissions", array()),
+    '#options' => $node_types,
+  );
+
+  $form = system_settings_form($form);
+
+  $form['#submit'][] = 'pmperm_admin_submit';
+
+  return $form;
 }
 
+function pmperm_admin_submit($form, $form_state) {
+  $values = $form_state['values'];
+  $agree = $values['pmperm_override_core_permissions_agree'];
+  $overrides = $values['pmperm_override_core_permissions'];
+  if ($agree AND is_array($overrides)) {
+    foreach ($overrides as $type => $value) {
+      if($value) {
+        variable_set('node_permissions_' . $type, 0);
+      }
+      else {
+        variable_set('node_permissions_' . $type, 1);
+      }
+    }
+    // TODO: variable_set('node_permissions_' . $type, 0);
+  }
+}
 function _pmperm_get_field_names($type){
   $field_names = array();
   // Get all entityreference field names
