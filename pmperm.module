@@ -15,50 +15,110 @@ function pmperm_help($path, $arg) {
 }
 
 /**
+ * Implements hook_menu().
+ */
+function pmperm_menu() {
+  $items['admin/config/pm/pmperm'] = array(
+    'title' => t('PM Permission configuration'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pmperm_admin'),
+    'access arguments' => array('administer pm permission'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+function pmperm_admin() {
+  $form = array();
+  $form['pmperm_node'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Select node bundles where you want to enable PM permissions.')
+  );
+  foreach (node_type_get_types() as $type => $info) {
+    $form['pmperm_node']["pmperm_node_{$type}_enabled"] = array(
+      '#type' => 'checkbox',
+      '#title' => node_type_get_name($type),
+      '#return_value' => 1,
+      '#default_value' => variable_get("pmperm_node_{$type}_enabled", FALSE),
+    );
+  }
+  return system_settings_form($form);
+}
+
+/**
+ * Returns a list of node bundles for which PM permission have been enabled.
+ */
+function pmperm_get_enabled_types() {
+  $enabled = array();
+  foreach (node_type_get_types() as $type => $info) {
+    if (variable_get("pmperm_node_{$type}_enabled", FALSE)) {
+      $enabled[] = $type;
+    }
+  }
+  return $enabled;
+}
+
+/**
  * Implements hook_permission().
  */
 function pmperm_permission() {
 
-  $permissions = array();
+  $permissions = array(
+    'administer pm permission' =>  array(
+      'title' => t('Administer Project Management Permission'),
+    ),
+  );
 
   // Generate override node permissions for all applicable node types.
-  foreach (node_type_get_types() as $type => $info) {
-    $permissions += pmperm_options_list_permissions($type);
+  foreach (pmperm_get_enabled_types() as $type) {
+    $permissions += pmperm_permission_per_type($type);
   }
 
   return $permissions;
 
 }
 
-function pmperm_options_list_permissions( $type ) {
+/**
+ * Creates an array of permission name for the given node bundle.
+ * @param  [string] $type [node bundle name]
+ * @return [array]       [an array that could be returned in hook_permission]
+ */
+function pmperm_permission_per_type( $type ) {
   $name = node_type_get_name($type);
   $type = check_plain($type);
 
   $permissions = array();
 
   if (!variable_get('node_permissions_' . $type, 1)){
-    $permissions += _pmperm_permission_list_default($type, $name);
+    $permissions += _pmperm_permission_default($type, $name);
   }
 
   if (module_exists('pmorganization')) {
     if(_pmperm_check_if_field_present($type, 'field_parent')) {
       // TODO: check if the field reference is present for this $type.
-      $permissions += _pmperm_permission_list_belonged($type, $name, 'Organization');
+      $permissions += _pmperm_permission_belonged($type, $name, 'Organization');
     }
   }
   if (module_exists('pmproject')) {
     if(_pmperm_check_if_field_present($type, 'field_user_pm')) {
-      $permissions += _pmperm_permission_list_assigned_as($type, $name, 'Project Manager');
+      $permissions += _pmperm_permission_assigned($type, $name, 'Project Manager');
     }
   }
   // TODO: return these permissin only if assigned to field is present.
   if (_pmperm_check_if_field_present($type, 'field_user_assigned')) {
-    $permissions += _pmperm_permission_list_assigned_as($type, $name, 'Assigned');
+    $permissions += _pmperm_permission_assigned($type, $name, 'Assigned');
   }
   return $permissions;
 }
 
-function _pmperm_permission_list_default($type, $name){
+/**
+ * helper function to generate default permissions
+ * @param  [string] $type [node bundle machine name]
+ * @param  [string] $name [node bundle name that could be used for display]
+ * @return [array]  [an array that could be returned in hook_permission]
+ */
+function _pmperm_permission_default($type, $name){
   $permissions = array(
     "PM permission $type: access" => array(
       'title' => t('Access %type_name.', array('%type_name' => $name)),
@@ -96,8 +156,7 @@ function _pmperm_permission_list_default($type, $name){
   return $permissions;
 }
 
-function _pmperm_permission_list_belonged($type, $name, $belonged){
-  // TODO: check if the field reference is present for this $type.
+function _pmperm_permission_belonged($type, $name, $belonged){
   $permissions["PM permission $type: view own $belonged"] = array(
     'title' => t('View %type_name in own %belonged', array('%type_name' => $name, '%belonged' => $belonged)),
     'description' => t('For %type_name assigned to the same %belonged as a PM Person, allows the user associated with that Person to view the %type_name and see the %type_name in lists or dropdowns elsewhere on the site.', array('%type_name' => $name, '%belonged' => $belonged)),
@@ -113,8 +172,7 @@ function _pmperm_permission_list_belonged($type, $name, $belonged){
   return $permissions;
 }
 
-function _pmperm_permission_list_assigned_as($type, $name, $role){
-  // TODO: check if the field reference is present for this $type.
+function _pmperm_permission_assigned($type, $name, $role){
   $permissions["PM permission $type: view if $role"] = array(
     'title' => t('View %type_name if %role to %type_name', array('%type_name' => $name, '%role' => $role)),
     'description' => t('For %type_name with a PM Person as %role, allows the user associated with that Person to view the %type_name.', array('%type_name' => $name, '%role' => $role)),
@@ -142,6 +200,7 @@ function _pmperm_check_if_field_present($type, $field_name) {
   }
   return FALSE;
 }
+
 /**
  * Implements hook_node_access_records().
  */
@@ -160,11 +219,19 @@ function pmperm_node_access_records($node) {
 
   if (module_exists('pmorganization')) {
     if(_pmperm_check_if_field_present($type, 'field_parent')) {
-      // TODO: check if the field reference is present for this $type.
-      $permissions += _pmperm_grants_belonged($node, $type, 'Organization');
+      $grants += _pmperm_grants_belonged($node, $type, 'Organization');
     }
   }
 
+  if (module_exists('pmproject')) {
+    if(_pmperm_check_if_field_present($type, 'field_user_pm')) {
+      $grants += _pmperm_grants_assigned($type, $name, 'Project Manager');
+    }
+  }
+
+  if (_pmperm_check_if_field_present($type, 'field_user_assigned')) {
+    $grants += _pmperm_grants_assigned($type, $name, 'Assigned');
+  }
 
   return $grants;
 }
@@ -345,7 +412,7 @@ function pmperm_node_grants($account, $op) {
     }
   }
 
-  foreach (node_type_get_types() as $type => $info) {
+  foreach (pmperm_get_enabled_types() as $type) {
     $grants += pmperm_grants_list($account, $op, $type);
   }
   return $grants;
