@@ -217,17 +217,17 @@ function _pmperm_permission_default($type, $name){
     "PM permission $type: view all" => array(
       'title' => t('%type_name: View any content', array('%type_name' => $name)),
     ),
-    "PM permission $type: update all" => array(
-      'title' => t('%type_name: Edit own content', array('%type_name' => $name)),
-    ),
     "PM permission $type: update own" => array(
       'title' => t('%type_name: Edit own content', array('%type_name' => $name)),
     ),
-    "PM permission $type: delete all" => array(
-      'title' => t('%type_name: Delete own content', array('%type_name' => $name)),
+    "PM permission $type: update all" => array(
+      'title' => t('%type_name: Edit any content', array('%type_name' => $name)),
     ),
     "PM permission $type: delete own" => array(
       'title' => t('%type_name: Delete own content', array('%type_name' => $name)),
+    ),
+    "PM permission $type: delete all" => array(
+      'title' => t('%type_name: Delete any content', array('%type_name' => $name)),
     ),
   );
   return $permissions;
