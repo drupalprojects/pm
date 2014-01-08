@@ -508,21 +508,27 @@ function pmperm_node_grants($account, $op) {
 
 function pmperm_grants_list($account, $op, $type){
   $grants = array();
+
   if (user_access("PM permission $type: $op all", $account)) {
     $grants["pm_perm_{$type}_{$op}_all"] = array(0);
   }
+
   if (user_access("PM permission $type: $op own", $account)) {
     $grants["pm_perm_{$type}_{$op}_own"] = array($account->uid);
   }
+
   if (module_exists('pmorganization')) {
     if(_pmperm_check_if_field_present($type, 'parent')) {
-      // TODO: check if the field reference is present for this $type.
       $belonged = 'Organization';
       if (user_access("PM permission $type: $op own $belonged", $account)) {
+        // TODO: user profile could be extended with a field to hold the organization id in the future.
+        // So the actual data would be available in $account->field_pm_organization[LANGUAGE_NONE]
+        // The above architectural change lies within pm maintainers, so discuss with juliangb.
         $grants["pm_perm_{$type}_{$op}_belonged_{$belonged}"] = array($account->pmorganization_nid);
       }
     }
   }
+
   if (module_exists('pmproject')) {
     if(_pmperm_check_if_field_present($type, 'pm')) {
       $assigned = 'Project Manager';
