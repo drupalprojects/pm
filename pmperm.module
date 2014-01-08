@@ -505,9 +505,12 @@ function pmperm_node_grants($account, $op) {
       $assigned_nids[] = $account->pmperson_nid;
     }
   }
-
+  $grants = array();
   foreach (pmperm_get_enabled_types() as $type) {
-    $grants += pmperm_grants_list($account, $op, $type);
+    $grant_per_type = pmperm_grants_list($account, $op, $type);
+    if ($grant_per_type) {
+      $grants += $grant_per_type;
+    }
   }
   return $grants;
 }
