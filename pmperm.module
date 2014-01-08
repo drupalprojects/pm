@@ -531,7 +531,7 @@ function pmperm_grants_list($account, $op, $type){
       }
     }
   }
-  // TODO: return these permissin only if assigned to field is present.
+
   if (_pmperm_check_if_field_present($type, 'assigned')) {
     $assigned = 'Assigned';
     if (user_access("PM permission $type: $op if $assigned", $account)) {
