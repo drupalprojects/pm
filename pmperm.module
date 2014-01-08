@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Main module file for the Project Management Permission module.
@@ -29,6 +30,9 @@ function pmperm_menu() {
   return $items;
 }
 
+/**
+ * admin settings form.
+ */
 function pmperm_admin() {
   $form = array();
   $form['pmperm_node'] = array(
@@ -95,6 +99,9 @@ function pmperm_admin() {
   return $form;
 }
 
+/**
+ * admin settings form submit handler.
+ */
 function pmperm_admin_submit($form, $form_state) {
   $values = $form_state['values'];
   $agree = $values['pmperm_override_core_permissions_agree'];
@@ -111,6 +118,13 @@ function pmperm_admin_submit($form, $form_state) {
     // TODO: variable_set('node_permissions_' . $type, 0);
   }
 }
+
+/**
+ * Get a list of field names matching a specific type.
+ * this function works reliably for "entityreference" only.
+ * @param  [string] $type : type of field e.g. entityreference
+ * @return array of field names categorized by target entity type.
+ */
 function _pmperm_get_field_names($type){
   $field_names = array();
   // Get all entityreference field names
@@ -130,6 +144,7 @@ function _pmperm_get_field_names($type){
   }
   return $field_names;
 }
+
 /**
  * Returns a list of node bundles for which PM permission have been enabled.
  */
@@ -180,7 +195,6 @@ function pmperm_permission_per_type( $type ) {
 
   if (module_exists('pmorganization')) {
     if(_pmperm_check_if_field_present($type, 'parent')) {
-      // TODO: check if the field reference is present for this $type.
       $permissions += _pmperm_permission_belonged($type, $name, 'Organization');
     }
   }
@@ -189,7 +203,6 @@ function pmperm_permission_per_type( $type ) {
       $permissions += _pmperm_permission_assigned($type, $name, 'Project Manager');
     }
   }
-  // TODO: return these permissin only if assigned to field is present.
   if (_pmperm_check_if_field_present($type, 'assigned')) {
     $permissions += _pmperm_permission_assigned($type, $name, 'Assigned');
   }
@@ -233,6 +246,12 @@ function _pmperm_permission_default($type, $name){
   return $permissions;
 }
 
+/**
+ * helper function to generate belonged to permission set
+ * @param  [string] $type [node bundle machine name]
+ * @param  [string] $name [node bundle name that could be used for display]
+ * @return [array]  [an array that could be returned in hook_permission]
+ */
 function _pmperm_permission_belonged($type, $name, $belonged){
   $permissions["PM permission $type: view own $belonged"] = array(
     'title' => t('%type_name: View content in own %belonged', array('%type_name' => $name, '%belonged' => $belonged)),
@@ -249,6 +268,12 @@ function _pmperm_permission_belonged($type, $name, $belonged){
   return $permissions;
 }
 
+/**
+ * helper function to generate assigned permissions set
+ * @param  [string] $type [node bundle machine name]
+ * @param  [string] $name [node bundle name that could be used for display]
+ * @return [array]  [an array that could be returned in hook_permission]
+ */
 function _pmperm_permission_assigned($type, $name, $role){
   $permissions["PM permission $type: view if $role"] = array(
     'title' => t('%type_name: View content if %role to %type_name', array('%type_name' => $name, '%role' => $role)),
@@ -265,6 +290,13 @@ function _pmperm_permission_assigned($type, $name, $role){
   return $permissions;
 }
 
+/**
+ * A helper function to check if a field is present in a node.
+ * In future this function would take actual field names.
+ * @param  [string] $type         [node bundle machine name]
+ * @param  [string] $category     {pm, assigned, parent}
+ * @return [boolean] TRUE if present.
+ */
 function _pmperm_check_if_field_present($type, $category) {
   switch ($category) {
     case 'parent':
@@ -330,6 +362,9 @@ function pmperm_node_access_records($node) {
   return $grants;
 }
 
+/**
+ * Generate default grants similar to drupal core.
+ */
 function _pmperm_grants_default($node, $type) {
   // PM permission $type: view all
   $grants[] = array(
@@ -388,6 +423,9 @@ function _pmperm_grants_default($node, $type) {
   return $grants;
 }
 
+/**
+ * Generate grants for belonged permission set.
+ */
 function _pmperm_grants_belonged($node, $type, $belonged){
   // PM permission $type: view own %belonged
   $belonged_nid = _pmperm_get_belonged_id($node, $type, $belonged);
@@ -418,6 +456,10 @@ function _pmperm_grants_belonged($node, $type, $belonged){
     );
   }
 }
+
+/**
+ * Generate grants for assigned permission set.
+ */
 function _pmperm_grants_assigned($node, $type, $assigned){
   // PM permission $type: view own %assigned
   $assigned_nid = _pmperm_get_assigned_id($node, $type, $assigned);
@@ -449,14 +491,16 @@ function _pmperm_grants_assigned($node, $type, $assigned){
   }
 }
 
-
+/**
+ * Should recursively hunt for a particular parent and get its id.
+ * TODO: MIGRATION adjustment to hunt for parent node recursively.
+ */
 function _pmperm_get_belonged_id($node, $type, $belonged) {
 
   $belonged_nid = FALSE;
 
   switch ($belonged) {
     case 'Organization':
-      // TODO: hunt for single reference field.
       if ( isset($node->organization_nid) && !empty($node->organization_nid)) {
         $belonged_nid = $node->organization_nid;
       }
@@ -467,6 +511,10 @@ function _pmperm_get_belonged_id($node, $type, $belonged) {
   return $belonged_nid;
 }
 
+/**
+ * Should recursively hunt for a particular parent and get its id.
+ * TODO: Migration adjustement for proper field.
+ */
 function _pmperm_get_assigned_id($node, $type, $assigned) {
 
   $assigned_nid = FALSE;
@@ -506,6 +554,9 @@ function pmperm_node_grants($account, $op) {
   return $grants;
 }
 
+/**
+ * helper function for pmperm_node_grants
+ */
 function pmperm_grants_list($account, $op, $type){
   $grants = array();
 
