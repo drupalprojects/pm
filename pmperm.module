@@ -496,15 +496,6 @@ function _pmperm_get_assigned_id($node, $type, $assigned) {
  */
 function pmperm_node_grants($account, $op) {
 
-  if (module_exists('pmperson')) {
-    _pmperson_user_load($account);
-    if (!empty($account->pmteam) AND is_array($account->pmteam)) {
-      $assigned_nids = $account->pmteam;
-    }
-    if (isset($account->pmperson_nid) AND !empty($account->pmperson_nid)) {
-      $assigned_nids[] = $account->pmperson_nid;
-    }
-  }
   $grants = array();
   foreach (pmperm_get_enabled_types() as $type) {
     $grant_per_type = pmperm_grants_list($account, $op, $type);
@@ -536,7 +527,7 @@ function pmperm_grants_list($account, $op, $type){
     if(_pmperm_check_if_field_present($type, 'pm')) {
       $assigned = 'Project Manager';
       if (user_access("PM permission $type: $op if $assigned", $account)) {
-        $grants["pm_perm_{$type}_{$op}_assigned_{$assigned}"] = $assigned_nids;
+        $grants["pm_perm_{$type}_{$op}_assigned_{$assigned}"] = array($account->uid);
       }
     }
   }
@@ -544,7 +535,7 @@ function pmperm_grants_list($account, $op, $type){
   if (_pmperm_check_if_field_present($type, 'assigned')) {
     $assigned = 'Assigned';
     if (user_access("PM permission $type: $op if $assigned", $account)) {
-      $grants["pm_perm_{$type}_{$op}_assigned_{$assigned}"] = $assigned_nids;
+      $grants["pm_perm_{$type}_{$op}_assigned_{$assigned}"] = array($account->uid);
     }
   }
   return $grants;
