@@ -586,6 +586,15 @@ function pmperm_node_grants($account, $op) {
  */
 function pmperm_grants_list($account, $op, $type){
   $grants = array();
+  // TODO:
+  // 1.) user profile could be extended with a field to hold the organization id in the future.
+  // So the actual data would be available in $account->field_pm_organization[LANGUAGE_NONE]
+  // The above architectural change lies within pm maintainers, so discuss with juliangb.
+  // 2.) Add a reference field that behave like assigned field to the pmorganization. And on
+  // hook_node_insert/hook_node_update of pmorganization node, we fill $user->data['pm_pmorganization_nid']
+  // 3.) Use relation module and create relation.
+  // I preffer method (1)
+  $pmorganization_nid = isset($account->pmorganization_nid) ? $account->pmorganization_nid : FALSE;
 
   if (user_access("PM permission $type: $op all", $account)) {
     $grants["pm_perm_{$type}_{$op}_all"] = array(0);
@@ -598,11 +607,8 @@ function pmperm_grants_list($account, $op, $type){
   if (module_exists('pmorganization')) {
     if(_pmperm_check_if_field_present($type, 'parent')) {
       $belonged = 'Organization';
-      if (user_access("PM permission $type: $op own $belonged", $account)) {
-        // TODO: user profile could be extended with a field to hold the organization id in the future.
-        // So the actual data would be available in $account->field_pm_organization[LANGUAGE_NONE]
-        // The above architectural change lies within pm maintainers, so discuss with juliangb.
-        $grants["pm_perm_{$type}_{$op}_belonged_{$belonged}"] = array($account->pmorganization_nid);
+      if (user_access("PM permission $type: $op own $belonged", $account) AND $pmorganization_nid) {
+        $grants["pm_perm_{$type}_{$op}_belonged_{$belonged}"] = array($pmorganization_nid);
       }
     }
   }
@@ -629,7 +635,6 @@ function pmperm_grants_list($account, $op, $type){
  * Implements hook_node_access().
  */
 function pmperm_node_access($node, $op, $account) {
-
   $type = is_string($node) ? $node : $node->type;
 
   if (variable_get("pmperm_node_{$type}_enabled", FALSE) && $op == 'create') {
