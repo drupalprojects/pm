@@ -338,11 +338,9 @@ function pmperm_node_access_records($node) {
   $type = is_string($node) ? $node : $node->type;
   $name = node_type_get_name($type);
   $grants = array();
-
   if (!variable_get('node_permissions_' . $type, 1)){
     $grants += _pmperm_grants_default($node, $type);
   }
-
   if (module_exists('pmorganization')) {
     if(_pmperm_check_if_field_present($type, 'parent')) {
       $belonged_grants = _pmperm_grants_belonged($node, $type, 'Organization');
@@ -351,24 +349,20 @@ function pmperm_node_access_records($node) {
       }
     }
   }
-
   if (module_exists('pmproject')) {
     if(_pmperm_check_if_field_present($type, 'pm')) {
-      $assigned_grants_pm = _pmperm_grants_assigned($type, $name, 'Project Manager');
+      $assigned_grants_pm = _pmperm_grants_assigned($node, $type, 'Project Manager');
       if ($assigned_grants_pm) {
         $grants += $assigned_grants_pm;
       }
     }
   }
-
   if (_pmperm_check_if_field_present($type, 'assigned')) {
-    $assigned_grants_assigned = _pmperm_grants_assigned($type, $name, 'Assigned');
+    $assigned_grants_assigned = _pmperm_grants_assigned($node, $type, 'Assigned');
     if ($assigned_grants_assigned) {
       $grants += $assigned_grants_assigned;
     }
-  }
-
-  return $grants;
+  }  return $grants;
 }
 
 /**
@@ -535,17 +529,22 @@ function _pmperm_get_belonged_id($node, $type, $belonged) {
 function _pmperm_get_parents($node , $field_name) {
   $data = array();
   $n = $node;
-  for ($i=0; $i < 4; $i++) {
-    $data[$n->type] = $n->nid;
-    if (empty($n->$field_name)) {
-      break;
+  try {
+    for ($i=0; $i < 4; $i++) {
+      $data[$n->type] = $n->nid;
+      if (empty($n->$field_name)) {
+        break;
+      }
+      $wrapper = entity_metadata_wrapper('node', $n);
+      $n = $wrapper->$field_name->value();
+      if (empty($n)) {
+        break;
+      }
     }
-    $wrapper = entity_metadata_wrapper('node', $n);
-    $n = $wrapper->$field_name->value();
-    if (empty($n)) {
-      break;
-    }
+  } catch (Exception $e) {
+    _pmperm_watchdog_log($e);
   }
+
   return array_reverse($data);
 }
 
@@ -568,11 +567,21 @@ function _pmperm_get_assigned_id($node, $type, $assigned) {
       break;
   }
   if ($field_name) {
-    $wrapper = entity_metadata_wrapper('node', $node);
-    foreach ($wrapper->$field_name->value() as $account) {
-      $assigned_nids[] = $account->uid;
+    try {
+      $wrapper = entity_metadata_wrapper('node', $node);
+      $field_info = field_info_field($field_name);
+      if($field_info['cardinality'] == 1){
+        $account = $wrapper->$field_name->value();
+        $assigned_nids[] = $account->uid;
+      }
+      else {
+        foreach ($wrapper->$field_name->getIterator() as $delta => $account_wrapper) {
+          $assigned_nids[] = $account_wrapper->getIdentifier();
+        }
+      }
+    } catch (Exception $e) {
+      _pmperm_watchdog_log($e);
     }
-
   }
   return $assigned_nids;
 }
@@ -655,4 +664,16 @@ function pmperm_node_access($node, $op, $account) {
   }
   // Returning nothing from this function would have the same effect.
   return NODE_ACCESS_IGNORE;
+}
+
+/**
+ * Log and display the error
+ * @param string $error Error to report
+ * @param object/array $object Object to include with the log
+ * @param bool $backtrace TRUE if watchdog log should include full backtrace of the error
+ */
+function _pmperm_watchdog_log($error, $backtrace = TRUE) {
+  $err_msg = t("Error message: %error", array('%error' => $error));
+  watchdog('PHP', $err_msg, WATCHDOG_ERROR);
+  drupal_set_message($err_msg, 'error');
 }
