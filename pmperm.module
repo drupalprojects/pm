@@ -88,14 +88,19 @@ function pmperm_admin() {
   );
   $form['pmperm_advanced']['pmperm_override_core_permissions_agree'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Override default core node permissions'),
-    '#default_value' => variable_get("pmperm_override_core_permissions_agree", FALSE),
+    '#title' => t('I agree to override default core node permissions'),
+    '#default_value' => FALSE,
   );
   $form['pmperm_advanced']['pmperm_override_core_permissions'] = array(
     '#type' => 'checkboxes',
-    '#title' => t('Select nodes to override'),
+    '#title' => t('Node default core permission override'),
     '#default_value' => variable_get("pmperm_override_core_permissions", array()),
     '#options' => $node_types,
+    '#states' => array(
+      'enabled' => array(
+        ':input[name="pmperm_override_core_permissions_agree"]' => array('checked' => TRUE),
+      ),
+    ),
   );
 
   $form = system_settings_form($form);
@@ -617,6 +622,8 @@ function pmperm_grants_list($account, $op, $type){
   // TODO:
   // 1.) user profile could be extended with a field to hold the organization id in the future.
   // So the actual data would be available in $account->field_pm_organization[LANGUAGE_NONE]
+  // This method has a complicated access issues if a user doesn't have view access to any organization,
+  // but could edit his own account. A save would kick him out of the organization.
   // The above architectural change lies within pm maintainers, so discuss with juliangb.
   // 2.) Add a reference field that behave like assigned field to the pmorganization. And on
   // hook_node_insert/hook_node_update of pmorganization node, we fill $user->data['pm_pmorganization_nid']
