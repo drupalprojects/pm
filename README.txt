@@ -21,6 +21,12 @@ What doest work
 1. PM Team
 2. The "belonged" permission is a work in progress.
 
+Experimental Feature
+1. Attach an entity reference field to the pmorganization.
+2. Now assign user to the organization using this field.
+
+
+
 Update Log
 
 20140109
