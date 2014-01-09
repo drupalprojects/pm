@@ -462,38 +462,41 @@ function _pmperm_grants_belonged($node, $type, $belonged){
  */
 function _pmperm_grants_assigned($node, $type, $assigned){
   // PM permission $type: view own %assigned
-  $assigned_nid = _pmperm_get_assigned_id($node, $type, $assigned);
-  if ( $assigned_nid ) {
-    $grants[] = array(
-      'realm' => "pm_perm_{$type}_view_assigned_{$assigned}",
-      'gid' => $assigned_nid,
-      'grant_view' => 1,
-      'grant_update' => 0,
-      'grant_delete' => 0,
-      'priority' => 0,
-    );
-    $grants[] = array(
-      'realm' => "pm_perm_{$type}_update_assigned_{$assigned}",
-      'gid' => $assigned_nid,
-      'grant_view' => 0,
-      'grant_update' => 1,
-      'grant_delete' => 0,
-      'priority' => 0,
-    );
-    $grants[] = array(
-      'realm' => "pm_perm_{$type}_delete_assigned_{$assigned}",
-      'gid' => $assigned_nid,
-      'grant_view' => 0,
-      'grant_update' => 0,
-      'grant_delete' => 1,
-      'priority' => 0,
-    );
+  $assigned_nids = _pmperm_get_assigned_id($node, $type, $assigned);
+  if($assigned_nids){
+    foreach ($assigned_nids as $assigned_nid) {
+      if ( $assigned_nid ) {
+        $grants[] = array(
+          'realm' => "pm_perm_{$type}_view_assigned_{$assigned}",
+          'gid' => $assigned_nid,
+          'grant_view' => 1,
+          'grant_update' => 0,
+          'grant_delete' => 0,
+          'priority' => 0,
+        );
+        $grants[] = array(
+          'realm' => "pm_perm_{$type}_update_assigned_{$assigned}",
+          'gid' => $assigned_nid,
+          'grant_view' => 0,
+          'grant_update' => 1,
+          'grant_delete' => 0,
+          'priority' => 0,
+        );
+        $grants[] = array(
+          'realm' => "pm_perm_{$type}_delete_assigned_{$assigned}",
+          'gid' => $assigned_nid,
+          'grant_view' => 0,
+          'grant_update' => 0,
+          'grant_delete' => 1,
+          'priority' => 0,
+        );
+      }
+    }
   }
 }
 
 /**
- * Should recursively hunt for a particular parent and get its id.
- * TODO: MIGRATION adjustment to hunt for parent node recursively.
+ * Recursively hunt for a particular parent and get its id.
  */
 function _pmperm_get_belonged_id($node, $type, $belonged) {
 
@@ -501,8 +504,12 @@ function _pmperm_get_belonged_id($node, $type, $belonged) {
 
   switch ($belonged) {
     case 'Organization':
-      if ( isset($node->organization_nid) && !empty($node->organization_nid)) {
-        $belonged_nid = $node->organization_nid;
+      $field_name = variable_get("pmperm_field_parent_reference", FALSE);
+      if ($field_name) {
+        $ids = _pmperm_get_parents($node, $field_name);
+        if ($ids AND isset($ids['pmorganization'])) {
+          $belonged_nid = $ids['pmorganization'];
+        }
       }
       break;
     default:
@@ -512,32 +519,52 @@ function _pmperm_get_belonged_id($node, $type, $belonged) {
 }
 
 /**
+ * Recursively gather parent detail.
+ */
+function _pmperm_get_parents($node , $field_name) {
+  $data = array();
+  $n = $node;
+  for ($i=0; $i < 4; $i++) {
+    $data[$n->type] = $n->nid;
+    if (empty($n->$field_name)) {
+      break;
+    }
+    $wrapper = entity_metadata_wrapper('node', $n);
+    $n = $wrapper->$field_name->value();
+    if (empty($n)) {
+      break;
+    }
+  }
+  return array_reverse($data);
+}
+
+/**
  * Should recursively hunt for a particular parent and get its id.
  * TODO: Migration adjustement for proper field.
  */
 function _pmperm_get_assigned_id($node, $type, $assigned) {
 
-  $assigned_nid = FALSE;
+  $assigned_nids = FALSE;
 
   switch ($assigned) {
     case 'Project Manager':
-      // TODO: hunt for single reference field.
-      if ( isset($node->manager_nid) && !empty($node->manager_nid)) {
-        $assigned_nid = $node->manager_nid;
-      }
+      $field_name = variable_get("pmperm_field_pm_reference", FALSE);
       break;
     case 'Assigned':
-      // TODO: hunt for single reference field.
-      if ( isset($node->assigned_nid) && !empty($node->assigned_nid)) {
-        $assigned_nid = $node->assigned_nid;
-      }
+      $field_name = variable_get("pmperm_field_assigned_reference", FALSE);
       break;
     default:
       break;
   }
-  return $assigned_nid;
-}
+  if ($field_name) {
+    $wrapper = entity_metadata_wrapper('node', $node);
+    foreach ($wrapper->$field_name->value() as $account) {
+      $assigned_nids[] = $account->uid;
+    }
 
+  }
+  return $assigned_nids;
+}
 
 /**
  * Implements hook_node_grants().
