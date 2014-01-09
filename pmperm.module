@@ -345,18 +345,27 @@ function pmperm_node_access_records($node) {
 
   if (module_exists('pmorganization')) {
     if(_pmperm_check_if_field_present($type, 'parent')) {
-      $grants += _pmperm_grants_belonged($node, $type, 'Organization');
+      $belonged_grants = _pmperm_grants_belonged($node, $type, 'Organization');
+      if ($belonged_grants) {
+        $grants += $belonged_grants;
+      }
     }
   }
 
   if (module_exists('pmproject')) {
     if(_pmperm_check_if_field_present($type, 'pm')) {
-      $grants += _pmperm_grants_assigned($type, $name, 'Project Manager');
+      $assigned_grants_pm = _pmperm_grants_assigned($type, $name, 'Project Manager');
+      if ($assigned_grants_pm) {
+        $grants += $assigned_grants_pm;
+      }
     }
   }
 
   if (_pmperm_check_if_field_present($type, 'assigned')) {
-    $grants += _pmperm_grants_assigned($type, $name, 'Assigned');
+    $assigned_grants_assigned = _pmperm_grants_assigned($type, $name, 'Assigned');
+    if ($assigned_grants_assigned) {
+      $grants += $assigned_grants_assigned;
+    }
   }
 
   return $grants;
@@ -429,6 +438,7 @@ function _pmperm_grants_default($node, $type) {
 function _pmperm_grants_belonged($node, $type, $belonged){
   // PM permission $type: view own %belonged
   $belonged_nid = _pmperm_get_belonged_id($node, $type, $belonged);
+  $grants = array();
   if ( $belonged_nid ) {
     $grants[] = array(
       'realm' => "pm_perm_{$type}_view_belonged_{$belonged}",
@@ -455,6 +465,7 @@ function _pmperm_grants_belonged($node, $type, $belonged){
       'priority' => 0,
     );
   }
+  return $grants;
 }
 
 /**
