@@ -89,6 +89,7 @@ function pmperm_admin() {
   $form['pmperm_advanced']['pmperm_override_core_permissions_agree'] = array(
     '#type' => 'checkbox',
     '#title' => t('I agree to override default core node permissions'),
+    '#description' => t('Drupal core doesn\'t provide a UI to alter these settings. So make sure you revert the settings before you uninstall this module.'),
     '#default_value' => FALSE,
   );
   $form['pmperm_advanced']['pmperm_override_core_permissions'] = array(
