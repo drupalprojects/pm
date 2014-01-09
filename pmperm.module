@@ -73,6 +73,12 @@ function pmperm_admin() {
     '#options' => $options['user'],
     '#default_value' => variable_get("pmperm_field_pm_reference", ''),
   );
+  $form['pmperm_field']['pmperm_field_org_member_reference'] = array(
+    '#type' => 'select',
+    '#title' => t('Organization member reference field'),
+    '#options' => $options['user'],
+    '#default_value' => variable_get("pmperm_field_org_member_reference", ''),
+  );
 
   $form['pmperm_advanced'] = array(
     '#type' => 'fieldset',
@@ -115,7 +121,6 @@ function pmperm_admin_submit($form, $form_state) {
         variable_set('node_permissions_' . $type, 1);
       }
     }
-    // TODO: variable_set('node_permissions_' . $type, 0);
   }
 }
 
@@ -616,7 +621,7 @@ function pmperm_grants_list($account, $op, $type){
   // 2.) Add a reference field that behave like assigned field to the pmorganization. And on
   // hook_node_insert/hook_node_update of pmorganization node, we fill $user->data['pm_pmorganization_nid']
   // 3.) Use relation module and create relation.
-  // I preffer method (1)
+  // I preffer method (2)
   $pmorganization_nid = isset($account->pmorganization_nid) ? $account->pmorganization_nid : FALSE;
 
   if (user_access("PM permission $type: $op all", $account)) {
@@ -628,10 +633,12 @@ function pmperm_grants_list($account, $op, $type){
   }
 
   if (module_exists('pmorganization')) {
-    if(_pmperm_check_if_field_present($type, 'parent')) {
+    if(_pmperm_check_if_field_present($type, 'parent') ) {
+      $field_name = variable_get("pmperm_field_org_member_reference", '');
+      $pmorganization_nids = _pmperm_get_entity_id_referenced_to_user('node','pmorganization', $field_name, $account->uid);
       $belonged = 'Organization';
-      if (user_access("PM permission $type: $op own $belonged", $account) AND $pmorganization_nid) {
-        $grants["pm_perm_{$type}_{$op}_belonged_{$belonged}"] = array($pmorganization_nid);
+      if (user_access("PM permission $type: $op own $belonged", $account) AND !empty($pmorganization_nids)) {
+        $grants["pm_perm_{$type}_{$op}_belonged_{$belonged}"] = $pmorganization_nids;
       }
     }
   }
@@ -652,6 +659,27 @@ function pmperm_grants_list($account, $op, $type){
     }
   }
   return $grants;
+}
+
+/**
+ * Get entity ids of enity that has a reference field pointing towards the user id.
+ */
+function _pmperm_get_entity_id_referenced_to_user($entity_type, $bundle, $field_name, $uid) {
+  $ids = FALSE;
+
+  if($entity_type AND $bundle AND $field_name AND $uid) {
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', $entity_type)
+      ->entityCondition('bundle', $bundle)
+      ->propertyCondition('status', 1)
+      ->fieldCondition($field_name, 'target_id', $uid)
+      ->addMetaData('account', user_load(1));
+    $result = $query->execute();
+    if (isset($result['node'])) {
+      $ids= array_keys($result['node']);
+    }
+  }
+  return $ids;
 }
 
 /**
