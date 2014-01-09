@@ -339,13 +339,13 @@ function pmperm_node_access_records($node) {
   $name = node_type_get_name($type);
   $grants = array();
   if (!variable_get('node_permissions_' . $type, 1)){
-    $grants += _pmperm_grants_default($node, $type);
+    $default_grants = _pmperm_grants_default($node, $type);
   }
   if (module_exists('pmorganization')) {
     if(_pmperm_check_if_field_present($type, 'parent')) {
       $belonged_grants = _pmperm_grants_belonged($node, $type, 'Organization');
       if ($belonged_grants) {
-        $grants += $belonged_grants;
+        $grants = array_merge($grants, $belonged_grants);
       }
     }
   }
@@ -353,16 +353,17 @@ function pmperm_node_access_records($node) {
     if(_pmperm_check_if_field_present($type, 'pm')) {
       $assigned_grants_pm = _pmperm_grants_assigned($node, $type, 'Project Manager');
       if ($assigned_grants_pm) {
-        $grants += $assigned_grants_pm;
+        $grants = array_merge($grants, $assigned_grants_pm);
       }
     }
   }
   if (_pmperm_check_if_field_present($type, 'assigned')) {
     $assigned_grants_assigned = _pmperm_grants_assigned($node, $type, 'Assigned');
     if ($assigned_grants_assigned) {
-      $grants += $assigned_grants_assigned;
+      $grants = array_merge($grants, $assigned_grants_assigned);
     }
-  }  return $grants;
+  }
+  return $grants;
 }
 
 /**
@@ -468,6 +469,7 @@ function _pmperm_grants_belonged($node, $type, $belonged){
 function _pmperm_grants_assigned($node, $type, $assigned){
   // PM permission $type: view own %assigned
   $assigned_nids = _pmperm_get_assigned_id($node, $type, $assigned);
+  $grants = array();
   if($assigned_nids){
     foreach ($assigned_nids as $assigned_nid) {
       if ( $assigned_nid ) {
@@ -498,6 +500,7 @@ function _pmperm_grants_assigned($node, $type, $assigned){
       }
     }
   }
+  return $grants;
 }
 
 /**
