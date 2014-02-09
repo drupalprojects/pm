@@ -161,8 +161,7 @@ function pmexpense_update_last_removed() {
 }
 
 /**
- * Allow Project Management to override the default Expense content type CRUD
- * permissions.
+ * Allow Project Management to override default Expense permissions.
  */
 function pmexpense_update_7100() {
   variable_set('node_permissions_pmexpense', 0);

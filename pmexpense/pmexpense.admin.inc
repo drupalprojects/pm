@@ -21,7 +21,7 @@ function pmexpense_autocomplete($string = '') {
       ->condition('n.type', 'pmorganization')
       ->condition('org.isprovider', 1)
       ->condition('org.isactive', 1)
-      ->where('lower(title) like :search', array(':search' => '%'. db_like($search) .'%'))
+      ->where('lower(title) like :search', array(':search' => '%' . db_like($search) . '%'))
       ->addTag('node_access')
       ->range(0, 10);
 

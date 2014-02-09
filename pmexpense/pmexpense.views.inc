@@ -3,6 +3,10 @@
  * @file
  * Functions to expose Project Management expense data to views
  */
+
+/**
+ * Implements hook_views_data().
+ */
 function pmexpense_views_data() {
   $data['pmexpense']['table']['group']  = t('Project Management Expense');
   $data['pmexpense']['table']['join'] = array(
@@ -268,6 +272,9 @@ function pmexpense_views_data() {
   return $data;
 }
 
+/**
+ * Implements hook_views_handlers().
+ */
 function pmexpense_views_handlers() {
   return array(
     'info' => array(
@@ -285,6 +292,9 @@ function pmexpense_views_handlers() {
   );
 }
 
+/**
+ * Implements hook_date_api_fields().
+ */
 function pmexpense_date_api_fields($field) {
   $values = array(
     'sql_type' => DATE_UNIX,
@@ -302,6 +312,9 @@ function pmexpense_date_api_fields($field) {
 
 }
 
+/**
+ * Implements hook_date_api_tables().
+ */
 function pmexpense_date_api_tables() {
   return array('pmexpense');
 }

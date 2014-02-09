@@ -79,7 +79,8 @@ class pminvoice_handler_filter_invoice_status extends views_handler_filter_in_op
       $where = $this->table_alias . ".paymentdate<>%d";
       $args[] = 0;
     }
-    else { // if ($this->value == 'overdue') {
+    // Case that invoice is overdue.
+    else {
       $where = $this->table_alias . ".paymentdate=%d AND " . $this->table_alias . ".duedate < %d";
       $args[] = 0;
       $args[] = time();

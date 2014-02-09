@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Defines default views for the PM Expense module.
+ */
 
 /**
  * Implements hook_views_default_views().
