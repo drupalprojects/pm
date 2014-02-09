@@ -161,7 +161,7 @@ function pmnote_pmproject_change($project_nid, $project_title) {
  */
 function pmnote_pmtask_change($task_nid, $task_title, $task_stepno) {
   db_update('pmnote')
-    ->fields(array('task_title' => $task_title, 'task_stepno' => $task_stepno))
+    ->fields(array('task_title' => $task_title))
     ->condition('task_nid', $task_nid)
     ->execute();
 }
