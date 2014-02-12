@@ -307,7 +307,7 @@ function pmproject_form(&$node) {
   $form['group2']['projectcategory'] = array(
     '#type' => 'select',
     '#title' => t('Category'),
-    '#default_value' => $node->projectcategory,
+    '#default_value' => isset($node->projectcategory) ? $node->projectcategory : $category_list['default'],
     '#options' => $category_list['values'],
   );
 
@@ -315,7 +315,7 @@ function pmproject_form(&$node) {
   $form['group2']['projectstatus'] = array(
     '#type' => 'select',
     '#title' => t('Status'),
-    '#default_value' => $node->projectstatus,
+    '#default_value' => isset($node->projectstatus) ? $node->projectstatus : $status_list['default'],
     '#options' => $status_list['values'],
   );
 
@@ -323,7 +323,7 @@ function pmproject_form(&$node) {
   $form['group2']['projectpriority'] = array(
     '#type' => 'select',
     '#title' => t('Priority'),
-    '#default_value' => $node->projectpriority,
+    '#default_value' => isset($node->projectpriority) ? $node->projectpriority : $priority_list['default'],
     '#options' => $priority_list['values'],
   );
 
@@ -337,7 +337,7 @@ function pmproject_form(&$node) {
   $form['group3']['durationunit'] = array(
     '#type' => 'select',
     '#title' => t('Duration unit'),
-    '#default_value' => $node->durationunit,
+    '#default_value' => isset($node->durationunit) ? $node->durationunit : $durationunit_list['default'],
     '#options' => $durationunit_list['values'],
   );
 
@@ -358,7 +358,7 @@ function pmproject_form(&$node) {
   $form['group4']['pricemode'] = array(
     '#type' => 'select',
     '#title' => t('Price mode'),
-    '#default_value' => $node->pricemode,
+    '#default_value' => isset($node->pricemode) ? $node->pricemode : $pricemode_list['default'],
     '#options' => $pricemode_list['values'],
   );
 
@@ -373,7 +373,7 @@ function pmproject_form(&$node) {
   $form['group4']['currency'] = array(
     '#type' => 'select',
     '#title' => t('Price currency'),
-    '#default_value' => $node->currency,
+    '#default_value' => isset($node->currency) ? $node->currency : $currency_list['default'],
     '#options' => $currency_list['values'],
   );
 
@@ -573,31 +573,6 @@ function _pmproject_beforesave(&$node) {
   }
   if (!is_numeric($node->price)) {
     $node->price = 0;
-  }
-}
-
-/**
- * Implements hook_node_prepare().
- */
-function pmproject_node_prepare($node) {
-  if (!isset($node->nid)) {
-    $category_list = pm_attributes_bydomain('Project category');
-    $node->projectcategory = $category_list['default'];
-
-    $status_list = pm_attributes_bydomain('Project status');
-    $node->projectstatus = $status_list['default'];
-
-    $priority_list = pm_attributes_bydomain('Project priority');
-    $node->projectpriority = $priority_list['default'];
-
-    $durationunit_list = pm_attributes_bydomain('Duration unit');
-    $node->durationunit = $durationunit_list['default'];
-
-    $pricemode_list = pm_attributes_bydomain('Price mode');
-    $node->pricemode = $pricemode_list['default'];
-
-    $currency_list = pm_attributes_bydomain('Currency');
-    $node->currency = $currency_list['default'];
   }
 }
 

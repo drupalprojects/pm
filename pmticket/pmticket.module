@@ -366,7 +366,7 @@ function pmticket_form(&$node, $form_state) {
   $form['group2']['ticketcategory'] = array(
     '#type' => 'select',
     '#title' => t('Category'),
-    '#default_value' => $node->ticketcategory,
+    '#default_value' => isset($node->ticketcategory) ? $node->ticketcategory : $category_list['default'],
     '#options' => $category_list['values'],
   );
 
@@ -374,7 +374,7 @@ function pmticket_form(&$node, $form_state) {
   $form['group2']['ticketstatus'] = array(
     '#type' => 'select',
     '#title' => t('Status'),
-    '#default_value' => $node->ticketstatus,
+    '#default_value' => isset($node->ticketstatus) ? $node->ticketstatus : $status_list['default'],
     '#options' => $status_list['values'],
   );
 
@@ -382,7 +382,7 @@ function pmticket_form(&$node, $form_state) {
   $form['group2']['ticketpriority'] = array(
     '#type' => 'select',
     '#title' => t('Priority'),
-    '#default_value' => $node->ticketpriority,
+    '#default_value' => isset($node->ticketpriority) ? $node->ticketpriority : $priority_list['default'],
     '#options' => $priority_list['values'],
   );
 
@@ -666,22 +666,6 @@ function _pmticket_beforesave(&$node) {
   }
   if (!is_numeric($node->price)) {
     $node->price = 0;
-  }
-}
-
-/**
- * Implements hook_node_prepare().
- */
-function pmticket_node_prepare($node) {
-  if (!isset($node->nid)) {
-    $category_list = pm_attributes_bydomain('Ticket category');
-    $node->ticketcategory = $category_list['default'];
-
-    $status_list = pm_attributes_bydomain('Ticket status');
-    $node->ticketstatus = $status_list['default'];
-
-    $priority_list = pm_attributes_bydomain('Ticket priority');
-    $node->ticketpriority = $priority_list['default'];
   }
 }
 

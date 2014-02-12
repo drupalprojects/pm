@@ -194,19 +194,19 @@ function pmorganization_form(&$node) {
   $form['group1']['iscustomer'] = array(
     '#type' => 'checkbox',
     '#title' => t('Customer'),
-    '#default_value' => $node->iscustomer,
+    '#default_value' => isset($node->iscustomer) ? $node->iscustomer : 1,
   );
 
   $form['group1']['isprovider'] = array(
     '#type' => 'checkbox',
     '#title' => t('Provider'),
-    '#default_value' => $node->isprovider,
+    '#default_value' => isset($node->isprovider) ? $node->isprovider : 0,
   );
 
   $form['group1']['isactive'] = array(
     '#type' => 'checkbox',
     '#title' => t('Active'),
-    '#default_value' => $node->isactive,
+    '#default_value' => isset($node->isactive) ? $node->isactive : 1,
   );
 
   $form['title'] = array(
@@ -251,7 +251,7 @@ function pmorganization_form(&$node) {
     '#type' => 'select',
     '#title' => t('Country'),
     '#options' => $country_list['values'],
-    '#default_value' => $node->country,
+    '#default_value' => isset($node->country) ? $node->country : $country_list['default'],
     '#weight' => 4,
   );
 
@@ -300,14 +300,14 @@ function pmorganization_form(&$node) {
     '#type' => 'select',
     '#title' => t('Currency'),
     '#options' => $currency_list['values'],
-    '#default_value' => $node->currency,
+    '#default_value' => isset($node->currency) ? $node->currency : $currency_list['default'],
   );
 
   $pricemode_list = pm_attributes_bydomain('Price mode');
   $form['group4']['pricemode'] = array(
     '#type' => 'select',
     '#title' => t('Price mode'),
-    '#default_value' => $node->pricemode,
+    '#default_value' => isset($node->pricemode) ? $node->pricemode : $pricemode_list['default'],
     '#options' => $pricemode_list['values'],
   );
 
@@ -413,26 +413,6 @@ function pmorganization_update($node) {
     if ($node->title != $node->title_old) {
       module_invoke_all('pmorganization_change', $node->nid, $node->title);
     }
-  }
-}
-
-/**
- * Implements hook_node_prepare().
- */
-function pmorganization_node_prepare($node) {
-  if (!isset($node->nid)) {
-    $node->iscustomer = 1;
-    $node->isprovider = 0;
-    $node->isactive = 1;
-
-    $country_list = pm_attributes_bydomain('Country');
-    $node->country = $country_list['default'];
-
-    $currency_list = pm_attributes_bydomain('Currency');
-    $node->currency = $currency_list['default'];
-
-    $pricemode_list = pm_attributes_bydomain('Price mode');
-    $node->pricemode = $pricemode_list['default'];
   }
 }
 

@@ -376,7 +376,7 @@ function pmtask_form(&$node, $form_state) {
   $form['group2']['taskcategory'] = array(
     '#type' => 'select',
     '#title' => t('Category'),
-    '#default_value' => $node->taskcategory,
+    '#default_value' => isset($node->taskcategory) ? $node->taskcategory : $taskcategory_list['default'],
     '#options' => $taskcategory_list['values'],
   );
 
@@ -384,7 +384,7 @@ function pmtask_form(&$node, $form_state) {
   $form['group2']['taskstatus'] = array(
     '#type' => 'select',
     '#title' => t('Status'),
-    '#default_value' => $node->taskstatus,
+    '#default_value' => isset($node->taskstatus) ? $node->taskstatus : $taskstatus_list['default'],
     '#options' => $taskstatus_list['values'],
   );
 
@@ -392,7 +392,7 @@ function pmtask_form(&$node, $form_state) {
   $form['group2']['taskpriority'] = array(
     '#type' => 'select',
     '#title' => t('Priority'),
-    '#default_value' => $node->taskpriority,
+    '#default_value' => isset($node->taskpriority) ? $node->taskpriority : $taskpriority_list['default'],
     '#options' => $taskpriority_list['values'],
   );
 
@@ -406,7 +406,7 @@ function pmtask_form(&$node, $form_state) {
   $form['group3']['durationunit'] = array(
     '#type' => 'select',
     '#title' => t('Duration unit'),
-    '#default_value' => $node->durationunit,
+    '#default_value' => isset($node->durationunit) ? $node->durationunit : $durationunit_list['default'],
     '#options' => $durationunit_list['values'],
   );
 
@@ -427,7 +427,7 @@ function pmtask_form(&$node, $form_state) {
   $form['group4']['pricemode'] = array(
     '#type' => 'select',
     '#title' => t('Price mode'),
-    '#default_value' => $node->pricemode,
+    '#default_value' => isset($node->pricemode) ? $node->pricemode : $pricemode_list['default'],
     '#options' => $pricemode_list['values'],
   );
 
@@ -442,7 +442,7 @@ function pmtask_form(&$node, $form_state) {
   $form['group4']['currency'] = array(
     '#type' => 'select',
     '#title' => t('Price currency'),
-    '#default_value' => $node->currency,
+    '#default_value' => isset($node->currency) ? $node->currency : $currency_list['default'],
     '#options' => $currency_list['values'],
   );
 
@@ -642,34 +642,6 @@ function _pmtask_beforesave(&$node) {
   // Allow use of comma when inputting numerical values - str_replace with period decimal
   $node->duration = floatval(str_replace(',', '.', $node->duration));
   $node->price = floatval(str_replace(',', '.', $node->price));
-}
-
-/**
- * Implements hook_node_prepare().
- */
-function pmtask_node_prepare($node) {
-  if (!isset($node->nid)) {
-    $node->iscustomer = 1;
-    $node->isactive = 1;
-
-    $taskcategory_list = pm_attributes_bydomain('Task category');
-    $node->taskcategory = $taskcategory_list['default'];
-
-    $taskstatus_list = pm_attributes_bydomain('Task status');
-    $node->taskstatus = $taskstatus_list['default'];
-
-    $taskpriority_list = pm_attributes_bydomain('Task priority');
-    $node->taskpriority = $taskpriority_list['default'];
-
-    $durationunit_list = pm_attributes_bydomain('Duration unit');
-    $node->durationunit = $durationunit_list['default'];
-
-    $pricemode_list = pm_attributes_bydomain('Price mode');
-    $node->pricemode = $pricemode_list['default'];
-
-    $currency_list = pm_attributes_bydomain('Currency');
-    $node->currency = $currency_list['default'];
-  }
 }
 
 /**
