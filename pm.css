@@ -63,6 +63,10 @@ tr.formgroup {
   border: none !important;
 }
 
+dl.pmdashboard {
+  overflow: auto;
+}
+
 dt.pmcomponent {
 padding-left: 40px;
 padding-top: 10px;
