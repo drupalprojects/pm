@@ -15,7 +15,7 @@ function pminvoice_views_default_views() {
   $view->description = '';
   $view->tag = 'pm';
   $view->base_table = 'node';
-  $view->human_name = 'Project Management Invoice List';
+  $view->human_name = 'PM Invoice';
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
@@ -115,11 +115,17 @@ function pminvoice_views_default_views() {
   $handler->display->display_options['fields']['title']['label'] = 'Invoice';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
-  /* Field: Project Management Invoice: Request date */
-  $handler->display->display_options['fields']['requestdate']['id'] = 'requestdate';
-  $handler->display->display_options['fields']['requestdate']['table'] = 'pminvoice';
-  $handler->display->display_options['fields']['requestdate']['field'] = 'requestdate';
-  $handler->display->display_options['fields']['requestdate']['date_format'] = 'short';
+  /* Field: Content: Request date */
+  $handler->display->display_options['fields']['pminvoice_requestdate']['id'] = 'pminvoice_requestdate';
+  $handler->display->display_options['fields']['pminvoice_requestdate']['table'] = 'field_data_pminvoice_requestdate';
+  $handler->display->display_options['fields']['pminvoice_requestdate']['field'] = 'pminvoice_requestdate';
+  $handler->display->display_options['fields']['pminvoice_requestdate']['date_format'] = array(
+    'format_type' => 'short',
+    'fromto' => 'both',
+    'multiple_number' => '',
+    'multiple_from' => '',
+    'multiple_to' => '',
+  );
   /* Field: Project Management Invoice: Total */
   $handler->display->display_options['fields']['total']['id'] = 'total';
   $handler->display->display_options['fields']['total']['table'] = 'pminvoice';

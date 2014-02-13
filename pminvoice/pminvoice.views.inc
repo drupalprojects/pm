@@ -398,4 +398,3 @@ function pminvoice_views_handlers() {
     ),
   );
 }
-
