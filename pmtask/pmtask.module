@@ -238,7 +238,7 @@ function pmtask_pmproject_change_hierarchy($project_nid, $organization_nid, $org
 /**
  * Implements hook_form().
  */
-function pmtask_form(&$node, $form_state) {
+function pmtask_form($node, &$form_state) {
   $breadcrumb = array(
     l(t('Project Management'), 'pm'),
     l(t('Tasks'), 'pm/tasks'),
@@ -247,6 +247,9 @@ function pmtask_form(&$node, $form_state) {
 
   $type = node_type_get_type($node);
   $info = field_info_extra_fields('node', 'pmtask', 'form');
+
+  $form['#prefix'] = '<div id="pmtask-form-wrapper">';
+  $form['#suffix'] = '</div>';
 
   $form['group1'] = array(
     '#type' => 'markup',
@@ -278,7 +281,7 @@ function pmtask_form(&$node, $form_state) {
     '#required' => TRUE,
     '#ajax' => array(
       'callback' => 'pmtask_form_ajax',
-      'wrapper' => 'pmtask-form',
+      'wrapper' => 'pmtask-form-wrapper',
     ),
   );
 
@@ -316,7 +319,7 @@ function pmtask_form(&$node, $form_state) {
     '#suffix' => '</div>',
     '#ajax' => array(
       'callback' => 'pmtask_form_ajax',
-      'wrapper' => 'pmtask-form',
+      'wrapper' => 'pmtask-form-wrapper',
     ),
   );
 
@@ -340,8 +343,6 @@ function pmtask_form(&$node, $form_state) {
     '#title' => t('Parent task'),
     '#default_value' => isset($node->parent_nid) ? $node->parent_nid : 0,
     '#options' => array(0 => '-') + $parent_tasks,
-    '#prefix' => '<div id="pmtask-parent-nid">',
-    '#suffix' => '</div>',
   );
 
   $form['group1']['weight'] = array(

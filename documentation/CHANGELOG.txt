@@ -1,6 +1,7 @@
 ** New issues added should be added at the TOP of the list for each version as they are committed. **
 
 Version 7.x-1.x-dev:
+- Issue #2181699 by juliangb | dbt102: Adding new task to existing project does not work right.
 - Issue #2192465 by juliangb | Jeffrey C.: Broken page layout using Corolla theme.
 - Issue #1843040 by juliangb: Cleanup: Move hook_node_prepare() into hook_form().
 - Issue #2179365 by juliangb | dbt102: Editing Task Title throws an error.
