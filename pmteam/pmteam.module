@@ -286,6 +286,9 @@ function _pmteam_beforesave(&$node) {
   $i = 1;
   $variable = 'members_array_' . $i;
 
+  // unsetting the $node->members_array to handle deleting of members.
+  $node->members_array = array();
+
   while (isset($node->$variable)) {
     $per_result = db_select('node', 'n')
       ->fields('n', array('title'))
