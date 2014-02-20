@@ -20,7 +20,7 @@ function pmexpense_help($path, $arg) {
 }
 
 /**
- * Implements hook_persmission().
+ * Implements hook_permission().
  */
 function pmexpense_permission() {
   return array(
@@ -103,15 +103,6 @@ function pmexpense_menu() {
     'file' => 'pmexpense.admin.inc',
   );
 
-  $items['admin/config/pm/expense'] = array(
-    'title' => 'PM Expense',
-    'description' => 'Administer Project Management Expense.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('pmexpense_admin_settings'),
-    'access arguments' => array('Project Management: access administration pages'),
-    'type' => MENU_LOCAL_TASK,
-  );
-
   return $items;
 }
 
@@ -137,7 +128,6 @@ function pmexpense_node_info() {
       'base' => 'pmexpense',
       'description' => t("An expense for Project Management."),
       'title_label' => t("Title"),
-      'body_label' => t("Description"),
     ),
   );
 }
@@ -163,10 +153,6 @@ function pmexpense_field_extra_fields() {
       'group4' => array(
         'label' => 'Tax Group',
         'weight' => -16,
-      ),
-      'group5' => array(
-        'label' => 'Billable / Billed Group',
-        'weight' => -15,
       ),
     ),
   );
@@ -280,8 +266,6 @@ function pmexpense_form($node, $form_state) {
     $node->tax1percent = variable_get('pm_tax1_percent', 20);
     $node->tax2app = variable_get('pm_tax2_app', 0);
     $node->tax2percent = variable_get('pm_tax2_percent', 20);
-
-    $node->billable = variable_get('pmexpense_billable_default', 0);
   }
 
   // Transition to compound tax - allow for nodes which may have been saved in
@@ -499,26 +483,6 @@ function pmexpense_form($node, $form_state) {
     '#weight' => $info['group4']['weight'],
   );
 
-  $form['group5'] = array(
-    '#type' => 'markup',
-    '#theme' => 'pm_form_group',
-    '#weight' => $info['group5']['weight'],
-  );
-
-  $form['group5']['billable'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Billable'),
-    '#default_value' => $node->billable ? $node->billable : 0,
-    '#weight' => 1,
-  );
-
-  $form['group5']['billed'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Billed'),
-    '#default_value' => isset($node->billed) ? $node->billed : 0,
-    '#weight' => 2,
-  );
-
   $form['title'] = array(
     '#type' => 'textfield',
     '#title' => check_plain($type->title_label),
@@ -587,8 +551,6 @@ function pmexpense_insert($node) {
       'tax2percent' => $node->tax2percent,
       'tax2' => $node->tax2,
       'total' => $node->total,
-      'billable' => $node->billable,
-      'billed' => $node->billed,
     ))
     ->execute();
 }
@@ -627,8 +589,6 @@ function pmexpense_update($node) {
         'tax2percent' => $node->tax2percent,
         'tax2' => $node->tax2,
         'total' => $node->total,
-        'billable' => $node->billable,
-        'billed' => $node->billed,
       ))
       ->condition('vid', $node->vid)
       ->execute();
@@ -1036,21 +996,4 @@ function pmexpense_pm_dashboard_links($type) {
     );
   }
   return $links;
-}
-
-/**
- * Configuration form.
- */
-function pmexpense_admin_settings() {
-  $form = array();
-
-  $form['pmexpense_billable_default'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Default Value for billable field.'),
-    '#default_value' => variable_get('pmexpense_billable_default', 0),
-    '#description' => t('When checked, Project Management will set the expense to billable by default'),
-    '#size' => 5,
-  );
-
-  return system_settings_form($form);
 }

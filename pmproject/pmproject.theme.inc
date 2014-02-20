@@ -10,32 +10,6 @@
 function theme_pmproject_view($variables) {
   $node = $variables['node'];
 
-  $l_pos = 1; // Used to increase the link position number (see issue 814820)
-
-  $node->content['links'] = array(
-    '#prefix' => '<div class="pmlinks"><dl>',
-    '#suffix' => '</dl></div>',
-    '#weight' => -25,
-  );
-
-//  $node->content['links']['expenses'] = theme('pm_link', 'pmproject', 'pmexpense', $node->nid, $l_pos++);
-//  $node->content['links']['invoices'] = theme('pm_link', 'pmproject', 'pminvoice', $node->nid, $l_pos++);
-//  $node->content['links']['notes'] = theme('pm_link', 'pmproject', 'pmnote', $node->nid, $l_pos++);
-//  $node->content['links']['tasks'] = theme('pm_link', 'pmproject', 'pmtask', $node->nid, $l_pos++);
-//  $node->content['links']['tickets'] = theme('pm_link', 'pmproject', 'pmticket', $node->nid, $l_pos++);
-//  $node->content['links']['timetrackings'] = theme('pm_link', 'pmproject', 'pmtimetracking', $node->nid, $l_pos++);
-
-  // Code to create invoice auto_add link
-  if (module_exists('pminvoice')) {
-
-    $node->content['links']['auto_invoice'] = array(
-      '#prefix' => variable_get('pm_icons_display', TRUE) ? '<dt id="pminvoices" class="pmcomponent">' : '<dt class="pmcomponent">',
-      '#suffix' => '</dt>',
-      '#value' => theme('pminvoice_autoadd_links', array('nid' => $node->nid, 'billable' => $node->billable, 'billed' => $node->billed)),
-      '#weight' => $l_pos++,
-    );
-  }
-
   $node->content['group1'] = array(
     '#prefix' => '<div class="field">',
     '#suffix' => '</div>',

@@ -154,21 +154,6 @@ function pmticket_views_data() {
     ),
   );
 
-  $data['pmticket']['dateend'] = array(
-    'title' => t('Date end'),
-    'help' => t('Project Management Ticket end date'),
-    'field' => array(
-      'click sortable' => TRUE,
-      'handler' => 'views_handler_field_date',
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort_date',
-    ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_date',
-    ),
-  );
-
   $data['pmticket']['durationunit'] = array(
     'title' => t('Duration unit'),
     'help' => t('Project Management Ticket duration unit'),
@@ -225,34 +210,6 @@ function pmticket_views_data() {
     ),
     'argument' => array(
       'handler' => 'views_handler_argument_string',
-    ),
-  );
-
-  $data['pmticket']['billable'] = array(
-    'title' => t('Ticket billable'),
-    'help' => 'Project Management Ticket Billable',
-    'field' => array(
-      'click sortable' => TRUE,
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort',
-    ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_numeric',
-    ),
-  );
-
-  $data['pmticket']['billed'] = array(
-    'title' => t('Ticket billed'),
-    'help' => 'Project Management Ticket Billed',
-    'field' => array(
-      'click sortable' => TRUE,
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort',
-    ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_numeric',
     ),
   );
 

@@ -69,6 +69,28 @@ function pmticket_install() {
     'bundle' => 'pmticket',
   ));
 
+  // Set up instance of billing status field.
+  field_create_instance(array(
+    'field_name' => 'pm_billing_status',
+    'label' => 'Billing status',
+    'entity_type' => 'node',
+    'bundle' => 'pmticket',
+    'widget' => array(
+      'weight' => -13,
+      'type' => 'options_select',
+      'module' => 'options',
+      'active' => 1,
+      'settings' => array(),
+    ),
+    'required' => 1,
+    'description' => '',
+    'default_value' => array(
+      array(
+        'value' => variable_get('pmticket_billable_default', 0) ? 'Billable' : 'Not billable',
+      ),
+    ),
+  ));
+
   $attributes = array();
 
   $attributes['Ticket status'] = array(
@@ -191,8 +213,6 @@ function pmticket_schema() {
       'duration'            => array('type' => 'float', 'default' => 0),
       'assigned_nid'        => array('type' => 'int'),
       'assigned_title'      => array('type' => 'varchar', 'length' => 100),
-      'billable'            => array('type' => 'int', 'default' => 0),
-      'billed'              => array('type' => 'int', 'default' => 0),
     ),
     'primary key' => array('vid'),
     'indexes'     => array(
@@ -218,9 +238,14 @@ function pmticket_update_last_removed() {
  * Implements hook_update_dependencies().
  */
 function pmticket_update_dependencies() {
-  // Ensure that billing status field is created before instance.
+  // Ensure that date field is created before instance.
   $dependencies['pmticket'][7103] = array(
     'pm' => 7102,
+  );
+
+  // Ensure that billing status field is created before instance.
+  $dependencies['pmticket'][7104] = array(
+    'pm' => 7101,
   );
 
   return $dependencies;
@@ -329,4 +354,59 @@ function pmticket_update_7103() {
   // Delete columns from existing database table.
   db_drop_field('pmticket', 'datebegin');
   db_drop_field('pmticket', 'dateend');
+}
+
+/**
+ * Adds billing status instance to PM Ticket content type.
+ */
+function pmticket_update_7104() {
+  // Uncache node types
+  node_types_rebuild();
+
+  // Set up instance of billing status field.
+  field_create_instance(array(
+    'field_name' => 'pm_billing_status',
+    'label' => 'Billing status',
+    'entity_type' => 'node',
+    'bundle' => 'pmticket',
+    'widget' => array(
+      'weight' => -13,
+      'type' => 'options_select',
+      'module' => 'options',
+      'active' => 1,
+      'settings' => array(),
+    ),
+    'required' => 1,
+    'description' => '',
+    'default_value' => array(
+      array(
+        'value' => variable_get('pmticket_billable_default', 0) ? 'Billable' : 'Not billable',
+      ),
+    ),
+  ));
+
+  // Delete the default field value. This is now set via the core field UI.
+  variable_del('pmticket_billable_default');
+
+  // Get existing field values.
+  $query = db_select('pmticket', 'pmti');
+  $query->join('node', 'n', 'n.vid = pmti.vid');
+  $result = $query
+    ->fields('pmti', array('nid', 'vid', 'billable', 'billed'))
+    ->execute();
+
+  // Save existing field value into Field API field.
+  foreach ($result as $record) {
+    $node = node_load($record->nid);
+
+    $new_value = $record->billed ? 'Billed' : ($record->billable ? 'Billable' : 'Not billable');
+
+    $node->pm_billing_status[LANGUAGE_NONE][0]['value'] = $new_value;
+    field_attach_presave('node', $node);
+    field_attach_update('node', $node);
+  }
+
+  // Remove existing field from custom database table.
+  db_drop_field('pmticket', 'billable');
+  db_drop_field('pmticket', 'billed');
 }

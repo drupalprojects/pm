@@ -10,30 +10,6 @@
 function theme_pmtask_view($variables) {
   $node = $variables['node'];
 
-  $l_pos = 1; // Used to increase the link position number (see issue 814820)
-
-  $node->content['links'] = array(
-    '#prefix' => '<div class="pmlinks">',
-    '#suffix' => '</div>',
-    '#weight' => -25,
-  );
-
-//  $node->content['links']['expenses'] = theme('pm_link', 'pmtask', 'pmexpense', $node->nid, $l_pos++);
-//  $node->content['links']['notes'] = theme('pm_link', 'pmtask', 'pmnote', $node->nid, $l_pos++);
-//  $node->content['links']['tickets'] = theme('pm_link', 'pmtask', 'pmticket', $node->nid, $l_pos++);
-//  $node->content['links']['timetrackings'] = theme('pm_link', 'pmtask', 'pmtimetracking', $node->nid, $l_pos++);
-
-  // Code to create invoice auto_add link
-  if (module_exists('pminvoice')) {
-
-    $node->content['links']['auto_invoice'] = array(
-      '#prefix' => variable_get('pm_icons_display', TRUE) ? '<dt id="pminvoices" class="pmcomponent">' : '<dt class="pmcomponent">',
-      '#suffix' => '</dt>',
-      '#markup' => theme('pminvoice_autoadd_links', array('label' => $node->nid, 'value' => $node->billable, $node->billed)),
-      '#weight' => $l_pos++,
-    );
-  }
-
   $node->content['group1'] = array(
     '#prefix' => '<div class="field">',
     '#suffix' => '</div>',

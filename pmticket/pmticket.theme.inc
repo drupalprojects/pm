@@ -10,26 +10,6 @@
 function theme_pmticket_view($variables) {
   $node = $variables['node'];
 
-  $node->content['links'] = array(
-    '#prefix' => '<div class="pmlinks"><dl>',
-    '#suffix' => '</dl></div>',
-    '#weight' => -25,
-  );
-
-//  $node->content['links']['expenses'] = theme('pm_link', 'pmticket', 'pmexpense', $node->nid, 1);
-//  $node->content['links']['timetrackings'] = theme('pm_link', 'pmticket', 'pmtimetracking', $node->nid, 2);
-
-  // Code to create invoice auto_add link
-  if (module_exists('pminvoice')) {
-
-    $node->content['links']['auto_invoice'] = array(
-      '#prefix' => variable_get('pm_icons_display', TRUE) ? '<dt id="pminvoices" class="pmcomponent">' : '<dt class="pmcomponent">',
-      '#suffix' => '</dt>',
-      '#value' => theme('pminvoice_autoadd_links', array('nid' => $node->nid, 'billable' => $node->billable, 'billed' => $node->billed)),
-      '#weight' => 3,
-    );
-  }
-
   $node->content['group1'] = array(
     '#prefix' => '<div class="field">',
     '#suffix' => '</div>',

@@ -1,7 +1,7 @@
 ** New issues added should be added at the TOP of the list for each version as they are committed. **
 
 Version 7.x-1.x:
-- No changes since last point release.
+- Issue #2102861 by juliangb | dbt102: Implement billing status in Field API.
 
 Version 7.x-1.0-alpha4:
 - Issue #2181165 by D34dMan | dbt102: Team permissions not functioning properly.

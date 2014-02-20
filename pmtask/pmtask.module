@@ -101,39 +101,6 @@ function pmtask_node_access($node, $op, $account = NULL) {
 }
 
 /**
- * Implements hook_menu().
- */
-function pmtask_menu() {
-  $items['admin/config/pm/task'] = array(
-    'title' => 'PM Task',
-    'description' => 'Administer Project Management Task.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('pmtask_admin_settings'),
-    'access arguments' => array('Project Management: access administration pages'),
-    'type' => MENU_LOCAL_TASK,
-  );
-
-  return $items;
-}
-
-/**
- * Admin settings form for pmtask module.
- */
-function pmtask_admin_settings() {
-  $form = array();
-
-  $form['pmtask_billable_default'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Default Value for billable field.'),
-    '#default_value' => variable_get('pmtask_billable_default', FALSE),
-    '#description' => t('When checked, Project Management will set the task to billable by default'),
-    '#size' => 5,
-  );
-
-  return system_settings_form($form);
-}
-
-/**
  * Implements hook_theme().
  */
 function pmtask_theme() {
@@ -155,7 +122,6 @@ function pmtask_node_info() {
       'base' => 'pmtask',
       'description' => t("A task for Project Management."),
       'title_label' => t("Title"),
-      'body_label' => t("Description"),
     )
   );
 }
@@ -470,20 +436,6 @@ function pmtask_form($node, &$form_state) {
     '#weight' => $info['group6']['weight'],
   );
 
-  $form['group6']['billable'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Billable'),
-    '#default_value' => isset($node->billable) ? $node->billable : variable_get('pmtask_billable_default', FALSE),
-    '#weight' => 1,
-  );
-
-  $form['group6']['billed'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Billed'),
-    '#default_value' => isset($node->billed) ? $node->billed : FALSE,
-    '#weight' => 2,
-  );
-
   // Check to see if the body field is still there, if so, display it.
   $body = field_get_items('pmtask', $node, 'body');
   if ($body) {
@@ -537,8 +489,6 @@ function pmtask_insert($node) {
       'currency' => $node->currency,
       'assigned_nid' => $node->assigned_nid,
       'assigned_title' => $node->assigned_title,
-      'billable' => $node->billable,
-      'billed' => $node->billed,
     ))
     ->execute();
 }
@@ -598,8 +548,6 @@ function pmtask_update($node) {
       'currency' => $node->currency,
       'assigned_nid' => $node->assigned_nid,
       'assigned_title' => $node->assigned_title,
-      'billable' => $node->billable,
-      'billed' => $node->billed,
     ))
     ->condition('vid', $node->vid)
     ->execute();
@@ -884,8 +832,6 @@ function pmtask_token_list($type='all') {
     $tokens['node']['pmtask-taskpriority'] = t('Project Management Task: Task Priority.');
     $tokens['node']['pmtask-durationunit'] = t('Project Management Task: Task Duration Unit.');
     $tokens['node']['pmtask-duration'] = t('Project Management Task: Task Duration.');
-    $tokens['node']['pmtask-billable'] = t('Project Management Task: Task Billable.');
-    $tokens['node']['pmtask-billed'] = t('Project Management Task: Task Billed.');
     $tokens['node']['pmtask-price'] = t('Project Management Task: Task Price.');
     $tokens['node']['pmtask-pricemode'] = t('Project Management Task: Task Price Mode.');
     if (module_exists('pmperson')) {
@@ -917,8 +863,6 @@ function pmtask_token_values($type, $object = NULL) {
     $values['pmtask-duration'] = $node->duration;
     $values['pmtask-price'] = $node->price;
     $values['pmtask-pricemode'] = $node->pricemode;
-    $values['pmtask-billable'] = $node->billable;
-    $values['pmtask-billed'] = $node->billed;
     if (module_exists('pmperson')) {
       // Project Assignee(s) e-mail
       if ($node->assigned_nid) {

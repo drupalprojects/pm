@@ -284,34 +284,6 @@ function pmtask_views_data() {
     ),
   );
 
-  $data['pmtask']['billable'] = array(
-    'title' => t('Task billable'),
-    'help' => 'Project Management Task Billable',
-    'field' => array(
-      'click sortable' => TRUE,
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort',
-    ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_numeric',
-    ),
-  );
-
-  $data['pmtask']['billed'] = array(
-    'title' => t('Task billed'),
-    'help' => 'Project Management Task Billed',
-    'field' => array(
-      'click sortable' => TRUE,
-    ),
-    'sort' => array(
-      'handler' => 'views_handler_sort',
-    ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_numeric',
-    ),
-  );
-
   $data['pmtask']['operation'] = array(
     'field' => array(
       'title' => t('Edit/Delete link'),

@@ -103,24 +103,6 @@ function pmticket_node_access($node, $op, $account = NULL) {
 }
 
 /**
- * Implements hook_menu().
- */
-function pmticket_menu() {
-  $items = array();
-
-  $items['admin/config/pm/ticket'] = array(
-    'title' => 'PM Ticket',
-    'description' => 'Administer Project Management Ticket.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('pmticket_admin_settings'),
-    'access arguments' => array('Project Management: access administration pages'),
-    'type' => MENU_LOCAL_TASK,
-  );
-
-  return $items;
-}
-
-/**
  * Implements hook_theme().
  */
 function pmticket_theme() {
@@ -142,7 +124,6 @@ function pmticket_node_info() {
       'base' => 'pmticket',
       'description' => t("A ticket for Project Management."),
       'title_label' => t("Title"),
-      'body_label' => t("Description"),
     )
   );
 }
@@ -172,10 +153,6 @@ function pmticket_field_extra_fields() {
       'group5' => array(
         'label' => 'Assigned to',
         'weight' => -14,
-      ),
-      'group6' => array(
-        'label' => 'Billable / Billed Group',
-        'weight' => -13,
       ),
     )
   );
@@ -404,7 +381,7 @@ function pmticket_form(&$node, $form_state) {
   $form['group3']['durationunit'] = array(
     '#type' => 'select',
     '#title' => t('Duration unit'),
-    '#default_value' => $node->durationunit,
+    '#default_value' => isset($node->durationunit) ? $node->durationunit : $durationunits['default'],
     '#options' => $durationunits['values'],
   );
 
@@ -426,7 +403,7 @@ function pmticket_form(&$node, $form_state) {
   $form['group4']['pricemode'] = array(
     '#type' => 'select',
     '#title' => t('Price mode'),
-    '#default_value' => $node->pricemode,
+    '#default_value' => isset($node->pricemode) ? $node->pricemode : $pricemodes['default'],
     '#options' => array('-' => '-') + $pricemodes['values'],
   );
 
@@ -441,7 +418,7 @@ function pmticket_form(&$node, $form_state) {
   $form['group4']['currency'] = array(
     '#type' => 'select',
     '#title' => t('Price currency'),
-    '#default_value' => $node->currency,
+    '#default_value' => isset($node->currency) ? $node->currency : $currencies['default'],
     '#options' => array('-' => '-') + $currencies['values'],
   );
 
@@ -458,26 +435,6 @@ function pmticket_form(&$node, $form_state) {
     '#title' => t('Assigned to'),
     '#options' => $options,
     '#default_value' => isset($node->assigned_nid) ? $node->assigned_nid : NULL,
-  );
-
-  $form['group6'] = array(
-    '#type' => 'markup',
-    '#theme' => 'pm_form_group',
-    '#weight' => $info['group6']['weight'],
-  );
-
-  $form['group6']['billable'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Billable'),
-    '#default_value' => isset($node->billable) ? $node->billable : variable_get('pmticket_billable_default', FALSE),
-    '#weight' => 1,
-  );
-
-  $form['group6']['billed'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Billed'),
-    '#default_value' => isset($node->billed) ? $node->billed : 0,
-    '#weight' => 2,
   );
 
   // Check to see if the body field is still there, if so, display it.
@@ -528,8 +485,6 @@ function pmticket_insert($node) {
       'currency' => $node->currency,
       'assigned_nid' => $node->assigned_nid,
       'assigned_title' => $node->assigned_title,
-      'billable' => $node->billable,
-      'billed' => $node->billed,
     ))
     ->execute();
 }
@@ -607,8 +562,6 @@ function pmticket_update($node) {
         'currency' => $node->currency,
         'assigned_nid' => $node->assigned_nid,
         'assigned_title' => $node->assigned_title,
-        'billable' => $node->billable,
-        'billed' => $node->billed,
       ))
       ->condition('vid', $node->vid)
       ->execute();
@@ -731,23 +684,6 @@ function pmticket_views_api() {
 }
 
 /**
- * Admin settings form for pmproject module.
- */
-function pmticket_admin_settings() {
-  $form = array();
-
-  $form['pmticket_billable_default'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Default Value for billable field.'),
-    '#default_value' => variable_get('pmticket_billable_default', FALSE),
-    '#description' => t('When checked, Project Management will set the ticket to billable by default'),
-    '#size' => 5,
-  );
-
-  return system_settings_form($form);
-}
-
-/**
  * Implements hook_pminvoice_auto_add().
  */
 function pmticket_pminvoice_auto_add($node, $invoice_nid = NULL) {
@@ -840,8 +776,6 @@ function pmticket_token_list($type='all') {
     $tokens['node']['pmticket-ticketpriority'] = t('Project Management Ticket: Ticket Priority.');
     $tokens['node']['pmticket-durationunit'] = t('Project Management Ticket: Ticket Duration Unit.');
     $tokens['node']['pmticket-duration'] = t('Project Management Ticket: Ticket Duration.');
-    $tokens['node']['pmticket-billable'] = t('Project Management Ticket: Ticket Billable.');
-    $tokens['node']['pmticket-billed'] = t('Project Management Ticket: Ticket Billed.');
     $tokens['node']['pmticket-price'] = t('Project Management Ticket: Ticket Price.');
     $tokens['node']['pmticket-pricemode'] = t('Project Management Ticket: Ticket Price Mode.');
     if (module_exists('pmperson')) {
@@ -871,8 +805,6 @@ function pmticket_token_values($type, $object = NULL) {
     $values['pmticket-duration'] = $node->duration;
     $values['pmticket-price'] = $node->price;
     $values['pmticket-pricemode'] = $node->pricemode;
-    $values['pmticket-billable'] = $node->billable;
-    $values['pmticket-billed'] = $node->billed;
     if (module_exists('pmperson')) {
       // Project Assignee(s) e-mail
       if ($node->assigned_nid) {

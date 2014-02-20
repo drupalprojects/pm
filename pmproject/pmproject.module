@@ -127,15 +127,6 @@ function pmproject_menu() {
     'type' => MENU_CALLBACK,
   );
 
-  $items['admin/config/pm/project'] = array(
-    'title' => 'PM Project',
-    'description' => 'Administer Project Management Project.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('pmproject_admin_settings'),
-    'access arguments' => array('Project Management: access administration pages'),
-    'type' => MENU_LOCAL_TASK,
-  );
-
   return $items;
 }
 
@@ -161,7 +152,6 @@ function pmproject_node_info() {
       'base' => 'pmproject',
       'description' => t("A project for Project Management."),
       'title_label' => t("Title"),
-      'body_label' => t("Description"),
     )
   );
 }
@@ -191,10 +181,6 @@ function pmproject_field_extra_fields() {
       'group5' => array(
         'label' => 'Manager / Assigned to Group',
         'weight' => -15,
-      ),
-      'group6' => array(
-        'label' => 'Billable / Billed Group',
-        'weight' => -14,
       ),
     ),
   );
@@ -243,10 +229,6 @@ function pmproject_form(&$node) {
   $breadcrumb[] = l(t('Project Management'), 'pm');
   $breadcrumb[] = l(t('Projects'), 'pm/projects');
   drupal_set_breadcrumb($breadcrumb);
-
-  if (arg(1)=='add') {
-    $node->billable = variable_get('pmproject_billable_default', FALSE);
-  }
 
   $org_query = db_select('node', 'n');
   $org_query->join('pmorganization', 'sor', 'n.vid = sor.vid');
@@ -403,26 +385,6 @@ function pmproject_form(&$node) {
     '#default_value' => isset($node->assigned_nid) ? $node->assigned_nid : 0,
   );
 
-  $form['group6'] = array(
-    '#type' => 'markup',
-    '#theme' => 'pm_form_group',
-    '#weight' => $info['group6']['weight'],
-  );
-
-  $form['group6']['billable'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Billable'),
-    '#default_value' => isset($node->billable) ? $node->billable : 0,
-    '#weight' => 1,
-  );
-
-  $form['group6']['billed'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Billed'),
-    '#default_value' => isset($node->billed) ? $node->billed : 0,
-    '#weight' => 2,
-  );
-
   // Check to see if the body field is still there, if so, display it.
   $body = field_get_items('pmproject', $node, 'body');
   if ($body) {
@@ -485,8 +447,6 @@ function pmproject_insert($node) {
       'manager_title' => $manager->title,
       'assigned_nid' => $node->assigned_nid,
       'assigned_title' => $assigned->title,
-      'billable' => $node->billable,
-      'billed' => $node->billed,
     ))
     ->execute();
 }
@@ -549,8 +509,6 @@ function pmproject_update($node) {
         'manager_title' => $manager->title,
         'assigned_nid' => $node->assigned_nid,
         'assigned_title' => $assigned->title,
-        'billable' => $node->billable,
-        'billed' => $node->billed,
       ))
       ->condition('vid', $node->vid)
       ->execute();
@@ -635,23 +593,6 @@ function pmproject_views_api() {
     'api' => 2,
     'path' => drupal_get_path('module', 'pmproject'),
   );
-}
-
-/**
- * Admin settings form for pmproject module
- */
-function pmproject_admin_settings() {
-  $form = array();
-
-  $form['pmproject_billable_default'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Default Value for billable field.'),
-    '#default_value' => variable_get('pmproject_billable_default', FALSE),
-    '#description' => t('When checked, Project Management will set the project to billable by default'),
-    '#size' => 5,
-  );
-
-  return system_settings_form($form);
 }
 
 /**
@@ -743,8 +684,6 @@ function pmproject_token_list($type='all') {
     $tokens['node']['pmproject-projectpriority'] = t('Project Management Project: Project Priority.');
     $tokens['node']['pmproject-durationunit'] = t('Project Management Project: Project Duration Unit.');
     $tokens['node']['pmproject-duration'] = t('Project Management Project: Project Duration.');
-    $tokens['node']['pmproject-billable'] = t('Project Management Project: Project Billable.');
-    $tokens['node']['pmproject-billed'] = t('Project Management Project: Project Billed.');
     $tokens['node']['pmproject-price'] = t('Project Management Project: Project Price.');
     $tokens['node']['pmproject-pricemode'] = t('Project Management Project: Project Price Mode.');
     if (module_exists('pmorganization')) {
@@ -780,8 +719,6 @@ function pmproject_token_values($type, $object = NULL) {
     $values['pmproject-duration'] = $node->duration;
     $values['pmproject-price'] = $node->price;
     $values['pmproject-pricemode'] = $node->pricemode;
-    $values['pmproject-billable'] = $node->billable;
-    $values['pmproject-billed'] = $node->billed;
     if (module_exists('pmorganization')) {
       $values['pmproject-organization-nid'] = $node->organization_nid;
       $values['pmproject-organization-title'] = $node->organization_title;

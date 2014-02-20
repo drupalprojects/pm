@@ -69,6 +69,28 @@ function pmproject_install() {
     'bundle' => 'pmproject',
   ));
 
+  // Set up instance of billing status field.
+  field_create_instance(array(
+    'field_name' => 'pm_billing_status',
+    'label' => 'Billing status',
+    'entity_type' => 'node',
+    'bundle' => 'pmexpense',
+    'widget' => array(
+      'weight' => -14,
+      'type' => 'options_select',
+      'module' => 'options',
+      'active' => 1,
+      'settings' => array(),
+    ),
+    'required' => 1,
+    'description' => '',
+    'default_value' => array(
+      array(
+        'value' => variable_get('pmexpense_billable_default', 0) ? 'Billable' : 'Not billable',
+      ),
+    ),
+  ));
+
   $attributes = array();
 
   $attributes['Project status'] = array(
@@ -185,8 +207,6 @@ function pmproject_schema() {
       'manager_title'       => array('type' => 'varchar', 'length' => 100),
       'assigned_nid'        => array('type' => 'int'),
       'assigned_title'      => array('type' => 'varchar', 'length' => 100),
-      'billable'            => array('type' => 'int', 'default' => 0),
-      'billed'              => array('type' => 'int', 'default' => 0),
     ),
     'primary key' => array('vid'),
     'indexes'     => array(
@@ -211,9 +231,14 @@ function pmproject_update_last_removed() {
  * Implements hook_update_dependencies().
  */
 function pmproject_update_dependencies() {
-  // Ensure that billing status field is created before instance.
+  // Ensure that date field is created before instance.
   $dependencies['pmproject'][7103] = array(
     'pm' => 7102,
+  );
+
+  // Ensure that billing status field is created before instance.
+  $dependencies['pmexpense'][7104] = array(
+    'pm' => 7101,
   );
 
   return $dependencies;
@@ -321,4 +346,59 @@ function pmproject_update_7103() {
   // Delete columns from existing database table.
   db_drop_field('pmproject', 'datebegin');
   db_drop_field('pmproject', 'dateend');
+}
+
+/**
+ * Adds billing status instance to PM Project content type.
+ */
+function pmproject_update_7104() {
+  // Uncache node types
+  node_types_rebuild();
+
+  // Set up instance of billing status field.
+  field_create_instance(array(
+    'field_name' => 'pm_billing_status',
+    'label' => 'Billing status',
+    'entity_type' => 'node',
+    'bundle' => 'pmproject',
+    'widget' => array(
+      'weight' => -14,
+      'type' => 'options_select',
+      'module' => 'options',
+      'active' => 1,
+      'settings' => array(),
+    ),
+    'required' => 1,
+    'description' => '',
+    'default_value' => array(
+      array(
+        'value' => variable_get('pmproject_billable_default', 0) ? 'Billable' : 'Not billable',
+      ),
+    ),
+  ));
+
+  // Delete the default field value. This is now set via the core field UI.
+  variable_del('pmproject_billable_default');
+
+  // Get existing field values.
+  $query = db_select('pmproject', 'pmpr');
+  $query->join('node', 'n', 'n.vid = pmpr.vid');
+  $result = $query
+    ->fields('pmpr', array('nid', 'vid', 'billable', 'billed'))
+    ->execute();
+
+  // Save existing field value into Field API field.
+  foreach ($result as $record) {
+    $node = node_load($record->nid);
+
+    $new_value = $record->billed ? 'Billed' : ($record->billable ? 'Billable' : 'Not billable');
+
+    $node->pm_billing_status[LANGUAGE_NONE][0]['value'] = $new_value;
+    field_attach_presave('node', $node);
+    field_attach_update('node', $node);
+  }
+
+  // Remove existing field from custom database table.
+  db_drop_field('pmproject', 'billable');
+  db_drop_field('pmproject', 'billed');
 }

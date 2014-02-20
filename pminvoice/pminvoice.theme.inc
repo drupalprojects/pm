@@ -69,7 +69,7 @@ function theme_pminvoice_view($variables) {
   );
 
   $status = 'open';
-  if ($node->pminvoice_paymentdate[LANGUAGE_NONE][0]['value']) {
+  if (isset($node->pminvoice_paymentdate[LANGUAGE_NONE][0]['value'])) {
     $status = 'paid';
   }
   elseif ($node->pminvoice_duedate[LANGUAGE_NONE][0]['value'] < time()) {
@@ -224,37 +224,4 @@ function theme_pminvoice_view($variables) {
   }
 
   return $node;
-}
-
-/**
- * @function
- * Code to create invoice auto_add link
- *
- * @return varchar
- *   html coding for the link
- */
-function theme_pminvoice_autoadd_links($variables) {
-  $nid = $variables['nid'];
-  $billable = $variables['billable'];
-  $billed = $variables['billed'];
-
-  if (user_access('Project Management invoice: add')) {
-    if ($billable && !$billed) {
-      $v = '';
-      $v = '<strong>' . t('Invoice this item:') . '</strong>';
-      $v .= '<ul>';
-      $v .= '<li>' . l(t('Add to new invoice'), 'pm/invoice/auto_add/new/' . $nid) . '</li>';
-      $v .= '<li>' . l(t('Add to existing invoice'), 'pm/invoice/auto_add/existing/' . $nid) . '</li>';
-      $v .= '</ul>';
-    }
-    elseif ($billed) {
-      $v = '';
-      $v .= '<strong>' . t('Item already billed.') . '</strong>';
-    }
-    else {
-      $v = '';
-      $v .= '<strong>' . t('Item marked unbillable.') . '</strong>';
-    }
-  }
-  return $v;
 }
