@@ -102,12 +102,11 @@ function pminvoice_menu() {
   );
 
   $items['admin/config/pm/invoice'] = array(
-    'title' => 'PM Invoice',
-    'description' => 'Administer Project Management Invoice.',
+    'title' => 'Invoices',
+    'description' => 'Configure defaults shown on PM Invoices.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('pminvoice_admin_settings'),
     'access arguments' => array('Project Management: access administration pages'),
-    'type' => MENU_LOCAL_TASK,
   );
 
   return $items;

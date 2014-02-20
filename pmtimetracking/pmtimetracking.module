@@ -96,12 +96,11 @@ function pmtimetracking_menu() {
   $items = array();
 
   $items['admin/config/pm/timetracking'] = array(
-    'title' => 'PM Timetracking',
-    'description' => 'Administer Project Management Timetracking.',
+    'title' => 'Timetrackings',
+    'description' => 'Configure billing settings for PM Timetracking.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('pmtimetracking_admin_settings'),
     'access arguments' => array('Project Management: access administration pages'),
-    'type' => MENU_LOCAL_TASK,
   );
 
   return $items;

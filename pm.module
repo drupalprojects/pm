@@ -84,18 +84,19 @@ function pm_menu() {
 
   $items['admin/config/pm'] = array(
     'title' => 'Project Management',
-    'description' => 'Project Management administration page',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('pm_admin_settings'),
+    'description' => 'Project Management settings',
+    'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('Project Management: access administration pages'),
-    'type' => MENU_NORMAL_ITEM,
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
   );
 
   $items['admin/config/pm/pm'] = array(
     'title' => 'Project Management',
-    'description' => 'Project Management administration page',
+    'description' => 'Project Management settings including display and taxation.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pm_admin_settings'),
     'access arguments' => array('Project Management: access administration pages'),
-    'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => -100,
   );
 

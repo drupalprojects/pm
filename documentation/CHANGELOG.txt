@@ -1,6 +1,7 @@
 ** New issues added should be added at the TOP of the list for each version as they are committed. **
 
 Version 7.x-1.x:
+- Issue #2047761 by juliangb: Improve configuration pages.
 - Issue #2102861 by juliangb | dbt102: Implement billing status in Field API.
 
 Version 7.x-1.0-alpha4:
