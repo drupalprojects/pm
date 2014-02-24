@@ -7,3 +7,5 @@ dependencies[] = pmproject
 dependencies[] = pmtask
 package = Project Management
 core = 7.x
+
+files[] = pmnote.test

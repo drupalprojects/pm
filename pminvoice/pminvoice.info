@@ -5,3 +5,5 @@ dependencies[] = pmorganization
 dependencies[] = pmproject
 package = Project Management
 core = 7.x
+
+files[] = pminvoice.test

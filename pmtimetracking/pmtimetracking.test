@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Test definitions for the Project Management Timetracking module.
+ * Test definitions for the PM Timetracking module.
  */
 class PMTimetrackingTestCase extends DrupalWebTestCase {
 
@@ -10,8 +10,8 @@ class PMTimetrackingTestCase extends DrupalWebTestCase {
    */
   public static function getInfo() {
     return array(
-      'name' => t('Project Management Timetracking Functionality'),
-      'description' => t('Test the functionality of the Project Management Timetracking module'),
+      'name' => t('PM Timetracking Functionality'),
+      'description' => t('Test the functionality of the PM Timetracking module'),
       'group' => 'Project Management',
     );
   }
@@ -34,7 +34,7 @@ class PMTimetrackingTestCase extends DrupalWebTestCase {
     // Create organization and invoice
     $org = array(
       'title' => $this->randomName(32),
-      'body' => $this->randomName(64),
+      'body[und][0][value]' => $this->randomName(64),
     );
     $prj = array(
       'title' => $this->randomName(32),
@@ -42,15 +42,15 @@ class PMTimetrackingTestCase extends DrupalWebTestCase {
     );
     $task = array(
       'title' => $this->randomName(32),
-      'body' => $this->randomName(64),
+      'body[und][0][value]' => $this->randomName(64),
     );
     $ticket = array(
       'title' => $this->randomName(32),
-      'body' => $this->randomName(64),
+      'body[und][0][value]' => $this->randomName(64),
     );
     $timetracking = array(
       'title' => $this->randomName(32),
-      'body' => $this->randomName(64),
+      'body[und][0][value]' => $this->randomName(64),
     );
     $this->drupalPost('node/add/pmorganization', $org, t('Save'));
     $this->drupalPost('node/add/pmproject', $prj, t('Save'));

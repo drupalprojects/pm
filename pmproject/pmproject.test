@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Test definitions for the Project Management Project module
+ * Test definitions for the PM Project module
  */
 class PMProjectTestCase extends DrupalWebTestCase {
 
@@ -10,8 +10,8 @@ class PMProjectTestCase extends DrupalWebTestCase {
    */
   public static function getInfo() {
     return array(
-      'name' => t('Project Management Project Functionality'),
-      'description' => t('Test the functionality of the Project Management Project module'),
+      'name' => t('PM Project Functionality'),
+      'description' => t('Test the functionality of the PM Project module'),
       'group' => 'Project Management',
     );
   }
@@ -52,15 +52,15 @@ class PMProjectTestCase extends DrupalWebTestCase {
     // Create organization and invoice
     $org = array(
       'title' => $this->randomName(32),
-      'body' => $this->randomName(64),
+      'body[und][0][value]' => $this->randomName(64),
     );
     $prj = array(
       'title' => $this->randomName(32),
       'organization_nid' => '1',
     );
-//    $this->drupalPost('node/add/pmorganization', $org, t('Save'));
-//    $this->drupalPost('node/add/pmproject', $prj, t('Save'));
+    $this->drupalPost('node/add/pmorganization', $org, t('Save'));
+    $this->drupalPost('node/add/pmproject', $prj, t('Save'));
 
-//    $this->assertText(t('Project @title has been created.', array('@title' => $prj['title'])));;
+    $this->assertText(t('Project @title has been created.', array('@title' => $prj['title'])));;
   }
 }

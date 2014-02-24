@@ -7,3 +7,5 @@ dependencies[] = pmtask
 dependencies[] = pmticket
 package = Project Management
 core = 7.x
+
+files[] = pmexpense.test

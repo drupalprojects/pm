@@ -14,8 +14,8 @@ class PMNoteTestCase extends DrupalWebTestCase {
    */
   public static function getInfo() {
     return array(
-      'name' => t('Project Management Note Functionality'),
-      'description' => t('Test the functionality of the Project Management Note module'),
+      'name' => t('PM Note Functionality'),
+      'description' => t('Test the functionality of the PM Note module'),
       'group' => 'Project Management',
     );
   }
@@ -39,7 +39,7 @@ class PMNoteTestCase extends DrupalWebTestCase {
     $this->drupalGet('pm/notes');
     $this->assertResponse(403, t('Make sure access is denied to Project Management Notes list for basic user'));
 
-    $privileged_user = $this->drupalCreateUser(array('Project Management Note: access'));
+    $privileged_user = $this->drupalCreateUser(array('Project Management note: access'));
     $this->drupalLogin($privileged_user);
     $this->drupalGet('pm/notes');
     $this->assertText(t('Notes'), t('Make sure the correct page has been displayed by checking that the title is "Notes".'));
@@ -50,13 +50,13 @@ class PMNoteTestCase extends DrupalWebTestCase {
    */
   public function testpmnoteCreate() {
     // Create and login user
-    $user = $this->drupalCreateUser(array('Project Management Organization: add', 'Project Management Organization: view all', 'Project Management Project: add', 'Project Management Project: view all', 'Project Management Task: add', 'Project Management Task: view all', 'Project Management Note: add', 'Project Management Note: view all'));
+    $user = $this->drupalCreateUser(array('Project Management Organization: add', 'Project Management Organization: view all', 'Project Management Project: add', 'Project Management Project: view all', 'Project Management Task: add', 'Project Management Task: view all', 'Project Management note: add', 'Project Management note: view all'));
     $this->drupalLogin($user);
 
     // Create organization and invoice
     $org = array(
       'title' => $this->randomName(32),
-      'body' => $this->randomName(64),
+      'body[und][0][value]' => $this->randomName(64),
     );
     $prj = array(
       'title' => $this->randomName(32),
@@ -64,11 +64,11 @@ class PMNoteTestCase extends DrupalWebTestCase {
     );
     $task = array(
       'title' => $this->randomName(32),
-      'body' => $this->randomName(64),
+      'body[und][0][value]' => $this->randomName(64),
     );
     $note = array(
       'title' => $this->randomName(32),
-      'body' => $this->randomName(64),
+      'body[und][0][value]' => $this->randomName(64),
     );
     $this->drupalPost('node/add/pmorganization', $org, t('Save'));
     $this->drupalPost('node/add/pmproject', $prj, t('Save'));

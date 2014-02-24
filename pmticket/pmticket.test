@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Test definitions for the Project Management Ticket module.
+ * Test definitions for the PM Ticket module.
  */
 class PMTicketTestCase extends DrupalWebTestCase {
 
@@ -10,8 +10,8 @@ class PMTicketTestCase extends DrupalWebTestCase {
    */
   public static function getInfo() {
     return array(
-      'name' => t('Project Management Ticket Functionality'),
-      'description' => t('Test the functionality of the Project Management Ticket module'),
+      'name' => t('PM Ticket Functionality'),
+      'description' => t('Test the functionality of the PM Ticket module'),
       'group' => 'Project Management',
     );
   }
@@ -52,7 +52,7 @@ class PMTicketTestCase extends DrupalWebTestCase {
     // Create organization and invoice
     $org = array(
       'title' => $this->randomName(32),
-      'body' => $this->randomName(64),
+      'body[und][0][value]' => $this->randomName(64),
     );
     $prj = array(
       'title' => $this->randomName(32),
@@ -60,17 +60,17 @@ class PMTicketTestCase extends DrupalWebTestCase {
     );
     $task = array(
       'title' => $this->randomName(32),
-      'body' => $this->randomName(64),
+      'body[und][0][value]' => $this->randomName(64),
     );
     $ticket = array(
       'title' => $this->randomName(32),
-      'body' => $this->randomName(64),
+      'body[und][0][value]' => $this->randomName(64),
     );
-//    $this->drupalPost('node/add/pmorganization', $org, t('Save'));
-//    $this->drupalPost('node/add/pmproject', $prj, t('Save'));
-//    $this->drupalPost('node/add/pmtask', $task, t('Save'));
-//    $this->drupalPost('node/add/pmticket', $ticket, t('Save'));
+    $this->drupalPost('node/add/pmorganization', $org, t('Save'));
+    $this->drupalPost('node/add/pmproject', $prj, t('Save'));
+    $this->drupalPost('node/add/pmtask', $task, t('Save'));
+    $this->drupalPost('node/add/pmticket', $ticket, t('Save'));
 
-//    $this->assertText(t('Ticket @title has been created.', array('@title' => $ticket['title'])));;
+    $this->assertText(t('Ticket @title has been created.', array('@title' => $ticket['title'])));;
   }
 }

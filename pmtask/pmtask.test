@@ -1,11 +1,11 @@
 <?php
 /**
  * @file
- * Test definitions for the Project Management Task module
+ * Test definitions for the PM Task module
  */
 
 /**
- * Class defining Project Management Task test cases.
+ * Class defining PM Task test cases.
  */
 class PMTaskTestCase extends DrupalWebTestCase {
 
@@ -14,8 +14,8 @@ class PMTaskTestCase extends DrupalWebTestCase {
    */
   public static function getInfo() {
     return array(
-      'name' => t('Project Management Task Functionality'),
-      'description' => t('Test the functionality of the Project Management Task module'),
+      'name' => t('PM Task Functionality'),
+      'description' => t('Test the functionality of the PM Task module'),
       'group' => 'Project Management',
     );
   }
@@ -56,7 +56,7 @@ class PMTaskTestCase extends DrupalWebTestCase {
     // Create organization and invoice
     $org = array(
       'title' => $this->randomName(32),
-      'body' => $this->randomName(64),
+      'body[und][0][value]' => $this->randomName(64),
     );
     $prj = array(
       'title' => $this->randomName(32),
@@ -64,12 +64,12 @@ class PMTaskTestCase extends DrupalWebTestCase {
     );
     $task = array(
       'title' => $this->randomName(32),
-      'body' => $this->randomName(64),
+      'body[und][0][value]' => $this->randomName(64),
     );
-//    $this->drupalPost('node/add/pmorganization', $org, t('Save'));
-//    $this->drupalPost('node/add/pmproject', $prj, t('Save'));
-//    $this->drupalPost('node/add/pmtask', $task, t('Save'));
+    $this->drupalPost('node/add/pmorganization', $org, t('Save'));
+    $this->drupalPost('node/add/pmproject', $prj, t('Save'));
+    $this->drupalPost('node/add/pmtask', $task, t('Save'));
 
-//    $this->assertText(t('Task @title has been created.', array('@title' => $task['title'])));;
+    $this->assertText(t('Task @title has been created.', array('@title' => $task['title'])));;
   }
 }

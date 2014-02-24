@@ -1,11 +1,11 @@
 <?php
 /**
  * @file
- * Test definitions for the Project Management expense module
+ * Test definitions for the PM Expense module
  */
 
 /**
- * Defines tests for the Project Management Expense module.
+ * Defines tests for the PM Expense module.
  */
 class PMExpenseTestCase extends DrupalWebTestCase {
 
@@ -14,8 +14,8 @@ class PMExpenseTestCase extends DrupalWebTestCase {
    */
   public static function getInfo() {
     return array(
-      'name' => t('Project Management Expense Functionality'),
-      'description' => t('Test the functionality of the Project Management Expense module'),
+      'name' => t('PM Expense Functionality'),
+      'description' => t('Test the functionality of the PM Expense module'),
       'group' => 'Project Management',
     );
   }
@@ -53,7 +53,7 @@ class PMExpenseTestCase extends DrupalWebTestCase {
     $user = $this->drupalCreateUser(array('Project Management Organization: add', 'Project Management Organization: view all', 'Project Management expense: add', 'Project Management expense: view all', 'Project Management Project: view all', 'Project Management Task: view all'));
     $this->drupalLogin($user);
 
-    // Create a team
+    // Create an organization
     $org = array(
       'title' => $this->randomName(32),
     );

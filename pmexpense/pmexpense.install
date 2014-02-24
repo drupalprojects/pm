@@ -12,62 +12,68 @@ function pmexpense_install() {
   variable_set('node_permissions_pmexpense', 0);
 
   // Expense date field.
-  field_create_field(array(
-    'type' => 'datetime',
-    'field_name' => 'pmexpense_date',
-    'settings' => array(
-      'granularity' => array(
-        'year' => 'year',
-        'month' => 'month',
-        'day' => 'day',
-        'hour' => 0,
-        'minute' => 0,
-        'second' => 0,
+  if (!field_info_field('pmexpense_date')) {
+    field_create_field(array(
+      'type' => 'datetime',
+      'field_name' => 'pmexpense_date',
+      'settings' => array(
+        'granularity' => array(
+          'year' => 'year',
+          'month' => 'month',
+          'day' => 'day',
+          'hour' => 0,
+          'minute' => 0,
+          'second' => 0,
+        ),
+        'tz_handling' => '',
+        'timezone_db' => '',
+        'todate' => '',
       ),
-      'tz_handling' => '',
-      'timezone_db' => '',
-      'todate' => '',
-    ),
-    'cardinality' => '1',
-  ));
+      'cardinality' => '1',
+    ));
+  }
 
-  field_create_instance(array(
-    'field_name' => 'pmexpense_date',
-    'bundle' => 'pmexpense',
-    'label' => 'Expense Date',
-    'required' => 1,
-    'entity_type' => 'node',
-    'widget' => array(
-      'weight' => '-18',
-      'type' => 'date_text',
-      'active' => 1,
-    ),
-    'settings' => array(
-      'default_value' => 'now',
-    ),
-  ));
+  if (!field_info_instance('node', 'pmexpense_date', 'pmexpense')) {
+    field_create_instance(array(
+      'field_name' => 'pmexpense_date',
+      'bundle' => 'pmexpense',
+      'label' => 'Expense Date',
+      'required' => 1,
+      'entity_type' => 'node',
+      'widget' => array(
+        'weight' => '-18',
+        'type' => 'date_text',
+        'active' => 1,
+      ),
+      'settings' => array(
+        'default_value' => 'now',
+      ),
+    ));
+  }
 
   // Set up instance of billing status field.
-  field_create_instance(array(
-    'field_name' => 'pm_billing_status',
-    'label' => 'Billing status',
-    'entity_type' => 'node',
-    'bundle' => 'pmexpense',
-    'widget' => array(
-      'weight' => -17,
-      'type' => 'options_select',
-      'module' => 'options',
-      'active' => 1,
-      'settings' => array(),
-    ),
-    'required' => 1,
-    'description' => '',
-    'default_value' => array(
-      array(
-        'value' => variable_get('pmexpense_billable_default', 0) ? 'Billable' : 'Not billable',
+  if (!field_info_instance('node', 'pm_billing_status', 'pmexpense')) {
+    field_create_instance(array(
+      'field_name' => 'pm_billing_status',
+      'label' => 'Billing status',
+      'entity_type' => 'node',
+      'bundle' => 'pmexpense',
+      'widget' => array(
+        'weight' => -17,
+        'type' => 'options_select',
+        'module' => 'options',
+        'active' => 1,
+        'settings' => array(),
       ),
-    ),
-  ));
+      'required' => 1,
+      'description' => '',
+      'default_value' => array(
+        array(
+          'value' => variable_get('pmexpense_billable_default', 0) ? 'Billable' : 'Not billable',
+        ),
+      ),
+    ));
+  }
 
   $attributes = array();
 

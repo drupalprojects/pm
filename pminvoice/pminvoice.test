@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Test definitions for the Project Management Invoice module.
+ * Test definitions for the PM Invoice module.
  */
 class PMInvoiceTestCase extends DrupalWebTestCase {
 
@@ -10,8 +10,8 @@ class PMInvoiceTestCase extends DrupalWebTestCase {
    */
   public static function getInfo() {
     return array(
-      'name' => t('Project Management Invoice Functionality'),
-      'description' => t('Test the functionality of the Project Management Invoice module'),
+      'name' => t('PM Invoice Functionality'),
+      'description' => t('Test the functionality of the PM Invoice module'),
       'group' => 'Project Management',
     );
   }
@@ -52,7 +52,7 @@ class PMInvoiceTestCase extends DrupalWebTestCase {
     // Create organization and invoice
     $org = array(
       'title' => $this->randomName(32),
-      'body' => $this->randomName(64),
+      'body[und][0][value]' => $this->randomName(64),
     );
     $inv = array(
       'title' => $this->randomName(32),
