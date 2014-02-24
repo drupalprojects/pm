@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  */
@@ -7,25 +6,6 @@ function theme_pmorganization_view($variables) {
   $node = $variables['node'];
 
   drupal_add_css(drupal_get_path('module', 'pm') . '/pm-node.css');
-
-  $l_pos = 1; // Used to increase the link position number (see issue 814820)
-
-  $node->content['links'] = array(
-    '#prefix' => '<div class="pmlinks"><dl>',
-    '#suffix' => '</dl></div>',
-    '#weight' => -25,
-  );
-
-/**
-  $node->content['links']['expenses'] = theme('pm_link', 'pmorganization', 'pmexpense', $node->nid, $l_pos++);
-  $node->content['links']['invoices'] = theme('pm_link', 'pmorganization', 'pminvoice', $node->nid, $l_pos++);
-  $node->content['links']['notes'] = theme('pm_link', 'pmorganization', 'pmnote', $node->nid, $l_pos++);
-  $node->content['links']['people'] = theme('pm_link', 'pmorganization', 'pmperson', $node->nid, $l_pos++);
-  $node->content['links']['projects'] = theme('pm_link', 'pmorganization', 'pmproject', $node->nid, $l_pos++);
-  $node->content['links']['tasks'] = theme('pm_link', 'pmorganization', 'pmtask', $node->nid, $l_pos++);
-  $node->content['links']['tickets'] = theme('pm_link', 'pmorganization', 'pmticket', $node->nid, $l_pos++);
-  $node->content['links']['timetrackings'] = theme('pm_link', 'pmorganization', 'pmtimetracking', $node->nid, $l_pos++);
- */
 
   $node->content['group2'] = array(
     '#prefix' => '<div class="pmfields">',

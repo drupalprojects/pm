@@ -8,9 +8,8 @@
  * 4: Invoice create / edit form
  * 5: Invoice node manipulation functions
  * 6: Admin settings
- * 7: Auto_add handler
- * 8: Views hook
- * 9: Project Managementinvoiceitem legacy functions
+ * 7: Views hook
+ * 8: Project Managementinvoiceitem legacy functions
  */
 
 /**
@@ -85,22 +84,6 @@ function pminvoice_permission() {
 function pminvoice_menu() {
   $items = array();
 
-  $items['pm/invoice/auto_add/new/%node'] = array(
-    'page callback' => 'pminvoice_auto_add',
-    'page arguments' => array(4),
-    'access arguments' => array('Project Management invoice: add'),
-    'type' => MENU_CALLBACK,
-    'file' => 'pminvoice.auto_add.inc',
-  );
-
-  $items['pm/invoice/auto_add/existing/%'] = array(
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('pminvoice_auto_add_select'),
-    'access arguments' => array('Project Management invoice: add'),
-    'type' => MENU_CALLBACK,
-    'file' => 'pminvoice.auto_add.inc',
-  );
-
   $items['admin/config/pm/invoice'] = array(
     'title' => 'Invoices',
     'description' => 'Configure defaults shown on PM Invoices.',
@@ -120,14 +103,6 @@ function pminvoice_theme() {
     'pminvoice_view' => array(
       'file'      => 'pminvoice.theme.inc',
       'variables' => array('node', 'view_mode'),
-    ),
-    'pminvoice_autoadd_links' => array(
-      'file'      => 'pminvoice.theme.inc',
-      'variables' => array(
-        'nid' => NULL,
-        'billable' => NULL,
-        'billed' => NULL,
-      ),
     ),
   );
 }
@@ -826,21 +801,6 @@ function pminvoice_admin_settings() {
     '#description' => t('Modes for invoice payment'),
   );
 
-  $form['pminvoice_cover_note_subject'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Cover note subject'),
-    '#default_value' => variable_get('pminvoice_cover_note_subject', t('Invoice from !site', array('!site' => variable_get('site_name', 'Project Management')))),
-    '#description' => t('Default subject for cover note'),
-    '#size' => 50,
-  );
-
-  $form['pminvoice_cover_note'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Cover note for invoice'),
-    '#default_value' => variable_get('pminvoice_cover_note', 'Hope this comes easy to you.'),
-    '#description' => t('Default cover note for pdf invoice sent by email'),
-  );
-
   $form['pminvoice_payment_terms'] = array(
     '#type' => 'textfield',
     '#title' => t('Payment terms'),
@@ -908,178 +868,7 @@ function pminvoice_get_invoice_number() {
   return $new_invoice_number;
 }
 
-/**
- * Get the rate from a pm node to create an invoice item.
- *
- * Try to obtain an hourly rate or fixed price for the new invoice item for a
- * timetracking node.
- * To do this we will use the first technique, among the following, to work:
- *  (1) try to obtain a rate from a ticket
- *  (2) try to obtain a rate from a task
- *  (3) try to obtain a rate from a project
- *  (4) try to obtain a rate from an organization
- *  (5) return an error if none of this worked.
- *
- * @return
- *   Variables in an array.
- */
-function pminvoice_get_rate($node) {
-  $rate_array = array('pricemode_used' => '', 'rate_to_use' => 0);
-
-  $hours_per_day = variable_get('pminvoice_hours_per_day', 8);
-  $found = FALSE;
-
-  $node_list = array();
-
-  switch ($node->type) {
-    case 'pmtimetracking':
-      $node_list = array('ticket' => $node->ticket_nid, 'task' => $node->task_nid, 'project' => $node->project_nid, 'organization' => $node->organization_nid);
-      break;
-    case 'pmproject':
-      $node_list = array('project' => $node->nid, 'organization' => $node->organization_nid);
-      break;
-    case 'pmtask':
-      $node_list = array('task' => $node->nid, 'project' => $node->project_nid, 'organization' => $node->organization_nid);
-      break;
-    case 'pmticket':
-      $node_list = array('ticket' => $node->nid, 'task' => $node->task_nid, 'project' => $node->project_nid, 'organization' => $node->organization_nid);
-      break;
-  }
-
-  foreach ($node_list as $type => $nid) {
-    if ($nid) {
-      $parent_item = node_load($nid);
-      switch ($parent_item->pricemode) {
-        case 'hourly':
-          if ($parent_item->durationunit == 'hour') {
-            $found = TRUE;
-            $rate_array['rate_to_use'] = $parent_item->price;
-          }
-          elseif ($parent_item->durationunit == 'day') {
-            $found = TRUE;
-            $rate_array['rate_to_use'] = $parent_item->price * $hours_per_day;
-          }
-          break;
-
-        case 'daily':
-          if ($parent_item->durationunit == 'hour') {
-            $found = TRUE;
-            $rate_array['rate_to_use'] = $parent_item->price / $hours_per_day;
-          }
-          elseif ($parent_item->durationunit == 'day') {
-            $found = TRUE;
-            $rate_array['rate_to_use'] = $parent_item->price;
-          }
-          break;
-
-        case 'fixed':
-          $found = TRUE;
-          $rate_array['rate_to_use'] = 0;
-          break;
-
-        case 'fixed_price':
-          $found = TRUE;
-          $rate_array['rate_to_use'] = $parent_item->price;
-          break;
-
-        default:
-          continue;
-      }
-    }
-    if ($found == TRUE) {
-      $rate_array['pricemode_used'] = $parent_item->pricemode;
-      break;
-    }
-  }
-  if ($found == FALSE) {
-    drupal_set_message(t('Error whilst finding a rate from ticket, task, project and organization. Consider setting the pricemode and price for your client organizations to avoid this error.'), 'error');
-  }
-  return $rate_array;
-}
-
-/**
- * Create the description for a invoice item depending on the node type.
- */
-function pminvoice_get_item_desc($rate_array, $node) {
-
-  switch ($rate_array['pricemode_used']) {
-    case 'hourly':
-      if ($node->type == 'pmtimetracking') {
-        $description = format_date($node->trackingdate, 'custom', 'd M y') . ': ' . t('@dur @units work at @rate per hour on @desc', array('@dur' => $node->billing_duration, '@unit' => $node->durationunit, '@rate' => $node->price, '@desc' => $node->title));
-      }
-      else {
-        $description = format_date(time(), 'custom', 'd M y') . ': ' . t('@dur @units work at @rate per hour on @desc', array('@dur' => $node->duration, '@unit' => $node->durationunit, '@rate' => $node->price, '@desc' => $node->title));
-      }
-      break;
-    case 'daily':
-      if ($node->type == 'pmtimetracking') {
-        $description = format_date($node->trackingdate, 'custom', 'd M y') . ': ' . t('@dur @units work at @rate per day on @desc', array('@dur' => $node->billing_duration, '@unit' => $node->durationunit, '@rate' => $node->price, '@desc' => $node->title));
-      }
-      else {
-        $description = format_date(time(), 'custom', 'd M y') . ': ' . t('@dur @units work at @rate per day on @desc', array('@dur' => $node->duration, '@unit' => $node->durationunit, '@rate' => $node->price, '@desc' => $node->title));
-      }
-      break;
-    case 'fixed':
-      if ($node->type == 'pmtimetracking') {
-        $description = format_date($node->trackingdate, 'custom', 'd M y') . ': ' . t('@dur @units unbilled work on @desc', array('@dur' => $node->billing_duration, '@unit' => $node->durationunit, '@desc' => $node->title));
-      }
-      else {
-        $description = format_date(time(), 'custom', 'd M y') . ': ' . t('@dur @units unbilled work on @desc', array('@dur' => $node->duration, '@unit' => $node->durationunit, '@desc' => $node->title));
-      }
-      break;
-    case 'fixed_price':
-      switch ($node->type) {
-        case 'pmtimetracking':
-        $description = format_date($node->trackingdate, 'custom', 'd M y') . ': ' . t('work billed for @desc', array('@desc' => $node->title));
-        break;
-      case 'pmproject':
-        $description = t('Project billed: @desc', array('@desc' => $node->title));
-        break;
-      case 'pmtask':
-        $description = t('Task billed: @desc', array('@desc' => $node->title));
-        break;
-      case 'pmticket':
-        $description = t('Ticket billed: @desc', array('@desc' => $node->title));
-        break;
-      }
-  }
-
-  return $description;
-}
-
-/**
- * Get the amount for an invoice item.
- */
-function pminvoice_get_item_amount($rate_array, $node) {
-  switch ($rate_array['pricemode_used']) {
-    case 'hourly':
-      if ($node->type == 'pmtimetracking') {
-        $amount = $node->billing_duration * $rate_array['rate_to_use'];
-      }
-      else {
-        $amount = $node->duration * $rate_array['rate_to_use'];
-      }
-      break;
-    case 'daily':
-      if ($node->type == 'pmtimetracking') {
-        $amount = $node->billing_duration * $rate_array['rate_to_use'];
-      }
-      else {
-        $amount = $node->duration * $rate_array['rate_to_use'];
-      }
-      break;
-    case 'fixed':
-      $amount = $rate_array['rate_to_use'];
-      break;
-    case 'fixed_price':
-      $amount = $rate_array['rate_to_use'];
-      break;
-    }
-
-  return $amount;
-}
-
-/**
+/*
  * Implements hook_token_list().
  */
 function pminvoice_token_list($type='all') {

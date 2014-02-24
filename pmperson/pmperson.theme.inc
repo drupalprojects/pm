@@ -12,12 +12,6 @@ function theme_pmperson_view($variables) {
 
   drupal_add_css(drupal_get_path('module', 'pm') . '/pm-node.css', 'module');
 
-  $node->content['links'] = array(
-    '#prefix' => '<div class="pmlinks"><dl>',
-    '#suffix' => '</dl></div>',
-    '#weight' => -25,
-  );
-
   $node->content['group1'] = array(
     '#prefix' => '<div class="pmfields">',
     '#suffix' => '</div>',

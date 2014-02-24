@@ -16,31 +16,6 @@
 function theme_pmexpense_view($variables) {
   $node = $variables['node'];
 
-  // Used to increase the link position number (see issue 814820)
-  $l_pos = 1;
-
-  $node->content['links'] = array(
-    '#prefix' => '<div class="pmlinks"><dl>',
-    '#suffix' => '</dl></div>',
-    '#weight' => -25,
-  );
-  // Code to create invoice auto_add link.
-  if (module_exists('pminvoice') && user_access('Project Management invoice: add')) {
-    $v = '';
-    $v .= '<strong>' . t('Invoice this item:') . '</strong>';
-    $v .= '<ul>';
-    $v .= '<li>' . l(t('Add to new invoice'), 'pm/invoice/auto_add/new/' . $node->nid) . '</li>';
-    $v .= '<li>' . l(t('Add to existing invoice'), 'pm/invoice/auto_add/existing/' . $node->nid) . '</li>';
-    $v .= '</ul>';
-
-    $node->content['links']['auto_invoice'] = array(
-      '#prefix' => '<dt id="pminvoices" class="pmcomponent">',
-      '#suffix' => '</dt>',
-      '#value' => $v,
-      '#weight' => $l_pos++,
-    );
-  }
-
   $node->content['group1'] = array(
     '#prefix' => '<div class="field">',
     '#suffix' => '</div>',

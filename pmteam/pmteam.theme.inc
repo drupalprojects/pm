@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Theme functions for the Project Management Team module
@@ -15,12 +14,6 @@ function theme_pmteam_view($variables) {
   drupal_add_css(drupal_get_path('module', 'pm') . '/pm-node.css', 'module');
 
   $type = node_type_get_type($node);
-
-  /* $node->content['links'] = array(
-    '#prefix' => '<div class="pmlinks"><dl>',
-    '#suffix' => '</dl></div>',
-    '#weight' => -25,
-  );*/
 
   $node->content['group1'] = array(
     '#prefix' => '<div class="pmfields">',

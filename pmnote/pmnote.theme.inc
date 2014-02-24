@@ -13,14 +13,6 @@ function theme_pmnote_view($variables) {
 
   drupal_add_css(drupal_get_path('module', 'pm') . '/pm-node.css', 'module');
 
-  $l_pos = 1; // Used to increase the link position number (see issue 814820)
-
-  $node->content['links'] = array(
-    '#prefix' => '<div class="pmlinks"><dl>',
-    '#suffix' => '</dl></div>',
-    '#weight' => $l_pos++,
-  );
-
   $node->content['group1'] = array(
     '#prefix' => '<div class="pmfields">',
     '#suffix' => '</div>',
