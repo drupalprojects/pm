@@ -1,71 +1,21 @@
 <?php
 /**
  * @file
+ * Installation and update functions for PM Person module.
  */
 
 /**
  * Implements hook_install().
  */
 function pmperson_install() {
-  variable_set('node_options_pmperson', array('status'));
-  variable_set('node_permissions_pmperson', 0);
-
-  // Uncache node types
-  node_types_rebuild();
-
-  // Fetch list of current node types and add body field to pmproject
-  $types = node_type_get_types();
-  node_add_body_field($types['pmperson'], 'Description');
-}
-
-/**
- * Implements hook_enable().
- */
-function pmperson_enable() {
-  node_access_needs_rebuild(TRUE);
+  // Create user fields
 }
 
 /**
  * Implements hook_disable().
  */
 function pmperson_disable() {
-  node_access_needs_rebuild(TRUE);
-  drupal_set_message(t('Nodes of type "Person" have not been deleted on disabling Project Management Person. Please note that they will now have reduced functionality, and will not be protected by Project Management Person access controls.'), 'warning');
-}
-
-/**
- * Implements hook_uninstall().
- */
-function pmperson_uninstall() {
-  drupal_uninstall_schema('pmperson');
-}
-
-/**
- * Implements hook_schema().
- */
-function pmperson_schema() {
-  $schema['pmperson'] = array(
-    'fields'                => array(
-      'vid'                 => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
-      'nid'                 => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
-      'organization_nid'    => array('type' => 'int'),
-      'organization_title'  => array('type' => 'varchar', 'length' => 150),
-      'prefix'              => array('type' => 'varchar', 'length' => 100),
-      'email'               => array('type' => 'varchar', 'length' => 50),
-      'www'                 => array('type' => 'varchar', 'length' => 100),
-      'phone'               => array('type' => 'varchar', 'length' => 100),
-      'im'                  => array('type' => 'varchar', 'length' => 100),
-      'user_uid'            => array('type' => 'int'),
-    ),
-    'primary key' => array('vid'),
-    'indexes'     => array(
-      'nid'              => array('nid'),
-      'organization_nid' => array('organization_nid'),
-      'user_uid'         => array('user_uid'),
-    ),
-  );
-
-  return $schema;
+  drupal_set_message(t('The PM Person module has been disabled, but user fields have not been deleted. These are no longer protected by PM Person access controls.'), 'warning');
 }
 
 /**
@@ -76,7 +26,7 @@ function pmperson_update_last_removed() {
 }
 
 /**
- * Adds Drupal 7 style body field to Project Management Person nodes.
+ * Adds Drupal 7 style body field to PM Person nodes.
  */
 function pmperson_update_7100() {
   // Uncache node types
@@ -85,27 +35,77 @@ function pmperson_update_7100() {
   $types = node_type_get_types();
   node_add_body_field($types['pmperson'], 'Description');
 
-  return 'Added D7 style body field to pm person nodes';
+  return 'Added D7 style body field to PM Person nodes';
 }
 
 /**
  * Deletes fullname field from the person table (deprecated since 6.x-2.x).
  */
 function pmperson_update_7101() {
-  db_drop_field('pmperson', 'fullname');
+  // PM Person nodes are removed in a subsequent update.
+  // Therefore, we no longer need this update.
 }
 
 /**
  * Allow Project Management to override the default Person content type CRUD.
  */
 function pmperson_update_7102() {
-  variable_set('node_permissions_pmperson', 0);
-  return 'PM Person permissions overridden';
+  // PM Person nodes are removed in a subsequent update.
+  // Therefore, we no longer need this update.
 }
 
 /**
  * Display message to admin regarding need to rebuild permission.
  */
 function pmperson_update_7103() {
-  node_access_needs_rebuild(TRUE);
+  // PM Person nodes are removed in a subsequent update.
+  // Therefore, we no longer need this update.
+}
+
+/**
+ * Migrate PM Person nodes to fields on Drupal users.
+ */
+function pmperson_update_7104() {
+  // Link all existing PM Person nodes to a user account.
+  // Create dummy accounts where a match cannot be found.
+  $unmapped_results = db_select('pmperson', 'pmpe')
+    ->fields('pmpe')
+    ->isNull('pmpe.user_uid')
+    ->execute();
+
+  foreach ($unmapped_results as &$unmapped_record) {
+    // Attempt to match by email address
+    if ($mapped_user_mail = user_load_by_mail($unmapped_record->email)) {
+      // Check that the e-mail address is not already assigned to another user.
+      // @todo
+
+      // Update the PM Person record, to be later saved into the database.
+      $unmapped_record->user_uid = $mapped_user_mail->uid;
+    }
+
+    // Create a dummy user and match on that.
+    if ($unmapped_record->user_uid == NULL) {
+      $unmapped_record->user_uid = user_save(array(
+        'name' => NULL, // user name - @todo NEED THE PM PERSON NODE TITLE
+        'mail' => $unmapped_record->email, // email - @todo Backfill with username@example.com if not entered
+        'init' => NULL, // @todo same as mail
+        'pass' => user_password(),
+      ));
+    }
+  }
+
+  // Update references to PM Person nodes in other PM modules.
+
+  // Migrate PM Person data into user fields.
+
+  // Delete all PM Person nodes and the content type.
+
+  // Delete the PM Person database table.
+  db_drop_table('pmperson');
+
+  // Delete variables previously set by the PM Person module that are now redundant.
+  variable_del('node_options_pmperson');
+  variable_del('node_permissions_pmperson');
+
+  return 'PM Person nodes have been migrated to fields on Drupal users.';
 }
