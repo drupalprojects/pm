@@ -22,50 +22,15 @@ function pmperson_disable() {
  * Implements hook_update_last_removed().
  */
 function pmperson_update_last_removed() {
-  return 6201;
-}
-
-/**
- * Adds Drupal 7 style body field to PM Person nodes.
- */
-function pmperson_update_7100() {
-  // Uncache node types
-  node_types_rebuild();
-  // Fetch list of current node types and add body field to pm person
-  $types = node_type_get_types();
-  node_add_body_field($types['pmperson'], 'Description');
-
-  return 'Added D7 style body field to PM Person nodes';
-}
-
-/**
- * Deletes fullname field from the person table (deprecated since 6.x-2.x).
- */
-function pmperson_update_7101() {
-  // PM Person nodes are removed in a subsequent update.
-  // Therefore, we no longer need this update.
-}
-
-/**
- * Allow Project Management to override the default Person content type CRUD.
- */
-function pmperson_update_7102() {
-  // PM Person nodes are removed in a subsequent update.
-  // Therefore, we no longer need this update.
-}
-
-/**
- * Display message to admin regarding need to rebuild permission.
- */
-function pmperson_update_7103() {
-  // PM Person nodes are removed in a subsequent update.
-  // Therefore, we no longer need this update.
+  return 7103;
 }
 
 /**
  * Migrate PM Person nodes to fields on Drupal users.
  */
-function pmperson_update_7104() {
+function pmperson_update_7104(&$sandbox) {
+  module_load_include('inc', 'pmperson', 'includes/pmperson.migrate');
+  return pmperson_migrate($sandbox);
   // Link all existing PM Person nodes to a user account.
   // Create dummy accounts where a match cannot be found.
   $unmapped_results = db_select('pmperson', 'pmpe')
