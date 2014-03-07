@@ -22,6 +22,16 @@ function pmperson_migrate(&$sandbox) {
 }
 
 /**
+ * Checks the database and see if there are any conflicts that would
+ * affect the update.
+ */
+function pmperson_migrate_update_could_be_performed() {
+  if (db_table_exists('pmperson')) {
+    # code...
+  }
+  return TRUE;
+}
+/**
  * Creates Drupal User and associate it with pmperson node.
  */
 function pmperson_migrate_create_users_if_required() {
