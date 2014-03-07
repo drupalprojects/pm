@@ -301,3 +301,10 @@ function pmperson_pm_dashboard_links($type) {
   }
   return $links;
 }
+
+/**
+ * Dummy function to handle errors.
+ */
+function _pmperson_user_load() {
+  drupal_set_message(t('_pmperson_user_load is deprecated. Fix required.'), 'status', FALSE);
+}
