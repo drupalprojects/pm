@@ -1,4 +1,5 @@
 <?php
+define('PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK', 'https://drupal.org/node/1412134');
 /**
  * @file
  * Installation and update functions for PM Person module.
@@ -29,7 +30,15 @@ function pmperson_update_last_removed() {
  * Migrate PM Person nodes to fields on Drupal users.
  */
 function pmperson_update_7104(&$sandbox) {
+
   module_load_include('inc', 'pmperson', 'includes/pmperson.migrate');
+
+  // Check if update could be performed.
+  if( pmperson_migrate_update_could_be_performed() == FALSE ) {
+    $link = l(t('this'), PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK);
+    throw new DrupalUpdateException(t('Cannot perform update. Please visit !link link to check how to resolve this issue.', array('!link' => $link)));
+  }
+
   return pmperson_migrate($sandbox);
   // Link all existing PM Person nodes to a user account.
   // Create dummy accounts where a match cannot be found.
