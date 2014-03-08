@@ -27,9 +27,138 @@ function pmperson_migrate(&$sandbox) {
  */
 function pmperson_migrate_update_could_be_performed() {
   if (db_table_exists('pmperson')) {
-    # code...
+    $var = pmperson_migrate_email_missmatch();
+    if (count($var)) {
+      return FALSE;
+    }
   }
   return TRUE;
+}
+
+function pmperson_migrate_email_missmatch() {
+  $results = db_query(" SELECT pm.email , pm.nid, u.uid , u.mail FROM pmperson as pm
+                        LEFT JOIN users as u
+                        ON pm.user_uid = u.uid
+                        WHERE pm.email <> u.mail AND u.mail <> ''");
+  $out = array();
+  foreach ($results as $value) {
+    $out[] = (array)$value;
+  }
+  return $out;
+}
+
+/**
+ * page callback for PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK
+ * @see: pmperson_menu().
+ */
+function pmperson_migrate_page_callback() {
+  $header = array(
+    'nid'   => array('data' => t('PM Person Node ID'),  'field' => 'nid'),
+    'email' => array('data' => t('PM Person email'),    'field' => 'email'),
+    'mail'  => array('data' => t('Drupal User email'),  'field' => 'mail'),
+    'uid'   => array('data' => t('Drupal User uid'),    'field' => 'uid'),
+    'name'  => array('data' => t('Drupal User name'),   'field' => 'name'),
+  );
+
+  if (db_table_exists('pmperson')) {
+    $query = db_select('pmperson', 'p')
+      ->extend('PagerDefault')
+      ->limit(30);
+
+
+    $query->join('users', 'u', 'p.user_uid = u.uid AND p.email <> u.mail');
+
+    $query->fields('p', array(
+          'nid',
+          'email',
+        )
+      )
+      ->fields('u', array(
+          'mail',
+          'uid',
+          'name',
+        )
+      )
+      ->condition('u.uid', '', '!=');
+
+    $query = $query->extend('TableSort')
+          ->orderByHeader($header);
+    $result = $query->execute()->fetchAllAssoc('nid');
+  }
+  else {
+    $result = array();
+  }
+
+  $render = array(
+    'table' => array(
+      '#theme' => 'table',
+      '#header' => $header,
+      '#rows' => array_map(function ($row) {
+        return _pmperson_migrate_adjust_row($row);
+      }, $result),
+      '#sticky' => TRUE,
+      '#caption' => t('PM PERSON EMAIL and DRUPAL USER EMAIL, should match before any updates could be attempted. Edit either of the entity to resolve the issue.'),
+      '#empty' => t('No issues found.'),
+    ),
+    'pager' => array(
+      '#theme' => 'pager',
+    ),
+  );
+
+  return $render;
+}
+
+/**
+ * Custom function to map row values to display values.
+ * @see: pmperson_migrate_page_callback().
+ */
+function _pmperson_migrate_adjust_row($row) {
+  $operations = array(
+    'edit' => array(
+      'title' => t('(edit'),
+      'href' => 'node/' . $row->nid . '/edit',
+    ),
+    'delete' => array(
+      'title' => t('delete)'),
+      'href' => 'node/' . $row->nid . '/delete',
+    ),
+    'view' => array(
+      'title' => $row->nid,
+      'href' => 'node/' . $row->nid,
+    ),
+  );
+  $pmperson_links =  theme('links', array(
+    'links' => $operations,
+    'attributes' => array('class' => array('links', 'inline')),
+  ));
+
+  $operations = array(
+    'edit' => array(
+      'title' => t('(edit'),
+      'href' => 'user/' . $row->uid . '/edit',
+    ),
+    'delete' => array(
+      'title' => t('delete)'),
+      'href' => 'user/' . $row->uid . '/delete',
+    ),
+    'view' => array(
+      'title' => $row->uid,
+      'href' => 'user/' . $row->uid,
+    ),
+  );
+  $user_links =  theme('links', array(
+    'links' => $operations,
+    'attributes' => array('class' => array('links', 'inline')),
+  ));
+
+  $out = array(
+    'nid' => $pmperson_links,
+    'email' => $row->email,
+    'mail' => $row->mail,
+    'uid' => $row->uid ? $user_links : '',
+    'name' => $row->name,
+  );
+  return $out;
 }
 /**
  * Creates Drupal User and associate it with pmperson node.
@@ -60,7 +189,7 @@ function pmperson_migrate_create_users_if_required() {
  */
 function _pmperson_migrate_associate_user_with_pmperson($record, $account) {
   // if $account is empty or is for anonymous user.
-  if (!$record OR !$record['nid'] !$account OR !$account->uid) {
+  if (!$record OR !$record['nid'] OR !$account OR !$account->uid) {
     watchdog('pmperson', 'message', array('record' => $record), WATCHDOG_NOTICE);
     return FALSE;
   }

@@ -2,6 +2,22 @@
 /**
  * @file
  */
+define('PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK', 'admin/pm/migrate-info/pmperson');
+
+
+/**
+ * Implements hook_menu().
+ */
+function pmperson_menu() {
+  $items[PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK] = array(
+    'title' => 'PM Person migrate status',
+    'page callback' => 'pmperson_migrate_page_callback',
+    'access arguments' => array('administer content'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'includes/pmperson.migrate.inc',
+  );
+  return $items;
+}
 
 // @todo Need to consider how to protect user information when not stored as a separate node.
 /**

@@ -1,5 +1,5 @@
 <?php
-define('PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK', 'https://drupal.org/node/1412134');
+
 /**
  * @file
  * Installation and update functions for PM Person module.
@@ -16,7 +16,7 @@ function pmperson_install() {
  * Implements hook_disable().
  */
 function pmperson_disable() {
-  drupal_set_message(t('The PM Person module has been disabled, but user fields have not been deleted. These are no longer protected by PM Person access controls.'), 'warning');
+  drupal_set_message(t('The PM Person module has been disabled, but user fields have not been deleted.'), 'warning');
 }
 
 /**
@@ -35,8 +35,7 @@ function pmperson_update_7104(&$sandbox) {
 
   // Check if update could be performed.
   if( pmperson_migrate_update_could_be_performed() == FALSE ) {
-    $link = l(t('this'), PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK);
-    throw new DrupalUpdateException(t('Cannot perform update. Please visit !link link to check how to resolve this issue.', array('!link' => $link)));
+    throw new DrupalUpdateException(t('Cannot perform update. Please visit !link to check how to resolve this issue.', array('!link' => PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK)));
   }
 
   return pmperson_migrate($sandbox);
