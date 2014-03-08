@@ -10,10 +10,10 @@
 function pmperson_migrate(&$sandbox) {
   // create drupal users for unassociated drupal account and associate it with
   // pmperson
-  pmperson_migrate_create_users_if_required();
+  pmperson_migrate_create_users_if_required($sandbox);
 
   // Create and attach fields to Drupal's user account.
-  pmperson_migrate_create_fields();
+  pmperson_migrate_create_fields($sandbox);
 
   // Migrate data from pmperson node to Drupal user account.
 
@@ -156,6 +156,7 @@ function _pmperson_migrate_adjust_row($row) {
   );
   return $out;
 }
+
 /**
  * Creates Drupal User and associate it with pmperson node.
  */
@@ -233,7 +234,7 @@ function _pmperson_migrate_create_user($record) {
 /**
  * Creates and attaches fields to Drupal user.
  */
-function pmperson_migrate_create_fields() {
+function pmperson_migrate_create_fields(&$sandbox) {
   module_load_include('inc', 'pmperson', 'includes/pmperson.field_base');
   module_load_include('inc', 'pmperson', 'includes/pmperson.field_instance');
   module_load_include('inc', 'pm', 'includes/pm.field');
@@ -243,4 +244,28 @@ function pmperson_migrate_create_fields() {
 
   $field_instances = pmperson_default_field_instances();
   pm_field_instances_create_if_required($field_instances);
+}
+
+function pmperson_migrate_field_data(&$sandbox) {
+
+}
+
+function _pmperson_migrate_field_data($pmperson) {
+  $field_mapping = array(
+    'im' => 'field_pm_user_im',
+    'email' => 'field_pm_user_mail',
+    'phone' => 'field_pm_user_phone',
+    'prefix' => 'field_pm_user_prefix',
+    'www' => 'field_pm_user_www',
+  );
+  $title = 'field_pm_user_name';
+  $body_field = 'field_pm_description';
+  try {
+    $account = user_load($pmperson->user_uid);
+    $wrapper = entity_metadata_wrapper('user', $account );
+
+    $wrapper->$title->value()
+  } catch (Exception $e) {
+
+  }
 }
