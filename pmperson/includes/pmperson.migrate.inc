@@ -48,6 +48,17 @@ function pmperson_migrate_email_missmatch_count() {
  * @see: pmperson_menu().
  */
 function pmperson_migrate_page_callback() {
+  $render = array(
+   'table_issue_1' => _pmperson_migrate_get_conflicting_email_with_attached_users_table(),
+   'table_issue_2' => _pmperson_migrate_get_conflicting_email_with_existing_users_table(),
+  );
+  return $render;
+}
+
+/**
+ * Get list of pmnodes that has conlficting email with the attached drupal user.
+ */
+function _pmperson_migrate_get_conflicting_email_with_attached_users_table() {
   $header = array(
     'nid'   => array('data' => t('PM Person Node ID'),  'field' => 'nid'),
     'email' => array('data' => t('PM Person email'),    'field' => 'email'),
@@ -59,7 +70,7 @@ function pmperson_migrate_page_callback() {
   if (db_table_exists('pmperson')) {
     $query = db_select('pmperson', 'p')
       ->extend('PagerDefault')
-      ->limit(30);
+      ->limit(10);
 
 
     $query->join('users', 'u', 'p.user_uid = u.uid AND p.email <> u.mail');
@@ -103,7 +114,64 @@ function pmperson_migrate_page_callback() {
 
   return $render;
 }
+/**
+ * Get list of pmnodes that has conlficting email with existing Drupal user.
+ */
+function _pmperson_migrate_get_conflicting_email_with_existing_users_table() {
+  $header = array(
+    'nid'   => array('data' => t('PM Person Node ID'),  'field' => 'nid'),
+    'email' => array('data' => t('PM Person email'),    'field' => 'email'),
+    'mail'  => array('data' => t('Drupal User email'),  'field' => 'mail'),
+    'uid'   => array('data' => t('Drupal User uid'),    'field' => 'uid'),
+    'name'  => array('data' => t('Drupal User name'),   'field' => 'name'),
+  );
 
+  if (db_table_exists('pmperson')) {
+    $query = db_select('pmperson', 'p')
+      ->extend('PagerDefault')
+      ->limit(10);
+
+
+    $query->join('users', 'u', 'p.email = u.mail AND p.user_uid <> u.uid');
+    $query->fields('p', array(
+          'nid',
+          'email',
+        )
+      )
+      ->fields('u', array(
+          'mail',
+          'uid',
+          'name',
+        )
+      )
+      ->condition('p.user_uid', '0');
+
+    $query = $query->extend('TableSort')
+          ->orderByHeader($header);
+    $result = $query->execute()->fetchAllAssoc('nid');
+  }
+  else {
+    $result = array();
+  }
+
+  $render = array(
+    'table' => array(
+      '#theme' => 'table',
+      '#header' => $header,
+      '#rows' => array_map(function ($row) {
+        return _pmperson_migrate_adjust_row($row);
+      }, $result),
+      '#sticky' => TRUE,
+      '#caption' => t('PM PERSON EMAIL and DRUPAL USER EMAIL, should match before any updates could be attempted. Edit either of the entity and resolve the issue.'),
+      '#empty' => t('No issues found.'),
+    ),
+    'pager' => array(
+      '#theme' => 'pager',
+    ),
+  );
+
+  return $render;
+}
 /**
  * Custom function to map row values to display values.
  * @see: pmperson_migrate_page_callback().
@@ -264,7 +332,7 @@ function _pmperson_migrate_field_data($pmperson) {
     $account = user_load($pmperson->user_uid);
     $wrapper = entity_metadata_wrapper('user', $account );
 
-    $wrapper->$title->value()
+    $wrapper->$title->value();
   } catch (Exception $e) {
 
   }
