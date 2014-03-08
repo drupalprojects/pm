@@ -38,6 +38,10 @@ function pmperson_update_7104(&$sandbox) {
     throw new DrupalUpdateException(t('Cannot perform update. Please visit !link to check how to resolve this issue.', array('!link' => PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK)));
   }
 
+  // Delete variables previously set by the PM Person module that are now redundant.
+  variable_del('node_options_pmperson');
+  variable_del('node_permissions_pmperson');
+
   return pmperson_migrate($sandbox);
   // Link all existing PM Person nodes to a user account.
   // Create dummy accounts where a match cannot be found.

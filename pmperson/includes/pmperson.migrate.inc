@@ -16,7 +16,7 @@ function pmperson_migrate(&$sandbox) {
   pmperson_migrate_create_fields($sandbox);
 
   // Migrate data from pmperson node to Drupal user account.
-
+  pmperson_migrate_field_data($sandbox);
   // TODO: How to handle cleanup since data is probably required by other
   // modules.
 }
@@ -345,10 +345,22 @@ function pmperson_migrate_create_fields(&$sandbox) {
   pm_field_instances_create_if_required($field_instances);
 }
 
+/**
+ * Migrate pmperson node fields data to drupal user bundle.
+ */
 function pmperson_migrate_field_data(&$sandbox) {
-
+  $results = db_select('pmperson', 'pmp')
+    ->fields('pmp')
+    ->execute();
+  foreach ($results as $pmperson) {
+     _pmperson_migrate_field_data($pmperson);
+  }
 }
 
+/**
+ * Helper function.
+ * @see: pmperson_migrate_field_data().
+ */
 function _pmperson_migrate_field_data($pmperson) {
   $field_mapping = array(
     'im' => 'field_pm_user_im',
@@ -357,14 +369,36 @@ function _pmperson_migrate_field_data($pmperson) {
     'prefix' => 'field_pm_user_prefix',
     'www' => 'field_pm_user_www',
   );
-  $title = 'field_pm_user_name';
+  $title_field = 'field_pm_user_name';
   $body_field = 'field_pm_description';
   try {
     $account = user_load($pmperson->user_uid);
     $wrapper = entity_metadata_wrapper('user', $account );
+    $title = _pmperson_migrate_node_get_title($pmperson->nid);
+    $wrapper->$title_field->set($title);
+    $body =  _pmperson_migrate_node_get_body($pmperson->nid);
+    $wrapper->$body_field->set($body);
 
-    $wrapper->$title->value();
+    foreach ($field_mapping as $key => $field_name) {
+       $wrapper->$field_name->set($pmperson->$key);
+    }
+    $wrapper->save();
+
   } catch (Exception $e) {
 
   }
+}
+
+/**
+ * A quick funciton to load node title without loading the whole node.
+ */
+function _pmperson_migrate_node_get_title($nid) {
+  return db_query('SELECT title FROM {node} WHERE nid = :nid',array(':nid' =>$nid))->fetchField();
+}
+
+/**
+ * A quick funciton to load node title without loading the whole node.
+ */
+function _pmperson_migrate_node_get_body($nid) {
+  return $v = db_query('SELECT body_value FROM {field_data_body} WHERE entity_id = :nid AND entity_type = node',array(':nid' =>$nid))->fetchField();
 }
