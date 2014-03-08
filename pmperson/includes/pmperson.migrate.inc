@@ -40,7 +40,15 @@ function pmperson_migrate_email_missmatch_count() {
                         LEFT JOIN users as u
                         ON pm.user_uid = u.uid
                         WHERE pm.email <> u.mail AND u.mail <> ''");
-  return $results->rowCount();
+  $count = $results->rowCount();
+
+  $results = db_query(" SELECT pm.nid FROM pmperson as pm
+                        LEFT JOIN users as u
+                        ON pm.user_uid <> u.uid
+                        WHERE pm.email = u.mail AND pm.user_uid = '0'");
+
+  $count += $results->rowCount();
+  return $count;
 }
 
 /**
@@ -48,11 +56,37 @@ function pmperson_migrate_email_missmatch_count() {
  * @see: pmperson_menu().
  */
 function pmperson_migrate_page_callback() {
+  $form = drupal_get_form('pmperson_migrate_fix_existing_users_form');
   $render = array(
    'table_issue_1' => _pmperson_migrate_get_conflicting_email_with_attached_users_table(),
    'table_issue_2' => _pmperson_migrate_get_conflicting_email_with_existing_users_table(),
+   'try_fix' => array('#type' => 'markup', '#markup' => render($form)),
   );
   return $render;
+}
+
+function pmperson_migrate_fix_existing_users_form($form, $form_state) {
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Adjust pmperson nodes'),
+    '#prefix' => '<br>',
+    '#suffix' => t('Automatically match Drupal user with pmperson node using email if Drupal user is not associated with any other pmperson node.'),
+  );
+  return $form;
+}
+
+function pmperson_migrate_fix_existing_users_form_submit($form, $form_state) {
+  $unmapped_results = db_select('pmperson', 'pmp')
+    ->fields('pmp')
+    ->condition('pmp.user_uid', '0')
+    ->execute();
+  foreach ($unmapped_results as $record) {
+    if ($account = user_load_by_mail($record->email)) {
+      if (_pmperson_migrate_get_pmperson_from_uid($account->uid) == FALSE) {
+        _pmperson_migrate_associate_user_with_pmperson($record, $account);
+      }
+    }
+  }
 }
 
 /**
@@ -130,8 +164,6 @@ function _pmperson_migrate_get_conflicting_email_with_existing_users_table() {
     $query = db_select('pmperson', 'p')
       ->extend('PagerDefault')
       ->limit(10);
-
-
     $query->join('users', 'u', 'p.email = u.mail AND p.user_uid <> u.uid');
     $query->fields('p', array(
           'nid',
@@ -162,7 +194,7 @@ function _pmperson_migrate_get_conflicting_email_with_existing_users_table() {
         return _pmperson_migrate_adjust_row($row);
       }, $result),
       '#sticky' => TRUE,
-      '#caption' => t('PM PERSON EMAIL and DRUPAL USER EMAIL, should match before any updates could be attempted. Edit either of the entity and resolve the issue.'),
+      '#caption' => t("List of PM Person nodes that are not linked to Drupal User account with same email."),
       '#empty' => t('No issues found.'),
     ),
     'pager' => array(
@@ -231,9 +263,8 @@ function _pmperson_migrate_adjust_row($row) {
 function pmperson_migrate_create_users_if_required() {
   $unmapped_results = db_select('pmperson', 'pmp')
     ->fields('pmp')
-    ->isNull('pmp.user_uid')
-    ->execute()
-    ->fetchAssoc();
+    ->condition('pmp.user_uid', '0')
+    ->execute();
   foreach ($unmapped_results as $record) {
     $account = NULL;
     if ($account = user_load_by_mail($record->email)) {
@@ -254,13 +285,13 @@ function pmperson_migrate_create_users_if_required() {
  */
 function _pmperson_migrate_associate_user_with_pmperson($record, $account) {
   // if $account is empty or is for anonymous user.
-  if (!$record OR !$record['nid'] OR !$account OR !$account->uid) {
+  if (!$record OR !$record->nid OR !$account OR !$account->uid) {
     watchdog('pmperson', 'message', array('record' => $record), WATCHDOG_NOTICE);
     return FALSE;
   }
   db_update('pmperson')
     ->fields(array('user_uid' => $account->uid))
-    ->condition('nid', $record['nid'])
+    ->condition('nid', $record->nid)
     ->execute();
   return TRUE;
 }
