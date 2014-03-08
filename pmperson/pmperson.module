@@ -2,7 +2,7 @@
 /**
  * @file
  */
-define('PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK', 'admin/pm/migrate-info/pmperson');
+define('PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK', 'admin/config/pm/migrate-info/pmperson');
 
 
 /**
