@@ -27,24 +27,20 @@ function pmperson_migrate(&$sandbox) {
  */
 function pmperson_migrate_update_could_be_performed() {
   if (db_table_exists('pmperson')) {
-    $var = pmperson_migrate_email_missmatch();
-    if (count($var)) {
+    $counts = pmperson_migrate_email_missmatch_count();
+    if ($counts > 0) {
       return FALSE;
     }
   }
   return TRUE;
 }
 
-function pmperson_migrate_email_missmatch() {
-  $results = db_query(" SELECT pm.email , pm.nid, u.uid , u.mail FROM pmperson as pm
+function pmperson_migrate_email_missmatch_count() {
+  $results = db_query(" SELECT pm.nid FROM pmperson as pm
                         LEFT JOIN users as u
                         ON pm.user_uid = u.uid
                         WHERE pm.email <> u.mail AND u.mail <> ''");
-  $out = array();
-  foreach ($results as $value) {
-    $out[] = (array)$value;
-  }
-  return $out;
+  return $results->rowCount();
 }
 
 /**
@@ -97,7 +93,7 @@ function pmperson_migrate_page_callback() {
         return _pmperson_migrate_adjust_row($row);
       }, $result),
       '#sticky' => TRUE,
-      '#caption' => t('PM PERSON EMAIL and DRUPAL USER EMAIL, should match before any updates could be attempted. Edit either of the entity to resolve the issue.'),
+      '#caption' => t('PM PERSON EMAIL and DRUPAL USER EMAIL, should match before any updates could be attempted. Edit either of the entity and resolve the issue.'),
       '#empty' => t('No issues found.'),
     ),
     'pager' => array(
