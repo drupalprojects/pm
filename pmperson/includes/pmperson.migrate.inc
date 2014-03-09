@@ -17,8 +17,19 @@ function pmperson_migrate(&$sandbox) {
 
   // Migrate data from pmperson node to Drupal user account.
   pmperson_migrate_field_data($sandbox);
+
+  // Delete all pmperson nodes.
+  node_type_delete('pmperson');
+
   // TODO: How to handle cleanup since data is probably required by other
-  // modules.
+  // modules especially for mapping references.
+  // db_drop_table('pmperson');
+
+  // Delete variables previously set by the PM Person module that are now redundant.
+  variable_del('node_options_pmperson');
+  variable_del('node_permissions_pmperson');
+
+  return 'PM Person nodes have been migrated to fields on Drupal users.';
 }
 
 /**
@@ -386,7 +397,7 @@ function _pmperson_migrate_field_data($pmperson) {
 
   } catch (EntityMetadataWrapperException $exc) {
     watchdog(
-      'MODULE_NANE',
+      'pmperson',
       'See '  . __FUNCTION__ . '() ' .  $exc->getTraceAsString(),
        NULL, WATCHDOG_ERROR
     );
