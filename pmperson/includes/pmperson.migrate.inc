@@ -384,8 +384,12 @@ function _pmperson_migrate_field_data($pmperson) {
     }
     $wrapper->save();
 
-  } catch (Exception $e) {
-
+  } catch (EntityMetadataWrapperException $exc) {
+    watchdog(
+      'MODULE_NANE',
+      'See '  . __FUNCTION__ . '() ' .  $exc->getTraceAsString(),
+       NULL, WATCHDOG_ERROR
+    );
   }
 }
 
