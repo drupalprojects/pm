@@ -30,58 +30,19 @@ function pmperson_update_last_removed() {
  * Migrate PM Person nodes to fields on Drupal users.
  */
 function pmperson_update_7104(&$sandbox) {
+   $t = get_t();
 
   module_load_include('inc', 'pmperson', 'includes/pmperson.migrate');
 
   // Check if update could be performed.
+
+  $link = l(PMPERSON_RESOLVE_DEPENDENCIES_LINK, PMPERSON_RESOLVE_DEPENDENCIES_LINK);
+
   if( pmperson_migrate_update_could_be_performed() == FALSE ) {
-    throw new DrupalUpdateException(t('Cannot perform update. Please visit !link to check how to resolve this issue.', array('!link' => PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK)));
+    drupal_set_message($t('Cannot perform update. Please visit !link to check how to resolve this issue.', array('!link' => $link)), 'warning', FALSE);
+    throw new DrupalUpdateException($t('Cannot perform update. Please visit !link to check how to resolve this issue.', array('!link' => PMPERSON_RESOLVE_DEPENDENCIES_LINK)));
   }
 
 
   return pmperson_migrate($sandbox);
-  /*
-  // Link all existing PM Person nodes to a user account.
-  // Create dummy accounts where a match cannot be found.
-  $unmapped_results = db_select('pmperson', 'pmpe')
-    ->fields('pmpe')
-    ->isNull('pmpe.user_uid')
-    ->execute();
-
-  foreach ($unmapped_results as &$unmapped_record) {
-    // Attempt to match by email address
-    if ($mapped_user_mail = user_load_by_mail($unmapped_record->email)) {
-      // Check that the e-mail address is not already assigned to another user.
-      // @todo
-
-      // Update the PM Person record, to be later saved into the database.
-      $unmapped_record->user_uid = $mapped_user_mail->uid;
-    }
-
-    // Create a dummy user and match on that.
-    if ($unmapped_record->user_uid == NULL) {
-      $unmapped_record->user_uid = user_save(array(
-        'name' => NULL, // user name - @todo NEED THE PM PERSON NODE TITLE
-        'mail' => $unmapped_record->email, // email - @todo Backfill with username@example.com if not entered
-        'init' => NULL, // @todo same as mail
-        'pass' => user_password(),
-      ));
-    }
-  }
-
-  // Update references to PM Person nodes in other PM modules.
-
-  // Migrate PM Person data into user fields.
-
-  // Delete all PM Person nodes and the content type.
-
-  // Delete the PM Person database table.
-  db_drop_table('pmperson');
-
-  // Delete variables previously set by the PM Person module that are now redundant.
-  variable_del('node_options_pmperson');
-  variable_del('node_permissions_pmperson');
-
-  return 'PM Person nodes have been migrated to fields on Drupal users.';
-  */
 }

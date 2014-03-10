@@ -2,14 +2,14 @@
 /**
  * @file
  */
-define('PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK', 'admin/config/pm/migrate-info/pmperson');
+define('PMPERSON_RESOLVE_DEPENDENCIES_LINK', 'admin/config/pm/migration/pmperson');
 
 
 /**
  * Implements hook_menu().
  */
 function pmperson_menu() {
-  $items[PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK] = array(
+  $items[PMPERSON_RESOLVE_DEPENDENCIES_LINK] = array(
     'title' => 'PM Person migrate status',
     'page callback' => 'pmperson_migrate_page_callback',
     'access arguments' => array('administer content'),
