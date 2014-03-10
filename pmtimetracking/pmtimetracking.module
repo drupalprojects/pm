@@ -315,10 +315,13 @@ function pmtimetracking_form(&$node, $form_state) {
     $organizations[$organization->nid] = $organization->title;
     if (!isset($node->organization_nid)) $node->organization_nid = $organization->nid;
   }
+
+  $organization_nid = isset($form_state['values']['organization_nid']) ? $form_state['values']['organization_nid'] : (isset($node->organization_nid) ? $node->organization_nid : -1);
+
   $form['group1']['organization_nid'] = array(
     '#type' => 'select',
     '#title' => t('Organization'),
-    '#default_value' => $node->organization_nid,
+    '#default_value' => $organization_nid,
     '#options' => $organizations,
     '#required' => TRUE,
     '#ajax' => array(
@@ -327,10 +330,7 @@ function pmtimetracking_form(&$node, $form_state) {
     ),
   );
 
-  if (isset($node->organization_nid)) {
-    $organization_nid = isset($form_state['values']['organization_nid']) ? $form_state['values']['organization_nid'] : $node->organization_nid;
-  }
-  else {
+  if ($organization_nid == -1) {
     drupal_set_message(t('Please add an organization to the system before trying to add a timetracking.'), 'error');
   }
 

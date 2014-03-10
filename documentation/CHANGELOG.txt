@@ -1,6 +1,7 @@
 ** New issues added should be added at the TOP of the list for each version as they are committed. **
 
 Version 7.x-1.x:
+- Issue #2110653 by juliangb: PHP Error on adding timetracking before organization.
 - Issue #2026587 by juliangb | Raphael Dürst: Remove invoice auto add functions and links.
 - Issue #2202455 by juliangb: Enable all existing unit tests.
 - Issue #2047761 by juliangb: Improve configuration pages.
