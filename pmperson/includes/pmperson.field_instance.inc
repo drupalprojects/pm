@@ -10,8 +10,8 @@
 function pmperson_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'user-user-field_pm_description'
-  $field_instances['user-user-field_pm_description'] = array(
+  // Exported field_instance: 'user-user-pm_description'
+  $field_instances['user-user-pm_description'] = array(
     'bundle' => 'user',
     'default_value' => NULL,
     'deleted' => 0,
@@ -26,7 +26,7 @@ function pmperson_default_field_instances() {
       ),
     ),
     'entity_type' => 'user',
-    'field_name' => 'field_pm_description',
+    'field_name' => 'pm_description',
     'label' => 'Description',
     'required' => 0,
     'settings' => array(
@@ -46,8 +46,8 @@ function pmperson_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'user-user-field_pm_user_im'
-  $field_instances['user-user-field_pm_user_im'] = array(
+  // Exported field_instance: 'user-user-pmperson_im'
+  $field_instances['user-user-pmperson_im'] = array(
     'bundle' => 'user',
     'default_value' => NULL,
     'deleted' => 0,
@@ -62,7 +62,7 @@ function pmperson_default_field_instances() {
       ),
     ),
     'entity_type' => 'user',
-    'field_name' => 'field_pm_user_im',
+    'field_name' => 'pmperson_im',
     'label' => 'IM',
     'required' => 0,
     'settings' => array(
@@ -80,41 +80,8 @@ function pmperson_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'user-user-field_pm_user_mail'
-  $field_instances['user-user-field_pm_user_mail'] = array(
-    'bundle' => 'user',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'above',
-        'module' => 'email',
-        'settings' => array(),
-        'type' => 'email_default',
-        'weight' => 2,
-      ),
-    ),
-    'entity_type' => 'user',
-    'field_name' => 'field_pm_user_mail',
-    'label' => 'E-mail',
-    'required' => 0,
-    'settings' => array(
-      'user_register_form' => 0,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'email',
-      'settings' => array(
-        'size' => 60,
-      ),
-      'type' => 'email_textfield',
-      'weight' => 9,
-    ),
-  );
-
-  // Exported field_instance: 'user-user-field_pm_user_name'
-  $field_instances['user-user-field_pm_user_name'] = array(
+  // Exported field_instance: 'user-user-pmperson_name'
+  $field_instances['user-user-pmperson_name'] = array(
     'bundle' => 'user',
     'default_value' => NULL,
     'deleted' => 0,
@@ -129,7 +96,7 @@ function pmperson_default_field_instances() {
       ),
     ),
     'entity_type' => 'user',
-    'field_name' => 'field_pm_user_name',
+    'field_name' => 'pmperson_name',
     'label' => 'Name',
     'required' => 0,
     'settings' => array(
@@ -147,8 +114,8 @@ function pmperson_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'user-user-field_pm_user_phone'
-  $field_instances['user-user-field_pm_user_phone'] = array(
+  // Exported field_instance: 'user-user-pmperson_phone'
+  $field_instances['user-user-pmperson_phone'] = array(
     'bundle' => 'user',
     'default_value' => NULL,
     'deleted' => 0,
@@ -163,7 +130,7 @@ function pmperson_default_field_instances() {
       ),
     ),
     'entity_type' => 'user',
-    'field_name' => 'field_pm_user_phone',
+    'field_name' => 'pmperson_phone',
     'label' => 'Phone',
     'required' => 0,
     'settings' => array(
@@ -181,8 +148,8 @@ function pmperson_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'user-user-field_pm_user_prefix'
-  $field_instances['user-user-field_pm_user_prefix'] = array(
+  // Exported field_instance: 'user-user-pmperson_prefix'
+  $field_instances['user-user-pmperson_prefix'] = array(
     'bundle' => 'user',
     'default_value' => NULL,
     'deleted' => 0,
@@ -197,7 +164,7 @@ function pmperson_default_field_instances() {
       ),
     ),
     'entity_type' => 'user',
-    'field_name' => 'field_pm_user_prefix',
+    'field_name' => 'pmperson_prefix',
     'label' => 'Prefix',
     'required' => 0,
     'settings' => array(
@@ -215,8 +182,8 @@ function pmperson_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'user-user-field_pm_user_www'
-  $field_instances['user-user-field_pm_user_www'] = array(
+  // Exported field_instance: 'user-user-pmperson_www'
+  $field_instances['user-user-pmperson_www'] = array(
     'bundle' => 'user',
     'default_value' => NULL,
     'deleted' => 0,
@@ -231,7 +198,7 @@ function pmperson_default_field_instances() {
       ),
     ),
     'entity_type' => 'user',
-    'field_name' => 'field_pm_user_www',
+    'field_name' => 'pmperson_www',
     'label' => 'WWW',
     'required' => 0,
     'settings' => array(

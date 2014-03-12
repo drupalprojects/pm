@@ -10,13 +10,13 @@
 function pmperson_default_field_bases() {
   $field_bases = array();
 
-  // Exported field_base: 'field_pm_description'
-  $field_bases['field_pm_description'] = array(
+  // Exported field_base: 'pm_description'
+  $field_bases['pm_description'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_pm_description',
+    'field_name' => 'pm_description',
     'foreign keys' => array(
       'format' => array(
         'columns' => array(
@@ -66,29 +66,13 @@ function pmperson_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_pm_user_mail'
-  $field_bases['field_pm_user_mail'] = array(
+  // Exported field_base: 'pmperson_name'
+  $field_bases['pmperson_name'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_pm_user_mail',
-    'foreign keys' => array(),
-    'indexes' => array(),
-    'locked' => 0,
-    'module' => 'email',
-    'settings' => array(),
-    'translatable' => 0,
-    'type' => 'email',
-  );
-
-  // Exported field_base: 'field_pm_user_name'
-  $field_bases['field_pm_user_name'] = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_pm_user_name',
+    'field_name' => 'pmperson_name',
     'foreign keys' => array(
       'format' => array(
         'columns' => array(
@@ -111,13 +95,13 @@ function pmperson_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_pm_user_phone'
-  $field_bases['field_pm_user_phone'] = array(
+  // Exported field_base: 'pmperson_phone'
+  $field_bases['pmperson_phone'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_pm_user_phone',
+    'field_name' => 'pmperson_phone',
     'foreign keys' => array(
       'format' => array(
         'columns' => array(
@@ -140,13 +124,13 @@ function pmperson_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_pm_user_prefix'
-  $field_bases['field_pm_user_prefix'] = array(
+  // Exported field_base: 'pmperson_prefix'
+  $field_bases['pmperson_prefix'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_pm_user_prefix',
+    'field_name' => 'pmperson_prefix',
     'foreign keys' => array(
       'format' => array(
         'columns' => array(
@@ -169,13 +153,13 @@ function pmperson_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_pm_user_www'
-  $field_bases['field_pm_user_www'] = array(
+  // Exported field_base: 'pmperson_www'
+  $field_bases['pmperson_www'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_pm_user_www',
+    'field_name' => 'pmperson_www',
     'foreign keys' => array(),
     'indexes' => array(),
     'locked' => 0,
