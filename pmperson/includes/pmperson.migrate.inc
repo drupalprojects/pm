@@ -5,11 +5,11 @@
  */
 
 /**
- * Migrate helper for pmperson module from D6 to D7.
+ * Helper function for migrating between PM Person nodes and Drupal users.
  */
 function pmperson_migrate(&$sandbox) {
-  // create drupal users for unassociated drupal account and associate it with
-  // pmperson
+  // Create a new Drupal user for PM Person nodes that are not associated
+  // with an existing Drupal user.
   pmperson_migrate_create_users_if_required($sandbox);
 
   // Create and attach fields to Drupal's user account.
@@ -101,14 +101,14 @@ function pmperson_migrate_fix_existing_users_form_submit($form, $form_state) {
 }
 
 /**
- * Get list of pmnodes that has conlficting email with the attached drupal user.
+ * Get list of pmnodes that has conflicting email with the attached drupal user.
  */
 function _pmperson_migrate_get_conflicting_email_with_attached_users_table() {
   $header = array(
     'nid'   => array('data' => t('PM Person Node ID'),  'field' => 'nid'),
-    'email' => array('data' => t('PM Person email'),    'field' => 'email'),
-    'mail'  => array('data' => t('Drupal User email'),  'field' => 'mail'),
-    'uid'   => array('data' => t('Drupal User uid'),    'field' => 'uid'),
+    'email' => array('data' => t('PM Person E-Mail'),    'field' => 'email'),
+    'mail'  => array('data' => t('Drupal User E-Mail'),  'field' => 'mail'),
+    'uid'   => array('data' => t('Drupal User ID'),    'field' => 'uid'),
     'name'  => array('data' => t('Drupal User name'),   'field' => 'name'),
   );
 
@@ -149,7 +149,7 @@ function _pmperson_migrate_get_conflicting_email_with_attached_users_table() {
         return _pmperson_migrate_adjust_row($row);
       }, $result),
       '#sticky' => TRUE,
-      '#caption' => t('PM PERSON EMAIL and DRUPAL USER EMAIL, should match before any updates could be attempted. Edit either of the entity and resolve the issue.'),
+      '#caption' => t('Drupal user and PM Person node email addresses should match. Correct this issue by editing either the user or the node.'),
       '#empty' => t('No issues found.'),
     ),
     'pager' => array(
@@ -221,6 +221,10 @@ function _pmperson_migrate_get_conflicting_email_with_existing_users_table() {
  */
 function _pmperson_migrate_adjust_row($row) {
   $operations = array(
+    'view' => array(
+      'title' => $row->nid,
+      'href' => 'node/' . $row->nid,
+    ),
     'edit' => array(
       'title' => t('(edit'),
       'href' => 'node/' . $row->nid . '/edit',
@@ -229,10 +233,6 @@ function _pmperson_migrate_adjust_row($row) {
       'title' => t('delete)'),
       'href' => 'node/' . $row->nid . '/delete',
     ),
-    'view' => array(
-      'title' => $row->nid,
-      'href' => 'node/' . $row->nid,
-    ),
   );
   $pmperson_links =  theme('links', array(
     'links' => $operations,
@@ -240,6 +240,10 @@ function _pmperson_migrate_adjust_row($row) {
   ));
 
   $operations = array(
+    'view' => array(
+      'title' => $row->uid,
+      'href' => 'user/' . $row->uid,
+    ),
     'edit' => array(
       'title' => t('(edit'),
       'href' => 'user/' . $row->uid . '/edit',
@@ -247,10 +251,6 @@ function _pmperson_migrate_adjust_row($row) {
     'delete' => array(
       'title' => t('delete)'),
       'href' => 'user/' . $row->uid . '/delete',
-    ),
-    'view' => array(
-      'title' => $row->uid,
-      'href' => 'user/' . $row->uid,
     ),
   );
   $user_links =  theme('links', array(
@@ -405,14 +405,14 @@ function _pmperson_migrate_field_data($pmperson) {
 }
 
 /**
- * A quick funciton to load node title without loading the whole node.
+ * A quick function to load node title without loading the whole node.
  */
 function _pmperson_migrate_node_get_title($nid) {
   return db_query('SELECT title FROM {node} WHERE nid = :nid',array(':nid' =>$nid))->fetchField();
 }
 
 /**
- * A quick funciton to load node title without loading the whole node.
+ * A quick function to load node title without loading the whole node.
  */
 function _pmperson_migrate_node_get_body($nid) {
   return $v = db_query('SELECT body_value FROM {field_data_body} WHERE entity_id = :nid AND entity_type = node',array(':nid' =>$nid))->fetchField();
