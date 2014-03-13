@@ -19,6 +19,17 @@ function pmperson_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_forms().
+ */
+function pmperson_forms($form_id, $args) {
+  $forms = array();
+  if (substr($form_id, 0, 35) == 'pmperson_migrate_email_adjust_form_') {
+    $forms[$form_id] = array('callback' => 'pmperson_migrate_email_adjust_form');
+  }
+  return $forms;
+}
+
 // @todo Need to consider how to protect user information when not stored as a separate node.
 /**
  * Implements hook_permission().
@@ -122,7 +133,8 @@ function pmperson_pm_dashboard_links($type) {
 
 /**
  * Dummy function to handle errors.
+ * // TODO: Remove this function when all other PM submodules have been ported.
  */
 function _pmperson_user_load() {
-  drupal_set_message(t('_pmperson_user_load is deprecated. Fix required.'), 'status', FALSE);
+
 }

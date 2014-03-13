@@ -219,52 +219,52 @@ function _pmperson_migrate_get_conflicting_email_with_existing_users_table() {
  * Custom function to map row values to display values.
  * @see: pmperson_migrate_page_callback().
  */
-function _pmperson_migrate_adjust_row($row) {
-  $operations = array(
-    'view' => array(
-      'title' => $row->nid,
-      'href' => 'node/' . $row->nid,
-    ),
-    'edit' => array(
-      'title' => t('(edit'),
-      'href' => 'node/' . $row->nid . '/edit',
-    ),
-    'delete' => array(
-      'title' => t('delete)'),
-      'href' => 'node/' . $row->nid . '/delete',
-    ),
-  );
-  $pmperson_links =  theme('links', array(
-    'links' => $operations,
-    'attributes' => array('class' => array('links', 'inline')),
-  ));
-
+function _pmperson_migrate_adjust_row($row, $show_form = TRUE) {
+  $query_string = array('destination' => PMPERSON_RESOLVE_DEPENDENCIES_LINK);
   $operations = array(
     'view' => array(
       'title' => $row->uid,
       'href' => 'user/' . $row->uid,
+      'html' => true,
+      'query' =>  $query_string,
     ),
     'edit' => array(
       'title' => t('(edit'),
       'href' => 'user/' . $row->uid . '/edit',
+      'html' => true,
+      'query' =>  $query_string,
     ),
     'delete' => array(
       'title' => t('delete)'),
-      'href' => 'user/' . $row->uid . '/delete',
+      'href' => 'user/' . $row->uid . '/cancel',
+      'html' => true,
+      'query' =>  $query_string,
     ),
   );
   $user_links =  theme('links', array(
     'links' => $operations,
     'attributes' => array('class' => array('links', 'inline')),
   ));
-
-  $out = array(
-    'nid' => $pmperson_links,
-    'email' => $row->email,
-    'mail' => $row->mail,
-    'uid' => $row->uid ? $user_links : '',
-    'name' => $row->name,
-  );
+  if ($show_form) {
+    $user_email_form     = drupal_get_form("pmperson_migrate_email_adjust_form_user_{$row->uid}", 'user', $row->uid, $row->mail);
+    $pmperson_email_form = drupal_get_form("pmperson_migrate_email_adjust_form_pmperson_{$row->nid}", 'pmperson', $row->nid, $row->email);
+    $out = array(
+      'nid' => $row->nid,
+      'email' => drupal_render($pmperson_email_form),
+      'mail' => drupal_render($user_email_form),
+      'uid' => $row->uid ? $user_links : '',
+      'name' => $row->name,
+    );
+  }
+  else {
+    $out = array(
+      'nid' => $row->nid,
+      'email' => $row->email,
+      'mail' => $row->mail,
+      'uid' => $row->uid ? $user_links : '',
+      'name' => $row->name,
+    );
+  }
   return $out;
 }
 
@@ -412,8 +412,139 @@ function _pmperson_migrate_node_get_title($nid) {
 }
 
 /**
- * A quick function to load node title without loading the whole node.
+ * A quick function to load node body without loading the whole node.
  */
 function _pmperson_migrate_node_get_body($nid) {
   return $v = db_query('SELECT body_value FROM {field_data_body} WHERE entity_id = :nid AND entity_type = node',array(':nid' =>$nid))->fetchField();
+}
+
+/**
+ * Form for resolving email conflicts.
+ * @see pmperson_forms().
+ */
+function pmperson_migrate_email_adjust_form($form, $form_state, $type = NULL, $id = NULL, $mail = NULL) {
+  $form = array();
+  if ($id) {
+    $form['type'] = array(
+      '#type' => 'value',
+      '#value' => $type,
+    );
+    $form['id'] = array(
+      '#type' => 'value',
+      '#value' => $id,
+    );
+    $description = '';
+    switch ($type) {
+      case 'user':
+        $nid = db_query('SELECT nid FROM {pmperson} WHERE user_uid = :user_uid',array(':user_uid' =>$id))->fetchField();
+        $description = 'linked to pmperson: ' . _pmperson_migrate_node_get_title($nid) . "(nid: $nid)";
+        break;
+      case 'pmperson':
+        $uid = db_query('SELECT user_uid FROM {pmperson} WHERE nid = :nid',array(':nid' =>$id))->fetchField();
+        if($uid AND $account = user_load($uid)) {
+          $description = 'linked to user: ' . $account->name;
+        }
+        else {
+          $description = t('unlinked');
+        }
+      default:
+        # code...
+        break;
+    }
+    $form['mail'] = array(
+      '#type' => 'textfield',
+      '#default_value' => $mail,
+      '#description' => $description,
+    );
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save'),
+      '#submit' => array('pmperson_migrate_email_adjust_form_save_submit'),
+      '#validate' => array('pmperson_migrate_email_adjust_form_save_validate'),
+    );
+    $form['delete'] = array(
+      '#type' => 'submit',
+      '#value' => t('Delete'),
+      '#submit' => array('pmperson_migrate_email_adjust_form_delete_submit'),
+    );
+  }
+  return $form;
+}
+
+/**
+ * Validation function which is applicable for save operation only.
+ * @see  pmperson_migrate_email_adjust_form
+ */
+function pmperson_migrate_email_adjust_form_save_validate($form, $form_state) {
+  $id   = $form_state['values']['id'];
+  $type = $form_state['values']['type'];
+  $mail = $form_state['values']['mail'];
+  switch ($type) {
+    case 'user':
+      if (valid_email_address($mail)) {
+        $account = user_load_by_mail($mail);
+        if ($account AND $account->uid != $id) {
+          form_set_error('mail', t('User already exists with the given E-mail'));
+        }
+      }
+      else {
+        form_set_error('mail', t('E-mail address provided is not valid'));
+      }
+      break;
+    case 'pmperson':
+      if ($mail AND !valid_email_address($mail)) {
+        form_set_error('mail', t('E-mail address provided is not valid'));
+      }
+      break;
+  }
+}
+
+/**
+ * Save submit handler.
+ * @see  pmperson_migrate_email_adjust_form
+ */
+function pmperson_migrate_email_adjust_form_save_submit($form, $form_state) {
+  $id   = $form_state['values']['id'];
+  $type = $form_state['values']['type'];
+  $mail = $form_state['values']['mail'];
+  switch ($type) {
+    case 'user':
+      $account = user_load($id);
+      $edit['mail'] = $mail;
+      user_save($account, $edit);
+      break;
+    case 'pmperson':
+      $num_updated = db_update('pmperson')
+        ->fields(array(
+          'email' => $mail
+        ))
+        ->condition('nid', $id)
+        ->execute();
+      break;
+  }
+}
+
+/**
+ * Delete submit handler.
+ * @see  pmperson_migrate_email_adjust_form
+ */
+function pmperson_migrate_email_adjust_form_delete_submit($form, &$form_state) {
+  $id   = $form_state['values']['id'];
+  $type = $form_state['values']['type'];
+  switch ($type) {
+    case 'user':
+      if ($id != 0 AND $id != 1) {
+        // user_delete($id);
+        // safe to use drupal_goto in submit handler cause we want to simulate a link.
+        // instead of a form submission.
+        $query_string = array('destination' => PMPERSON_RESOLVE_DEPENDENCIES_LINK);
+        drupal_goto("user/$id/cancel", array('query' => $query_string));
+      }
+      break;
+    case 'pmperson':
+      db_delete('pmperson')
+        ->condition('nid', $id)
+        ->execute();
+      break;
+  }
 }
