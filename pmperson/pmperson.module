@@ -12,7 +12,7 @@ function pmperson_menu() {
   $items[PMPERSON_RESOLVE_DEPENDENCIES_LINK] = array(
     'title' => 'PM Person migrate status',
     'page callback' => 'pmperson_migrate_page_callback',
-    'access arguments' => array('administer content'),
+    'access callback' => 'update_access_allowed',
     'type' => MENU_NORMAL_ITEM,
     'file' => 'includes/pmperson.migrate.inc',
   );
