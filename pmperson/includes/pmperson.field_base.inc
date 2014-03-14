@@ -37,13 +37,13 @@ function pmperson_default_field_bases() {
     'type' => 'text_with_summary',
   );
 
-  // Exported field_base: 'field_pm_user_im'
-  $field_bases['field_pm_user_im'] = array(
+  // Exported field_base: 'pmperson_im'
+  $field_bases['pmperson_im'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_pm_user_im',
+    'field_name' => 'pmperson_im',
     'foreign keys' => array(
       'format' => array(
         'columns' => array(

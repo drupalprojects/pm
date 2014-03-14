@@ -30,7 +30,7 @@ function pmperson_update_last_removed() {
  * Migrate PM Person nodes to fields on Drupal users.
  */
 function pmperson_update_7104(&$sandbox) {
-   $t = get_t();
+  $t = get_t();
 
   module_load_include('inc', 'pmperson', 'includes/pmperson.migrate');
 
