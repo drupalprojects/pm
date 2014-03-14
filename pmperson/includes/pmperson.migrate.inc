@@ -69,9 +69,37 @@ function pmperson_migrate_email_missmatch_count() {
 function pmperson_migrate_page_callback() {
   $form = drupal_get_form('pmperson_migrate_fix_existing_users_form');
   $render = array(
-   'table_issue_1' => _pmperson_migrate_get_conflicting_email_with_attached_users_table(),
-   'table_issue_2' => _pmperson_migrate_get_conflicting_email_with_existing_users_table(),
-   'try_fix' => array('#type' => 'markup', '#markup' => render($form)),
+    'preface' => array(
+      '#markup' => "
+        <p>
+        - The information captured by legacy PM Person nodes is now incorporated into user accounts.
+        </p><p>
+        - This page will ensure that all PM Person nodes can be uniquely matched to existing users so that the data migration can take place.
+        </p>
+      "
+    ),
+    'tabel_1_info' => array(
+      '#markup' => "
+        <b>Suggested matches</b>
+        <p>
+        This table shows PM Person nodes with the same email address as a user account.
+        Normally these can be matched automatically by clicking the button below. Remaining PM Person nodes will need to be manually matched.
+        </p>
+      ",
+    ),
+    'table_issue_1' => _pmperson_migrate_get_conflicting_email_with_existing_users_table(),
+    'try_fix' => array('#type' => 'markup', '#markup' => render($form)),
+    'tabel_2_info' => array(
+      '#markup' => "
+        <hr><br>
+        <b>Conflicts</b>
+        <p>
+        This table shows PM Person nodes where a match cannot be made automatically due to data differences between them.
+        Edit the PM Person node or user accounts until there are no remaining conflicts.
+        </p>
+      ",
+    ),
+    'table_issue_2' => _pmperson_migrate_get_conflicting_email_with_attached_users_table(),
   );
   return $render;
 }
@@ -149,7 +177,7 @@ function _pmperson_migrate_get_conflicting_email_with_attached_users_table() {
         return _pmperson_migrate_adjust_row($row);
       }, $result),
       '#sticky' => TRUE,
-      '#caption' => t('Drupal user and PM Person node email addresses should match. Correct this issue by editing either the user or the node.'),
+      '#caption' => t('Conflicts.'),
       '#empty' => t('No issues found.'),
     ),
     'pager' => array(
@@ -205,7 +233,7 @@ function _pmperson_migrate_get_conflicting_email_with_existing_users_table() {
         return _pmperson_migrate_adjust_row($row);
       }, $result),
       '#sticky' => TRUE,
-      '#caption' => t("List of PM Person nodes that are not linked to Drupal User account with same email."),
+      '#caption' => t("Suggested Matches."),
       '#empty' => t('No issues found.'),
     ),
     'pager' => array(

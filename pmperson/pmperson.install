@@ -46,3 +46,23 @@ function pmperson_update_7104(&$sandbox) {
 
   return pmperson_migrate($sandbox);
 }
+
+/**
+ * Implements hook_requirements().
+ */
+function pmperson_requirements($phase) {
+  $requirements = array();
+  if ($phase == 'update') {
+    module_load_include('inc', 'pmperson', 'includes/pmperson.migrate');
+    if( pmperson_migrate_update_could_be_performed() == FALSE ) {
+      $t = get_t();
+      $link = l(PMPERSON_RESOLVE_DEPENDENCIES_LINK, PMPERSON_RESOLVE_DEPENDENCIES_LINK);
+      $requirements['pmperson_migrate'] = array(
+        'title' => $t('PM Person Migrate Conflicts'),
+        'value' => $t('Cannot perform update. Please visit !link to check how to resolve this issue.', array('!link' => $link)),
+        'severity' => REQUIREMENT_ERROR,
+      );
+    }
+  }
+  return $requirements;
+}
