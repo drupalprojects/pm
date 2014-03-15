@@ -47,7 +47,7 @@ function pm_field_instances_create_if_required($field_instances) {
 
 function pm_field_instance_create_if_required($field_name , $field_instance) {
   $field = field_info_field($field_name);
-  if(!$field){
+  if(!$field OR !$field['bundles'] OR !in_array($field_instance['bundle'], $field['bundles'])){
     $field = field_create_instance($field_instance);
   }
   return $field;
