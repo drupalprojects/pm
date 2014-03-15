@@ -70,12 +70,12 @@ function pmperson_migrate_page_callback() {
   if (pmperson_migrate_update_could_be_performed()) {
     $link = l('update script', 'update.php');
     return t('No conflicts here, PM Person migration could be performed.
-      You can go back to !link, if you came here to resolve migration issue.',
+      If you came here to resolve migration issue, you can go back to !link.',
       array('!link' => $link)
     );
   }
 
-  $form = drupal_get_form('pmperson_migrate_fix_existing_users_form');
+  $form_fix_1 = drupal_get_form('pmperson_migrate_fix_existing_users_form');
 
   $render = array(
     'preface' => array(
@@ -102,7 +102,7 @@ function pmperson_migrate_page_callback() {
       ",
     ),
     'table_issue_1' => _pmperson_migrate_get_conflicting_email_with_existing_users_table(),
-    'try_fix' => array('#type' => 'markup', '#markup' => render($form)),
+    'try_fix_1' => array('#type' => 'markup', '#markup' => render($form_fix_1)),
     'tabel_2_info' => array(
       '#markup' => "
         <hr><br>
@@ -333,9 +333,8 @@ function pmperson_migrate_create_users_if_required() {
         $num_updated = db_update('pmperson')
           ->fields(array(
             'email' => $account->mail,
-            'init'  => $account->mail,
           ))
-          ->condition('nid', $id)
+          ->condition('user_uid', $account->uid)
           ->execute();
       }
     }
@@ -356,7 +355,7 @@ function _pmperson_migrate_associate_user_with_pmperson($record, $account) {
     return FALSE;
   }
   db_update('pmperson')
-    ->fields(array('user_uid' => $account->uid))
+    ->fields(array('user_uid' => $account->uid, 'email' => $account->mail))
     ->condition('nid', $record->nid)
     ->execute();
   return TRUE;
@@ -384,7 +383,11 @@ function _pmperson_migrate_create_user($record) {
   $account = FALSE;
   $node = node_load($record->nid);
   if ($node) {
-    $mail = 'pmperson_' . $node->nid . '@example.com';
+    $mail = $record->email;
+    if (empty($mail) OR user_load_by_mail($record->email)) {
+      $mail = 'pmperson_' . $node->nid . '@example.com';
+    }
+
     $name = check_plain($node->title);
     $name = _pmperson_migrate_generate_unique_username($name, TRUE, array($mail));
     $account = user_save( NULL, array(
