@@ -32,7 +32,7 @@ class PMTeamTestCase extends DrupalWebTestCase {
    */
   public function testpmteamCreate() {
     // Create and login user
-    $user = $this->drupalCreateUser(array('Project Management Team: add', 'Project Management Team: view all', 'Project Management Person: add', 'Project Management Person: view all'));
+    $user = $this->drupalCreateUser(array('Project Management Team: add', 'Project Management Team: view all'));
     $this->drupalLogin($user);
 
     // Create a team
