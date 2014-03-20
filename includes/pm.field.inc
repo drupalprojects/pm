@@ -47,8 +47,16 @@ function pm_field_instances_create_if_required($field_instances) {
 
 function pm_field_instance_create_if_required($field_name , $field_instance) {
   $field = field_info_field($field_name);
-  if(!$field OR !$field['bundles'] OR !in_array($field_instance['bundle'], $field['bundles'])){
-    $field = field_create_instance($field_instance);
+
+  $bundles = $field['bundles'];
+  $entity_type =  $field_instance['entity_type'];
+  $bundle =  $field_instance['bundle'];
+  // Create only if field is defined.
+  if($field) {
+    // Create ony if instance is not present.
+    if(!(isset($bundles[$entity_type]) AND in_array($bundle, $bundles[$entity_type]))) {
+      $field = field_create_instance($field_instance);
+    }
   }
   return $field;
 }
