@@ -73,22 +73,6 @@ function pmperson_permission() {
   );
 }
 
-
-/**
- * Implements hook_node_info().
- */
-function pmperson_node_info() {
-  return array(
-    'pmperson' => array(
-      'name' => t('Person'),
-      'base' => 'pmperson',
-      'description' => t("A person for Project Management."),
-      'title_label' => t("Name"),
-      'body_label' => t("Description"),
-    )
-  );
-}
-
 /**
  * Implements hook_pm_dashboard_links().
  * @todo Need to implement the actual view.

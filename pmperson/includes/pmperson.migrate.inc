@@ -4,32 +4,93 @@
  * pmperson.migrate.inc
  */
 
+define('PMPERSON_MIGRATE_MAX_JOB_PER_BATCH', 5);
+
 /**
  * Helper function for migrating between PM Person nodes and Drupal users.
  */
 function pmperson_migrate(&$sandbox) {
+  _pmperson_migrate_create_pmperson_node_type();
   // Create a new Drupal user for PM Person nodes that are not associated
   // with an existing Drupal user.
-  pmperson_migrate_create_users_if_required($sandbox);
+  if (pmperson_migrate_create_users_if_required() == FALSE) {
+    $sandbox['finished'] = 0;
+    return;
+  }
 
   // Create and attach fields to Drupal's user account.
-  pmperson_migrate_create_fields($sandbox);
+  if (pmperson_migrate_create_fields() == FALSE) {
+    $sandbox['finished'] = 0.25;
+    return;
+  }
 
   // Migrate data from pmperson node to Drupal user account.
-  pmperson_migrate_field_data($sandbox);
+  $sandbox['current_nid_of_field_being_migrated'] = 0;
+  if (pmperson_migrate_field_data($sandbox) == FALSE) {
+    $sandbox['finished'] = 0.5;
+    return;
+  }
 
   // Delete all pmperson nodes.
+  $sandbox['current_nid_of_node_being_deleted'] = 0;
+  if (pmperson_migrate_content_kill($sandbox) == FALSE) {
+    $sandbox['finished'] = 0.75;
+    return;
+  }
+  // Delete pmperson node type.
   node_type_delete('pmperson');
 
-  // TODO: How to handle cleanup since data is probably required by other
-  // modules especially for mapping references.
+  // TODO: pmperson table is required by other modules using user reference.
+  // Delete it when all the submodules have been ported.
   // db_drop_table('pmperson');
 
   // Delete variables previously set by the PM Person module that are now redundant.
   variable_del('node_options_pmperson');
   variable_del('node_permissions_pmperson');
-
+  $sandbox['finished'] = 1;
   return 'PM Person nodes have been migrated to fields on Drupal users.';
+}
+
+/**
+ * Delete all pmperson nodes.
+ */
+function pmperson_migrate_content_kill(&$sandbox) {
+  $results = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('type', 'pmperson')
+    ->condition('nid', $sandbox['current_nid_of_node_being_deleted'], '>')
+    ->range(0, PMPERSON_MIGRATE_MAX_JOB_PER_BATCH)
+    ->execute();
+  $count = 0;
+  foreach ($results as $result) {
+    $count++;
+    $nids[] = $result->nid;
+    $sandbox['current_nid_of_node_being_deleted'] = $result->nid;
+  }
+
+  if (!empty($nids)) {
+    node_delete_multiple($nids);
+  }
+  return empty($count);
+}
+
+/**
+ * We have deleted hook_node_info, but we still need the node definition for cleanup.
+ */
+function _pmperson_migrate_create_pmperson_node_type() {
+  $names = node_type_get_names();
+  if(empty($names['pmperson'])) {
+    $type = array(
+      'type' => 'pmperson',
+      'name' => 'Person',
+      'base' => 'pmperson',
+      'description' => 'A person for Project Management.',
+      'title_label' => 'Name',
+      'body_label' => 'Description',
+    );
+    $content_type = node_type_set_defaults($bir_news);
+    node_type_save($content_type);
+  }
 }
 
 /**
@@ -65,6 +126,7 @@ function pmperson_migrate_email_missmatch_count() {
 /**
  * page callback for PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK
  * @see: pmperson_menu().
+ * @TODO: Need to word this better Issue #1412134-84
  */
 function pmperson_migrate_page_callback() {
   if (pmperson_migrate_update_could_be_performed()) {
@@ -323,7 +385,12 @@ function pmperson_migrate_create_users_if_required() {
     ->condition('pmp.user_uid', '0')
     ->execute();
 
+  $count = 0;
   foreach ($unmapped_results as $record) {
+    $count++;
+    if ($count > PMPERSON_MIGRATE_MAX_JOB_PER_BATCH) {
+      break;
+    }
     $account = NULL;
     if ($account = user_load_by_mail($record->email)) {
       // If the email is already associated with another account, create new.
@@ -343,6 +410,7 @@ function pmperson_migrate_create_users_if_required() {
     }
     _pmperson_migrate_associate_user_with_pmperson($record, $account);
   }
+  return empty($count);
 }
 
 /**
@@ -457,6 +525,7 @@ function pmperson_migrate_create_fields(&$sandbox) {
 
   $field_instances = pmperson_default_field_instances();
   pm_field_instances_create_if_required($field_instances);
+  return TRUE;
 }
 
 /**
@@ -465,10 +534,16 @@ function pmperson_migrate_create_fields(&$sandbox) {
 function pmperson_migrate_field_data(&$sandbox) {
   $results = db_select('pmperson', 'pmp')
     ->fields('pmp')
+    ->condition('nid', $sandbox['current_nid_of_field_being_migrated'], '>')
+    ->range(0, PMPERSON_MIGRATE_MAX_JOB_PER_BATCH)
     ->execute();
+  $count = 0;
   foreach ($results as $pmperson) {
-     _pmperson_migrate_field_data($pmperson);
+    $count++;
+    $sandbox['current_nid_of_field_being_migrated'] = $pmperson->nid;
+    _pmperson_migrate_field_data($pmperson);
   }
+  return empty($count);
 }
 
 /**
