@@ -51,7 +51,7 @@ function pmperson_migrate(&$sandbox) {
   // Delete it when all the submodules have been ported.
   // db_drop_table('pmperson');
 
-  // Delete variables previously set by the PM Person module that are now redundant.
+  // Delete variables previously set by the PM Person module (now redundant).
   variable_del('node_options_pmperson');
   variable_del('node_permissions_pmperson');
   $sandbox['#finished'] = 1;
@@ -82,11 +82,11 @@ function pmperson_migrate_content_kill(&$sandbox) {
 }
 
 /**
- * We have deleted hook_node_info, but we still need the node definition for cleanup.
+ * Recreate node type for migration (hook_node_info has already been deleted).
  */
 function _pmperson_migrate_create_pmperson_node_type() {
   $names = node_type_get_names();
-  if(empty($names['pmperson'])) {
+  if (empty($names['pmperson'])) {
     $type = array(
       'type' => 'pmperson',
       'name' => 'Person',
@@ -101,8 +101,7 @@ function _pmperson_migrate_create_pmperson_node_type() {
 }
 
 /**
- * Checks the database and see if there are any conflicts that would
- * affect the update.
+ * Checks for conflicts that would affect the running of update.php.
  */
 function pmperson_migrate_update_could_be_performed() {
   if (db_table_exists('pmperson')) {
@@ -134,7 +133,7 @@ function pmperson_migrate_email_missmatch_count() {
 }
 
 /**
- * page callback for PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK
+ * Page callback for PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK.
  * @see: pmperson_menu().
  * @TODO: Need to word this better Issue #1412134-84
  */
@@ -159,7 +158,7 @@ function pmperson_migrate_page_callback() {
         - This page will ensure that all PM Person nodes can be uniquely matched
          to existing users so that the data migration can take place.
         </p>
-      "
+      ",
     ),
     'tabel_1_info' => array(
       '#markup' => "
@@ -193,6 +192,9 @@ function pmperson_migrate_page_callback() {
   return $render;
 }
 
+/**
+ * Form callback for automatching Drupal users to PM Persons.
+ */
 function pmperson_migrate_fix_existing_users_form($form, $form_state) {
   $form['submit'] = array(
     '#type' => 'submit',
@@ -204,6 +206,9 @@ function pmperson_migrate_fix_existing_users_form($form, $form_state) {
   return $form;
 }
 
+/**
+ * Form submit function for automatching Drupal users to PM Persons.
+ */
 function pmperson_migrate_fix_existing_users_form_submit($form, $form_state) {
   $unmapped_results = db_select('pmperson', 'pmp')
     ->fields('pmp')
@@ -234,7 +239,6 @@ function _pmperson_migrate_get_conflicting_email_with_attached_users_table() {
     $query = db_select('pmperson', 'p')
       ->extend('PagerDefault')
       ->limit(10);
-
 
     $query->join('users', 'u', 'p.user_uid = u.uid AND p.email <> u.mail');
 
@@ -343,23 +347,23 @@ function _pmperson_migrate_adjust_row($row, $show_form = TRUE) {
     'view' => array(
       'title' => $row->uid,
       'href' => 'user/' . $row->uid,
-      'html' => true,
-      'query' =>  $query_string,
+      'html' => TRUE,
+      'query' => $query_string,
     ),
     'edit' => array(
       'title' => t('(edit'),
       'href' => 'user/' . $row->uid . '/edit',
-      'html' => true,
-      'query' =>  $query_string,
+      'html' => TRUE,
+      'query' => $query_string,
     ),
     'delete' => array(
       'title' => t('delete)'),
       'href' => 'user/' . $row->uid . '/cancel',
-      'html' => true,
-      'query' =>  $query_string,
+      'html' => TRUE,
+      'query' => $query_string,
     ),
   );
-  $user_links =  theme('links', array(
+  $user_links = theme('links', array(
     'links' => $operations,
     'attributes' => array('class' => array('links', 'inline')),
   ));
@@ -406,7 +410,7 @@ function pmperson_migrate_create_users_if_required(&$sandbox) {
       // and change the current email.
       if (_pmperson_migrate_get_pmperson_from_uid($account->uid)) {
         $account = _pmperson_migrate_create_user($record);
-        $num_updated = db_update('pmperson')
+        db_update('pmperson')
           ->fields(array(
             'email' => $account->mail,
           ))
@@ -439,7 +443,7 @@ function _pmperson_migrate_associate_user_with_pmperson($record, $account) {
 }
 
 /**
- * load pmperson associated with a Drupal user.
+ * Load pmperson associated with a Drupal user.
  */
 function _pmperson_migrate_get_pmperson_from_uid($uid) {
   $record = db_select('pmperson', 'pmp')
@@ -467,7 +471,7 @@ function _pmperson_migrate_create_user($record) {
 
     $name = check_plain($node->title);
     $name = _pmperson_migrate_generate_unique_username($name, TRUE, array($mail));
-    $account = user_save( NULL, array(
+    $account = user_save(NULL, array(
               'name' => $name,
               'mail' => $mail,
               'init' => $mail,
@@ -487,40 +491,44 @@ function _pmperson_migrate_generate_unique_username($username, $reset = FALSE, $
     $suffix = 1;
   }
   if ($suffix < 2) {
-    $duplicate = _pmperson_migrate_check_if_username_exists( $username );
-    if ($duplicate == FALSE ) {
+    $duplicate = _pmperson_migrate_check_if_username_exists($username);
+    if ($duplicate == FALSE) {
       return $username;
     }
   }
   else {
-    $duplicate =  _pmperson_migrate_check_if_username_exists( "$username $suffix" );
+    $duplicate = _pmperson_migrate_check_if_username_exists("$username $suffix");
   }
   if (!empty($duplicate) AND !empty($tries)) {
     foreach ($tries as $try) {
-      if (_pmperson_migrate_check_if_username_exists( $try ) == FALSE ) {
+      if (_pmperson_migrate_check_if_username_exists($try) == FALSE) {
         return $try;
       }
     }
   }
-  // loop until name is valid
+  // Loop until username is valid.
   if (!empty($duplicate)) {
     $suffix++;
     _pmperson_migrate_generate_unique_username($username);
   }
-  // add number at end of username if it already exists
+  // Add number at end of username if it already exists.
   $username = ($suffix < 2) ? $username : "$username $suffix";
   return $username;
 }
 
-function _pmperson_migrate_check_if_username_exists( $username ) {
+/**
+ * Checks whether a given username exists.
+ */
+function _pmperson_migrate_check_if_username_exists($username) {
   $result = db_query('SELECT u.uid FROM {users} u WHERE name = :name',array(':name' =>$username));
-  if($result) {
-    foreach($result as $r) {
+  if ($result) {
+    foreach ($result as $r) {
       return TRUE;
     }
   }
   return FALSE;
 }
+
 /**
  * Creates and attaches fields to Drupal user.
  */
@@ -572,7 +580,7 @@ function _pmperson_migrate_field_data($pmperson) {
     $title = _pmperson_migrate_node_get_title($pmperson->nid);
     $edit['pmperson_name'][LANGUAGE_NONE][0]['value'] = $title;
 
-    $body =  _pmperson_migrate_node_get_body($pmperson->nid);
+    $body = _pmperson_migrate_node_get_body($pmperson->nid);
     $edit['pm_description'][LANGUAGE_NONE][0]['value'] = $body;
 
     foreach ($field_mapping as $key => $field_name) {
@@ -584,7 +592,8 @@ function _pmperson_migrate_field_data($pmperson) {
     $edit['pmperson_www'][LANGUAGE_NONE][0]['title'] = $pmperson->www;
     user_save($account, $edit);
 
-  } catch (EntityMetadataWrapperException $exc) {
+  }
+  catch (EntityMetadataWrapperException $exc) {
     watchdog(
       'pmperson',
       'See '  . __FUNCTION__ . '() ' .  $exc->getTraceAsString(),
@@ -597,19 +606,19 @@ function _pmperson_migrate_field_data($pmperson) {
  * A quick function to load node title without loading the whole node.
  */
 function _pmperson_migrate_node_get_title($nid) {
-  return db_query('SELECT title FROM {node} WHERE nid = :nid',array(':nid' =>$nid))->fetchField();
+  return db_query('SELECT title FROM {node} WHERE nid = :nid', array(':nid' => $nid))->fetchField();
 }
 
 /**
  * A quick function to load node body without loading the whole node.
  */
 function _pmperson_migrate_node_get_body($nid) {
-  return $v = db_query('SELECT body_value FROM {field_data_body} WHERE entity_id = :nid AND entity_type = :entity_type',array(':nid' =>$nid, ':entity_type' => 'node'))->fetchField();
+  return $v = db_query('SELECT body_value FROM {field_data_body} WHERE entity_id = :nid AND entity_type = :entity_type', array(':nid' => $nid, ':entity_type' => 'node'))->fetchField();
 }
 
 /**
  * Form for resolving email conflicts.
- * @see pmperson_forms().
+ * @see pmperson_forms()
  */
 function pmperson_migrate_email_adjust_form($form, $form_state, $type = NULL, $id = NULL, $mail = NULL) {
   $form = array();
@@ -625,20 +634,22 @@ function pmperson_migrate_email_adjust_form($form, $form_state, $type = NULL, $i
     $description = '';
     switch ($type) {
       case 'user':
-        $nid = db_query('SELECT nid FROM {pmperson} WHERE user_uid = :user_uid',array(':user_uid' =>$id))->fetchField();
+        $nid = db_query('SELECT nid FROM {pmperson} WHERE user_uid = :user_uid', array(':user_uid' => $id))->fetchField();
         $description = 'linked to pmperson: ' . _pmperson_migrate_node_get_title($nid) . " (nid: $nid)";
         break;
+
       case 'pmperson':
-        $uid = db_query('SELECT user_uid FROM {pmperson} WHERE nid = :nid',array(':nid' =>$id))->fetchField();
-        if($uid AND $account = user_load($uid)) {
+        $uid = db_query('SELECT user_uid FROM {pmperson} WHERE nid = :nid', array(':nid' => $id))->fetchField();
+        if ($uid AND $account = user_load($uid)) {
           $description = 'linked to user: ' . $account->name . " (uid: {$account->uid})";
         }
         else {
           $description = t('unlinked');
         }
       default:
-        # code...
+        // @todo Code...
         break;
+
     }
     $form['mail'] = array(
       '#type' => 'textfield',
@@ -662,7 +673,7 @@ function pmperson_migrate_email_adjust_form($form, $form_state, $type = NULL, $i
 
 /**
  * Validation function which is applicable for save operation only.
- * @see  pmperson_migrate_email_adjust_form
+ * @see pmperson_migrate_email_adjust_form
  */
 function pmperson_migrate_email_adjust_form_save_validate($form, $form_state) {
   $id   = $form_state['values']['id'];
@@ -680,17 +691,19 @@ function pmperson_migrate_email_adjust_form_save_validate($form, $form_state) {
         form_set_error('mail', t('E-mail address provided is not valid'));
       }
       break;
+
     case 'pmperson':
       if ($mail AND !valid_email_address($mail)) {
         form_set_error('mail', t('E-mail address provided is not valid'));
       }
       break;
+
   }
 }
 
 /**
  * Save submit handler.
- * @see  pmperson_migrate_email_adjust_form
+ * @see pmperson_migrate_email_adjust_form
  */
 function pmperson_migrate_email_adjust_form_save_submit($form, $form_state) {
   $id   = $form_state['values']['id'];
@@ -703,23 +716,25 @@ function pmperson_migrate_email_adjust_form_save_submit($form, $form_state) {
       $edit['init'] = $mail;
       user_save($account, $edit);
       break;
+
     case 'pmperson':
-      $num_updated = db_update('pmperson')
+      db_update('pmperson')
         ->fields(array(
-          'email' => $mail
+          'email' => $mail,
         ))
         ->condition('nid', $id)
         ->execute();
       break;
+
   }
 }
 
 /**
  * Delete submit handler.
- * @see  pmperson_migrate_email_adjust_form
+ * @see pmperson_migrate_email_adjust_form
  */
 function pmperson_migrate_email_adjust_form_delete_submit($form, &$form_state) {
-  $id   = $form_state['values']['id'];
+  $id = $form_state['values']['id'];
   $type = $form_state['values']['type'];
   switch ($type) {
     case 'user':
@@ -731,10 +746,12 @@ function pmperson_migrate_email_adjust_form_delete_submit($form, &$form_state) {
         drupal_goto("user/$id/cancel", array('query' => $query_string));
       }
       break;
+
     case 'pmperson':
       db_delete('pmperson')
         ->condition('nid', $id)
         ->execute();
       break;
+
   }
 }
