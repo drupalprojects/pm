@@ -47,7 +47,7 @@ function pmperson_migrate(&$sandbox) {
   // Delete pmperson node type.
   node_type_delete('pmperson');
 
-  // TODO: pmperson table is required by other modules using user reference.
+  // @todo pmperson table is required by other modules using user reference.
   // Delete it when all the submodules have been ported.
   // db_drop_table('pmperson');
 
@@ -134,8 +134,9 @@ function pmperson_migrate_email_missmatch_count() {
 
 /**
  * Page callback for PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK.
- * @see: pmperson_menu().
- * @TODO: Need to word this better Issue #1412134-84
+ *
+ * @see pmperson_menu()
+ * @todo Need to word this better Issue #1412134-84
  */
 function pmperson_migrate_page_callback() {
   if (pmperson_migrate_update_could_be_performed()) {
@@ -339,7 +340,8 @@ function _pmperson_migrate_get_conflicting_email_with_existing_users_table() {
 }
 /**
  * Custom function to map row values to display values.
- * @see: pmperson_migrate_page_callback().
+ *
+ * @see pmperson_migrate_page_callback()
  */
 function _pmperson_migrate_adjust_row($row, $show_form = TRUE) {
   $query_string = array('destination' => PMPERSON_RESOLVE_DEPENDENCIES_LINK);
@@ -368,7 +370,7 @@ function _pmperson_migrate_adjust_row($row, $show_form = TRUE) {
     'attributes' => array('class' => array('links', 'inline')),
   ));
   if ($show_form) {
-    $user_email_form     = drupal_get_form("pmperson_migrate_email_adjust_form_user_{$row->uid}", 'user', $row->uid, $row->mail);
+    $user_email_form = drupal_get_form("pmperson_migrate_email_adjust_form_user_{$row->uid}", 'user', $row->uid, $row->mail);
     $pmperson_email_form = drupal_get_form("pmperson_migrate_email_adjust_form_pmperson_{$row->nid}", 'pmperson', $row->nid, $row->email);
     $out = array(
       'nid' => $row->nid,
@@ -430,7 +432,7 @@ function pmperson_migrate_create_users_if_required(&$sandbox) {
  * Associate user with newly created pmperson acount.
  */
 function _pmperson_migrate_associate_user_with_pmperson($record, $account) {
-  // if $account is empty or is for anonymous user.
+  // If $account is empty or is for anonymous user.
   if (!$record OR !$record->nid OR !$account OR !$account->uid) {
     watchdog('pmperson', 'message', array('record' => $record), WATCHDOG_NOTICE);
     return FALSE;
@@ -520,7 +522,7 @@ function _pmperson_migrate_generate_unique_username($username, $reset = FALSE, $
  * Checks whether a given username exists.
  */
 function _pmperson_migrate_check_if_username_exists($username) {
-  $result = db_query('SELECT u.uid FROM {users} u WHERE name = :name',array(':name' =>$username));
+  $result = db_query('SELECT u.uid FROM {users} u WHERE name = :name', array(':name' => $username));
   if ($result) {
     foreach ($result as $r) {
       return TRUE;
@@ -565,7 +567,8 @@ function pmperson_migrate_field_data(&$sandbox) {
 
 /**
  * Helper function.
- * @see: pmperson_migrate_field_data().
+ *
+ * @see pmperson_migrate_field_data()
  */
 function _pmperson_migrate_field_data($pmperson) {
   $field_mapping = array(
@@ -596,8 +599,8 @@ function _pmperson_migrate_field_data($pmperson) {
   catch (EntityMetadataWrapperException $exc) {
     watchdog(
       'pmperson',
-      'See '  . __FUNCTION__ . '() ' .  $exc->getTraceAsString(),
-       NULL, WATCHDOG_ERROR
+      'See ' . __FUNCTION__ . '() ' . $exc->getTraceAsString(),
+      NULL, WATCHDOG_ERROR
     );
   }
 }
@@ -618,6 +621,7 @@ function _pmperson_migrate_node_get_body($nid) {
 
 /**
  * Form for resolving email conflicts.
+ *
  * @see pmperson_forms()
  */
 function pmperson_migrate_email_adjust_form($form, $form_state, $type = NULL, $id = NULL, $mail = NULL) {
@@ -673,7 +677,8 @@ function pmperson_migrate_email_adjust_form($form, $form_state, $type = NULL, $i
 
 /**
  * Validation function which is applicable for save operation only.
- * @see pmperson_migrate_email_adjust_form
+ *
+ * @see pmperson_migrate_email_adjust_form()
  */
 function pmperson_migrate_email_adjust_form_save_validate($form, $form_state) {
   $id   = $form_state['values']['id'];
@@ -703,7 +708,8 @@ function pmperson_migrate_email_adjust_form_save_validate($form, $form_state) {
 
 /**
  * Save submit handler.
- * @see pmperson_migrate_email_adjust_form
+ *
+ * @see pmperson_migrate_email_adjust_form()
  */
 function pmperson_migrate_email_adjust_form_save_submit($form, $form_state) {
   $id   = $form_state['values']['id'];
@@ -731,7 +737,8 @@ function pmperson_migrate_email_adjust_form_save_submit($form, $form_state) {
 
 /**
  * Delete submit handler.
- * @see pmperson_migrate_email_adjust_form
+ *
+ * @see pmperson_migrate_email_adjust_form()
  */
 function pmperson_migrate_email_adjust_form_delete_submit($form, &$form_state) {
   $id = $form_state['values']['id'];
@@ -739,9 +746,8 @@ function pmperson_migrate_email_adjust_form_delete_submit($form, &$form_state) {
   switch ($type) {
     case 'user':
       if ($id != 0 AND $id != 1) {
-        // user_delete($id);
-        // safe to use drupal_goto in submit handler cause we want to simulate a link.
-        // instead of a form submission.
+        // It is safer to use drupal_goto() as it simulates a link.
+        // This avoids an unintended form submission.
         $query_string = array('destination' => PMPERSON_RESOLVE_DEPENDENCIES_LINK);
         drupal_goto("user/$id/cancel", array('query' => $query_string));
       }
