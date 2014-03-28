@@ -7,5 +7,7 @@ dependencies[] = views
 dependencies[] = pm
 dependencies[] = pmorganization
 dependencies[] = pmperson
+dependencies[] = entityreference
+dependencies[] = options
 
 files[] = pmteam.test

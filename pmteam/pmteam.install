@@ -41,41 +41,6 @@ function pmteam_uninstall() {
   drupal_uninstall_schema('pmteam');
 }
 
-/**
- * Implements hook_schema().
- */
-function pmteam_schema() {
-  $schema['pmteam'] = array(
-    'fields' => array(
-      'vid' => array(
-        'type' => 'int',
-        'not null' => TRUE,
-        'default' => 0,
-      ),
-      'nid' => array(
-        'type' => 'int',
-        'not null' => TRUE,
-        'default' => 0),
-      'mnid' => array(
-        'type' => 'int',
-        'not null' => TRUE,
-        'default' => 0
-      ),
-    ),
-    'primary key' => array(
-      'vid',
-      'nid',
-      'mnid',
-    ),
-    'indexes'     => array(
-      'vid'  => array('vid'),
-      'nid'  => array('nid'),
-      'mnid' => array('mnid'),
-    ),
-  );
-
-  return $schema;
-}
 
 /**
  * Implements hook_update_last_removed().
@@ -109,4 +74,15 @@ function pmteam_update_7101() {
  */
 function pmteam_update_7102() {
   node_access_needs_rebuild(TRUE);
+}
+
+/**
+ * Migrate PM Team nodes to field_api fields.
+ */
+function pmteam_update_7103(&$sandbox) {
+  $t = get_t();
+
+  module_load_include('inc', 'pmteam', 'includes/pmteam.migrate');
+
+  return pmperson_migrate($sandbox);
 }
