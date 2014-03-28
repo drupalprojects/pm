@@ -4,7 +4,7 @@
  * pmperson.migrate.inc
  */
 
-define('PMPERSON_MIGRATE_MAX_JOB_PER_BATCH', 2);
+define('PMPERSON_MIGRATE_MAX_JOB_PER_BATCH', 5);
 
 /**
  * Helper function for migrating between PM Person nodes and Drupal users.
@@ -22,7 +22,8 @@ function pmperson_migrate(&$sandbox) {
   }
 
   // Create and attach fields to Drupal's user account.
-  if (pmperson_migrate_create_fields() == FALSE) {
+  if (empty($sandbox['pmperson_fields_and_instance_created'])) {
+    pmperson_migrate_create_fields($sandbox);
     $sandbox['#finished'] = 0.25;
     return;
   }
@@ -544,6 +545,7 @@ function pmperson_migrate_create_fields(&$sandbox) {
 
   $field_instances = pmperson_default_field_instances();
   pm_field_instances_create_if_required($field_instances);
+  $sandbox['pmperson_fields_and_instance_created'] = TRUE;
   return TRUE;
 }
 
