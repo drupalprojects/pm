@@ -2,6 +2,5 @@ name = PM Person
 description = "Allows storage of people within organizations, and linking of these to Drupal user accounts."
 dependencies[] = pm
 dependencies[] = link
-dependencies[] = email
 package = Project Management
 core = 7.x

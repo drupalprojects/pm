@@ -3,6 +3,13 @@
  * @file
  * pm.fields.inc
  */
+define('PM_FIELD_BASE_CREATE_FAILURE', 0);
+define('PM_FIELD_BASE_CREATE_SUCCESS', 1);
+define('PM_FIELD_BASE_UPDATE_SUCCESS', 2);
+
+define('PM_FIELD_INSTANCE_CREATE_FAILURE', 0);
+define('PM_FIELD_INSTANCE_CREATE_SUCCESS', 1);
+define('PM_FIELD_INSTANCE_UPDATE_SUCCESS', 2);
 
 /**
  * Create field bases if not present.
@@ -21,11 +28,25 @@ function pm_field_bases_create_if_required($field_bases) {
 }
 
 function pm_field_base_create_if_required($field_name , $field_base) {
-  $field = field_info_field($field_name);
-  if(!$field){
-    $field = field_create_field($field_base);
+  try {
+    $field = field_info_field($field_name);
+    if(epmty($field)){
+      $field = field_create_field($field_base);
+      return PM_FIELD_BASE_CREATE_SUCCESS;
+    }
+    else {
+      field_update_field($field_base);
+      return PM_FIELD_BASE_UPDATE_SUCCESS;
+    }
+  } catch (Exception $e) {
+    watchdog(
+      'pm',
+      'See ' . __FUNCTION__ . '() ' . $e->getTraceAsString(),
+      NULL, WATCHDOG_ERROR
+    );
   }
-  return $field;
+
+  return PM_FIELD_BASE_CREATE_FAILURE;
 }
 
 
@@ -46,17 +67,39 @@ function pm_field_instances_create_if_required($field_instances) {
 }
 
 function pm_field_instance_create_if_required($field_name , $field_instance) {
+
+  $field_name = $field_instance['field_name'];
+  $entity_type = $field_instance['entity_type'];
+  $bundle_name = $field_instance['bundle'];
   $field = field_info_field($field_name);
 
   $bundles = $field['bundles'];
   $entity_type =  $field_instance['entity_type'];
   $bundle =  $field_instance['bundle'];
   // Create only if field is defined.
-  if($field) {
-    // Create ony if instance is not present.
-    if(!(isset($bundles[$entity_type]) AND in_array($bundle, $bundles[$entity_type]))) {
-      $field = field_create_instance($field_instance);
+  try {
+    if($field) {
+      // Try to load field_instance if present.
+      $instance_info = field_info_instance($entity_type, $field_name, $bundle_name);
+
+      // Create ony if instance is not present.
+      if(empty($instance_info)) {
+        field_create_instance($field_instance);
+        return PM_FIELD_INSTANCE_CREATE_SUCCESS;
+      }
+      else {
+        // update field_instance if already present.
+        $merged_settings  = $field_instance + $instance_info;
+        field_update_instance($merged_settings);
+        return PM_FIELD_INSTANCE_UPDATE_SUCCESS;
+      }
     }
+  } catch (Exception $e) {
+    watchdog(
+      'pm',
+      'See ' . __FUNCTION__ . '() ' . $e->getTraceAsString(),
+      NULL, WATCHDOG_ERROR
+    );
   }
-  return $field;
+  return PM_FIELD_INSTANCE_CREATE_FAILURE;
 }

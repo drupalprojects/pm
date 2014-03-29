@@ -10,6 +10,50 @@
 function pmteam_default_field_instances() {
   $field_instances = array();
 
+  // Exported field_instance: 'node-pmteam-body'
+  $field_instances['node-pmteam-body'] = array(
+    'bundle' => 'pmteam',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(
+          'trim_length' => 600,
+        ),
+        'type' => 'text_summary_or_trimmed',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'body',
+    'label' => 'Description',
+    'required' => FALSE,
+    'settings' => array(
+      'display_summary' => TRUE,
+      'text_processing' => 1,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'module' => 'text',
+      'settings' => array(
+        'rows' => 20,
+        'summary_rows' => 5,
+      ),
+      'type' => 'text_textarea_with_summary',
+      'weight' => 3,
+    ),
+  );
+
   // Exported field_instance: 'node-pmteam-pmteam_user'
   $field_instances['node-pmteam-pmteam_user'] = array(
     'bundle' => 'pmteam',
@@ -38,6 +82,11 @@ function pmteam_default_field_instances() {
     'label' => 'Members',
     'required' => 0,
     'settings' => array(
+      'behaviors' => array(
+        'pmteam_user_instance_behavior' => array(
+          'status' => 1,
+        ),
+      ),
       'user_register_form' => FALSE,
     ),
     'widget' => array(
@@ -45,7 +94,7 @@ function pmteam_default_field_instances() {
       'module' => 'options',
       'settings' => array(),
       'type' => 'options_select',
-      'weight' => -18,
+      'weight' => 1,
     ),
   );
 
@@ -84,13 +133,14 @@ function pmteam_default_field_instances() {
       'module' => 'options',
       'settings' => array(),
       'type' => 'options_select',
-      'weight' => -17,
+      'weight' => 2,
     ),
   );
 
   // Translatables
   // Included for use with string extractors like potx.
   t('Assigns all users from the selected organization to the team');
+  t('Description');
   t('Members');
   t('Organization');
   t('Select the users who belongs to the team');

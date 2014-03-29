@@ -41,7 +41,9 @@ function pmteam_default_field_bases() {
           ),
         ),
         'sort' => array(
-          'type' => 'none',
+          'direction' => 'ASC',
+          'property' => 'name',
+          'type' => 'property',
         ),
         'target_bundles' => array(),
       ),
@@ -54,7 +56,7 @@ function pmteam_default_field_bases() {
   // Exported field_base: 'pmteam_organization'
   $field_bases['pmteam_organization'] = array(
     'active' => 1,
-    'cardinality' => 1,
+    'cardinality' => -1,
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'pmteam_organization',
@@ -82,7 +84,9 @@ function pmteam_default_field_bases() {
           ),
         ),
         'sort' => array(
-          'type' => 'none',
+          'direction' => 'ASC',
+          'property' => 'title',
+          'type' => 'property',
         ),
         'target_bundles' => array(
           'pmorganization' => 'pmorganization',
