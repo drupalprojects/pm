@@ -97,6 +97,16 @@ function pmteam_node_access($node, $op, $account = NULL) {
 }
 
 /**
+ * Implements hook_views_api().
+ */
+function pmteam_views_api() {
+  return array(
+    'api' => 2,
+    'path' => drupal_get_path('module', 'pmteam'),
+  );
+}
+
+/**
  * Implements hook_form().
  *
  * Drupal needs for us to provide a form that lets the user
