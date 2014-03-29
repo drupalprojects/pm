@@ -30,7 +30,7 @@ function pm_field_bases_create_if_required($field_bases) {
 function pm_field_base_create_if_required($field_name , $field_base) {
   try {
     $field = field_info_field($field_name);
-    if(epmty($field)){
+    if(empty($field)){
       $field = field_create_field($field_base);
       return PM_FIELD_BASE_CREATE_SUCCESS;
     }

@@ -10,6 +10,8 @@
  */
 function pmperson_install() {
   // Create user fields
+  module_load_include('inc', 'pmperson', 'includes/pmperson.migrate');
+  pmperson_migrate_create_fields($sandbox);
 }
 
 /**
