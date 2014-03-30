@@ -6,7 +6,6 @@ package = Project Management
 dependencies[] = views
 dependencies[] = pm
 dependencies[] = pmorganization
-dependencies[] = pmperson
 dependencies[] = entityreference
 dependencies[] = options
 

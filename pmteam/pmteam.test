@@ -24,7 +24,7 @@ class PMTeamTestCase extends DrupalWebTestCase {
    * Sets up all Project Management test cases.
    */
   public function setUp() {
-    parent::setUp('views', 'pm', 'pmorganization', 'pmperson', 'pmteam');
+    parent::setUp('views', 'pm', 'pmorganization', 'pmteam');
   }
 
   /**
