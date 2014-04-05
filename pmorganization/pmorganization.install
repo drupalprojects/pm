@@ -9,288 +9,6 @@
 function pmorganization_install() {
   variable_set('node_options_pmorganization', array('status'));
   variable_set('node_permissions_pmorganization', 0);
-
-  // Uncache node types
-  node_types_rebuild();
-  // Fetch list of current node types and add body field to Project Management Organization
-  $types = node_type_get_types();
-  node_add_body_field($types['pmorganization'], 'Note');
-
-  $attributes = array();
-
-  $attributes['Price mode'] = array(
-    'not applicable' => 'Not Applicable',
-    'hourly' => 'Hourly',
-    'daily' => 'Daily',
-    'fixed_price' => 'Fixed Price',
-  );
-
-  $attributes['Currency'] = array(
-    'USD' => 'US Dollar',
-    'AUD' => 'Australian Dollar',
-    'CAD' => 'Canadian Dollar',
-    'EUR' => 'Euro',
-    'GBP' => 'British Pound',
-    'JPY' => 'Japanese Yen',
-    'CHF' => 'Swiss Franc',
-  );
-
-  $attributes['Country'] = array(
-    'US' => 'United States of America',
-    'AD' => 'Andorra',
-    'AE' => 'United Arab Emirates',
-    'AF' => 'Afghanistan',
-    'AG' => 'Antigua and Barbuda',
-    'AI' => 'Anguilla',
-    'AL' => 'Albania',
-    'AM' => 'Armenia',
-    'AN' => 'Netherlands Antilles',
-    'AO' => 'Angola',
-    'AR' => 'Argentina',
-    'AS' => 'American Samoa',
-    'AT' => 'Austria',
-    'AU' => 'Australia',
-    'AW' => 'Aruba',
-    'AX' => 'Åland Islands',
-    'AZ' => 'Azerbaijan',
-    'BA' => 'Bosnia and Herzegovina',
-    'BB' => 'Barbados',
-    'BD' => 'Bangladesh',
-    'BE' => 'Belgium',
-    'BF' => 'Burkina Faso',
-    'BG' => 'Bulgaria',
-    'BH' => 'Bahrain',
-    'BI' => 'Burundi',
-    'BJ' => 'Benin',
-    'BL' => 'Saint-Barthélemy',
-    'BM' => 'Bermuda',
-    'BN' => 'Brunei Darussalam',
-    'BO' => 'Bolivia',
-    'BR' => 'Brazil',
-    'BS' => 'Bahamas',
-    'BT' => 'Bhutan',
-    'BW' => 'Botswana',
-    'BY' => 'Belarus',
-    'BZ' => 'Belize',
-    'CA' => 'Canada',
-    'CD' => 'Democratic Republic of the Congo',
-    'CF' => 'Central African Republic',
-    'CG' => 'Congo',
-    'CH' => 'Switzerland',
-    'CI' => "Côte d'Ivoire",
-    'CK' => 'Cook Islands',
-    'CL' => 'Chile',
-    'CM' => 'Cameroon',
-    'CN' => 'China',
-    'CO' => 'Colombia',
-    'CR' => 'Costa Rica',
-    'CU' => 'Cuba',
-    'CV' => 'Cape Verde',
-    'CY' => 'Cyprus',
-    'CZ' => 'Czech Republic',
-    'DE' => 'Germany',
-    'DJ' => 'Djibouti',
-    'DK' => 'Denmark',
-    'DM' => 'Dominica',
-    'DO' => 'Dominican Republic',
-    'DZ' => 'Algeria',
-    'EC' => 'Ecuador',
-    'EE' => 'Estonia',
-    'EG' => 'Egypt',
-    'EH' => 'Western Sahara',
-    'ER' => 'Eritrea',
-    'ES' => 'Spain',
-    'ET' => 'Ethiopia',
-    'FI' => 'Finland',
-    'FJ' => 'Fiji',
-    'FK' => 'Falkland Islands (Malvinas)',
-    'FM' => 'Micronesia, Federated States of',
-    'FO' => 'Faeroe Islands',
-    'FR' => 'France',
-    'GA' => 'Gabon',
-    'GB' => 'United Kingdom',
-    'GD' => 'Grenada',
-    'GE' => 'Georgia',
-    'GF' => 'French Guiana',
-    'GG' => 'Guernsey',
-    'GH' => 'Ghana',
-    'GI' => 'Gibraltar',
-    'GL' => 'Greenland',
-    'GM' => 'Gambia',
-    'GN' => 'Guinea',
-    'GP' => 'Guadeloupe',
-    'GQ' => 'Equatorial Guinea',
-    'GR' => 'Greece',
-    'GT' => 'Guatemala',
-    'GU' => 'Guam',
-    'GW' => 'Guinea-Bissau',
-    'GY' => 'Guyana',
-    'HK' => 'Hong Kong Special Administrative Region of China',
-    'HN' => 'Honduras',
-    'HR' => 'Croatia',
-    'HT' => 'Haiti',
-    'HU' => 'Hungary',
-    'ID' => 'Indonesia',
-    'IE' => 'Ireland',
-    'IL' => 'Israel',
-    'IM' => 'Isle of Man',
-    'IN' => 'India',
-    'IQ' => 'Iraq, Republic of',
-    'IR' => 'Iran, Islamic Republic of',
-    'IS' => 'Iceland',
-    'IT' => 'Italy',
-    'JE' => 'Jersey',
-    'JM' => 'Jamaica',
-    'JO' => 'Jordan',
-    'JP' => 'Japan',
-    'KE' => 'Kenya',
-    'KG' => 'Kyrgyzstan',
-    'KH' => 'Cambodia',
-    'KI' => 'Kiribati',
-    'KM' => 'Comoros',
-    'KN' => 'Saint Kitts and Nevis',
-    'KP' => "Democratic People's Republic of Korea",
-    'KR' => 'Republic of Korea',
-    'KW' => 'Kuwait',
-    'KY' => 'Cayman Islands',
-    'KZ' => 'Kazakhstan',
-    'LA' => "Lao People's Democratic Republic",
-    'LB' => 'Lebanon',
-    'LC' => 'Saint Lucia',
-    'LI' => 'Liechtenstein',
-    'LK' => 'Sri Lanka',
-    'LR' => 'Liberia',
-    'LS' => 'Lesotho',
-    'LT' => 'Lithuania',
-    'LU' => 'Luxembourg',
-    'LV' => 'Latvia',
-    'LY' => 'Libyan Arab Jamahiriya',
-    'MA' => 'Morocco',
-    'MC' => 'Monaco',
-    'MD' => 'Moldova',
-    'ME' => 'Montenegro',
-    'MF' => 'Saint-Martin (French part)',
-    'MG' => 'Madagascar',
-    'MH' => 'Marshall Islands',
-    'MK' => 'The former Yugoslav Republic of Macedonia',
-    'ML' => 'Mali',
-    'MM' => 'Myanmar',
-    'MN' => 'Mongolia',
-    'MO' => 'Macao Special Administrative Region of China',
-    'MP' => 'Northern Mariana Islands',
-    'MQ' => 'Martinique',
-    'MR' => 'Mauritania',
-    'MS' => 'Montserrat',
-    'MT' => 'Malta',
-    'MU' => 'Mauritius',
-    'MV' => 'Maldives',
-    'MW' => 'Malawi',
-    'MX' => 'Mexico',
-    'MY' => 'Malaysia',
-    'MZ' => 'Mozambique',
-    'NA' => 'Namibia',
-    'NC' => 'New Caledonia',
-    'NE' => 'Niger',
-    'NF' => 'Norfolk Island',
-    'NG' => 'Nigeria',
-    'NI' => 'Nicaragua',
-    'NL' => 'Netherlands',
-    'NO' => 'Norway',
-    'NP' => 'Nepal',
-    'NR' => 'Nauru',
-    'NU' => 'Niue',
-    'NZ' => 'New Zealand',
-    'OM' => 'Oman',
-    'PA' => 'Panama',
-    'PE' => 'Peru',
-    'PF' => 'French Polynesia',
-    'PG' => 'Papua New Guinea',
-    'PH' => 'Philippines',
-    'PK' => 'Pakistan',
-    'PL' => 'Poland',
-    'PM' => 'Saint Pierre and Miquelon',
-    'PN' => 'Pitcairn',
-    'PR' => 'Puerto Rico',
-    'PS' => 'Occupied Palestinian Territory',
-    'PT' => 'Portugal',
-    'PW' => 'Palau',
-    'PY' => 'Paraguay',
-    'QA' => 'Qatar',
-    'RE' => 'Réunion',
-    'RO' => 'Romania',
-    'RS' => 'Serbia',
-    'RU' => 'Russian Federation',
-    'RW' => 'Rwanda',
-    'SA' => 'Saudi Arabia',
-    'SB' => 'Solomon Islands',
-    'SC' => 'Seychelles',
-    'SD' => 'Sudan',
-    'SE' => 'Sweden',
-    'SG' => 'Singapore',
-    'SH' => 'Saint Helena',
-    'SI' => 'Slovenia',
-    'SJ' => 'Svalbard and Jan Mayen Islands',
-    'SK' => 'Slovakia',
-    'SL' => 'Sierra Leone',
-    'SM' => 'San Marino',
-    'SN' => 'Senegal',
-    'SO' => 'Somalia',
-    'SR' => 'Suriname',
-    'ST' => 'Sao Tome and Principe',
-    'SV' => 'El Salvador',
-    'SY' => 'Syrian Arab Republic',
-    'SZ' => 'Swaziland',
-    'TC' => 'Turks and Caicos Islands',
-    'TD' => 'Chad',
-    'TG' => 'Togo',
-    'TH' => 'Thailand',
-    'TJ' => 'Tajikistan',
-    'TK' => 'Tokelau',
-    'TL' => 'Timor-Leste',
-    'TM' => 'Turkmenistan',
-    'TN' => 'Tunisia',
-    'TO' => 'Tonga',
-    'TR' => 'Turkey',
-    'TT' => 'Trinidad and Tobago',
-    'TV' => 'Tuvalu',
-    'TZ' => 'United Republic of Tanzania',
-    'UA' => 'Ukraine',
-    'UG' => 'Uganda',
-    'UY' => 'Uruguay',
-    'UZ' => 'Uzbekistan',
-    'VA' => 'Holy See',
-    'VC' => 'Saint Vincent and the Grenadines',
-    'VE' => 'Venezuela (Bolivarian Republic of)',
-    'VG' => 'British Virgin Islands',
-    'VI' => 'United States Virgin Islands',
-    'VN' => 'Viet Nam',
-    'VU' => 'Vanuatu',
-    'WF' => 'Wallis and Futuna Islands',
-    'WS' => 'Samoa',
-    'YE' => 'Yemen',
-    'YT' => 'Mayotte',
-    'ZA' => 'South Africa',
-    'ZM' => 'Zambia',
-    'ZW' => 'Zimbabwe',
-  );
-
-  $prevdomain = '';
-  $weight = 0;
-  foreach ($attributes as $domain => $attribute) {
-    if ($domain != $prevdomain) $weight=0;
-    foreach ($attribute as $key => $value) {
-      db_insert('pmattribute')
-        ->fields(array(
-          'domain' => $domain,
-          'akey' => $key,
-          'avalue' => $value,
-          'weight' => $weight))
-        ->execute();
-
-      $weight++;
-    }
-    $prevdomain = $domain;
-  }
 }
 
 /**
@@ -393,4 +111,45 @@ function pmorganization_update_7102() {
  */
 function pmorganization_update_7103() {
   node_access_needs_rebuild(TRUE);
+}
+
+/**
+ * Migrate PM Organization nodes to field_api fields.
+ */
+function pmorganization_update_7104(&$sandbox) {
+
+  module_load_include('inc', 'pmorganization', 'includes/pmorganization.migrate');
+
+  if (pmorganization_migrate_update_could_be_performed()) {
+    return pmorganization_migrate($sandbox);
+  }
+
+  return ;
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function pmorganization_requirements($phase) {
+  $requirements = array();
+  if ($phase == 'update') {
+    $enabled = module_enable(array('link', 'email', 'addressfield', 'foo'));
+    if( !$enabled ) {
+      $t = get_t();
+      $requirements['pmorganization_migrate'] = array(
+        'title' => $t('PM Organization Migrate Issues'),
+        'value' => $t('One or more of the required modules cannot be enabled.
+          If you download the modules from Drupal.org those would be enabled automatically when update script is run.
+          So Please make sure following modules are present: !link, !email & !addressfield',
+          array(
+            '!link' => l('link', 'https://drupal.org/project/link'),
+            '!email' => l('email', 'https://drupal.org/project/email'),
+            '!addressfield' => l('addressfield', 'https://drupal.org/project/addressfield'),
+          )
+        ),
+        'severity' => REQUIREMENT_ERROR,
+      );
+    }
+  }
+  return $requirements;
 }

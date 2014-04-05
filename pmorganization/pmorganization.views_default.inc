@@ -76,10 +76,17 @@ function pmorganization_views_default_views() {
   $handler->display->display_options['fields']['title']['label'] = 'Organization';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
-  /* Field: Project Management Organization: Country */
-  $handler->display->display_options['fields']['country']['id'] = 'country';
-  $handler->display->display_options['fields']['country']['table'] = 'pmorganization';
-  $handler->display->display_options['fields']['country']['field'] = 'country';
+  /* Field: Content: Address */
+  $handler->display->display_options['fields']['pmorganization_address']['id'] = 'pmorganization_address';
+  $handler->display->display_options['fields']['pmorganization_address']['table'] = 'field_data_pmorganization_address';
+  $handler->display->display_options['fields']['pmorganization_address']['field'] = 'pmorganization_address';
+  $handler->display->display_options['fields']['pmorganization_address']['click_sort_column'] = 'country';
+  $handler->display->display_options['fields']['pmorganization_address']['settings'] = array(
+    'use_widget_handlers' => 1,
+    'format_handlers' => array(
+      'address' => 'address',
+    ),
+  );
   /* Field: Content: Edit link */
   $handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
   $handler->display->display_options['fields']['edit_node']['table'] = 'views_entity_node';

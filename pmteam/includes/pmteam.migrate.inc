@@ -99,7 +99,7 @@ function _pmteam_migrate_field_data($pmteam) {
       _pmteam_migrate_migrate_single_node($pmteam->nid, $pmteam->vid, $member_ids);
     }
   }
-  catch (EntityMetadataWrapperException $exc) {
+  catch (Exception $exc) {
     watchdog(
       'pmteam',
       'See ' . __FUNCTION__ . '() ' . $exc->getTraceAsString(),
