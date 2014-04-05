@@ -58,6 +58,8 @@ function pmperson_requirements($phase) {
     module_load_include('inc', 'pmperson', 'includes/pmperson.migrate');
     if( pmperson_migrate_update_could_be_performed() == FALSE ) {
       $t = get_t();
+      // Do a menu rebuild so that the page PMPERSON_RESOLVE_DEPENDENCIES_LINK is accessible.
+      menu_rebuild();
       $link = l(PMPERSON_RESOLVE_DEPENDENCIES_LINK, PMPERSON_RESOLVE_DEPENDENCIES_LINK);
       $requirements['pmperson_migrate'] = array(
         'title' => $t('PM Person Migrate Conflicts'),
