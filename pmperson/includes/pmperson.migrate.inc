@@ -162,6 +162,7 @@ function pmperson_migrate_page_callback() {
         </p>
       ",
     ),
+    'try_fix_1' => array('#type' => 'markup', '#markup' => render($form_fix_1)),
     'tabel_1_info' => array(
       '#markup' => "
         <b>Suggested matches</b>
@@ -169,13 +170,12 @@ function pmperson_migrate_page_callback() {
         This table shows PM Person nodes with the same email address as a user
         account.
         </p><p>
-        Normally these can be matched automatically by clicking the button below.
+        Normally these can be matched automatically by clicking the button above.
         Remaining PM Person nodes will need to be manually matched.
         </p>
       ",
     ),
     'table_issue_1' => _pmperson_migrate_get_conflicting_email_with_existing_users_table(),
-    'try_fix_1' => array('#type' => 'markup', '#markup' => render($form_fix_1)),
     'tabel_2_info' => array(
       '#markup' => "
         <hr><br>
@@ -230,11 +230,9 @@ function pmperson_migrate_fix_existing_users_form_submit($form, $form_state) {
  */
 function _pmperson_migrate_get_conflicting_email_with_attached_users_table() {
   $header = array(
-    'nid'   => array('data' => t('PM Person Node ID'),  'field' => 'nid'),
-    'email' => array('data' => t('PM Person E-Mail'),    'field' => 'email'),
-    'mail'  => array('data' => t('Drupal User E-Mail'),  'field' => 'mail'),
-    'uid'   => array('data' => t('Drupal User ID'),    'field' => 'uid'),
-    'name'  => array('data' => t('Drupal User name'),   'field' => 'name'),
+    'person' => array('data' => t('PM Person'), 'field' => 'email'),
+    'user' => array('data' => t('Drupal User'), 'field' => 'mail'),
+    'help' => array('data' => t('Help')),
   );
 
   if (db_table_exists('pmperson')) {
@@ -288,11 +286,9 @@ function _pmperson_migrate_get_conflicting_email_with_attached_users_table() {
  */
 function _pmperson_migrate_get_conflicting_email_with_existing_users_table() {
   $header = array(
-    'nid'   => array('data' => t('PM Person Node ID'),  'field' => 'nid'),
-    'email' => array('data' => t('PM Person email'),    'field' => 'email'),
-    'mail'  => array('data' => t('Drupal User email'),  'field' => 'mail'),
-    'uid'   => array('data' => t('Drupal User uid'),    'field' => 'uid'),
-    'name'  => array('data' => t('Drupal User name'),   'field' => 'name'),
+    'person' => array('data' => t('PM Person'), 'field' => 'email'),
+    'user' => array('data' => t('Drupal User'), 'field' => 'mail'),
+    'help' => array('data' => t('Help')),
   );
 
   if (db_table_exists('pmperson')) {
@@ -344,55 +340,44 @@ function _pmperson_migrate_get_conflicting_email_with_existing_users_table() {
  *
  * @see pmperson_migrate_page_callback()
  */
-function _pmperson_migrate_adjust_row($row, $show_form = TRUE) {
-  $query_string = array('destination' => PMPERSON_RESOLVE_DEPENDENCIES_LINK);
-  $operations = array(
-    'view' => array(
-      'title' => $row->uid,
-      'href' => 'user/' . $row->uid,
-      'html' => TRUE,
-      'query' => $query_string,
-    ),
-    'edit' => array(
-      'title' => t('(edit'),
-      'href' => 'user/' . $row->uid . '/edit',
-      'html' => TRUE,
-      'query' => $query_string,
-    ),
-    'delete' => array(
-      'title' => t('delete)'),
-      'href' => 'user/' . $row->uid . '/cancel',
-      'html' => TRUE,
-      'query' => $query_string,
-    ),
+function _pmperson_migrate_adjust_row($row) {
+
+  $user_email_form = drupal_get_form("pmperson_migrate_email_adjust_form_user_{$row->uid}", 'user', $row->uid, $row->mail);
+  $row_data['user'] = $user_email_form['col_data']['#value']['user'];
+  $pmperson_email_form = drupal_get_form("pmperson_migrate_email_adjust_form_pmperson_{$row->nid}", 'pmperson', $row->nid, $row->email);
+  $row_data['pmperson'] = $pmperson_email_form['col_data']['#value']['pmperson'];
+
+  $out = array(
+    'person' => drupal_render($pmperson_email_form),
+    'user' => drupal_render($user_email_form),
+    'help' => pmperson_migrate_get_help_text($row_data),
   );
-  $user_links = theme('links', array(
-    'links' => $operations,
-    'attributes' => array('class' => array('links', 'inline')),
-  ));
-  if ($show_form) {
-    $user_email_form = drupal_get_form("pmperson_migrate_email_adjust_form_user_{$row->uid}", 'user', $row->uid, $row->mail);
-    $pmperson_email_form = drupal_get_form("pmperson_migrate_email_adjust_form_pmperson_{$row->nid}", 'pmperson', $row->nid, $row->email);
-    $out = array(
-      'nid' => $row->nid,
-      'email' => drupal_render($pmperson_email_form),
-      'mail' => drupal_render($user_email_form),
-      'uid' => $row->uid ? $user_links : '',
-      'name' => $row->name,
-    );
-  }
-  else {
-    $out = array(
-      'nid' => $row->nid,
-      'email' => $row->email,
-      'mail' => $row->mail,
-      'uid' => $row->uid ? $user_links : '',
-      'name' => $row->name,
-    );
-  }
   return $out;
 }
 
+function pmperson_migrate_get_help_text($row_data) {
+  $message = '-';
+  $du = $row_data['user'];
+  $pmp = $row_data['pmperson'];
+
+  if ($pmp['linked_id'] == NULL AND $du['linked_id'] == NULL AND $du['mail'] == $pmp['mail']) {
+    $message = t('Clicking <b>"Adjust pmperson nodes"</b> button should fix this issue');
+  }
+
+  if ($pmp['linked_id'] == NULL AND $du['linked_id'] != NULL AND $du['mail'] == $pmp['mail']) {
+    $message = t('Since drupal user is already associated with another PM Person,
+    it is highly recommended to <b>change PM Person email</b>. You may delete the PM
+    Person email and the migration will generate a random one automatically.');
+  }
+
+  if ($pmp['linked_id'] != NULL AND $du['linked_id'] == $pmp['id'] AND $du['mail'] != $pmp['mail']) {
+    $message = t('PM Person account and Drupal user account are linked,
+    but their email doesn\'t match. Please edit PM Person email to <b>match</b>
+    Drupal user email');
+  }
+
+  return $message;
+}
 /**
  * Creates Drupal User and associate it with pmperson node.
  */
@@ -628,6 +613,10 @@ function _pmperson_migrate_node_get_body($nid) {
  */
 function pmperson_migrate_email_adjust_form($form, $form_state, $type = NULL, $id = NULL, $mail = NULL) {
   $form = array();
+  $col_data[$type] = array(
+    'id' => $id,
+    'mail' => $mail,
+  );
   if ($id) {
     $form['type'] = array(
       '#type' => 'value',
@@ -641,16 +630,25 @@ function pmperson_migrate_email_adjust_form($form, $form_state, $type = NULL, $i
     switch ($type) {
       case 'user':
         $nid = db_query('SELECT nid FROM {pmperson} WHERE user_uid = :user_uid', array(':user_uid' => $id))->fetchField();
-        $description = 'linked to pmperson: ' . _pmperson_migrate_node_get_title($nid) . " (nid: $nid)";
+        if ($nid) {
+          $description =  'uid: ' . $id . ' - linked to pmperson: ' . _pmperson_migrate_node_get_title($nid) . " (nid: $nid)";
+          $col_data[$type]['linked_id'] = $nid;
+        }
+        else {
+          $description = 'uid: ' . $id . ' - ' . t('unlinked');
+          $col_data[$type]['linked_id'] = NULL;
+        }
         break;
 
       case 'pmperson':
         $uid = db_query('SELECT user_uid FROM {pmperson} WHERE nid = :nid', array(':nid' => $id))->fetchField();
         if ($uid AND $account = user_load($uid)) {
-          $description = 'linked to user: ' . $account->name . " (uid: {$account->uid})";
+          $description = 'nid: ' . $id . ' - linked to user: ' . $account->name . " (uid: {$account->uid})";
+          $col_data[$type]['linked_id'] = $account->uid;
         }
         else {
-          $description = t('unlinked');
+          $description = 'nid: ' . $id . ' - ' . t('unlinked');
+          $col_data[$type]['linked_id'] = NULL;
         }
       default:
         // @todo Code...
@@ -674,6 +672,10 @@ function pmperson_migrate_email_adjust_form($form, $form_state, $type = NULL, $i
       '#submit' => array('pmperson_migrate_email_adjust_form_delete_submit'),
     );
   }
+  $form['col_data'] = array(
+    '#type' => 'value',
+    '#value' => $col_data,
+  );
   return $form;
 }
 
