@@ -133,7 +133,7 @@ function pmorganization_update_7104(&$sandbox) {
 function pmorganization_requirements($phase) {
   $requirements = array();
   if ($phase == 'update') {
-    $enabled = module_enable(array('link', 'email', 'addressfield', 'foo'));
+    $enabled = module_enable(array('link', 'email', 'addressfield'));
     if( !$enabled ) {
       $t = get_t();
       $requirements['pmorganization_migrate'] = array(
