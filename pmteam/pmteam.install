@@ -22,14 +22,6 @@ function pmteam_disable() {
 }
 
 /**
- * Implements hook_uninstall().
- */
-function pmteam_uninstall() {
-  drupal_uninstall_schema('pmteam');
-}
-
-
-/**
  * Implements hook_update_last_removed().
  */
 function pmteam_update_last_removed() {
