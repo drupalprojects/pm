@@ -20,7 +20,7 @@ class PMOrganizationTestCase extends DrupalWebTestCase {
    * Standard configuration for all test cases.
    */
   public function setUp() {
-    parent::setUp('views', 'pm', 'pmorganization');
+    parent::setUp('views', 'pm', 'link', 'email', 'addressfield', 'pmorganization');
   }
 
   /**
