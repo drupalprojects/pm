@@ -102,3 +102,12 @@ function pmperson_pm_dashboard_links($type) {
 function _pmperson_user_load() {
 
 }
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function pmperson_ctools_plugin_api($module = NULL, $api = NULL) {
+  if ($module == "field_group" && $api == "field_group") {
+    return array("version" => "1");
+  }
+}
