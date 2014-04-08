@@ -13,3 +13,7 @@ dependencies[] = date
 dependencies[] = entityreference
 dependencies[] = list
 dependencies[] = views
+
+dependencies[] = addressfield
+dependencies[] = email
+dependencies[] = link
