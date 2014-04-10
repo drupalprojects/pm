@@ -8,15 +8,58 @@
  * Field base definitions for PM Organization.
  */
 function pmorganization_default_field_bases() {
+
   $field_bases = array();
 
-  // Exported field_base: 'pmorganization_currency'
-  $field_bases['pmorganization_currency'] = array(
+  // Exported field_base: 'field_pm_active'
+  $field_bases['field_pm_active'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'pmorganization_currency',
+    'field_name' => 'field_pm_active',
+    'foreign keys' => array(),
+    'indexes' => array(
+      'value' => array(
+        0 => 'value',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'list',
+    'settings' => array(
+      'allowed_values' => array(
+        0 => '',
+        1 => '',
+      ),
+      'allowed_values_function' => '',
+    ),
+    'translatable' => 0,
+    'type' => 'list_boolean',
+  );
+
+  // Exported field_base: 'pm_address'
+  $field_bases['pm_address'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'pm_address',
+    'foreign keys' => array(),
+    'indexes' => array(),
+    'locked' => 0,
+    'module' => 'addressfield',
+    'settings' => array(),
+    'translatable' => 0,
+    'type' => 'addressfield',
+  );
+
+  // Exported field_base: 'pm_currency'
+  $field_bases['pm_currency'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'pm_currency',
     'foreign keys' => array(),
     'indexes' => array(
       'value' => array(
@@ -41,13 +84,54 @@ function pmorganization_default_field_bases() {
     'type' => 'list_text',
   );
 
-  // Exported field_base: 'pmorganization_phone'
-  $field_bases['pmorganization_phone'] = array(
+  // Exported field_base: 'pm_mail'
+  $field_bases['pm_mail'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'pmorganization_phone',
+    'field_name' => 'pm_mail',
+    'foreign keys' => array(),
+    'indexes' => array(),
+    'locked' => 0,
+    'module' => 'email',
+    'settings' => array(),
+    'translatable' => 0,
+    'type' => 'email',
+  );
+
+  // Exported field_base: 'pm_orglanguage'
+  $field_bases['pm_orglanguage'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'pm_orglanguage',
+    'foreign keys' => array(),
+    'indexes' => array(
+      'value' => array(
+        0 => 'value',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'list',
+    'settings' => array(
+      'allowed_values' => array(
+        'en' => 'English',
+      ),
+      'allowed_values_function' => '',
+    ),
+    'translatable' => 0,
+    'type' => 'list_text',
+  );
+
+  // Exported field_base: 'pm_phone'
+  $field_bases['pm_phone'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'pm_phone',
     'foreign keys' => array(
       'format' => array(
         'columns' => array(
@@ -70,65 +154,42 @@ function pmorganization_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'pmorganization_language'
-  $field_bases['pmorganization_language'] = array(
+  // Exported field_base: 'pm_price'
+  $field_bases['pm_price'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'pmorganization_language',
-    'foreign keys' => array(),
+    'field_name' => 'pm_price',
+    'foreign keys' => array(
+      'format' => array(
+        'columns' => array(
+          'format' => 'format',
+        ),
+        'table' => 'filter_format',
+      ),
+    ),
     'indexes' => array(
-      'value' => array(
-        0 => 'value',
+      'format' => array(
+        0 => 'format',
       ),
     ),
     'locked' => 0,
-    'module' => 'list',
+    'module' => 'text',
     'settings' => array(
-      'allowed_values' => array(
-        'en' => 'English',
-      ),
-      'allowed_values_function' => '',
+      'max_length' => 255,
     ),
     'translatable' => 0,
-    'type' => 'list_text',
+    'type' => 'text',
   );
 
-  // Exported field_base: 'pmorganization_type'
-  $field_bases['pmorganization_type'] = array(
-    'active' => 1,
-    'cardinality' => -1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'pmorganization_type',
-    'foreign keys' => array(),
-    'indexes' => array(
-      'value' => array(
-        0 => 'value',
-      ),
-    ),
-    'locked' => 0,
-    'module' => 'list',
-    'settings' => array(
-      'allowed_values' => array(
-        'customer' => 'Customer',
-        'provider' => 'Provider',
-        'active' => 'Active',
-      ),
-      'allowed_values_function' => '',
-    ),
-    'translatable' => 0,
-    'type' => 'list_text',
-  );
-
-  // Exported field_base: 'pmorganization_pricemode'
-  $field_bases['pmorganization_pricemode'] = array(
+  // Exported field_base: 'pm_pricemode'
+  $field_bases['pm_pricemode'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'pmorganization_pricemode',
+    'field_name' => 'pm_pricemode',
     'foreign keys' => array(),
     'indexes' => array(
       'value' => array(
@@ -150,29 +211,42 @@ function pmorganization_default_field_bases() {
     'type' => 'list_text',
   );
 
-  // Exported field_base: 'pmorganization_mail'
-  $field_bases['pmorganization_mail'] = array(
+  // Exported field_base: 'pm_taxid'
+  $field_bases['pm_taxid'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'pmorganization_mail',
-    'foreign keys' => array(),
-    'indexes' => array(),
+    'field_name' => 'pm_taxid',
+    'foreign keys' => array(
+      'format' => array(
+        'columns' => array(
+          'format' => 'format',
+        ),
+        'table' => 'filter_format',
+      ),
+    ),
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
     'locked' => 0,
-    'module' => 'email',
-    'settings' => array(),
+    'module' => 'text',
+    'settings' => array(
+      'max_length' => 255,
+    ),
     'translatable' => 0,
-    'type' => 'email',
+    'type' => 'text',
   );
 
-  // Exported field_base: 'pmorganization_www'
-  $field_bases['pmorganization_www'] = array(
+  // Exported field_base: 'pm_www'
+  $field_bases['pm_www'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'pmorganization_www',
+    'field_name' => 'pm_www',
     'foreign keys' => array(),
     'indexes' => array(),
     'locked' => 0,
@@ -196,78 +270,71 @@ function pmorganization_default_field_bases() {
     'type' => 'link_field',
   );
 
-  // Exported field_base: 'pmorganization_address'
-  $field_bases['pmorganization_address'] = array(
+  // Exported field_base: 'pmorganization_members'
+  $field_bases['pmorganization_members'] = array(
     'active' => 1,
-    'cardinality' => 1,
+    'cardinality' => -1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'pmorganization_address',
+    'field_name' => 'pmorganization_members',
+    'foreign keys' => array(
+      'users' => array(
+        'columns' => array(
+          'target_id' => 'uid',
+        ),
+        'table' => 'users',
+      ),
+    ),
+    'indexes' => array(
+      'target_id' => array(
+        0 => 'target_id',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'entityreference',
+    'settings' => array(
+      'handler' => 'base',
+      'handler_settings' => array(
+        'behaviors' => array(
+          'views-select-list' => array(
+            'status' => 0,
+          ),
+        ),
+        'sort' => array(
+          'type' => 'none',
+        ),
+        'target_bundles' => array(),
+      ),
+      'target_type' => 'user',
+    ),
+    'translatable' => 0,
+    'type' => 'entityreference',
+  );
+
+  // Exported field_base: 'pmorganization_type'
+  $field_bases['pmorganization_type'] = array(
+    'active' => 1,
+    'cardinality' => -1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'pmorganization_type',
     'foreign keys' => array(),
-    'indexes' => array(),
-    'locked' => 0,
-    'module' => 'addressfield',
-    'settings' => array(),
-    'translatable' => 0,
-    'type' => 'addressfield',
-  );
-
-  // Exported field_base: 'pmorganization_price'
-  $field_bases['pmorganization_price'] = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'pmorganization_price',
-    'foreign keys' => array(
-      'format' => array(
-        'columns' => array(
-          'format' => 'format',
-        ),
-        'table' => 'filter_format',
-      ),
-    ),
     'indexes' => array(
-      'format' => array(
-        0 => 'format',
+      'value' => array(
+        0 => 'value',
       ),
     ),
     'locked' => 0,
-    'module' => 'text',
+    'module' => 'list',
     'settings' => array(
-      'max_length' => 255,
+      'allowed_values' => array(
+        'customer' => 'Customer',
+        'provider' => 'Provider',
+      ),
+      'allowed_values_function' => '',
     ),
     'translatable' => 0,
-    'type' => 'text',
-  );
-
-  // Exported field_base: 'pmorganization_taxid'
-  $field_bases['pmorganization_taxid'] = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'pmorganization_taxid',
-    'foreign keys' => array(
-      'format' => array(
-        'columns' => array(
-          'format' => 'format',
-        ),
-        'table' => 'filter_format',
-      ),
-    ),
-    'indexes' => array(
-      'format' => array(
-        0 => 'format',
-      ),
-    ),
-    'locked' => 0,
-    'module' => 'text',
-    'settings' => array(
-      'max_length' => 255,
-    ),
-    'translatable' => 0,
-    'type' => 'text',
+    'type' => 'list_text',
   );
 
   return $field_bases;

@@ -18,11 +18,11 @@ function pmorganization_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'hidden',
+        'label' => 'above',
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 3,
+        'weight' => 16,
       ),
       'teaser' => array(
         'label' => 'hidden',
@@ -50,12 +50,115 @@ function pmorganization_default_field_instances() {
         'summary_rows' => 5,
       ),
       'type' => 'text_textarea_with_summary',
-      'weight' => 4,
+      'weight' => 14,
     ),
   );
 
-  // Exported field_instance: 'node-pmorganization-pmorganization_currency'
-  $field_instances['node-pmorganization-pmorganization_currency'] = array(
+  // Exported field_instance: 'node-pmorganization-field_pm_active'
+  $field_instances['node-pmorganization-field_pm_active'] = array(
+    'bundle' => 'pmorganization',
+    'default_value' => array(
+      0 => array(
+        'value' => 1,
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'list',
+        'settings' => array(),
+        'type' => 'list_default',
+        'weight' => 13,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_pm_active',
+    'label' => 'Active',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(
+        'display_label' => 1,
+      ),
+      'type' => 'options_onoff',
+      'weight' => 11,
+    ),
+  );
+
+  // Exported field_instance: 'node-pmorganization-pm_address'
+  $field_instances['node-pmorganization-pm_address'] = array(
+    'bundle' => 'pmorganization',
+    'default_value' => array(
+      0 => array(
+        'element_key' => 'node|pmorganization|pm_address|und|0',
+        'thoroughfare' => '',
+        'premise' => '',
+        'postal_code' => '',
+        'locality' => '',
+        'country' => 'DE',
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'addressfield',
+        'settings' => array(
+          'format_handlers' => array(
+            0 => 'address',
+          ),
+          'use_widget_handlers' => 1,
+        ),
+        'type' => 'addressfield_default',
+        'weight' => 1,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'pm_address',
+    'label' => 'Address',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'addressfield',
+      'settings' => array(
+        'available_countries' => array(),
+        'format_handlers' => array(
+          'address' => 'address',
+          'address-hide-country' => 0,
+          'organisation' => 0,
+          'name-full' => 0,
+          'name-oneline' => 0,
+        ),
+      ),
+      'type' => 'addressfield_standard',
+      'weight' => 2,
+    ),
+  );
+
+  // Exported field_instance: 'node-pmorganization-pm_currency'
+  $field_instances['node-pmorganization-pm_currency'] = array(
     'bundle' => 'pmorganization',
     'default_value' => NULL,
     'deleted' => 0,
@@ -76,7 +179,7 @@ function pmorganization_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'pmorganization_currency',
+    'field_name' => 'pm_currency',
     'label' => 'Currency',
     'required' => 0,
     'settings' => array(
@@ -87,12 +190,12 @@ function pmorganization_default_field_instances() {
       'module' => 'options',
       'settings' => array(),
       'type' => 'options_select',
-      'weight' => 3,
+      'weight' => 7,
     ),
   );
 
-  // Exported field_instance: 'node-pmorganization-pmorganization_phone'
-  $field_instances['node-pmorganization-pmorganization_phone'] = array(
+  // Exported field_instance: 'node-pmorganization-pm_mail'
+  $field_instances['node-pmorganization-pm_mail'] = array(
     'bundle' => 'pmorganization',
     'default_value' => NULL,
     'deleted' => 0,
@@ -100,10 +203,10 @@ function pmorganization_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'text',
+        'module' => 'email',
         'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 4,
+        'type' => 'email_default',
+        'weight' => 3,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -113,26 +216,25 @@ function pmorganization_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'pmorganization_phone',
-    'label' => 'Phone',
+    'field_name' => 'pm_mail',
+    'label' => 'Organization E-mail',
     'required' => 0,
     'settings' => array(
-      'text_processing' => 0,
       'user_register_form' => FALSE,
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'text',
+      'module' => 'email',
       'settings' => array(
         'size' => 60,
       ),
-      'type' => 'text_textfield',
-      'weight' => 2,
+      'type' => 'email_textfield',
+      'weight' => 5,
     ),
   );
 
-  // Exported field_instance: 'node-pmorganization-pmorganization_language'
-  $field_instances['node-pmorganization-pmorganization_language'] = array(
+  // Exported field_instance: 'node-pmorganization-pm_orglanguage'
+  $field_instances['node-pmorganization-pm_orglanguage'] = array(
     'bundle' => 'pmorganization',
     'default_value' => array(
       0 => array(
@@ -147,7 +249,7 @@ function pmorganization_default_field_instances() {
         'module' => 'list',
         'settings' => array(),
         'type' => 'list_default',
-        'weight' => 7,
+        'weight' => 15,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -157,7 +259,7 @@ function pmorganization_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'pmorganization_language',
+    'field_name' => 'pm_orglanguage',
     'label' => 'Language',
     'required' => 0,
     'settings' => array(
@@ -168,12 +270,12 @@ function pmorganization_default_field_instances() {
       'module' => 'options',
       'settings' => array(),
       'type' => 'options_select',
-      'weight' => 3,
+      'weight' => 12,
     ),
   );
 
-  // Exported field_instance: 'node-pmorganization-pmorganization_type'
-  $field_instances['node-pmorganization-pmorganization_type'] = array(
+  // Exported field_instance: 'node-pmorganization-pm_phone'
+  $field_instances['node-pmorganization-pm_phone'] = array(
     'bundle' => 'pmorganization',
     'default_value' => NULL,
     'deleted' => 0,
@@ -181,9 +283,49 @@ function pmorganization_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'list',
+        'module' => 'text',
         'settings' => array(),
-        'type' => 'list_default',
+        'type' => 'text_default',
+        'weight' => 2,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'pm_phone',
+    'label' => 'Phone',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 3,
+    ),
+  );
+
+  // Exported field_instance: 'node-pmorganization-pm_price'
+  $field_instances['node-pmorganization-pm_price'] = array(
+    'bundle' => 'pmorganization',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
         'weight' => 8,
       ),
       'teaser' => array(
@@ -194,23 +336,26 @@ function pmorganization_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'pmorganization_type',
-    'label' => 'Organization Type',
+    'field_name' => 'pm_price',
+    'label' => 'Price',
     'required' => 0,
     'settings' => array(
+      'text_processing' => 0,
       'user_register_form' => FALSE,
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'options',
-      'settings' => array(),
-      'type' => 'options_buttons',
-      'weight' => 2,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 9,
     ),
   );
 
-  // Exported field_instance: 'node-pmorganization-pmorganization_pricemode'
-  $field_instances['node-pmorganization-pmorganization_pricemode'] = array(
+  // Exported field_instance: 'node-pmorganization-pm_pricemode'
+  $field_instances['node-pmorganization-pm_pricemode'] = array(
     'bundle' => 'pmorganization',
     'default_value' => array(
       0 => array(
@@ -235,7 +380,7 @@ function pmorganization_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'pmorganization_pricemode',
+    'field_name' => 'pm_pricemode',
     'label' => 'Price Mode',
     'required' => 0,
     'settings' => array(
@@ -246,12 +391,12 @@ function pmorganization_default_field_instances() {
       'module' => 'options',
       'settings' => array(),
       'type' => 'options_select',
-      'weight' => 4,
+      'weight' => 8,
     ),
   );
 
-  // Exported field_instance: 'node-pmorganization-pmorganization_mail'
-  $field_instances['node-pmorganization-pmorganization_mail'] = array(
+  // Exported field_instance: 'node-pmorganization-pm_taxid'
+  $field_instances['node-pmorganization-pm_taxid'] = array(
     'bundle' => 'pmorganization',
     'default_value' => NULL,
     'deleted' => 0,
@@ -259,10 +404,10 @@ function pmorganization_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'email',
+        'module' => 'text',
         'settings' => array(),
-        'type' => 'email_default',
-        'weight' => 11,
+        'type' => 'text_default',
+        'weight' => 9,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -272,25 +417,26 @@ function pmorganization_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'pmorganization_mail',
-    'label' => 'Organization E-mail',
+    'field_name' => 'pm_taxid',
+    'label' => 'Tax ID',
     'required' => 0,
     'settings' => array(
+      'text_processing' => 0,
       'user_register_form' => FALSE,
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'email',
+      'module' => 'text',
       'settings' => array(
         'size' => 60,
       ),
-      'type' => 'email_textfield',
-      'weight' => 6,
+      'type' => 'text_textfield',
+      'weight' => 10,
     ),
   );
 
-  // Exported field_instance: 'node-pmorganization-pmorganization_www'
-  $field_instances['node-pmorganization-pmorganization_www'] = array(
+  // Exported field_instance: 'node-pmorganization-pm_www'
+  $field_instances['node-pmorganization-pm_www'] = array(
     'bundle' => 'pmorganization',
     'default_value' => NULL,
     'deleted' => 0,
@@ -301,7 +447,7 @@ function pmorganization_default_field_instances() {
         'module' => 'link',
         'settings' => array(),
         'type' => 'link_default',
-        'weight' => 12,
+        'weight' => 4,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -311,7 +457,7 @@ function pmorganization_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'pmorganization_www',
+    'field_name' => 'pm_www',
     'label' => 'Organization website',
     'required' => 0,
     'settings' => array(
@@ -343,33 +489,21 @@ function pmorganization_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-pmorganization-pmorganization_address'
-  $field_instances['node-pmorganization-pmorganization_address'] = array(
+  // Exported field_instance: 'node-pmorganization-pmorganization_members'
+  $field_instances['node-pmorganization-pmorganization_members'] = array(
     'bundle' => 'pmorganization',
-    'default_value' => array(
-      0 => array(
-        'element_key' => 'node|pmorganization|pmorganization_address|und|0',
-        'thoroughfare' => '',
-        'premise' => '',
-        'postal_code' => '',
-        'locality' => '',
-        'country' => 'DE',
-      ),
-    ),
+    'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'addressfield',
+        'module' => 'entityreference',
         'settings' => array(
-          'format_handlers' => array(
-            0 => 'address',
-          ),
-          'use_widget_handlers' => 1,
+          'link' => FALSE,
         ),
-        'type' => 'addressfield_default',
-        'weight' => 3,
+        'type' => 'entityreference_label',
+        'weight' => 17,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -379,32 +513,27 @@ function pmorganization_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'pmorganization_address',
-    'label' => 'Address',
+    'field_name' => 'pmorganization_members',
+    'label' => 'Members',
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'addressfield',
+      'module' => 'entityreference',
       'settings' => array(
-        'available_countries' => array(),
-        'format_handlers' => array(
-          'address' => 'address',
-          'address-hide-country' => 0,
-          'organisation' => 0,
-          'name-full' => 0,
-          'name-oneline' => 0,
-        ),
+        'match_operator' => 'CONTAINS',
+        'path' => '',
+        'size' => 60,
       ),
-      'type' => 'addressfield_standard',
-      'weight' => 1,
+      'type' => 'entityreference_autocomplete',
+      'weight' => 16,
     ),
   );
 
-  // Exported field_instance: 'node-pmorganization-pmorganization_price'
-  $field_instances['node-pmorganization-pmorganization_price'] = array(
+  // Exported field_instance: 'node-pmorganization-pmorganization_type'
+  $field_instances['node-pmorganization-pmorganization_type'] = array(
     'bundle' => 'pmorganization',
     'default_value' => NULL,
     'deleted' => 0,
@@ -412,10 +541,10 @@ function pmorganization_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'text',
+        'module' => 'list',
         'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 4,
+        'type' => 'list_default',
+        'weight' => 14,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -425,66 +554,24 @@ function pmorganization_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'pmorganization_price',
-    'label' => 'Price',
+    'field_name' => 'pmorganization_type',
+    'label' => 'Organization Type',
     'required' => 0,
     'settings' => array(
-      'text_processing' => 0,
       'user_register_form' => FALSE,
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'text',
-      'settings' => array(
-        'size' => 60,
-      ),
-      'type' => 'text_textfield',
-      'weight' => 5,
-    ),
-  );
-
-  // Exported field_instance: 'node-pmorganization-pmorganization_taxid'
-  $field_instances['node-pmorganization-pmorganization_taxid'] = array(
-    'bundle' => 'pmorganization',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'above',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 5,
-      ),
-      'teaser' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-    ),
-    'entity_type' => 'node',
-    'field_name' => 'pmorganization_taxid',
-    'label' => 'Tax ID',
-    'required' => 0,
-    'settings' => array(
-      'text_processing' => 0,
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'text',
-      'settings' => array(
-        'size' => 60,
-      ),
-      'type' => 'text_textfield',
-      'weight' => 7,
+      'module' => 'options',
+      'settings' => array(),
+      'type' => 'options_buttons',
+      'weight' => 13,
     ),
   );
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Active');
   t('Address');
   t('Currency');
   t('Language');
