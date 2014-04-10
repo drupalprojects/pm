@@ -11,13 +11,13 @@ function pmorganization_default_field_bases() {
 
   $field_bases = array();
 
-  // Exported field_base: 'field_pm_active'
-  $field_bases['field_pm_active'] = array(
+  // Exported field_base: 'pm_active'
+  $field_bases['pm_active'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_pm_active',
+    'field_name' => 'pm_active',
     'foreign keys' => array(),
     'indexes' => array(
       'value' => array(

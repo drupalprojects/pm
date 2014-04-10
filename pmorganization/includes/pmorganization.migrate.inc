@@ -94,35 +94,35 @@ function _pmorganization_migrate_migrate_single_node( $nid, $vid, $org ){
   $node = node_load($nid,$vid);
 
   if ($org->currency) {
-    $node->pmorganization_currency[LANGUAGE_NONE][0]['value'] = $org->currency;
+    $node->pm_currency[LANGUAGE_NONE][0]['value'] = $org->currency;
   }
 
   if ($org->orglanguage) {
-    $node->pmorganization_language[LANGUAGE_NONE][0]['value'] = $org->orglanguage;
+    $node->pm_orglanguage[LANGUAGE_NONE][0]['value'] = $org->orglanguage;
   }
 
   if ($org->pricemode) {
-    $node->pmorganization_pricemode[LANGUAGE_NONE][0]['value'] = $org->pricemode;
+    $node->pm_pricemode[LANGUAGE_NONE][0]['value'] = $org->pricemode;
   }
 
   if ($org->price) {
-    $node->pmorganization_price[LANGUAGE_NONE][0]['value'] = $org->price;
+    $node->pm_price[LANGUAGE_NONE][0]['value'] = $org->price;
   }
 
   if ($org->email) {
-    $node->pmorganization_mail[LANGUAGE_NONE][0]['email'] = $org->email;
+    $node->pm_mail[LANGUAGE_NONE][0]['email'] = $org->email;
   }
 
   if ($org->www) {
-    $node->pmorganization_www[LANGUAGE_NONE][0]['url'] = $org->www;
+    $node->pm_www[LANGUAGE_NONE][0]['url'] = $org->www;
   }
 
   if ($org->taxid) {
-    $node->pmorganization_taxid[LANGUAGE_NONE][0]['value'] = $org->taxid;
+    $node->pm_taxid[LANGUAGE_NONE][0]['value'] = $org->taxid;
   }
 
   if ($org->phone) {
-    $node->pmorganization_phone[LANGUAGE_NONE][0]['value'] = $org->phone;
+    $node->pm_phone[LANGUAGE_NONE][0]['value'] = $org->phone;
   }
 
   $address = array();
@@ -143,13 +143,12 @@ function _pmorganization_migrate_migrate_single_node( $nid, $vid, $org ){
   }
 
   if ($address) {
-    $node->pmorganization_address[LANGUAGE_NONE][0] = $address;
+    $node->pm_address[LANGUAGE_NONE][0] = $address;
   }
 
   $type = array();
   $type['customer'] = $org->iscustomer;
   $type['provider'] = $org->isprovider;
-  $type['active'] = $org->isactive;
 
   $i = 0;
   foreach ($type as $key => $value) {
@@ -158,6 +157,11 @@ function _pmorganization_migrate_migrate_single_node( $nid, $vid, $org ){
       ++$i;
     }
   }
+
+  if ($org->isactive) {
+    $node->pm_isactive[LANGUAGE_NONE][0]['value'] = '1';
+  }
+
   node_save($node);
   return TRUE;
 }

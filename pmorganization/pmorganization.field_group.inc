@@ -144,7 +144,7 @@ function pmorganization_field_group_info() {
     'weight' => '10',
     'children' => array(
       0 => 'body',
-      1 => 'field_pm_active',
+      1 => 'pm_active',
       2 => 'pm_orglanguage',
       3 => 'pmorganization_type',
     ),
@@ -174,7 +174,7 @@ function pmorganization_field_group_info() {
     'weight' => '11',
     'children' => array(
       0 => 'body',
-      1 => 'field_pm_active',
+      1 => 'pm_active',
       2 => 'pm_orglanguage',
       3 => 'pmorganization_type',
     ),

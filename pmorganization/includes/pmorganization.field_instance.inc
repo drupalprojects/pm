@@ -54,8 +54,8 @@ function pmorganization_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-pmorganization-field_pm_active'
-  $field_instances['node-pmorganization-field_pm_active'] = array(
+  // Exported field_instance: 'node-pmorganization-pm_active'
+  $field_instances['node-pmorganization-pm_active'] = array(
     'bundle' => 'pmorganization',
     'default_value' => array(
       0 => array(
@@ -80,7 +80,7 @@ function pmorganization_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'field_pm_active',
+    'field_name' => 'pm_active',
     'label' => 'Active',
     'required' => 0,
     'settings' => array(
