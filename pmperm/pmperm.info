@@ -2,6 +2,6 @@ name = Project Management Permission
 description = "Permission Helper module for PM."
 core = 7.x
 package = Project Management
-configure = admin/config/pm-permissions
+configure = admin/config/pm/pmperm
 
 dependencies[] = pm
