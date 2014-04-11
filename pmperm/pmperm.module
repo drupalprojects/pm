@@ -53,8 +53,8 @@ function pmperm_admin() {
     '#type' => 'fieldset',
     '#title' => t('Configure reference fields')
   );
-  $options = array('' => t('-Select-'));
-  $options += _pmperm_get_field_names('entityreference');
+
+  $options = _pmperm_get_field_names('entityreference');
   $form['pmperm_field']['pmperm_field_parent_reference'] = array(
     '#type' => 'select',
     '#title' => t('Parent reference field'),
@@ -137,7 +137,10 @@ function pmperm_admin_submit($form, $form_state) {
  * @return array of field names categorized by target entity type.
  */
 function _pmperm_get_field_names($type){
-  $field_names = array();
+  $field_names =  array(
+    'user' => array('' => t('- None -')),
+    'node' => array('' => t('- None -')),
+  );
   // Get all entityreference field names
   $query = db_select('field_config', 'f');
   $query->fields('f', array('field_name'));
