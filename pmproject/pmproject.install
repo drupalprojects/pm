@@ -10,12 +10,25 @@
 function pmproject_install() {
   variable_set('node_options_pmproject', array('status'));
   variable_set('node_permissions_pmproject', 0);
+
+  // PM Permissions default configurations.
   variable_set('pmperm_field_assigned_reference', 'pm_assigned');
   variable_set('pmperm_field_pm_reference', 'pm_manager');
+  variable_set('pmperm_field_parent_reference_for_pmproject', 'pmproject_parent');
+
   // Create and attaches fields to pmproject content type.
   module_load_include('inc', 'pmproject', 'includes/pmproject.migrate');
   // parameter $sandbox is passed as a placeholder.
   pmproject_migrate_create_fields($sandbox);
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function pmproject_uninstall() {
+  variable_del('pmperm_field_assigned_reference');
+  variable_del('pmperm_field_pm_reference');
+  variable_del('pmperm_field_parent_reference_for_pmproject');
 }
 
 /**
