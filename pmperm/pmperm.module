@@ -220,7 +220,6 @@ function pmperm_permission() {
   foreach (pmperm_get_enabled_types() as $bundle_name) {
     $permissions += pmperm_permission_per_bundle($bundle_name);
   }
-  dpm($permissions);
   return $permissions;
 
 }
