@@ -26,6 +26,9 @@ function pmorganization_migrate(&$sandbox) {
   // We don't need pmorganization table anymore, so dropping it.
   db_drop_table('pmorganization');
   variable_del('node_options_pmorganization');
+
+  variable_set('pmperm_field_org_member_reference', 'pmorganization_members');
+
   $sandbox['#finished'] = 1;
   return 'PM Organization nodes have been migrated to field_api based fields successfully.';
 }

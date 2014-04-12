@@ -26,6 +26,8 @@ function pmproject_migrate(&$sandbox) {
   db_drop_table('pmproject');
   variable_del('node_options_pmproject');
 
+  variable_set('pmperm_field_assigned_reference', 'pm_assigned');
+  variable_set('pmperm_field_pm_reference', 'pm_manager');
 
   $sandbox['#finished'] = 1;
   return 'PM Project nodes have been migrated to field_api based fields successfully.';

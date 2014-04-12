@@ -9,6 +9,9 @@
  */
 function pmorganization_install() {
   variable_set('node_options_pmorganization', array('status'));
+
+  variable_set('pmperm_field_org_member_reference', 'pmorganization_members');
+
   // Create and attaches fields to pmorganization content type.
   module_load_include('inc', 'pmorganization', 'includes/pmorganization.migrate');
   // parameter $sandbox is passed as a placeholder.

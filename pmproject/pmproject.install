@@ -10,6 +10,8 @@
 function pmproject_install() {
   variable_set('node_options_pmproject', array('status'));
   variable_set('node_permissions_pmproject', 0);
+  variable_set('pmperm_field_assigned_reference', 'pm_assigned');
+  variable_set('pmperm_field_pm_reference', 'pm_manager');
   // Create and attaches fields to pmproject content type.
   module_load_include('inc', 'pmproject', 'includes/pmproject.migrate');
   // parameter $sandbox is passed as a placeholder.
