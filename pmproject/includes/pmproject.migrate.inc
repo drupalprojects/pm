@@ -30,6 +30,7 @@ function pmproject_migrate(&$sandbox) {
   variable_set('pmperm_field_assigned_reference', 'pm_assigned');
   variable_set('pmperm_field_pm_reference', 'pm_manager');
   variable_set('pmperm_field_parent_reference_for_pmproject', 'pmproject_parent');
+  variable_set('pmperm_node_pmproject_enabled', TRUE);
 
   $sandbox['#finished'] = 1;
   return 'PM Project nodes have been migrated to field_api based fields successfully.';

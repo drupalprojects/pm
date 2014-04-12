@@ -28,6 +28,7 @@ function pmorganization_migrate(&$sandbox) {
   variable_del('node_options_pmorganization');
 
   variable_set('pmperm_field_org_member_reference', 'pmorganization_members');
+  variable_set('pmperm_node_pmorganization_enabled', TRUE);
 
   $sandbox['#finished'] = 1;
   return 'PM Organization nodes have been migrated to field_api based fields successfully.';
