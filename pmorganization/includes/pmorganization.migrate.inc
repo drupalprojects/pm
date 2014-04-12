@@ -165,6 +165,14 @@ function _pmorganization_migrate_migrate_single_node( $nid, $vid, $org ){
     $node->pm_isactive[LANGUAGE_NONE][0]['value'] = '1';
   }
 
+  $results = db_select('pmperson', 'pmp')
+    ->fields('pmp', array('user_uid'))
+    ->condition('pmp.organization_nid', $oid)
+    ->execute();
+  foreach ($results as $pmperson) {
+    $node->pmorganization_members[LANGUAGE_NONE][] = array('target_id' => $pmperson->user_uid);
+  }
+
   node_save($node);
   return TRUE;
 }
