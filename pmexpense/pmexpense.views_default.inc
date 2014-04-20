@@ -15,7 +15,7 @@ function pmexpense_views_default_views() {
   $view->description = '';
   $view->tag = 'pm';
   $view->base_table = 'node';
-  $view->human_name = 'Project Management Expenses List';
+  $view->human_name = 'PM Expense';
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
@@ -124,11 +124,18 @@ function pmexpense_views_default_views() {
   $handler->display->display_options['fields']['title']['label'] = 'Expense';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
-  /* Field: Project Management Expense: Date */
-  $handler->display->display_options['fields']['expensedate']['id'] = 'expensedate';
-  $handler->display->display_options['fields']['expensedate']['table'] = 'pmexpense';
-  $handler->display->display_options['fields']['expensedate']['field'] = 'expensedate';
-  $handler->display->display_options['fields']['expensedate']['date_format'] = 'short';
+  /* Field: Content Expense Date */
+  $handler->display->display_options['fields']['pmexpense_date']['id'] = 'pmexpense_date';
+  $handler->display->display_options['fields']['pmexpense_date']['table'] = 'field_data_pmexpense_date';
+  $handler->display->display_options['fields']['pmexpense_date']['field'] = 'pmexpense_date';
+  $handler->display->display_options['fields']['pmexpense_date']['settings'] = array(
+    'format_type' => 'medium',
+    'fromto' => 'both',
+    'multiple_number' => '',
+    'multiple_from' => '',
+    'multiple_to' => '',
+  );
+'short';
   /* Field: Project Management Expense: Amount */
   $handler->display->display_options['fields']['amount']['id'] = 'amount';
   $handler->display->display_options['fields']['amount']['table'] = 'pmexpense';
