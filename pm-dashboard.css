@@ -1,12 +1,12 @@
 /* Creates two columns, each 50% of page width */
 
 #pmdashboard {
-width: 100%
+  width: 100%;
 }
 
 div.pmdashboard {
-float: left;
-width: 50%;
+  float: left;
+  width: 50%;
 }
 
 #pmdashboard-block {
@@ -14,8 +14,8 @@ width: 50%;
 }
 
 #pmdashboard-block .pmdashboard-icon {
-  display:inline;
-  float: left
+  display: inline;
+  float: left;
 }
 
 #pmdashboard-block .pmdashboard-icon dt.pmcomponent {

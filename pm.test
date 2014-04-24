@@ -5,7 +5,7 @@
  */
 class PMTestCase extends DrupalWebTestCase {
   /**
-   * Returns meta data for Project Managment tests.
+   * Returns meta data for Project Management tests.
    */
   public static function getInfo() {
     return array(

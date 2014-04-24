@@ -391,7 +391,7 @@ function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $
 }
 
 /**
- * Provides HTML for the Project Managment number of items text.
+ * Provides HTML for the Project Management number of items text.
  */
 function theme_pm_number_items($number) {
   $content = '';

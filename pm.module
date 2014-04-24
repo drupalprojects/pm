@@ -376,7 +376,7 @@ function pm_pm_dashboard_types() {
  * Implements hook_block_info().
  */
 function pm_block_info() {
-  // Register Project Managment menu block
+  // Register Project Management menu block
   $blocks['pm_menu'] = array(
     'info' => t('Project Management Menu'),
   );
@@ -1049,7 +1049,7 @@ function pm_get_assignment_options($organization_nid = 0, $project_nid = 0) {
  * Helper function to count nodes of type destination module with parent nid of type source module.
  *
  * @param string $source_module
- *   A string of module where the request is comming from
+ *   A string of module where the request is coming from
  * @param string $destination_module
  *   A string with name of targeted module
  * @param int $nid
