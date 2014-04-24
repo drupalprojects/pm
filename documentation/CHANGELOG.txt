@@ -1,6 +1,8 @@
 ** New issues added should be added at the TOP of the list for each version as they are committed. **
 
 Version 7.x-1.x-dev:
+- Issue #2221977 by juliangb: Add pm.make file to help automatically download 
+dependencies (follow up).
 - Issue #2215477 by juliangb: Cleanup: Resolve pareview.sh warnings.
 - Issue #2235739 by juliangb: Expense list doesn't display properly.
 
