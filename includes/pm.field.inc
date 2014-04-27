@@ -86,9 +86,7 @@ function pm_field_instance_create_if_required($field_name, $field_instance) {
   $bundle_name = $field_instance['bundle'];
   $field = field_info_field($field_name);
 
-  $bundles = $field['bundles'];
   $entity_type = $field_instance['entity_type'];
-  $bundle = $field_instance['bundle'];
 
   // Create only if field is defined.
   try {

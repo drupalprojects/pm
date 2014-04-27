@@ -603,7 +603,9 @@ function _pmperson_migrate_node_get_title($nid) {
  * A quick function to load node body without loading the whole node.
  */
 function _pmperson_migrate_node_get_body($nid) {
-  return $v = db_query('SELECT body_value FROM {field_data_body} WHERE entity_id = :nid AND entity_type = :entity_type', array(':nid' => $nid, ':entity_type' => 'node'))->fetchField();
+  $v = db_query('SELECT body_value FROM {field_data_body} WHERE entity_id = :nid AND entity_type = :entity_type', array(':nid' => $nid, ':entity_type' => 'node'))->fetchField();
+
+  return $v;
 }
 
 /**

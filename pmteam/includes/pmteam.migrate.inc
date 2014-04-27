@@ -4,9 +4,7 @@
  * pmteam.migrate.inc
  */
 
-
 define('PMTEAM_MIGRATE_MAX_JOB_PER_BATCH', 5);
-
 
 /**
  * Helper function for migrating between PMTeam to drupal fields.
@@ -91,7 +89,6 @@ function _pmteam_migrate_field_data($pmteam) {
       ->fields('pt')
       ->condition('vid', $pmteam->vid)
       ->execute();
-    $count = 0;
     foreach ($results as $pt) {
       $member_ids[] = $pt->mnid;
     }
@@ -111,7 +108,7 @@ function _pmteam_migrate_field_data($pmteam) {
 /**
  * Helper function to migrate single pmteam.
  */
-function _pmteam_migrate_migrate_single_node( $nid, $vid, $members ){
+function _pmteam_migrate_migrate_single_node($nid, $vid, $members ){
 
   $update_needed_flag = FALSE;
   $users = array();
@@ -120,7 +117,7 @@ function _pmteam_migrate_migrate_single_node( $nid, $vid, $members ){
     if ($pmperson = _pmteam_migrate_load_data('pmperson', $mnid)) {
       $users[] = $pmperson->user_uid;
     }
-    else if($pmorganization = _pmteam_migrate_load_data('pmorganization', $mnid)) {
+    else if(_pmteam_migrate_load_data('pmorganization', $mnid)) {
       $pmorganizations[] = $mnid;
     }
   }

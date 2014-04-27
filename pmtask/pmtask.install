@@ -18,7 +18,9 @@ function pmtask_install() {
 
   // Create and attaches fields to pmtask content type.
   module_load_include('inc', 'pmtask', 'includes/pmtask.migrate');
+
   // parameter $sandbox is passed as a placeholder.
+  $sandbox = array();
   pmtask_migrate_create_fields($sandbox);
 }
 

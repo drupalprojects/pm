@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Main module file for the pmpermission module.
@@ -20,7 +19,7 @@ function pmpermission_help($path, $arg) {
  */
 function pmpermission_menu() {
   $items['admin/config/pm/pmpermission'] = array(
-    'title' => t('PM Permission'),
+    'title' => 'PM Permission',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('pmpermission_admin'),
     'access arguments' => array('administer pm permission'),
@@ -31,22 +30,21 @@ function pmpermission_menu() {
 }
 
 /**
- * admin settings form.
+ * Admin settings form.
  */
 function pmpermission_admin() {
   $form = array();
   $form['pmpermission_node'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Select node bundles where you want to enable PM permissions')
+    '#title' => t('Select node bundles where you want to enable PM permissions'),
   );
 
   $form['pmpermission_field'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Configure reference fields')
+    '#title' => t('Configure reference fields'),
   );
 
   $node_types = array();
-
 
   foreach (node_type_get_types() as $type => $info) {
     $name = node_type_get_name($type);
@@ -63,7 +61,8 @@ function pmpermission_admin() {
         '#markup' => t('No configuration available for "@name"', array('@name' => $name)),
         '#states' => array(
           'visible' => array(
-           ":input[name='pmpermission_node_{$type}_enabled']" => array('checked' => TRUE),
+            ":input[name='pmpermission_node_{$type}_enabled']" => array('checked' => 
+TRUE),
           ),
         ),
       );
@@ -76,13 +75,13 @@ function pmpermission_admin() {
         '#default_value' => variable_get("pmpermission_field_parent_reference_for_{$type}", ''),
         '#states' => array(
           'visible' => array(
-           ":input[name='pmpermission_node_{$type}_enabled']" => array('checked' => TRUE),
+            ":input[name='pmpermission_node_{$type}_enabled']" => array('checked' => 
+TRUE),
           ),
         ),
       );
     }
   }
-
 
   $options = _pmpermission_get_field_names_per_field_type('entityreference');
 
@@ -117,7 +116,8 @@ function pmpermission_admin() {
   $form['pmpermission_advanced']['pmpermission_override_core_permissions_agree'] = array(
     '#type' => 'checkbox',
     '#title' => t('I agree to override default core node permissions'),
-    '#description' => t('Drupal core doesn\'t provide a UI to alter these settings. So make sure you revert the settings before you uninstall this module.'),
+    '#description' => t("Drupal core doesn't provide a UI to alter these settings. So 
+make sure you revert the settings before you uninstall this module."),
     '#default_value' => FALSE,
   );
   $form['pmpermission_advanced']['pmpermission_override_core_permissions'] = array(
@@ -140,7 +140,7 @@ function pmpermission_admin() {
 }
 
 /**
- * admin settings form submit handler.
+ * Admin settings form submit handler.
  */
 function pmpermission_admin_submit($form, $form_state) {
   $values = $form_state['values'];
@@ -148,7 +148,7 @@ function pmpermission_admin_submit($form, $form_state) {
   $overrides = $values['pmpermission_override_core_permissions'];
   if ($agree AND is_array($overrides)) {
     foreach ($overrides as $type => $value) {
-      if($value) {
+      if ($value) {
         variable_set('node_permissions_' . $type, 0);
       }
       else {
@@ -160,16 +160,21 @@ function pmpermission_admin_submit($form, $form_state) {
 
 /**
  * Get a list of field names matching a specific type.
- * this function works reliably for "entityreference" only.
- * @param  [string] $type : type of field e.g. entityreference
- * @return array of field names categorized by target entity type.
+ *
+ * This function works reliably for "entityreference" only.
+ *
+ * @param string $type
+ *   Type of field e.g. entityreference.
+ * @return 
+ *   Array of field names categorized by target entity type.
  */
-function _pmpermission_get_field_names_per_field_type($type, $entity_type = NULL, $bundle_name = NULL){
-  $field_names =  array(
+function _pmpermission_get_field_names_per_field_type($type, $entity_type = NULL, 
+$bundle_name = NULL) {
+  $field_names = array(
     'user' => array('' => t('- None -')),
     'node' => array('' => t('- None -')),
   );
-  // Get all entityreference field names
+  // Get all entityreference field names.
   $query = db_select('field_config', 'f');
   $query->fields('f', array('field_name'));
   $query->condition('f.type', $type);
@@ -185,7 +190,7 @@ function _pmpermission_get_field_names_per_field_type($type, $entity_type = NULL
 
     $field_info = field_info_field($field_name);
     if (isset($field_info['settings']['target_type'])) {
-      # code...
+      // Code...
       $field_names[$field_info['settings']['target_type']][$field_name] = $field_name;
     }
   }
@@ -211,7 +216,7 @@ function pmpermission_get_enabled_types() {
 function pmpermission_permission() {
 
   $permissions = array(
-    'administer pm permission' =>  array(
+    'administer pm permission' => array(
       'title' => t('Administer Project Management Permission'),
     ),
   );
@@ -226,26 +231,29 @@ function pmpermission_permission() {
 
 /**
  * Creates an array of permission name for the given node bundle.
- * @param  [string] $bundle_name [node bundle name]
- * @return [array]  [an array that could be returned in hook_permission]
+ *
+ * @param string $bundle_name
+ *   Node bundle name.
+ * @return array
+ *   Array equivalent to the return of hook_permission().
  */
-function pmpermission_permission_per_bundle( $bundle_name ) {
+function pmpermission_permission_per_bundle($bundle_name) {
   $name = node_type_get_name($bundle_name);
   $bundle_name = check_plain($bundle_name);
 
   $permissions = array();
 
-  if (!variable_get('node_permissions_' . $bundle_name, 1)){
+  if (!variable_get('node_permissions_' . $bundle_name, 1)) {
     $permissions += _pmpermission_permission_default($bundle_name, $name);
   }
 
   if (module_exists('pmorganization')) {
-    if(_pmpermission_get_field_name($bundle_name, 'parent')) {
+    if (_pmpermission_get_field_name($bundle_name, 'parent')) {
       $permissions += _pmpermission_permission_belonged($bundle_name, $name, 'Organization');
     }
   }
   if (module_exists('pmproject')) {
-    if(_pmpermission_get_field_name($bundle_name, 'pm')) {
+    if (_pmpermission_get_field_name($bundle_name, 'pm')) {
       $permissions += _pmpermission_permission_assigned($bundle_name, $name, 'Project Manager');
     }
   }
@@ -256,10 +264,14 @@ function pmpermission_permission_per_bundle( $bundle_name ) {
 }
 
 /**
- * helper function to generate default permissions
- * @param  [string] $type [node bundle machine name]
- * @param  [string] $name [node bundle name that could be used for display]
- * @return [array]  [an array that could be returned in hook_permission]
+ * Helper function to generate default permissions.
+ *
+ * @param string $type
+ *   Node bundle machine name.
+ * @param string $name
+ *   Node bundle name that could be used for display.
+ * @return array
+ *   Array equivalent to the return of hook_permission().
  */
 function _pmpermission_permission_default($type, $name){
   $permissions = array(
@@ -293,12 +305,16 @@ function _pmpermission_permission_default($type, $name){
 }
 
 /**
- * helper function to generate belonged to permission set
- * @param  [string] $type [node bundle machine name]
- * @param  [string] $name [node bundle name that could be used for display]
- * @return [array]  [an array that could be returned in hook_permission]
+ * Helper function to generate belonged to permission set.
+ *
+ * @param string $type
+ *   Node bundle machine name.
+ * @param string $name
+ *   Node bundle name that could be used for display.
+ * @return array $permissions
+ *   Array equivalent to the return of hook_permission().
  */
-function _pmpermission_permission_belonged($type, $name, $belonged){
+function _pmpermission_permission_belonged($type, $name, $belonged) {
   $permissions["PM permission $type: view own $belonged"] = array(
     'title' => t('%type_name: View content in own %belonged', array('%type_name' => $name, '%belonged' => $belonged)),
     'description' => t('For %type_name assigned to the same %belonged as a user, allows the user to view the %type_name and see the %type_name in lists or dropdowns elsewhere on the site.', array('%type_name' => $name, '%belonged' => $belonged)),
@@ -315,12 +331,16 @@ function _pmpermission_permission_belonged($type, $name, $belonged){
 }
 
 /**
- * helper function to generate assigned permissions set
- * @param  [string] $type [node bundle machine name]
- * @param  [string] $name [node bundle name that could be used for display]
- * @return [array]  [an array that could be returned in hook_permission]
+ * Helper function to generate assigned permissions set.
+ *
+ * @param string $type
+ *   Node bundle machine name.
+ * @param string $name
+ *   Node bundle name that could be used for display.
+ * @return array $permissions
+ *   Array equivalent to the return of hook_permission().
  */
-function _pmpermission_permission_assigned($type, $name, $role){
+function _pmpermission_permission_assigned($type, $name, $role) {
   $permissions["PM permission $type: view if $role"] = array(
     'title' => t('%type_name: View content if %role to %type_name', array('%type_name' => $name, '%role' => $role)),
     'description' => t('For %type_name with a user as %role, allows the user to view the %type_name.', array('%type_name' => $name, '%role' => $role)),
@@ -338,24 +358,32 @@ function _pmpermission_permission_assigned($type, $name, $role){
 
 /**
  * A helper function to check if a field is present in a node.
- * @param  [string] $bundle_name  [node bundle machine name]
- * @param  [string] $category     {pm, assigned, parent}
- * @return the actual name of the field if present, false otherwise.
+ *
+ * @param string $bundle_name
+ *   Node bundle machine name.
+ * @param string $category
+ *   Category of permission {pm, assigned, parent}.
+ * @return
+ *   The actual name of the field if present, false otherwise.
  */
 function _pmpermission_get_field_name($bundle_name, $category) {
   switch ($category) {
     case 'parent':
       $field_name = variable_get("pmpermission_field_parent_reference_for_{$bundle_name}", FALSE);
       break;
+
     case 'assigned':
       $field_name = variable_get("pmpermission_field_assigned_reference", FALSE);
       break;
+
     case 'pm':
       $field_name = variable_get("pmpermission_field_pm_reference", FALSE);
       break;
+
     default:
       $field_name = FALSE;
       break;
+
   }
 
   if ($field_name AND field_info_instance('node', $field_name, $bundle_name)) {
@@ -379,7 +407,7 @@ function pmpermission_node_access_records($node) {
     $default_grants = _pmpermission_grants_default($node, $bundle_name);
   }
   if (module_exists('pmorganization')) {
-    if(_pmpermission_get_field_name($bundle_name, 'parent')) {
+    if (_pmpermission_get_field_name($bundle_name, 'parent')) {
       $belonged_grants = _pmpermission_grants_belonged($node, $bundle_name, 'Organization');
       if ($belonged_grants) {
         $grants = array_merge($grants, $belonged_grants);
@@ -387,7 +415,7 @@ function pmpermission_node_access_records($node) {
     }
   }
   if (module_exists('pmproject')) {
-    if(_pmpermission_get_field_name($bundle_name, 'pm')) {
+    if (_pmpermission_get_field_name($bundle_name, 'pm')) {
       $assigned_grants_pm = _pmpermission_grants_assigned($node, $bundle_name, 'Project Manager');
       if ($assigned_grants_pm) {
         $grants = array_merge($grants, $assigned_grants_pm);
@@ -407,7 +435,7 @@ function pmpermission_node_access_records($node) {
  * Generate default grants similar to drupal core.
  */
 function _pmpermission_grants_default($node, $type) {
-  // PM permission $type: view all
+  // PM permission $type: view all.
   $grants[] = array(
     'realm' => "pmpermission_{$type}_view_all",
     'gid' => 0,
@@ -416,7 +444,7 @@ function _pmpermission_grants_default($node, $type) {
     'grant_delete' => 0,
     'priority' => 0,
   );
-  // PM permission $type: view own
+  // PM permission $type: view own.
   $grants[] = array(
     'realm' => "pmpermission_{$type}_view_own",
     'gid' => $node->uid,
@@ -425,7 +453,7 @@ function _pmpermission_grants_default($node, $type) {
     'grant_delete' => 0,
     'priority' => 0,
   );
-  // PM permission $type: update all
+  // PM permission $type: update all.
   $grants[] = array(
     'realm' => "pmpermission_{$type}_update_all",
     'gid' => 0,
@@ -434,7 +462,7 @@ function _pmpermission_grants_default($node, $type) {
     'grant_delete' => 0,
     'priority' => 0,
   );
-  // PM permission $type: update own
+  // PM permission $type: update own.
   $grants[] = array(
     'realm' => "pmpermission_{$type}_update_own",
     'gid' => $node->uid,
@@ -443,7 +471,7 @@ function _pmpermission_grants_default($node, $type) {
     'grant_delete' => 0,
     'priority' => 0,
   );
-  // PM permission $type: delete all
+  // PM permission $type: delete all.
   $grants[] = array(
     'realm' => "pmpermission_{$type}_delete_all",
     'gid' => 0,
@@ -452,7 +480,7 @@ function _pmpermission_grants_default($node, $type) {
     'grant_delete' => 1,
     'priority' => 0,
   );
-  // PM permission $type: delete own
+  // PM permission $type: delete own.
   $grants[] = array(
     'realm' => "pmpermission_{$type}_delete_own",
     'gid' => $node->uid,
@@ -467,11 +495,11 @@ function _pmpermission_grants_default($node, $type) {
 /**
  * Generate grants for belonged permission set.
  */
-function _pmpermission_grants_belonged($node, $type, $belonged){
-  // PM permission $type: view own %belonged
+function _pmpermission_grants_belonged($node, $type, $belonged) {
+  // PM permission $type: view own %belonged.
   $belonged_nid = _pmpermission_get_belonged_id($node, $type, $belonged);
   $grants = array();
-  if ( $belonged_nid ) {
+  if ($belonged_nid) {
     $grants[] = array(
       'realm' => "pmpermission_{$type}_view_belonged_{$belonged}",
       'gid' => $belonged_nid,
@@ -503,13 +531,13 @@ function _pmpermission_grants_belonged($node, $type, $belonged){
 /**
  * Generate grants for assigned permission set.
  */
-function _pmpermission_grants_assigned($node, $type, $assigned){
-  // PM permission $type: view own %assigned
+function _pmpermission_grants_assigned($node, $type, $assigned) {
+  // PM permission $type: view own %assigned.
   $assigned_nids = _pmpermission_get_assigned_id($node, $type, $assigned);
   $grants = array();
-  if($assigned_nids){
+  if ($assigned_nids) {
     foreach ($assigned_nids as $assigned_nid) {
-      if ( $assigned_nid ) {
+      if ($assigned_nid) {
         $grants[] = array(
           'realm' => "pmpermission_{$type}_view_assigned_{$assigned}",
           'gid' => $assigned_nid,
@@ -577,8 +605,10 @@ function _pmpermission_get_belonged_id($node, $type, $belonged) {
     case 'Organization':
       $belonged_nid = _pmpermission_get_organization_id($node, 4);
       break;
+
     default:
       break;
+
   }
   return $belonged_nid;
 }
@@ -594,11 +624,14 @@ function _pmpermission_get_assigned_id($node, $type, $assigned) {
     case 'Project Manager':
       $field_name = variable_get("pmpermission_field_pm_reference", FALSE);
       break;
+
     case 'Assigned':
       $field_name = variable_get("pmpermission_field_assigned_reference", FALSE);
       break;
+
     default:
       break;
+
   }
   if ($field_name) {
     try {
@@ -636,9 +669,9 @@ function pmpermission_node_grants($account, $op) {
 }
 
 /**
- * helper function for pmpermission_node_grants
+ * Helper function for pmpermission_node_grants.
  */
-function pmpermission_grants_list($account, $op, $type){
+function pmpermission_grants_list($account, $op, $type) {
   $grants = array();
 
   if (user_access("PM permission $type: $op all", $account)) {
@@ -650,9 +683,10 @@ function pmpermission_grants_list($account, $op, $type){
   }
 
   if (module_exists('pmorganization')) {
-    if(_pmpermission_get_field_name($type, 'parent') ) {
+    if (_pmpermission_get_field_name($type, 'parent')) {
       $field_name = variable_get("pmpermission_field_org_member_reference", '');
-      $pmorganization_nids = _pmpermission_get_entity_id_referenced_to_user('node','pmorganization', $field_name, $account->uid);
+      $pmorganization_nids = _pmpermission_get_entity_id_referenced_to_user('node', 
+'pmorganization', $field_name, $account->uid);
       $belonged = 'Organization';
       if (user_access("PM permission $type: $op own $belonged", $account) AND !empty($pmorganization_nids)) {
         $grants["pmpermission_{$type}_{$op}_belonged_{$belonged}"] = $pmorganization_nids;
@@ -661,7 +695,7 @@ function pmpermission_grants_list($account, $op, $type){
   }
 
   if (module_exists('pmproject')) {
-    if(_pmpermission_get_field_name($type, 'pm')) {
+    if (_pmpermission_get_field_name($type, 'pm')) {
       $assigned = 'Project Manager';
       if (user_access("PM permission $type: $op if $assigned", $account)) {
         $grants["pmpermission_{$type}_{$op}_assigned_{$assigned}"] = array($account->uid);
@@ -715,10 +749,12 @@ function pmpermission_node_access($node, $op, $account) {
 }
 
 /**
- * Log and display the error
- * @param string $error Error to report
- * @param object/array $object Object to include with the log
- * @param bool $backtrace TRUE if watchdog log should include full backtrace of the error
+ * Log and display the error.
+ *
+ * @param string $error
+ *   Error to report.
+ * @param bool $backtrace
+ *   TRUE if watchdog log should include full backtrace of the error.
  */
 function _pmpermission_watchdog_log($error, $backtrace = TRUE) {
   $err_msg = t("Error message: %error", array('%error' => $error));

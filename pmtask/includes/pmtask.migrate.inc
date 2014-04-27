@@ -4,9 +4,7 @@
  * pmtask.migrate.inc
  */
 
-
 define('PMTASK_MIGRATE_MAX_JOB_PER_BATCH', 5);
-
 
 /**
  * Helper function for migrating between pmtask to drupal fields.
@@ -145,9 +143,9 @@ function _pmtask_migrate_migrate_single_node( $nid, $vid, $task ){
     $node->pm_weight[LANGUAGE_NONE][0]['value'] = $task->weight;
   }
 
-
   if (isset($task->billed) AND isset($task->billable)) {
-    $new_value = $task->billed ? 'Billed' : ($record->billable ? 'Billable' : 'Not billable');
+    $new_value = $task->billed ? 'Billed' : ($task->billable ? 'Billable' : 'Not 
+billable');
     $node->pm_billing_status[LANGUAGE_NONE][0]['value'] = $new_value;
   }
 

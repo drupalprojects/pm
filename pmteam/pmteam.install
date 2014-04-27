@@ -10,7 +10,9 @@
 function pmteam_install() {
   // Create and attaches fields to pmteam content type.
   module_load_include('inc', 'pmteam', 'includes/pmteam.migrate');
+
   // parameter $sandbox is passed as a placeholder.
+  $sandbox = array();
   pmteam_migrate_create_fields($sandbox);
 }
 
