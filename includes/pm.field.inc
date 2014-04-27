@@ -13,14 +13,16 @@ define('PM_FIELD_INSTANCE_CREATE_SUCCESS', 1);
 define('PM_FIELD_INSTANCE_UPDATE_SUCCESS', 2);
 
 /**
- * Create field bases if not present.
+ * Iterate through an array of field bases, creating if not present.
  *
- * @param  [array] $field_bases [array ]
- * @return [type]               [description]
+ * @param array $field_bases
+ *   Array of field bases to check.
+ * @return array $result
+ *   Array of success / failure flags.
  */
 function pm_field_bases_create_if_required($field_bases) {
   $result = array();
-  if (!empty($field_bases) AND is_array($field_bases)){
+  if (!empty($field_bases) AND is_array($field_bases)) {
     foreach ($field_bases as $key => $field_base) {
       $field_name = $field_base['field_name'];
       $result[$key] = pm_field_base_create_if_required($field_name, $field_base);
@@ -29,10 +31,13 @@ function pm_field_bases_create_if_required($field_bases) {
   return $result;
 }
 
+/**
+ * Create specific field base if not present.
+ */
 function pm_field_base_create_if_required($field_name, $field_base) {
   try {
     $field = field_info_field($field_name);
-    if (empty($field)){
+    if (empty($field)) {
       $field = field_create_field($field_base);
       return PM_FIELD_BASE_CREATE_SUCCESS;
     }
@@ -52,16 +57,17 @@ function pm_field_base_create_if_required($field_name, $field_base) {
   return PM_FIELD_BASE_CREATE_FAILURE;
 }
 
-
 /**
- * Create field instances if not present.
+ * Iterate through an array of field instances, creating if not present.
  *
- * @param  [array] $field_instances [array ]
- * @return [type]               [description]
+ * @param array $field_instances
+ *   Array of field bases to check.
+ * @return array $result
+ *   Array of success / failure flags.
  */
 function pm_field_instances_create_if_required($field_instances) {
   $result = array();
-  if(!empty($field_instances) AND is_array($field_instances)){
+  if (!empty($field_instances) AND is_array($field_instances)) {
     foreach ($field_instances as $key => $field_instance) {
       $field_name = $field_instance['field_name'];
       $result[$key] = pm_field_instance_create_if_required($field_name, $field_instance);
@@ -70,6 +76,9 @@ function pm_field_instances_create_if_required($field_instances) {
   return $result;
 }
 
+/**
+ * Create specific field instance if not present.
+ */
 function pm_field_instance_create_if_required($field_name, $field_instance) {
 
   $field_name = $field_instance['field_name'];
@@ -78,8 +87,8 @@ function pm_field_instance_create_if_required($field_name, $field_instance) {
   $field = field_info_field($field_name);
 
   $bundles = $field['bundles'];
-  $entity_type =  $field_instance['entity_type'];
-  $bundle =  $field_instance['bundle'];
+  $entity_type = $field_instance['entity_type'];
+  $bundle = $field_instance['bundle'];
 
   // Create only if field is defined.
   try {

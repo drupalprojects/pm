@@ -4,9 +4,7 @@
  * pmorganization.migrate.inc
  */
 
-
 define('PMORGANIZATION_MIGRATE_MAX_JOB_PER_BATCH', 5);
-
 
 /**
  * Helper function for migrating between pmorganization to drupal fields.
@@ -90,12 +88,11 @@ function pmorganization_migrate_field_data(&$sandbox) {
   return empty($count);
 }
 
-
 /**
  * Helper function to migrate single pmorganization.
  */
-function _pmorganization_migrate_migrate_single_node( $nid, $vid, $org ){
-  $node = node_load($nid,$vid);
+function _pmorganization_migrate_migrate_single_node($nid, $vid, $org) {
+  $node = node_load($nid, $vid);
 
   if ($org->currency) {
     $node->pm_currency[LANGUAGE_NONE][0]['value'] = $org->currency;
@@ -130,19 +127,19 @@ function _pmorganization_migrate_migrate_single_node( $nid, $vid, $org ){
   }
 
   $address = array();
-  if($org->address){
+  if ($org->address) {
     $address['premise'] = $org->address;
   }
-  if($org->city){
+  if ($org->city) {
     $address['locality'] = $org->city;
   }
-  if($org->provstate){
+  if ($org->provstate) {
     $address['thoroughfare'] = $org->provstate;
   }
-  if($org->country){
+  if ($org->country) {
     $address['country'] = $org->country;
   }
-  if($org->zip){
+  if ($org->zip) {
     $address['postal_code'] = $org->zip;
   }
 
