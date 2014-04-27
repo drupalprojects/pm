@@ -20,7 +20,7 @@ function pmproject_install() {
   // Create and attaches fields to pmproject content type.
   module_load_include('inc', 'pmproject', 'includes/pmproject.migrate');
 
-  // parameter $sandbox is passed as a placeholder.
+  // Parameter $sandbox is passed as a placeholder.
   $sandbox = array();
   pmproject_migrate_create_fields($sandbox);
 }
@@ -57,5 +57,4 @@ function pmproject_update_7105(&$sandbox) {
   if (pmproject_migrate_update_could_be_performed()) {
     return pmproject_migrate($sandbox);
   }
-  return ;
 }

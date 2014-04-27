@@ -141,7 +141,7 @@ function pmperson_migrate_email_missmatch_count() {
  */
 function pmperson_migrate_page_callback() {
   if (pmperson_migrate_update_could_be_performed()) {
-    $link = l('update script', 'update.php');
+    $link = l(t('update script'), 'update.php');
     return t('No conflicts here, PM Person migration could be performed.
       If you came here to resolve migration issue, you can go back to !link.',
       array('!link' => $link)
@@ -165,7 +165,7 @@ function pmperson_migrate_page_callback() {
     'try_fix_1' => array('#type' => 'markup', '#markup' => render($form_fix_1)),
     'tabel_1_info' => array(
       '#markup' => "
-        <b>Suggested matches</b>
+        <strong>Suggested matches</strong>
         <p>
         This table shows PM Person nodes with the same email address as a user
         account.
@@ -179,7 +179,7 @@ function pmperson_migrate_page_callback() {
     'tabel_2_info' => array(
       '#markup' => "
         <hr><br>
-        <b>Conflicts</b>
+        <strong>Conflicts</strong>
         <p>
         This table shows PM Person nodes where a match cannot be made
         automatically due to data differences between them.
@@ -355,6 +355,9 @@ function _pmperson_migrate_adjust_row($row) {
   return $out;
 }
 
+/**
+ * Provides help text data for pmperson migration conflicts form.
+ */
 function pmperson_migrate_get_help_text($row_data) {
   $message = '-';
   $du = $row_data['user'];
@@ -633,7 +636,7 @@ function pmperson_migrate_email_adjust_form($form, $form_state, $type = NULL, $i
       case 'user':
         $nid = db_query('SELECT nid FROM {pmperson} WHERE user_uid = :user_uid', array(':user_uid' => $id))->fetchField();
         if ($nid) {
-          $description =  'uid: ' . $id . ' - linked to pmperson: ' . _pmperson_migrate_node_get_title($nid) . " (nid: $nid)";
+          $description = 'uid: ' . $id . ' - linked to pmperson: ' . _pmperson_migrate_node_get_title($nid) . " (nid: $nid)";
           $col_data[$type]['linked_id'] = $nid;
         }
         else {

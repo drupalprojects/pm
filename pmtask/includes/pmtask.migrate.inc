@@ -93,8 +93,8 @@ function pmtask_migrate_field_data(&$sandbox) {
 /**
  * Helper function to migrate single pmtask.
  */
-function _pmtask_migrate_migrate_single_node( $nid, $vid, $task ){
-  $node = node_load($nid,$vid);
+function _pmtask_migrate_migrate_single_node($nid, $vid, $task) {
+  $node = node_load($nid, $vid);
 
   $assigned = _pmtask_get_drupal_uid_from_pmperson_nid($task->assigned_nid);
   if ($assigned) {
@@ -171,7 +171,6 @@ billable');
 
 /**
  * Give back the corresponding drupal uid for a pmperson id.
- *
  */
 function _pmtask_get_drupal_uid_from_pmperson_nid($nid) {
   $r = db_select('pmperson', 'p')

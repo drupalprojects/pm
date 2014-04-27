@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Installation and update functions for PM Person module.
@@ -9,7 +8,7 @@
  * Implements hook_install().
  */
 function pmperson_install() {
-  // Create user fields
+  // Create user fields.
   module_load_include('inc', 'pmperson', 'includes/pmperson.migrate');
 
   $sandbox = array();
@@ -39,14 +38,11 @@ function pmperson_update_7104(&$sandbox) {
   module_load_include('inc', 'pmperson', 'includes/pmperson.migrate');
 
   // Check if update could be performed.
-
   $link = l(PMPERSON_RESOLVE_DEPENDENCIES_LINK, PMPERSON_RESOLVE_DEPENDENCIES_LINK);
-
-  if( pmperson_migrate_update_could_be_performed() == FALSE ) {
+  if (pmperson_migrate_update_could_be_performed() == FALSE) {
     drupal_set_message($t('Cannot perform update. Please visit !link to check how to resolve this issue.', array('!link' => $link)), 'warning', FALSE);
     throw new DrupalUpdateException($t('Cannot perform update. Please visit !link to check how to resolve this issue.', array('!link' => PMPERSON_RESOLVE_DEPENDENCIES_LINK)));
   }
-
 
   return pmperson_migrate($sandbox);
 }
@@ -58,9 +54,9 @@ function pmperson_requirements($phase) {
   $requirements = array();
   if ($phase == 'update') {
     module_load_include('inc', 'pmperson', 'includes/pmperson.migrate');
-    if( pmperson_migrate_update_could_be_performed() == FALSE ) {
+    if (pmperson_migrate_update_could_be_performed() == FALSE) {
       $t = get_t();
-      // Do a menu rebuild so that the page PMPERSON_RESOLVE_DEPENDENCIES_LINK is accessible.
+      // Rebuild the menu to allow access to PMPERSON_RESOLVE_DEPENDENCIES_LINK.
       menu_rebuild();
       $link = l(PMPERSON_RESOLVE_DEPENDENCIES_LINK, PMPERSON_RESOLVE_DEPENDENCIES_LINK);
       $requirements['pmperson_migrate'] = array(

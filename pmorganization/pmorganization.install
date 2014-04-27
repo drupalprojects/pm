@@ -15,12 +15,14 @@ function pmorganization_install() {
 
   // Create and attaches fields to pmorganization content type.
   module_load_include('inc', 'pmorganization', 'includes/pmorganization.migrate');
-  // parameter $sandbox is passed as a placeholder.
+
+  // Parameter $sandbox is passed as a placeholder.
+  $sandbox = array();
   pmorganization_migrate_create_fields($sandbox);
 }
 
 /**
- * Implement hook_disable().
+ * Implements hook_disable().
  */
 function pmorganization_disable() {
   drupal_set_message(t('Nodes of type "Organization" have not been deleted on disabling Project Management Organization. Please note that they will now have reduced functionality, and will not be protected by Project Management Organization access controls.'), 'warning');

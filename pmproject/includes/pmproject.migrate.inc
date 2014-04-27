@@ -4,9 +4,7 @@
  * pmproject.migrate.inc
  */
 
-
 define('PMPROJECT_MIGRATE_MAX_JOB_PER_BATCH', 5);
-
 
 /**
  * Helper function for migrating between pmproject to drupal fields.
@@ -96,8 +94,8 @@ function pmproject_migrate_field_data(&$sandbox) {
 /**
  * Helper function to migrate single pmproject.
  */
-function _pmproject_migrate_migrate_single_node( $nid, $vid, $prj ){
-  $node = node_load($nid,$vid);
+function _pmproject_migrate_migrate_single_node($nid, $vid, $prj){
+  $node = node_load($nid, $vid);
 
   $assigned = _pmproject_get_drupal_uid_from_pmperson_nid($prj->assigned_nid);
   if ($assigned) {
@@ -127,7 +125,6 @@ function _pmproject_migrate_migrate_single_node( $nid, $vid, $prj ){
   elseif ($prj->billable) {
     $node->pm_billing_status[LANGUAGE_NONE][0]['value'] = 'Billable';
   }
-
 
   if ($prj->durationunit) {
     $node->pm_durationunit[LANGUAGE_NONE][0]['value'] = $prj->durationunit;
@@ -167,7 +164,6 @@ function _pmproject_migrate_migrate_single_node( $nid, $vid, $prj ){
 
 /**
  * Give back the corresponding drupal uid for a pmperson id.
- *
  */
 function _pmproject_get_drupal_uid_from_pmperson_nid($nid) {
   $r = db_select('pmperson', 'p')

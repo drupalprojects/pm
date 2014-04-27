@@ -61,8 +61,9 @@ function pmpermission_admin() {
         '#markup' => t('No configuration available for "@name"', array('@name' => $name)),
         '#states' => array(
           'visible' => array(
-            ":input[name='pmpermission_node_{$type}_enabled']" => array('checked' => 
-TRUE),
+            ":input[name='pmpermission_node_{$type}_enabled']" => array(
+              'checked' => TRUE,
+            ),
           ),
         ),
       );
@@ -165,7 +166,8 @@ function pmpermission_admin_submit($form, $form_state) {
  *
  * @param string $type
  *   Type of field e.g. entityreference.
- * @return 
+ *
+ * @return array $field_names
  *   Array of field names categorized by target entity type.
  */
 function _pmpermission_get_field_names_per_field_type($type, $entity_type = NULL, 
@@ -234,6 +236,7 @@ function pmpermission_permission() {
  *
  * @param string $bundle_name
  *   Node bundle name.
+ *
  * @return array
  *   Array equivalent to the return of hook_permission().
  */
@@ -270,10 +273,11 @@ function pmpermission_permission_per_bundle($bundle_name) {
  *   Node bundle machine name.
  * @param string $name
  *   Node bundle name that could be used for display.
+ *
  * @return array
  *   Array equivalent to the return of hook_permission().
  */
-function _pmpermission_permission_default($type, $name){
+function _pmpermission_permission_default($type, $name) {
   $permissions = array(
     "PM permission $type: access" => array(
       'title' => t('Access %type_name.', array('%type_name' => $name)),
@@ -311,6 +315,7 @@ function _pmpermission_permission_default($type, $name){
  *   Node bundle machine name.
  * @param string $name
  *   Node bundle name that could be used for display.
+ *
  * @return array $permissions
  *   Array equivalent to the return of hook_permission().
  */
@@ -337,6 +342,7 @@ function _pmpermission_permission_belonged($type, $name, $belonged) {
  *   Node bundle machine name.
  * @param string $name
  *   Node bundle name that could be used for display.
+ *
  * @return array $permissions
  *   Array equivalent to the return of hook_permission().
  */
@@ -363,7 +369,8 @@ function _pmpermission_permission_assigned($type, $name, $role) {
  *   Node bundle machine name.
  * @param string $category
  *   Category of permission {pm, assigned, parent}.
- * @return
+ *
+ * @return string
  *   The actual name of the field if present, false otherwise.
  */
 function _pmpermission_get_field_name($bundle_name, $category) {
@@ -403,7 +410,7 @@ function pmpermission_node_access_records($node) {
   $bundle_name = is_string($node) ? $node : $node->type;
   $name = node_type_get_name($bundle_name);
   $grants = array();
-  if (!variable_get('node_permissions_' . $bundle_name, 1)){
+  if (!variable_get('node_permissions_' . $bundle_name, 1)) {
     $default_grants = _pmpermission_grants_default($node, $bundle_name);
   }
   if (module_exists('pmorganization')) {
@@ -637,7 +644,7 @@ function _pmpermission_get_assigned_id($node, $type, $assigned) {
     try {
       $wrapper = entity_metadata_wrapper('node', $node);
       $field_info = field_info_field($field_name);
-      if($field_info['cardinality'] == 1){
+      if ($field_info['cardinality'] == 1) {
         $account = $wrapper->$field_name->value();
         $assigned_nids[] = $account->uid;
       }
@@ -646,7 +653,8 @@ function _pmpermission_get_assigned_id($node, $type, $assigned) {
           $assigned_nids[] = $account_wrapper->getIdentifier();
         }
       }
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       _pmpermission_watchdog_log($e);
     }
   }
@@ -718,7 +726,7 @@ function pmpermission_grants_list($account, $op, $type) {
 function _pmpermission_get_entity_id_referenced_to_user($entity_type, $bundle, $field_name, $uid) {
   $ids = FALSE;
 
-  if($entity_type AND $bundle AND $field_name AND $uid) {
+  if ($entity_type AND $bundle AND $field_name AND $uid) {
     $query = new EntityFieldQuery();
     $query->entityCondition('entity_type', $entity_type)
       ->entityCondition('bundle', $bundle)
@@ -727,7 +735,7 @@ function _pmpermission_get_entity_id_referenced_to_user($entity_type, $bundle, $
       ->addMetaData('account', user_load(1));
     $result = $query->execute();
     if (isset($result['node'])) {
-      $ids= array_keys($result['node']);
+      $ids = array_keys($result['node']);
     }
   }
   return $ids;

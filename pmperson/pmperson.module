@@ -1,9 +1,10 @@
 <?php
 /**
  * @file
+ * Hook implementations for the pmperson module.
  */
-define('PMPERSON_RESOLVE_DEPENDENCIES_LINK', 'admin/config/pm/migration/pmperson');
 
+define('PMPERSON_RESOLVE_DEPENDENCIES_LINK', 'admin/config/pm/migration/pmperson');
 
 /**
  * Implements hook_menu().
@@ -21,7 +22,7 @@ function pmperson_menu() {
 
 /**
  * Access check for resolving conflicts.
- * @see update_access_allowed().
+ * @see update_access_allowed()
  */
 function pmperson_update_access_allowed() {
   global $update_free_access, $user;
@@ -97,7 +98,8 @@ function pmperson_pm_dashboard_links($type) {
 
 /**
  * Dummy function to handle errors.
- * // TODO: Remove this function when all other PM submodules have been ported.
+ *
+ * TODO: Remove this function when all other PM submodules have been ported.
  */
 function _pmperson_user_load() {
 
