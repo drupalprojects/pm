@@ -165,7 +165,7 @@ function _pmorganization_migrate_migrate_single_node($nid, $vid, $org) {
 
   $results = db_select('pmperson', 'pmp')
     ->fields('pmp', array('user_uid'))
-    ->condition('pmp.organization_nid', $oid)
+    ->condition('pmp.organization_nid', $nid)
     ->execute();
   foreach ($results as $pmperson) {
     $node->pmorganization_members[LANGUAGE_NONE][] = array('target_id' => $pmperson->user_uid);
