@@ -61,12 +61,9 @@ function pmteam_update_7102() {
  * Migrate PM Team nodes to field_api fields.
  */
 function pmteam_update_7103(&$sandbox) {
-
   module_load_include('inc', 'pmteam', 'includes/pmteam.migrate');
 
   if (pmteam_migrate_update_could_be_performed()) {
     return pmteam_migrate($sandbox);
   }
-
-  return ;
 }

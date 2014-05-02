@@ -108,7 +108,7 @@ function _pmteam_migrate_field_data($pmteam) {
 /**
  * Helper function to migrate single pmteam.
  */
-function _pmteam_migrate_migrate_single_node($nid, $vid, $members ){
+function _pmteam_migrate_migrate_single_node($nid, $vid, $members) {
 
   $update_needed_flag = FALSE;
   $users = array();
@@ -117,7 +117,7 @@ function _pmteam_migrate_migrate_single_node($nid, $vid, $members ){
     if ($pmperson = _pmteam_migrate_load_data('pmperson', $mnid)) {
       $users[] = $pmperson->user_uid;
     }
-    else if(_pmteam_migrate_load_data('pmorganization', $mnid)) {
+    elseif (_pmteam_migrate_load_data('pmorganization', $mnid)) {
       $pmorganizations[] = $mnid;
     }
   }
