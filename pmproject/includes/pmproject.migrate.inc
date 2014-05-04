@@ -94,7 +94,7 @@ function pmproject_migrate_field_data(&$sandbox) {
 /**
  * Helper function to migrate single pmproject.
  */
-function _pmproject_migrate_migrate_single_node($nid, $vid, $prj){
+function _pmproject_migrate_migrate_single_node($nid, $vid, $prj) {
   $node = node_load($nid, $vid);
 
   $assigned = _pmproject_get_drupal_uid_from_pmperson_nid($prj->assigned_nid);

@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- *   PM Organization install file.
+ * PM Organization install file.
  */
 
 /**
@@ -44,7 +44,6 @@ function pmorganization_update_7104(&$sandbox) {
   if (pmorganization_migrate_update_could_be_performed()) {
     return pmorganization_migrate($sandbox);
   }
-  return ;
 }
 
 /**
@@ -54,7 +53,7 @@ function pmorganization_requirements($phase) {
   $requirements = array();
   if ($phase == 'update') {
     $enabled = module_enable(array('link', 'email', 'addressfield'));
-    if( !$enabled ) {
+    if (!$enabled) {
       $t = get_t();
       $requirements['pmorganization_migrate'] = array(
         'title' => $t('PM Organization Migrate Issues'),
@@ -62,9 +61,9 @@ function pmorganization_requirements($phase) {
           If you download the modules from Drupal.org those would be enabled automatically when update script is run.
           So Please make sure following modules are present: !link, !email & !addressfield',
           array(
-            '!link' => l('link', 'https://drupal.org/project/link'),
-            '!email' => l('email', 'https://drupal.org/project/email'),
-            '!addressfield' => l('addressfield', 'https://drupal.org/project/addressfield'),
+            '!link' => l($t('link'), 'https://drupal.org/project/link'),
+            '!email' => l($t('email'), 'https://drupal.org/project/email'),
+            '!addressfield' => l($t('addressfield'), 'https://drupal.org/project/addressfield'),
           )
         ),
         'severity' => REQUIREMENT_ERROR,
