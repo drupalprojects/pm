@@ -4,14 +4,14 @@
  * Hook implementations for the pmperson module.
  */
 
-define('PMPERSON_RESOLVE_DEPENDENCIES_LINK', 'admin/config/pm/migration/pmperson');
+define('PMPERSON_RESOLVE_DEPENDENCIES_LINK', 'admin/config/pm/pmperson_migration');
 
 /**
  * Implements hook_menu().
  */
 function pmperson_menu() {
   $items[PMPERSON_RESOLVE_DEPENDENCIES_LINK] = array(
-    'title' => 'PM Person migrate status',
+    'title' => 'PM Person migration conflicts',
     'page callback' => 'pmperson_migrate_page_callback',
     'access callback' => 'pmperson_update_access_allowed',
     'type' => MENU_NORMAL_ITEM,

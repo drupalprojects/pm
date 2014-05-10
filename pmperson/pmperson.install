@@ -58,10 +58,10 @@ function pmperson_requirements($phase) {
       $t = get_t();
       // Rebuild the menu to allow access to PMPERSON_RESOLVE_DEPENDENCIES_LINK.
       menu_rebuild();
-      $link = l(PMPERSON_RESOLVE_DEPENDENCIES_LINK, PMPERSON_RESOLVE_DEPENDENCIES_LINK);
+      $link = l($t('migration conflicts page'), PMPERSON_RESOLVE_DEPENDENCIES_LINK);
       $requirements['pmperson_migrate'] = array(
-        'title' => $t('PM Person Migrate Conflicts'),
-        'value' => $t('Cannot perform update. Please visit !link to check how to resolve this issue.', array('!link' => $link)),
+        'title' => $t('PM Person migration'),
+        'value' => $t('Migration to Drupal users cannot be performed. Resolve the conflicts listed on the !link and try again.', array('!link' => $link)),
         'severity' => REQUIREMENT_ERROR,
       );
     }
