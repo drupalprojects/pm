@@ -141,11 +141,8 @@ function pmperson_migrate_email_missmatch_count() {
  */
 function pmperson_migrate_page_callback() {
   if (pmperson_migrate_update_could_be_performed()) {
-    $link = l(t('update script'), 'update.php');
-    return t('No conflicts here, PM Person migration could be performed.
-      If you came here to resolve migration issue, you can go back to !link.',
-      array('!link' => $link)
-    );
+    drupal_set_message(t('PM Person migration conflicts have been resolved.'));
+    drupal_goto('update.php');
   }
 
   $form_fix_1 = drupal_get_form('pmperson_migrate_fix_existing_users_form');
@@ -153,33 +150,29 @@ function pmperson_migrate_page_callback() {
   $render = array(
     'preface' => array(
       '#markup' => "
-        <p>
-        - The information captured by legacy PM Person nodes is now incorporated
-        into user accounts.
-        </p><p>
-        - This page will ensure that all PM Person nodes can be uniquely matched
-         to existing users so that the data migration can take place.
-        </p>
+        <p>The information captured by legacy PM Person nodes is now incorporated
+        into user accounts.</p>
+        <p>This page will ensure that all PM Person nodes can be uniquely matched
+         to existing users so that the data migration can take place.</p>
       ",
     ),
-    'try_fix_1' => array('#type' => 'markup', '#markup' => render($form_fix_1)),
-    'tabel_1_info' => array(
+    'table_1_info' => array(
       '#markup' => "
-        <strong>Suggested matches</strong>
+        <h2>Suggested matches</h2>
         <p>
         This table shows PM Person nodes with the same email address as a user
         account.
         </p><p>
-        Normally these can be matched automatically by clicking the button above.
+        Normally these can be matched automatically by clicking the button below.
         Remaining PM Person nodes will need to be manually matched.
         </p>
       ",
     ),
     'table_issue_1' => _pmperson_migrate_get_conflicting_email_with_existing_users_table(),
-    'tabel_2_info' => array(
-      '#markup' => "
-        <hr><br>
-        <strong>Conflicts</strong>
+    'try_fix_1' => array('#type' => 'markup', '#markup' => render($form_fix_1)),
+    'table_2_info' => array(
+      '#markup' => "<br />
+        <h2>Conflicts</h2>
         <p>
         This table shows PM Person nodes where a match cannot be made
         automatically due to data differences between them.
