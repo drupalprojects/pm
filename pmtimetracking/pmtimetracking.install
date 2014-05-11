@@ -34,7 +34,7 @@ function pmtimetracking_uninstall() {
  * Implements hook_update_last_removed().
  */
 function pmtimetracking_update_last_removed() {
-  return 7105;
+  return 6201;
 }
 
 /**

@@ -35,7 +35,7 @@ function pmnote_uninstall() {
  * Implements hook_update_last_removed().
  */
 function pmnote_update_last_removed() {
-  return 7103;
+  return 6201;
 }
 
 /**

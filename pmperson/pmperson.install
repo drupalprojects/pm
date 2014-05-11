@@ -26,7 +26,7 @@ function pmperson_disable() {
  * Implements hook_update_last_removed().
  */
 function pmperson_update_last_removed() {
-  return 7103;
+  return 6201;
 }
 
 /**

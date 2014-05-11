@@ -45,7 +45,7 @@ function pmproject_disable() {
  * Implements hook_update_last_removed().
  */
 function pmproject_update_last_removed() {
-  return 7104;
+  return 6202;
 }
 
 /**
