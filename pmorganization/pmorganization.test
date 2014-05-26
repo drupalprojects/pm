@@ -24,36 +24,29 @@ class PMOrganizationTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Test case covering access of organization list.
+   * Test case ensuring that the list view is present.
    */
-  public function testpmorganizationAccess() {
+  public function testpmorganizationList() {
+    // Anonymous user.
     $this->drupalGet('pm/organizations');
-    $this->assertResponse(403, t('Make sure access is denied to Project Management Organizations list for anonymous user'));
+    $this->assertText(t('Organizations'), t('Make sure the correct page has been displayed by checking that the title is "Organizations".'));
 
-    $basic_user = $this->drupalCreateUser();
-    $this->drupalLogin($basic_user);
-    $this->drupalGet('pm/organizations');
-    $this->assertResponse(403, t('Make sure access is denied to Project Management Organizations list for basic user'));
-
-    $privileged_user = $this->drupalCreateUser(array('Project Management Organization: access'));
-    $this->drupalLogin($privileged_user);
+    // Authenticated user.
+    $authenticated_user = $this->drupalCreateUser();
+    $this->drupalLogin($authenticated_user);
     $this->drupalGet('pm/organizations');
     $this->assertText(t('Organizations'), t('Make sure the correct page has been displayed by checking that the title is "Organizations".'));
   }
 
   /**
-   * Test case covering creation of pmorganizations.
+   * Test case ensuring that organization nodes can be created.
    */
   public function testpmorganizationCreate() {
-    $privileged_user = $this->drupalCreateUser(array('Project Management Organization: add'));
-    $this->drupalLogin($privileged_user);
-
     $edit = array(
       'title' => $this->randomName(32),
-      'body[und][0][value]' => $this->randomName(64),
+      'body[LANGUAGE_NONE][0][value]' => $this->randomName(64),
     );
     $this->drupalPost('node/add/pmorganization', $edit, t('Save'));
     $this->assertText(t('Organization @title has been created.', array('@title' => $edit['title'])));
   }
-
 }
