@@ -220,6 +220,7 @@ function pmpermission_permission() {
   $permissions = array(
     'administer pm permission' => array(
       'title' => t('Administer Project Management Permission'),
+      'restrict access' => TRUE,
     ),
   );
 
