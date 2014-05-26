@@ -15,6 +15,9 @@ function pmticket_install() {
   variable_set('pmpermission_field_assigned_reference', 'pm_assigned');
   variable_set('pmpermission_node_pmticket_enabled', TRUE);
 
+  // Create and attaches fields to pmticket content type.
+  module_load_include('inc', 'pmticket', 'includes/pmticket.migrate');
+
   // Parameter $sandbox is passed as a placeholder.
   $sandbox = array();
   pmticket_migrate_create_fields($sandbox);
