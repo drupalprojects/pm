@@ -45,11 +45,14 @@ class PMProjectTestCase extends DrupalWebTestCase {
    * Test case covering creation of pmprojects.
    */
   public function testpmprojectCreate() {
-    // Create and login user
-    $user = $this->drupalCreateUser(array('Project Management Organization: add', 'Project Management Organization: view all', 'Project Management Project: add', 'Project Management Project: view all'));
+    // Log in with permission to create test content.
+    $user = $this->drupalCreateUser(array(
+      'create Organization content',
+      'create Project content',
+    ));
     $this->drupalLogin($user);
 
-    // Create organization and invoice
+    // Create test content.
     $org = array(
       'title' => $this->randomName(32),
       'body[und][0][value]' => $this->randomName(64),

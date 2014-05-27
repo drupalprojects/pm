@@ -42,6 +42,13 @@ class PMOrganizationTestCase extends DrupalWebTestCase {
    * Test case ensuring that organization nodes can be created.
    */
   public function testpmorganizationCreate() {
+    // Log in with permission to create test content.
+    $user = $this->drupalCreateUser(array(
+      'create Organization content',
+    ));
+    $this->drupalLogin($user);
+
+    // Create test content.
     $edit = array(
       'title' => $this->randomName(32),
       'body[LANGUAGE_NONE][0][value]' => $this->randomName(64),

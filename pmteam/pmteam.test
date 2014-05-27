@@ -31,11 +31,13 @@ class PMTeamTestCase extends DrupalWebTestCase {
    * Tests creation of pmteam nodes.
    */
   public function testpmteamCreate() {
-    // Create and login user
-    $user = $this->drupalCreateUser(array('Project Management Team: add', 'Project Management Team: view all'));
+    // Log in with permission to create test content.
+    $user = $this->drupalCreateUser(array(
+      'create Team content',
+    ));
     $this->drupalLogin($user);
 
-    // Create a team
+    // Create test content.
     $team = array(
       'title' => $this->randomName(32),
     );

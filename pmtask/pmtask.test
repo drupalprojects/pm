@@ -49,11 +49,15 @@ class PMTaskTestCase extends DrupalWebTestCase {
    * Test of Task node creation.
    */
   public function testpmtaskCreate() {
-    // Create and login user
-    $user = $this->drupalCreateUser(array('Project Management Organization: add', 'Project Management Organization: view all', 'Project Management Project: add', 'Project Management Project: view all', 'Project Management Task: add', 'Project Management Task: view all'));
+    // Log in with permission to create test content.
+    $user = $this->drupalCreateUser(array(
+      'create Organization content',
+      'create Project content',
+      'create Task content',
+    ));
     $this->drupalLogin($user);
 
-    // Create organization and invoice
+    // Create test content.
     $org = array(
       'title' => $this->randomName(32),
       'body[und][0][value]' => $this->randomName(64),
