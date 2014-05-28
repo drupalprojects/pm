@@ -51,10 +51,10 @@ class PMNoteTestCase extends DrupalWebTestCase {
   public function testpmnoteCreate() {
     // Log in with permission to create test content.
     $user = $this->drupalCreateUser(array(
-      'create Organization content',
-      'create Project content',
-      'create Task content',
-      'create Note content',
+      'create pmorganization content',
+      'create pmproject content',
+      'create pmtask content',
+      'create pmnote content',
     ));
     $this->drupalLogin($user);
 

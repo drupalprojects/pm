@@ -33,7 +33,7 @@ class PMTeamTestCase extends DrupalWebTestCase {
   public function testpmteamCreate() {
     // Log in with permission to create test content.
     $user = $this->drupalCreateUser(array(
-      'create Team content',
+      'create pmteam content',
     ));
     $this->drupalLogin($user);
 
