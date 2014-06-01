@@ -9,7 +9,6 @@
  */
 function pmproject_install() {
   variable_set('node_options_pmproject', array('status'));
-  variable_set('node_permissions_pmproject', 0);
 
   // PM Permissions default configurations.
   variable_set('pmpermission_field_assigned_reference', 'pm_assigned');

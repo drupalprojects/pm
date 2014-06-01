@@ -9,7 +9,6 @@
  */
 function pmexpense_install() {
   variable_set('node_options_pmexpense', array('status'));
-  variable_set('node_permissions_pmexpense', 0);
 
   // Expense date field.
   if (!field_info_field('pmexpense_date')) {

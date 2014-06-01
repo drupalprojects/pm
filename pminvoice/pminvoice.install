@@ -10,7 +10,6 @@
 function pminvoice_install() {
   variable_set('node_options_pminvoice', array('status'));
   variable_set('node_options_pminvoiceitem', array('status'));
-  variable_set('node_permissions_pminvoice', 0);
   variable_set('comment_pminvoice', 1);
 
   // Request date field.
