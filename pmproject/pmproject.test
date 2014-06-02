@@ -59,7 +59,7 @@ class PMProjectTestCase extends DrupalWebTestCase {
     );
     $prj = array(
       'title' => $this->randomName(32),
-      'organization_nid' => '1',
+      'pmproject_parent[und]' => '1',
     );
     $this->drupalPost('node/add/pmorganization', $org, t('Save'));
     $this->drupalPost('node/add/pmproject', $prj, t('Save'));
