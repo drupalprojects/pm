@@ -41,7 +41,7 @@ class pm_handler_field_operation extends views_handler_field_node_link {
   }
 
   /**
-   * Renders field to sohw icon.
+   * Renders field to show icon.
    */
   function render($values) {
     // ensure user has access to edit this node.
