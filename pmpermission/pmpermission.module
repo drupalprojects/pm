@@ -118,7 +118,7 @@ function pmpermission_admin() {
   $form['pmpermission_advanced']['pmpermission_override_core_permissions_agree'] = array(
     '#type' => 'checkbox',
     '#title' => t('I agree to override default core node permissions'),
-    '#description' => t("Drupal core doesn't provide a UI to alter these settings. So 
+    '#description' => t("Drupal core doesn't provide a UI to alter these settings. So
 make sure you revert the settings before you uninstall this module."),
     '#default_value' => FALSE,
   );
@@ -280,10 +280,6 @@ function pmpermission_permission_per_bundle($bundle_name) {
  */
 function _pmpermission_permission_default($type, $name) {
   $permissions = array(
-    "PM permission $type: access" => array(
-      'title' => t('Access %type_name.', array('%type_name' => $name)),
-      'description' => t('Allows the user to see pages and blocks associated with the %type_name, but does not control specific item that is shown within them.', array('%type_name' => $name)),
-    ),
     "PM permission $type: create" => array(
       'title' => t('%type_name: Create new content', array('%type_name' => $name)),
     ),
