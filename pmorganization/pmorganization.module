@@ -34,6 +34,19 @@ function pmorganization_menu() {
 }
 
 /**
+ * Implements hook_permission().
+ */
+function pmorganization_permission() {
+  $name = 'Project Management Organization';
+  return array(
+    "Project Management Organization: access" => array(
+        'title' => t('Access %type_name.', array('%type_name' => $name)),
+        'description' => t('Allows the user to see pages and blocks associated with the %type_name, but does not control specific item that is shown within them.', array('%type_name' => $name)),
+      ),
+  );
+}
+
+/**
  * Implements hook_node_info().
  */
 function pmorganization_node_info() {
