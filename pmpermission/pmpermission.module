@@ -118,8 +118,7 @@ function pmpermission_admin() {
   $form['pmpermission_advanced']['pmpermission_override_core_permissions_agree'] = array(
     '#type' => 'checkbox',
     '#title' => t('I agree to override default core node permissions'),
-    '#description' => t("Drupal core doesn't provide a UI to alter these settings. So
-make sure you revert the settings before you uninstall this module."),
+    '#description' => t("Drupal core doesn't provide a UI to alter these settings. So make sure you revert the settings before you uninstall this module."),
     '#default_value' => FALSE,
   );
   $form['pmpermission_advanced']['pmpermission_override_core_permissions'] = array(
@@ -252,7 +251,7 @@ function pmpermission_permission_per_bundle($bundle_name) {
   }
 
   if (module_exists('pmorganization')) {
-    if (_pmpermission_get_field_name($bundle_name, 'parent')) {
+    if (_pmpermission_get_field_name($bundle_name, 'parent') OR $bundle_name == 'pmorganization') {
       $permissions += _pmpermission_permission_belonged($bundle_name, $name, 'Organization');
     }
   }
@@ -575,6 +574,9 @@ function _pmpermission_grants_assigned($node, $type, $assigned) {
  * Finds the organization attached to a node.
  */
 function _pmpermission_get_organization_id($node, $max_depth) {
+  if ($node->type == 'pmorganization') {
+    return $node->nid;
+  }
   if ($max_depth) {
     --$max_depth;
     $bundle_name = $node->type;
@@ -690,7 +692,7 @@ function pmpermission_grants_list($account, $op, $type) {
   }
 
   if (module_exists('pmorganization')) {
-    if (_pmpermission_get_field_name($type, 'parent')) {
+    if (_pmpermission_get_field_name($type, 'parent') OR $type == 'pmorganization') {
       $field_name = variable_get("pmpermission_field_org_member_reference", '');
       $pmorganization_nids = _pmpermission_get_entity_id_referenced_to_user('node', 'pmorganization', $field_name, $account->uid);
       $belonged = 'Organization';
