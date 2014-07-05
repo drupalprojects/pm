@@ -21,7 +21,7 @@ function pmtask_help($path, $arg) {
 /**
  * Implements hook_permission().
  */
-function pmorganization_permission() {
+function pmtask_permission() {
   $name = 'Project Management Task';
   return array(
     "Project Management Task: access" => array(
