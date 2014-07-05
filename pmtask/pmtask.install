@@ -49,6 +49,9 @@ function pmtask_update_last_removed() {
  * Migrate PM Project nodes to field_api fields.
  */
 function pmtask_update_7105(&$sandbox) {
+  if (!module_exists('pmpermission')) {
+    module_enable(array('pmpermission'));
+  }
   module_load_include('inc', 'pmtask', 'includes/pmtask.migrate');
 
   if (pmtask_migrate_update_could_be_performed()) {
