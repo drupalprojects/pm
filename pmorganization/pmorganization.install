@@ -39,6 +39,9 @@ function pmorganization_update_last_removed() {
  * Migrate PM Organization nodes to field_api fields.
  */
 function pmorganization_update_7104(&$sandbox) {
+  if (!module_exists('pmpermission')) {
+    module_enable(array('pmpermission'));
+  }
   module_load_include('inc', 'pmorganization', 'includes/pmorganization.migrate');
 
   if (pmorganization_migrate_update_could_be_performed()) {
