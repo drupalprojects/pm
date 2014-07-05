@@ -769,3 +769,41 @@ function _pmpermission_watchdog_log($error, $backtrace = TRUE) {
   watchdog('PHP', $err_msg, WATCHDOG_ERROR);
   drupal_set_message($err_msg, 'error');
 }
+
+/**
+ * Helper function to allow other modules to migrate permissions.
+ * @param  array  $map : List of permission to be migrated
+ * where key represents the old permission and value represents
+ * the new permission.
+ */
+function pmpermission_migrate_legacy_permission($map = array()) {
+  if (!empty($map) AND is_array($map)) {
+    foreach ($map as $old => $new) {
+      _pmpermission_migrate_single_permission($old, $new);
+    }
+  }
+}
+
+/**
+ * Perform a single permission migrate.
+ * @param  $old Old permission name to be migrated
+ * @param  $new New permission name.
+ * @return NULL.
+ */
+function _pmpermission_migrate_single_permission($old, $new) {
+
+  $roles = user_roles($membersonly = FALSE, $old);
+  $permission = array(
+    $old => 0, // Revoke Permission ( deletes the record )
+    $new => TRUE,
+  );
+  if ($roles AND is_array($roles)) {
+    foreach ($roles as $rid => $role_name) {
+      user_role_change_permissions($rid, $permissions);
+    }
+  }
+
+  // All permission adjustment used by pmpermission module requires node access
+  // to be rebuild.
+  node_access_needs_rebuild(TRUE);
+}
