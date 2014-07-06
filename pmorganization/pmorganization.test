@@ -50,6 +50,7 @@ class PMOrganizationTestCase extends DrupalWebTestCase {
   public function testpmorganizationCreate() {
     // Log in with permission to create test content.
     $user = $this->drupalCreateUser(array(
+      'access content',
       'create pmorganization content',
     ));
     $this->drupalLogin($user);
