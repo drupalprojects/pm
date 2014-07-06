@@ -32,7 +32,7 @@ class PMOrganizationTestCase extends DrupalWebTestCase {
     $this->assertText(t('Organizations'), t('Make sure the correct page has been displayed by checking that the title is "Organizations".'));
 
     // Authenticated user.
-    $authenticated_user = $this->drupalCreateUser();
+    $authenticated_user = $this->drupalCreateUser(array('Project Management Organization: access'));
     $this->drupalLogin($authenticated_user);
     $this->drupalGet('pm/organizations');
     $this->assertText(t('Organizations'), t('Make sure the correct page has been displayed by checking that the title is "Organizations".'));
