@@ -10,7 +10,7 @@ class PMOrganizationTestCase extends DrupalWebTestCase {
    */
   public static function getInfo() {
     return array(
-      'name' => 'PM Organization functionality',
+      'name' => 'PM Organization',
       'description' => 'Test the functionality of the PM Organization module',
       'group' => 'Project Management',
     );
