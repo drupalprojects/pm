@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Functions to expose Project Management expense data to views
+ * Functions to expose Project Management expense data to views.
  */
 
 /**

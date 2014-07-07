@@ -135,7 +135,6 @@ function pmexpense_views_default_views() {
     'multiple_from' => '',
     'multiple_to' => '',
   );
-'short';
   /* Field: Project Management Expense: Amount */
   $handler->display->display_options['fields']['amount']['id'] = 'amount';
   $handler->display->display_options['fields']['amount']['table'] = 'pmexpense';

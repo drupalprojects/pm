@@ -1,14 +1,15 @@
 <?php
-
 /**
  * @file
+ * Autocomplete functions for pmexpense.
  */
 
 /**
  * Returns possible expenses based on autocompleting a string.
  */
 function pmexpense_autocomplete($string = '') {
-  // Autocomplete for providers textbox: shows any active organizations in Project Management system which have been selected as providers.
+  // Autocomplete for providers textbox.
+  // Shows any active organizations in PM that have been selected as providers.
   $matches = array();
   if ($string) {
     $search = drupal_strtolower($string);
