@@ -31,26 +31,8 @@ function pmproject_migrate(&$sandbox) {
   variable_set('pmpermission_node_pmproject_enabled', TRUE);
 
 
-  $map = array(
-    'Project Management Project: add' => 'PM permission pmproject: create',
-    'Project Management Project: view own' => 'PM permission pmproject: view own',
-    'Project Management Project: view all' => 'PM permission pmproject: view all',
-    'Project Management Project: view of user organization' => 'PM permission pmproject: view own Organization',
-    'Project Management Project: view if project manager' => 'PM permission pmproject: view if Project Manager',
-    'Project Management Project: view if assigned to project' => 'PM permission pmproject: view if Assigned',
-    'Project Management Project: edit own' => 'PM permission pmproject: update own',
-    'Project Management Project: edit all' => 'PM permission pmproject: update all',
-    'Project Management Project: edit of user organization' => 'PM permission pmproject: update own Organization',
-    'Project Management Project: edit if project manager' => 'PM permission pmproject: update if Project Manager',
-    'Project Management Project: edit if assigned to project' => 'PM permission pmproject: update if Assigned',
-    'Project Management Project: delete own' => 'PM permission pmproject: delete own',
-    'Project Management Project: delete all' => 'PM permission pmproject: delete all',
-    'Project Management Project: delete of user organization' => 'PM permission pmproject: delete own Organization',
-    'Project Management Project: delete if project manager' => 'PM permission pmproject: delete if Project Manager',
-    'Project Management Project: delete if assigned to project' => 'PM permission pmproject: delete if Assigned',
-  );
-
-  pmpermission_migrate_legacy_permission($map);
+  module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');
+  pmpermission_migrate_execute('pmproject');
 
   $sandbox['#finished'] = 1;
   return 'PM Project nodes have been migrated to field_api based fields successfully.';
