@@ -26,6 +26,10 @@ function pmtimetracking_migrate(&$sandbox) {
   // PM Permissions default configurations.
   variable_set('pmpermission_field_parent_reference_for_pmtimetracking', 'pmtimetracking_parent');
   variable_set('pmpermission_node_pmtimetracking_enabled', TRUE);
+
+  module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');
+  pmpermission_migrate_execute('pmticket');
+
   $sandbox['#finished'] = 1;
   return 'PM Timetracking nodes have been migrated to field_api based fields successfully.';
 }
