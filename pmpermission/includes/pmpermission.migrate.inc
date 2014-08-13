@@ -191,6 +191,9 @@ function pmpermission_migrate_execute($module_name) {
         foreach ($rids as $rid => $role_name) {
           user_role_change_permissions($rid, $permissions);
         }
+        // All permission adjustment used by pmpermission module requires node access
+        // to be rebuild.
+        node_access_needs_rebuild(TRUE);
         break;
     }
   }
