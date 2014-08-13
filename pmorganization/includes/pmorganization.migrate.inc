@@ -28,17 +28,8 @@ function pmorganization_migrate(&$sandbox) {
   variable_set('pmpermission_field_org_member_reference', 'pmorganization_members');
   variable_set('pmpermission_node_pmorganization_enabled', TRUE);
 
-  $map = array(
-    'Project Management Organization: add'        => 'PM permission pmorganization: create',
-    'Project Management Organization: view own'   => 'PM permission pmorganization: view own',
-    'Project Management Organization: view all'   => 'PM permission pmorganization: view all',
-    'Project Management Organization: edit own'   => 'PM permission pmorganization: update own',
-    'Project Management Organization: edit all'   => 'PM permission pmorganization: update all',
-    'Project Management Organization: delete own' => 'PM permission pmorganization: delete own',
-    'Project Management Organization: delete all' => 'PM permission pmorganization: delete all',
-  );
-
-  pmpermission_migrate_legacy_permission($map);
+  module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');
+  pmpermission_migrate_execute('pmperson');
 
   $sandbox['#finished'] = 1;
   return 'PM Organization nodes have been migrated to field_api based fields successfully.';
