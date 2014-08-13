@@ -63,14 +63,6 @@ function pmperson_permission() {
       'title' => t('Access PM Person'),
       'description' => t('Allows the user to see pages and blocks associated with the PM Person module, but does not control which persons are shown within them.'),
     ),
-    'Project Management Person: view all' => array(
-      'title' => t('View Any PM Person'),
-      'description' => t('Allows the user to view any person and see any person in lists or dropdowns elsewhere on the site.'),
-    ),
-    'Project Management Person: view of user organization' => array(
-      'title' => t('View PM Persons in own Organization'),
-      'description' => t('For persons assigned to the same PM Organization as a PM Person, allows the user associated with that Person to view the person and see the person in lists or dropdowns elsewhere on the site.'),
-    ),
   );
 }
 

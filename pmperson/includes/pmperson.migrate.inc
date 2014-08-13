@@ -55,6 +55,10 @@ function pmperson_migrate(&$sandbox) {
   // Delete variables previously set by the PM Person module (now redundant).
   variable_del('node_options_pmperson');
   variable_del('node_permissions_pmperson');
+
+  module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');
+  pmpermission_migrate_execute('pmperson');
+
   $sandbox['#finished'] = 1;
   return 'PM Person nodes have been migrated to fields on Drupal users.';
 }
