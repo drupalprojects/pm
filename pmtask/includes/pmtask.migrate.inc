@@ -30,23 +30,8 @@ function pmtask_migrate(&$sandbox) {
   variable_set('pmpermission_field_parent_reference_for_pmtask', 'pmtask_parent');
   variable_set('pmpermission_node_pmtask_enabled', TRUE);
 
-  $map = array(
-    'Project Management Task: add' => 'PM permission pmtask: create',
-    'Project Management Task: view own' => 'PM permission pmtask: view own',
-    'Project Management Task: view all' => 'PM permission pmtask: view all',
-    'Project Management Task: view of user organization' => 'PM permission pmtask: view own Organization',
-    'Project Management Task: view if assigned to task' => 'PM permission pmtask: view if Assigned',
-    'Project Management Task: edit own' => 'PM permission pmtask: update own',
-    'Project Management Task: edit all' => 'PM permission pmtask: update all',
-    'Project Managenet Task: edit of user organization' => 'PM permission pmtask: update own Organization',
-    'Project Management Task: edit if assigned to task' => 'PM permission pmtask: update if Assigned',
-    'Project Management Task: delete own' => 'PM permission pmtask: delete own',
-    'Project Management Task: delete all' => 'PM permission pmtask: delete all',
-    'Project Management Task: delete of user organization' => 'PM permission pmtask: delete own Organization',
-    'Project Management Task: delete if assigned to task' => 'PM permission pmtask: delete if Assigned',
-  );
-
-  pmpermission_migrate_legacy_permission($map);
+  module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');
+  pmpermission_migrate_execute('pmtask');
 
   $sandbox['#finished'] = 1;
   return 'PM Task nodes have been migrated to field_api based fields successfully.';
