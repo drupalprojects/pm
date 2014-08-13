@@ -16,7 +16,7 @@ define('PMPERMISSION_CANNOT_BE_PORTED', '2');
 function pmpermission_migrate_get_legacy_permission_map() {
   $map = array (
     'pmexpense' => array(
-      'Project Management expense: access'                                => 'PM permission pmexpense: access',
+      'Project Management expense: access'                                => PMPERMISSION_UNCHANGED,
       'Project Management expense: add'                                   => 'PM permission pmexpense: create',
       'Project Management expense: delete all'                            => 'PM permission pmexpense: delete all',
       'Project Management expense: delete of user organization'           => 'PM permission pmexpense: delete own Organization',
@@ -29,7 +29,7 @@ function pmpermission_migrate_get_legacy_permission_map() {
       'Project Management expense: view own'                              => 'PM permission pmexpense: view own',
     ),
     'pminvoice' => array(
-      'Project Management invoice: access'                                => 'PM permission pminvoice: access',
+      'Project Management invoice: access'                                => PMPERMISSION_UNCHANGED,
       'Project Management invoice: add'                                   => 'PM permission pminvoice: create',
       'Project Management invoice: delete all'                            => 'PM permission pminvoice: delete all',
       'Project Management invoice: delete of user organization'           => 'PM permission pminvoice: delete own Organization',
@@ -42,7 +42,7 @@ function pmpermission_migrate_get_legacy_permission_map() {
       'Project Management invoice: view own'                              => 'PM permission pminvoice: view own',
     ),
     'pmnote' => array(
-      'Project Management note: access'                                   => 'PM permission pmnote: access',
+      'Project Management note: access'                                   => PMPERMISSION_UNCHANGED,
       'Project Management note: add'                                      => 'PM permission pmnote: create',
       'Project Management note: delete all'                               => 'PM permission pmnote: delete all',
       'Project Management note: delete of user organization'              => 'PM permission pmnote: delete own Organization',
@@ -55,7 +55,7 @@ function pmpermission_migrate_get_legacy_permission_map() {
       'Project Management note: view own'                                 => 'PM permission pmnote: view own',
     ),
     'pmorganization' => array(
-      'Project Management Organization: access'                           => 'PM permission pmorganization: access',
+      'Project Management Organization: access'                           => PMPERMISSION_UNCHANGED,
       'Project Management Organization: add'                              => 'PM permission pmorganization: create',
       'Project Management Organization: delete all'                       => 'PM permission pmorganization: delete all',
       'Project Management Organization: delete own'                       => 'PM permission pmorganization: delete own',
@@ -67,7 +67,7 @@ function pmpermission_migrate_get_legacy_permission_map() {
       'Project Management Organization: view own'                         => 'PM permission pmorganization: view own',
     ),
     'pmperson' => array(
-      'Project Management Person: access'                                 => 'PM permission Person: access',
+      'Project Management Person: access'                                 => PMPERMISSION_UNCHANGED,
       'Project Management Person: add'                                    => PMPERMISSION_OBSOLETE,
       'Project Management Person: delete all'                             => PMPERMISSION_OBSOLETE,
       'Project Management Person: delete of user organization'            => PMPERMISSION_OBSOLETE,
@@ -83,7 +83,7 @@ function pmpermission_migrate_get_legacy_permission_map() {
       'Project Management Person: view when linked to own user account'   => PMPERMISSION_OBSOLETE,
     ),
     'pmproject' => array(
-      'Project Management Project: access'                                => 'PM permission pmproject: access',
+      'Project Management Project: access'                                => PMPERMISSION_UNCHANGED,
       'Project Management Project: add'                                   => 'PM permission pmproject: create',
       'Project Management Project: delete all'                            => 'PM permission pmproject: delete all',
       'Project Management Project: delete if assigned to project'         => 'PM permission pmproject: delete if Assigned',
@@ -102,7 +102,7 @@ function pmpermission_migrate_get_legacy_permission_map() {
       'Project Management Project: view own'                              => 'PM permission pmproject: view own',
     ),
     'pmtask' => array(
-      'Project Management Task: access'                                   => 'PM permission pmtask: access',
+      'Project Management Task: access'                                   => PMPERMISSION_UNCHANGED,
       'Project Management Task: add'                                      => 'PM permission pmtask: create',
       'Project Management Task: delete all'                               => 'PM permission pmtask: delete all',
       'Project Management Task: delete if assigned to task'               => 'PM permission pmtask: delete if Assigned',
@@ -117,7 +117,7 @@ function pmpermission_migrate_get_legacy_permission_map() {
       'Project Management Task: view own'                                 => 'PM permission pmtask: view own',
     ),
     'pmteam' => array(
-      'Project Management Team: access'                                   => 'PM permission pmteam: access',
+      'Project Management Team: access'                                   => PMPERMISSION_UNCHANGED,
       'Project Management Team: add'                                      => 'PM permission pmteam: create',
       'Project Management Team: delete all'                               => 'PM permission pmteam: delete all',
       'Project Management Team: delete belonged'                          => 'PM permission pmteam: delete belonged',
@@ -130,7 +130,7 @@ function pmpermission_migrate_get_legacy_permission_map() {
       'Project Management Team: view own'                                 => 'PM permission pmteam: view own',
     ),
     'pmticket' => array(
-      'Project Management Ticket: access'                                 => 'PM permission pmticket: access',
+      'Project Management Ticket: access'                                 => PMPERMISSION_UNCHANGED,
       'Project Management Ticket: add'                                    => 'PM permission pmticket: create',
       'Project Management Ticket: delete all'                             => 'PM permission pmticket: delete all',
       'Project Management Ticket: delete if assigned to ticket'           => 'PM permission pmticket: delete if Assigned',
@@ -146,7 +146,7 @@ function pmpermission_migrate_get_legacy_permission_map() {
       'Project Management Ticket: view own'                               => 'PM permission pmticket: view own',
     ),
     'pmtimetracking' => array(
-      'Project Management Timetracking: access'                           => 'PM permission pmtimetracking: access',
+      'Project Management Timetracking: access'                           => PMPERMISSION_UNCHANGED,
       'Project Management Timetracking: add'                              => 'PM permission pmtimetracking: create',
       'Project Management Timetracking: delete all'                       => 'PM permission pmtimetracking: delete all',
       'Project Management Timetracking: delete of user organization'      => 'PM permission pmtimetracking: delete own Organization',
