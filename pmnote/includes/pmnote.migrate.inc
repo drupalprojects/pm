@@ -26,6 +26,10 @@ function pmnote_migrate(&$sandbox) {
   // PM Permissions default configurations.
   variable_set('pmpermission_field_parent_reference_for_pmnote', 'pmnote_parent');
   variable_set('pmpermission_node_pmnote_enabled', TRUE);
+
+  module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');
+  pmpermission_migrate_execute('pmnote');
+
   $sandbox['#finished'] = 1;
   return 'PM Note nodes have been migrated to field_api based fields successfully.';
 }
