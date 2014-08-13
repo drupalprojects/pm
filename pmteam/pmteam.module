@@ -26,6 +26,19 @@ function pmteam_node_info() {
 }
 
 /**
+ * Implements hook_permission().
+ */
+function pmteam_permission() {
+  $name = 'Project Management Team';
+  return array(
+    "Project Management Team: access" => array(
+        'title' => t('Access %type_name.', array('%type_name' => $name)),
+        'description' => t('Allows the user to see pages and blocks associated with the %type_name, but does not control specific item that is shown within them.', array('%type_name' => $name)),
+      ),
+  );
+}
+
+/**
  * Implements hook_node_access().
  */
 function pmteam_node_access($node, $op, $account = NULL) {
