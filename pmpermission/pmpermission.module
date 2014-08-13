@@ -647,7 +647,9 @@ function _pmpermission_get_assigned_id($node, $type, $assigned) {
       $field_info = field_info_field($field_name);
       if ($field_info['cardinality'] == 1) {
         $account = $wrapper->$field_name->value();
-        $assigned_nids[] = $account->uid;
+        if ($account) {
+          $assigned_nids[] = $account->uid;
+        }
       }
       else {
         foreach ($wrapper->$field_name->getIterator() as $delta => $account_wrapper) {
