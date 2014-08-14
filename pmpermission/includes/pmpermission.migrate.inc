@@ -206,10 +206,10 @@ function pmpermission_migrate_legacy_permissions($module_name) {
   foreach ($permissions as $old => $new) {
     switch ($new) {
       case PMPERMISSION_OBSOLETE:
-        drupal_set_message(t('Permission "@name" is obsolete and won\'t be migrated.', array('@name' => $new)), 'warning');
+        drupal_set_message(t('Permission "@name" is obsolete and won\'t be migrated.', array('@name' => $old)), 'warning');
         break;
       case PMPERMISSION_CANNOT_BE_PORTED:
-        drupal_set_message(t('Permission "@name" cannot be ported.', array('@name' => $new)), 'error');
+        drupal_set_message(t('Permission "@name" cannot be ported.', array('@name' => $old)), 'error');
         break;
       case PMPERMISSION_UNCHANGED:
         break;
@@ -220,7 +220,7 @@ function pmpermission_migrate_legacy_permissions($module_name) {
           $new => TRUE,
         );
         foreach ($rids as $rid => $role_name) {
-          user_role_change_permissions($rid, $permissions);
+          user_role_change_permissions($rid, $permission);
         }
         // All permission adjustment used by pmpermission module requires node access
         // to be rebuild.
