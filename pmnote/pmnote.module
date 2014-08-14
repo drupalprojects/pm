@@ -19,6 +19,19 @@ function pmnote_help($path, $arg) {
   return $o;
 }
 
+
+/**
+ * Implements hook_permission().
+ */
+function pmnote_permission() {
+  return array(
+    'Project Management note: access' => array(
+      'title' => t('Access PM Note'),
+      'description' => t('Allows the user to see pages and blocks associated with the PM Note module, but does not control which notes are shown within them.'),
+    ),
+  );
+}
+
 /**
  * Implements hook_node_info().
  */
