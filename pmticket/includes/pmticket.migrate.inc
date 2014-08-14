@@ -27,6 +27,7 @@ function pmticket_migrate(&$sandbox) {
   // PM Permissions default configurations.
   variable_set('pmpermission_field_assigned_reference', 'pm_assigned');
   variable_set('pmpermission_field_pm_reference', 'pm_manager');
+  variable_set('pmpermission_field_parent_reference_for_pmtask', 'pmticket_parent');
   variable_set('pmpermission_node_pmticket_enabled', TRUE);
 
   module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');

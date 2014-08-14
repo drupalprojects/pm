@@ -29,7 +29,7 @@ function pmorganization_migrate(&$sandbox) {
   variable_set('pmpermission_node_pmorganization_enabled', TRUE);
 
   module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');
-  pmpermission_migrate_execute('pmperson');
+  pmpermission_migrate_execute('pmorganization');
 
   $sandbox['#finished'] = 1;
   return 'PM Organization nodes have been migrated to field_api based fields successfully.';

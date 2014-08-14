@@ -14,6 +14,7 @@ function pmteam_install() {
   // parameter $sandbox is passed as a placeholder.
   $sandbox = array();
   pmteam_migrate_create_fields($sandbox);
+  variable_set("pmpermission_node_pmteam_enabled", TRUE);
 }
 
 /**

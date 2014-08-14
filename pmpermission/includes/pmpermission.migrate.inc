@@ -170,6 +170,37 @@ function pmpermission_migrate_get_legacy_permission_map() {
  * Helper function to migrate permission defined by submodules.
  */
 function pmpermission_migrate_execute($module_name) {
+  // Enable Permission to be defined by pmpermission.
+  pmpermission_migrate_enable_permissions($module_name);
+  // Handover legacy permission to pmpermission based implementations.
+  pmpermission_migrate_legacy_permissions($module_name);
+}
+
+/**
+ * Sets site variables to tell pmpermission to handle submodule's permissions.
+ */
+function pmpermission_migrate_enable_permissions($type) {
+  switch ($type) {
+    case 'pmteam':
+    case 'pmorganization':
+    case 'pmproject':
+    case 'pmtask':
+    case 'pmticket':
+    case 'pmtimetracking':
+    case 'pmnote':
+    case 'pminvoice':
+    case 'pmexpense':
+      variable_set("pmpermission_node_{$type}_enabled", TRUE);
+      break;
+    default:
+      break;
+  }
+}
+
+
+function pmpermission_migrate_legacy_permissions($module_name) {
+  // Enable Permission to be defined by pmpermission.
+  // Handover legacy permission to pmpermission based implementations.
   $map = pmpermission_migrate_get_legacy_permission_map();
   $permissions = $map[$module_name];
   foreach ($permissions as $old => $new) {

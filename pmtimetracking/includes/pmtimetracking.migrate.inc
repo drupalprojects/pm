@@ -28,7 +28,7 @@ function pmtimetracking_migrate(&$sandbox) {
   variable_set('pmpermission_node_pmtimetracking_enabled', TRUE);
 
   module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');
-  pmpermission_migrate_execute('pmticket');
+  pmpermission_migrate_execute('pmtimetracking');
 
   $sandbox['#finished'] = 1;
   return 'PM Timetracking nodes have been migrated to field_api based fields successfully.';
