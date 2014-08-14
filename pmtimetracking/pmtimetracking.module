@@ -19,6 +19,17 @@ function pmtimetracking_help($path, $arg) {
   return $o;
 }
 
+/**
+ * Implements hook_permission().
+ */
+function pmtimetracking_permission() {
+  return array(
+    'Project Management Timetracking: access' => array(
+      'title' => t('Access PM Timetracking'),
+      'description' => t('Allows the user to see pages and blocks associated with the PM Timetracking module, but does not control which timetrackings are shown within them.'),
+    ),
+  );
+}
 
 /**
  * Implements hook_menu().
