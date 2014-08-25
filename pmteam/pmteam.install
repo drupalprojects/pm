@@ -68,3 +68,17 @@ function pmteam_update_7103(&$sandbox) {
     return pmteam_migrate($sandbox);
   }
 }
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function pmteam_update_dependencies() {
+  // pmperson_update_7104() migrates pmperson data to drupal user.
+  // pmteam migration depends on its completion.
+  $dependencies['pmteam'][7103] = array(
+    'pmperson' => 7104,
+  );
+
+  return $dependencies;
+}
+

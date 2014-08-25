@@ -24,6 +24,7 @@ function pmteam_migrate(&$sandbox) {
 
   // We don't need pmteam table anymore, so dropping it.
   db_drop_table('pmteam');
+  db_drop_table('pmperson');
   variable_del('node_options_pmteam');
 
   module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');
