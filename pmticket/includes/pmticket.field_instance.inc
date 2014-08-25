@@ -337,7 +337,7 @@ function pmticket_default_field_instances() {
 
   // Exported field_instance: 'node-pmticket-pm_currency'
   $field_instances['node-pmticket-pm_currency'] = array(
-    'bundle' => 'pmtask',
+    'bundle' => 'pmticket',
     'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
