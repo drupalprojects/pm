@@ -148,7 +148,10 @@ function _pmticket_migrate_migrate_single_node($nid, $vid, $ticket) {
     }
   }
 
-  if ($ticket->project_nid) {
+  if ($ticket->parent_nid) {
+    $node->pmticket_parent[LANGUAGE_NONE][0]['target_id'] = $ticket->parent_nid;
+  }
+  elseif ($ticket->project_nid) {
     $node->pmticket_parent[LANGUAGE_NONE][0]['target_id'] = $ticket->project_nid;
   }
 

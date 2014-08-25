@@ -144,6 +144,45 @@ function pmticket_default_field_instances() {
     ),
   );
 
+  // Exported field_instance: 'node-pmticket-pmticket_parent'
+  $field_instances['node-pmticket-pmticket_parent'] = array(
+    'bundle' => 'pmticket',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'entityreference',
+        'settings' => array(
+          'link' => FALSE,
+        ),
+        'type' => 'entityreference_label',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'pmticket_parent',
+    'label' => 'Parent',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(),
+      'type' => 'options_select',
+      'weight' => 0,
+    ),
+  );
+
   // Exported field_instance: 'node-pmticket-pm_priority'
   $field_instances['node-pmticket-pm_priority'] = array(
     'bundle' => 'pmticket',
