@@ -98,41 +98,6 @@ function pmteam_view($node, $view_mode) {
 }
 
 /**
- * Returns whether user is in a PM Team based on team $node and user $account
- */
-function pmteam_user_belongs_to_team($team, $person_or_organization_nid) {
-  $node = node_load($team);
-
-  // Check for person_or_organization_nid in the team members array and return TRUE / FALSE
-  if (is_array($node->members_array)) {
-    return array_key_exists($person_or_organization_nid, $node->members_array);
-  }
-  else {
-    return FALSE;
-  }
-}
-
-/**
- * Function to return the teams that a user is a member of
- */
-function pmteam_user_return_teams($account = NULL) {
-  if (empty($account)) {
-    global $user;
-    $account = $user;
-  }
-
-  // Get the list of team nodes. Include organizations which the person is a member of.
-  $s = "SELECT ste.nid FROM {pmteam} ste JOIN {pmperson} stp ON (stp.nid = ste.mnid OR stp.organization_nid = ste.mnid) WHERE stp.user_uid = %d";
-  $r = db_query($s, $account->uid);
-  $teams = array();
-  while ($team = db_fetch_object($r)) {
-    $teams[] = $team->nid;
-  }
-
-  return $teams;
-}
-
-/**
  * Implements hook_pm_dashboard_links().
  */
 function pmteam_pm_dashboard_links($type) {
