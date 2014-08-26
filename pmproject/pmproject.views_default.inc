@@ -68,16 +68,16 @@ function pmproject_views_default_views() {
       'empty_column' => 1,
     ),
   );
-  /* Relationship: Project Management Project: Organization */
-  $handler->display->display_options['relationships']['organization_nid']['id'] = 'organization_nid';
-  $handler->display->display_options['relationships']['organization_nid']['table'] = 'pmproject';
-  $handler->display->display_options['relationships']['organization_nid']['field'] = 'organization_nid';
-  $handler->display->display_options['relationships']['organization_nid']['required'] = TRUE;
+  /* Relationship: Entity Reference: Referenced Entity */
+  $handler->display->display_options['relationships']['pmproject_parent_target_id']['id'] = 'pmproject_parent_target_id';
+  $handler->display->display_options['relationships']['pmproject_parent_target_id']['table'] = 'field_data_pmproject_parent';
+  $handler->display->display_options['relationships']['pmproject_parent_target_id']['field'] = 'pmproject_parent_target_id';
+  $handler->display->display_options['relationships']['pmproject_parent_target_id']['label'] = 'Organization';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title_1']['id'] = 'title_1';
   $handler->display->display_options['fields']['title_1']['table'] = 'node';
   $handler->display->display_options['fields']['title_1']['field'] = 'title';
-  $handler->display->display_options['fields']['title_1']['relationship'] = 'organization_nid';
+  $handler->display->display_options['fields']['title_1']['relationship'] = 'pmproject_parent_target_id';
   $handler->display->display_options['fields']['title_1']['label'] = 'Organization';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
@@ -101,6 +101,20 @@ function pmproject_views_default_views() {
   $handler->display->display_options['sorts']['title']['id'] = 'title';
   $handler->display->display_options['sorts']['title']['table'] = 'node';
   $handler->display->display_options['sorts']['title']['field'] = 'title';
+  /* Contextual filter: Content: Nid */
+  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['table'] = 'node';
+  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['nid']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['nid']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['nid']['specify_validation'] = TRUE;
+  $handler->display->display_options['arguments']['nid']['validate']['type'] = 'node';
+  $handler->display->display_options['arguments']['nid']['validate_options']['types'] = array(
+    'pmproject' => 'pmproject',
+  );
+  $handler->display->display_options['arguments']['nid']['validate']['fail'] = 'ignore';
   /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
