@@ -68,3 +68,16 @@ function pmperson_requirements($phase) {
   }
   return $requirements;
 }
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function pm_update_dependencies() {
+  // pmperson_update_7103() enables pmpermission module.
+  // pmperson migration depends on its completion.
+  $dependencies['pmperson'][7104] = array(
+    'pm' => 7103,
+  );
+
+  return $dependencies;
+}

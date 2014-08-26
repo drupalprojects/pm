@@ -75,3 +75,17 @@ function pmorganization_requirements($phase) {
   }
   return $requirements;
 }
+
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function pmorganization_update_dependencies() {
+  // pmperson_update_7104() migrates pmperson data to drupal user.
+  // pmorganization migration depends on its completion.
+  $dependencies['pmorganization'][7104] = array(
+    'pmperson' => 7104,
+  );
+
+  return $dependencies;
+}

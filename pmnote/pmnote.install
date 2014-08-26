@@ -47,3 +47,16 @@ function pmnote_update_7104(&$sandbox) {
     return pmnote_migrate($sandbox);
   }
 }
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function pmnote_update_dependencies() {
+  // pmperson_update_7104() migrates pmperson data to drupal user.
+  // pmnote migration depends on its completion.
+  $dependencies['pmnote'][7103] = array(
+    'pmperson' => 7104,
+  );
+
+  return $dependencies;
+}

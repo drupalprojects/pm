@@ -141,3 +141,14 @@ function pm_update_7102() {
   variable_del('pm_yearsrangebegin');
   variable_del('pm_yearsrangeend');
 }
+
+/**
+ * Migration from 7.1x to 7.2x.
+ */
+function pm_update_7103(&$sandbox) {
+  $module_list = array('pmpermission');
+  // Enable new dependencies.
+  if (!module_enable($module_list, TRUE)) {
+    throw new DrupalUpdateException('This version requires one or more modules that could not be enabled.');
+  }
+}

@@ -46,3 +46,18 @@ function pmtimetracking_update_7106(&$sandbox) {
     return pmtimetracking_migrate($sandbox);
   }
 }
+
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function pmtimetracking_update_dependencies() {
+  // pmperson_update_7104() migrates pmperson data to drupal user.
+  // pmtimetracking migration depends on its completion.
+  $dependencies['pmtimetracking'][7106] = array(
+    'pmproject' => 7104,
+  );
+
+  return $dependencies;
+}
+

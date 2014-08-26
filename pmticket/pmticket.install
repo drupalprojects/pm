@@ -55,3 +55,17 @@ function pmticket_update_7105(&$sandbox) {
     return pmticket_migrate($sandbox);
   }
 }
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function pmticket_update_dependencies() {
+  // pmperson_update_7104() migrates pmperson data to drupal user.
+  // pmticket migration depends on its completion.
+  $dependencies['pmticket'][7105] = array(
+    'pmproject' => 7104,
+  );
+
+  return $dependencies;
+}
+
