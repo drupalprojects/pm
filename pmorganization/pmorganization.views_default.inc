@@ -38,7 +38,7 @@ function pmorganization_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
     'title' => 'title',
-    'country' => 'country',
+    'pm_address_country' => 'pm_address_country',
     'edit_node' => 'edit_node',
     'delete_node' => 'edit_node',
   );
@@ -51,7 +51,7 @@ function pmorganization_views_default_views() {
       'separator' => '',
       'empty_column' => 0,
     ),
-    'country' => array(
+    'pm_address_country' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
@@ -76,17 +76,14 @@ function pmorganization_views_default_views() {
   $handler->display->display_options['fields']['title']['label'] = 'Organization';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
-  /* Field: Content: Address */
-  $handler->display->display_options['fields']['pmorganization_address']['id'] = 'pmorganization_address';
-  $handler->display->display_options['fields']['pmorganization_address']['table'] = 'field_data_pmorganization_address';
-  $handler->display->display_options['fields']['pmorganization_address']['field'] = 'pmorganization_address';
-  $handler->display->display_options['fields']['pmorganization_address']['click_sort_column'] = 'country';
-  $handler->display->display_options['fields']['pmorganization_address']['settings'] = array(
-    'use_widget_handlers' => 1,
-    'format_handlers' => array(
-      'address' => 'address',
-    ),
-  );
+  /* Field: Content: Address - Country */
+  $handler->display->display_options['fields']['pm_address_country']['id'] = 'pm_address_country';
+  $handler->display->display_options['fields']['pm_address_country']['table'] = 'field_data_pm_address';
+  $handler->display->display_options['fields']['pm_address_country']['field'] = 'pm_address_country';
+  $handler->display->display_options['fields']['pm_address_country']['label'] = 'Country';
+  $handler->display->display_options['fields']['pm_address_country']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['pm_address_country']['hide_alter_empty'] = FALSE;
+  $handler->display->display_options['fields']['pm_address_country']['display_name'] = 1;
   /* Field: Content: Edit link */
   $handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
   $handler->display->display_options['fields']['edit_node']['table'] = 'views_entity_node';
