@@ -147,7 +147,10 @@ function _pmorganization_migrate_migrate_single_node($nid, $vid, $org) {
   }
 
   if ($address) {
-    $node->pm_address[LANGUAGE_NONE][0] = $address;
+    $wrapper = entity_metadata_wrapper('node', $node);
+    foreach ($address as $key => $value) {
+      $wrapper->pm_address->$key = $value;
+    }
   }
 
   $type = array();
