@@ -147,7 +147,7 @@ function _pmproject_migrate_migrate_single_node($nid, $vid, $prj) {
   }
 
   if ($prj->organization_nid) {
-    $node->pmproject_parent[LANGUAGE_NONE][0]['value'] = $prj->organization_nid;
+    $node->pmproject_parent[LANGUAGE_NONE][0]['target_id'] = $prj->organization_nid;
   }
 
   if ($prj->currency) {
