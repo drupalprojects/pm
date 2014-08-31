@@ -146,13 +146,6 @@ function _pmorganization_migrate_migrate_single_node($nid, $vid, $org) {
     $address['postal_code'] = $org->zip;
   }
 
-  if ($address) {
-    $wrapper = entity_metadata_wrapper('node', $node);
-    foreach ($address as $key => $value) {
-      $wrapper->pm_address->$key = $value;
-    }
-  }
-
   $type = array();
   $type['customer'] = $org->iscustomer;
   $type['provider'] = $org->isprovider;
@@ -178,5 +171,13 @@ function _pmorganization_migrate_migrate_single_node($nid, $vid, $org) {
   }
 
   node_save($node);
+
+  if ($address) {
+    $wrapper = entity_metadata_wrapper('node', $node);
+    foreach ($address as $key => $value) {
+      $wrapper->pm_address->$key = $value;
+    }
+    $wrapper->save();
+  }
   return TRUE;
 }

@@ -32,7 +32,7 @@ function pmorganization_disable() {
  * Implements hook_update_last_removed().
  */
 function pmorganization_update_last_removed() {
-  return 6202;
+  return 7103;
 }
 
 /**
