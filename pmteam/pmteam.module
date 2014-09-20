@@ -3,11 +3,6 @@
 /**
  * @file
  * Functionality for the Project Management Team module
- * Organized into the following sections:
- * - General hooks: (help), menu, perm, theme, views_api
- * - Node specific hooks: node_info, field_extra_fields, access,
- *     form, load, view, _beforesave, insert, update,
- *     delete, nodeapi
  */
 
 /**
