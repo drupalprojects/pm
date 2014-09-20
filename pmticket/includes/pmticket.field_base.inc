@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmticket.field_base.inc
+ * File: pmticket.field_base.inc.
  */
 
 /**
@@ -96,7 +96,6 @@ function pmticket_default_field_bases() {
     'translatable' => 0,
     'type' => 'datetime',
   );
-
 
   // Exported field_base: 'pmticket_parent'
   $field_bases['pmticket_parent'] = array(

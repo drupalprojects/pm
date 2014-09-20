@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmticket.field_instance.inc
+ * File: pmticket.field_instance.inc.
  */
 
 /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Installation functions for the Project Management project module
+ * Installation functions for the Project Management project module.
  */
 
 /**
@@ -68,4 +68,3 @@ function pmticket_update_dependencies() {
 
   return $dependencies;
 }
-

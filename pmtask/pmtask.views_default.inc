@@ -144,7 +144,6 @@ function pmtask_views_default_views() {
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Tasks';
 
-
   $views[$view->name] = $view;
 
   return $views;

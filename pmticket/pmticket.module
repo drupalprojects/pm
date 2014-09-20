@@ -1,6 +1,7 @@
 <?php
 /**
  * @file
+ * Hook implementations for the PM Ticket module.
  *
  * 1: Hooks
  * 2: Access functions
@@ -20,7 +21,7 @@ function pmticket_help($path, $arg) {
   return $o;
 }
 
-/*
+/**
  * Implements hook_node_info().
  */
 function pmticket_node_info() {
@@ -30,7 +31,7 @@ function pmticket_node_info() {
       'base' => 'pmticket',
       'description' => t("A ticket for Project Management."),
       'title_label' => t("Title"),
-    )
+    ),
   );
 }
 
@@ -74,7 +75,7 @@ function pmticket_views_api() {
 /**
  * Implements hook_token_list().
  */
-function pmticket_token_list($type='all') {
+function pmticket_token_list($type = 'all') {
   $tokens = array();
   if (($type == 'node') || ($type == 'all')) {
     $tokens['node']['pmticket-organization-nid'] = t('Project Management Ticket: Organization Node ID.');

@@ -1059,7 +1059,6 @@ function pm_get_assignment_options($organization_nid = 0, $project_nid = 0) {
  * @see theme_pm_link()
  */
 function _pm_number_of_items($source_module, $destination_module, $nid) {
-  global $user;
   $nmb_of_items = '';
 
   $valid_destination_modules = array();

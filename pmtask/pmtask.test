@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Test definitions for the PM Task module
+ * Test definitions for the PM Task module.
  */
 
 /**
@@ -45,7 +45,8 @@ class PMTaskTestCase extends DrupalWebTestCase {
     $privileged_user = $this->drupalCreateUser(array('Project Management Task: access'));
     $this->drupalLogin($privileged_user);
     $this->drupalGet('pm/tasks');
-    $this->assertText(t('Tasks'), t('Access granted for the privileged user. Correct page has been confirmed by checking that the title is "Tasks".'));  }
+    $this->assertText(t('Tasks'), t('Access granted for the privileged user. Correct page has been confirmed by checking that the title is "Tasks".'));
+  }
 
   /**
    * Test of Task node creation.

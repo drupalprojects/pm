@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Provides theme functions for Project Management modules
+ * Provides theme functions for Project Management modules.
  */
 
 /**
@@ -23,13 +23,13 @@ function theme_pm_form_group($variables) {
       'data' => $row,
       'class' => array('formgroup'),
       'no_striping' => TRUE,
-    )
+    ),
   );
 
   return theme('table', array(
     'header' => array(),
     'rows' => $rows,
-    'attributes' => array('class' => array('formgroup'))
+    'attributes' => array('class' => array('formgroup')),
   ));
 }
 
@@ -108,7 +108,7 @@ function theme_pm_dashboard_block($link_blocks) {
     }
   }
   else {
-    // no links, hide block
+    // No links, hide block.
     return '';
   }
   $content .= '</div>';
@@ -121,7 +121,7 @@ function theme_pm_dashboard_block($link_blocks) {
 function theme_pm_dashboard_link($link_array) {
   $content = '';
 
-  // DEFAULT ICON
+  // Default icon.
   if (empty($link_array['icon'])) {
     $dt_id = 'pmexpenses';
   }
@@ -146,7 +146,6 @@ function theme_pm_dashboard_link($link_array) {
     }
     $link .= pm_icon_add('node/add/' . str_replace('_', '-', $link_array['add_type']), $item, $link_array['params']);
   }
-
 
   if (empty($link_array['nid']) || 0 == $link_array['nid']) {
     if (variable_get('pm_icons_display', TRUE)) {
@@ -195,7 +194,11 @@ function theme_pm_dashboard_links_weight_table($form = array()) {
   }
   $headers = array(t('Link'), t('Active'), t('Weight'));
 
-  $output = theme('table', array('headers' => $headers, 'rows' => $rows, 'attributes' => array('id' => $type . 'dashboard-link-table')));
+  $output = theme('table', array(
+    'headers' => $headers,
+    'rows' => $rows,
+    'attributes' => array('id' => $type . 'dashboard-link-table')
+  ));
 
   drupal_add_tabledrag($type . 'dashboard-link-table', 'order', 'sibling', $type . 'dashboard-link-table-weight');
 
@@ -207,7 +210,7 @@ function theme_pm_dashboard_links_weight_table($form = array()) {
 /**
  * Provides HTML for a Project Management link.
  */
-function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $weight=0) {
+function theme_pm_link($source_module = '', $destination_module = '', $node_nid = 0, $weight = 0) {
   switch ($source_module) {
 
     case "pmorganization":
@@ -226,8 +229,6 @@ function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $
       $params_key = 'ticket_nid';
       break;
   }
-
-
 
   switch ($destination_module) {
     case "pmattribute":
@@ -349,7 +350,7 @@ function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $
       break;
   }
 
-  if (($destination_module=='pmconfiguration' && user_access($user_access_check)) || (module_exists($destination_module) && user_access($user_access_check))) {
+  if (($destination_module == 'pmconfiguration' && user_access($user_access_check)) || (module_exists($destination_module) && user_access($user_access_check))) {
     if ($node_nid == 0) {
       $params = array();
     }
@@ -358,7 +359,7 @@ function theme_pm_link($source_module='', $destination_module='', $node_nid=0, $
     }
     $v = l($list_text, $list_path, $params);
 
-    if (!$add_icon_type=='') {
+    if (!$add_icon_type == '') {
       $i = new stdClass();
       $i->type = $add_icon_type;
       if ($node_nid == 0) {
@@ -440,10 +441,13 @@ function theme_pm_attribute_list($form) {
         ),
       );
       $row['data'] = $data;
-//      $row['class'] = empty($row['class']) ? array('draggable') : $row['class'][] = ' draggable';
       $rows[] = $row;
     }
   }
-  $o = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'attributes')));
+  $o = theme('table', array(
+    'header' => $header,
+    'rows' => $rows,
+    'attributes' => array('id' => 'attributes')
+  ));
   return $o;
 }

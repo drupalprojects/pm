@@ -1,6 +1,7 @@
 <?php
 /**
  * @file
+ * Hook implementations for PM Task.
  */
 
 /**
@@ -41,7 +42,7 @@ function pmtask_node_info() {
       'base' => 'pmtask',
       'description' => t("A task for Project Management."),
       'title_label' => t("Title"),
-    )
+    ),
   );
 }
 
@@ -85,7 +86,7 @@ function pmtask_views_api() {
 /**
  * Implements hook_token_list().
  */
-function pmtask_token_list($type='all') {
+function pmtask_token_list($type = 'all') {
   $tokens = array();
   if (($type == 'node') || ($type == 'all')) {
     $tokens['node']['pmtask-organization-nid'] = t('Project Management Task: Organization Node ID.');

@@ -22,6 +22,7 @@ function pmperson_menu() {
 
 /**
  * Access check for resolving conflicts.
+ *
  * @see update_access_allowed()
  */
 function pmperson_update_access_allowed() {
@@ -68,6 +69,7 @@ function pmperson_permission() {
 
 /**
  * Implements hook_pm_dashboard_links().
+ *
  * @todo Need to implement the actual view.
  */
 function pmperson_pm_dashboard_links($type) {
