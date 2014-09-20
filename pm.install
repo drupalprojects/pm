@@ -143,7 +143,7 @@ function pm_update_7102() {
 }
 
 /**
- * Migration from 7.1x to 7.2x.
+ * Migration from 7.x-1.x to 7.x-2.x.
  */
 function pm_update_7103(&$sandbox) {
   $module_list = array('pmpermission');
