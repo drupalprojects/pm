@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Install, update and uninstall functions for the pmpermission module.
@@ -9,7 +8,6 @@
  * Implements hook_uninstall().
  */
 function pmpermission_uninstall() {
-  // db_query("DELETE FROM {variable} WHERE name LIKE 'pmpermission_%'");
   db_delete('variable')
     ->condition('name', 'pmpermission_%', 'LIKE')
     ->execute();
