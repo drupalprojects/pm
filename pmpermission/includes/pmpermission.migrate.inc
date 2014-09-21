@@ -241,7 +241,6 @@ function _pmpermission_migrate_get_all_roles_having_permission($name) {
     if (isset($permissions[$rid][$name])) {
       $rids[$rid] = $role_name;
     }
-    $role_permissions = $permissions[$rid];
   }
   return $rids;
 }

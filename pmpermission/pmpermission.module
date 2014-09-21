@@ -653,7 +653,7 @@ function _pmpermission_get_assigned_id($node, $type, $assigned) {
         }
       }
       else {
-        foreach ($wrapper->$field_name->getIterator() as $delta => $account_wrapper) {
+        foreach ($wrapper->$field_name->getIterator() as $account_wrapper) {
           $assigned_nids[] = $account_wrapper->getIdentifier();
         }
       }
