@@ -58,7 +58,7 @@ function pmtimetracking_node_info() {
       'base' => 'pmtimetracking',
       'description' => t("A timetracking for Project Management."),
       'title_label' => t("Title"),
-    )
+    ),
   );
 }
 

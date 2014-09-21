@@ -131,7 +131,7 @@ function _pmticket_migrate_migrate_single_node($nid, $vid, $ticket) {
   }
 
   if ($ticket->ticketstatus) {
-    $node->pm_status[LANGUAGE_NONE][0]['value'] = $task->ticketstatus;
+    $node->pm_status[LANGUAGE_NONE][0]['value'] = $ticket->ticketstatus;
   }
 
   if (isset($ticket->billed) AND isset($ticket->billable)) {

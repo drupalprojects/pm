@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmtimetracking.migrate.inc
+ * File: pmtimetracking.migrate.inc.
  */
 
 define('PMTIMETRACKING_MIGRATE_MAX_JOB_PER_BATCH', 5);
@@ -104,7 +104,7 @@ function _pmtimetracking_migrate_migrate_single_node($nid, $vid, $timetracking) 
     }
   }
 
-  // Ticket >> Task >> Project >> Organization
+  // Ticket >> Task >> Project >> Organization.
   if ($timetracking->ticket_nid) {
     $node->pmtimetracking_parent[LANGUAGE_NONE][0]['target_id'] = $timetracking->ticket_nid;
   }
@@ -125,7 +125,7 @@ function _pmtimetracking_migrate_migrate_single_node($nid, $vid, $timetracking) 
   $node->pm_durationunit[LANGUAGE_NONE][0]['value'] = 'hour';
 
   if ($timetracking->billing_duration) {
-    $node->pm_billing_duration [LANGUAGE_NONE][0]['value'] = $timetracking->billing_duration;
+    $node->pm_billing_duration[LANGUAGE_NONE][0]['value'] = $timetracking->billing_duration;
   }
 
   node_save($node);

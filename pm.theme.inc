@@ -197,7 +197,7 @@ function theme_pm_dashboard_links_weight_table($form = array()) {
   $output = theme('table', array(
     'headers' => $headers,
     'rows' => $rows,
-    'attributes' => array('id' => $type . 'dashboard-link-table')
+    'attributes' => array('id' => $type . 'dashboard-link-table'),
   ));
 
   drupal_add_tabledrag($type . 'dashboard-link-table', 'order', 'sibling', $type . 'dashboard-link-table-weight');
@@ -447,7 +447,7 @@ function theme_pm_attribute_list($form) {
   $o = theme('table', array(
     'header' => $header,
     'rows' => $rows,
-    'attributes' => array('id' => 'attributes')
+    'attributes' => array('id' => 'attributes'),
   ));
   return $o;
 }

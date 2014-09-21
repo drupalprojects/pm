@@ -60,4 +60,3 @@ function pmtimetracking_update_dependencies() {
 
   return $dependencies;
 }
-

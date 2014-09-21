@@ -510,7 +510,7 @@ function _pmperson_migrate_generate_unique_username($username, $reset = FALSE, $
 function _pmperson_migrate_check_if_username_exists($username) {
   $result = db_query('SELECT u.uid FROM {users} u WHERE name = :name', array(':name' => $username));
   if ($result) {
-    foreach ($result as $r) {
+    foreach ($result) {
       return TRUE;
     }
   }

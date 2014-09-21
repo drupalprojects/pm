@@ -689,7 +689,7 @@ function pmexpense_delete($node) {
  * Implements hook_load().
  */
 function pmexpense_load($nodes) {
-  foreach ($nodes as $nid => &$node) {
+  foreach ($nodes as &$node) {
     $result = db_select('pmexpense', 'pmex')
       ->fields('pmex')
       ->condition('vid', $node->vid)

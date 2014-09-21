@@ -26,9 +26,9 @@ function pmtask_permission() {
   $name = 'Project Management Task';
   return array(
     "Project Management Task: access" => array(
-        'title' => t('Access %type_name.', array('%type_name' => $name)),
-        'description' => t('Allows the user to see pages and blocks associated with the %type_name, but does not control specific item that is shown within them.', array('%type_name' => $name)),
-      ),
+      'title' => t('Access %type_name.', array('%type_name' => $name)),
+      'description' => t('Allows the user to see pages and blocks associated with the %type_name, but does not control specific item that is shown within them.', array('%type_name' => $name)),
+    ),
   );
 }
 
