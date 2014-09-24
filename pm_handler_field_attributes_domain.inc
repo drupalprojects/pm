@@ -3,6 +3,7 @@
  * @file
  * Views handler to show attribute values rather than keys in views.
  */
+
 class pm_handler_field_attributes_domain extends views_handler_field {
 
   /**
@@ -16,5 +17,4 @@ class pm_handler_field_attributes_domain extends views_handler_field {
     }
     return check_plain($value);
   }
-
 }

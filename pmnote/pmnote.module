@@ -41,7 +41,7 @@ function pmnote_node_info() {
       'name' => t('Note'),
       'base' => 'pmnote',
       'description' => t("A note for Project Management."),
-    )
+    ),
   );
 }
 

@@ -1,6 +1,7 @@
 <?php
 /**
  * @file
+ * Main module file for PM Organization.
  */
 
 /**
@@ -40,9 +41,9 @@ function pmorganization_permission() {
   $name = 'Project Management Organization';
   return array(
     "Project Management Organization: access" => array(
-        'title' => t('Access %type_name.', array('%type_name' => $name)),
-        'description' => t('Allows the user to see pages and blocks associated with the %type_name, but does not control specific item that is shown within them.', array('%type_name' => $name)),
-      ),
+      'title' => t('Access %type_name.', array('%type_name' => $name)),
+      'description' => t('Allows the user to see pages and blocks associated with the %type_name, but does not control specific item that is shown within them.', array('%type_name' => $name)),
+    ),
   );
 }
 
@@ -57,7 +58,7 @@ function pmorganization_node_info() {
       'description' => t("An organization for Project Management."),
       'title_label' => t("Name"),
       'body_label' => t("Description"),
-    )
+    ),
   );
 }
 
@@ -88,7 +89,7 @@ function pmorganization_view($node, $view_mode) {
 }
 
 /**
- * Admin settings form for pmproject module
+ * Admin settings form for pmproject module.
  */
 function pmorganization_admin_settings() {
   $form = array();
