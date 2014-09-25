@@ -258,7 +258,7 @@ function pminvoice_update_7102() {
     'scale' => 4,
   ));
 
- // Table: pminvoice_items.
+  // Table: pminvoice_items.
   db_change_field('pminvoice_items', 'amount', 'amount', array(
     'type' => 'numeric',
     'precision' => 19,
@@ -397,7 +397,7 @@ function pminvoice_update_7103() {
     ),
   ));
 
-  // Migrate data
+  // Migrate data.
   $query = db_select('pminvoice', 'pmin');
   $query->join('node', 'n', 'n.vid = pmin.vid');
   $result = $query

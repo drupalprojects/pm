@@ -1,10 +1,7 @@
 <?php
 /**
  * @file
- * Hook implementations for the PM Ticket module.
- *
- * 1: Hooks
- * 2: Access functions
+ * Main module file for the PM Ticket module.
  */
 
 /**

@@ -3,6 +3,7 @@
  * @file
  * Test definitions for the PM Invoice module.
  */
+
 class PMInvoiceTestCase extends DrupalWebTestCase {
 
   /**
@@ -45,11 +46,16 @@ class PMInvoiceTestCase extends DrupalWebTestCase {
    * Test case covering creation of pminvoices.
    */
   public function testpminvoiceCreate() {
-    // Create and login user
-    $user = $this->drupalCreateUser(array('Project Management Organization: add', 'Project Management Organization: view all', 'Project Management invoice: add', 'Project Management invoice: view all'));
+    // Create and login user.
+    $user = $this->drupalCreateUser(array(
+      'Project Management Organization: add',
+      'Project Management Organization: view all',
+      'Project Management invoice: add',
+      'Project Management invoice: view all',
+    ));
     $this->drupalLogin($user);
 
-    // Create organization and invoice
+    // Create organization and invoice.
     $org = array(
       'title' => $this->randomName(32),
       'body[und][0][value]' => $this->randomName(64),

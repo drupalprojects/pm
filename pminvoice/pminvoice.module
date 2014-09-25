@@ -840,7 +840,7 @@ function pminvoice_getitems($invoice_vid) {
  * Creates next incremental invoice number.
  *
  * @return
- *   varchar text value of the calculated invoice number
+ *   varchar text value of the calculated invoice number.
  */
 function pminvoice_get_invoice_number() {
   $date = getdate();
@@ -868,10 +868,10 @@ function pminvoice_get_invoice_number() {
   return $new_invoice_number;
 }
 
-/*
+/**
  * Implements hook_token_list().
  */
-function pminvoice_token_list($type='all') {
+function pminvoice_token_list($type = 'all') {
   $tokens = array();
   if (($type == 'node') || ($type == 'all')) {
     $tokens['node']['pminvoice-number'] = t('Project Management Invoice: Number.');
@@ -917,7 +917,7 @@ function pminvoice_token_values($type, $object = NULL) {
     if (variable_get('pm_tax2_app', 0)) {
       $values['pminvoice-tax2'] = $node->tax2;
     }
-  return $values;
+    return $values;
   }
 }
 
@@ -932,7 +932,7 @@ function pminvoice_node_access_records($node) {
   $type = is_string($node) ? $node : $node->type;
   $grants = array();
   if ($type == 'pminvoice') {
-    // Project Management invoice: view all
+    // Project Management invoice: view all.
     $grants[] = array(
       'realm' => 'pminvoice_view_all',
       'gid' => 0,
@@ -941,7 +941,7 @@ function pminvoice_node_access_records($node) {
       'grant_delete' => 0,
       'priority' => 0,
     );
-    // Project Management invoice: view own
+    // Project Management invoice: view own.
     $grants[] = array(
       'realm' => 'pminvoice_view_own',
       'gid' => $node->uid,
@@ -950,8 +950,8 @@ function pminvoice_node_access_records($node) {
       'grant_delete' => 0,
       'priority' => 0,
     );
-    // Project Management invoice: view of user organization
-    if ( isset($node->organization_nid) && !empty($node->organization_nid)) {
+    // Project Management invoice: view of user organization.
+    if (isset($node->organization_nid) && !empty($node->organization_nid)) {
       $grants[] = array(
         'realm' => 'pminvoice_view_if_user_organization',
         'gid' => $node->organization_nid,
@@ -961,7 +961,7 @@ function pminvoice_node_access_records($node) {
         'priority' => 0,
       );
     }
-    // Project Management invoice: edit all
+    // Project Management invoice: edit all.
     $grants[] = array(
       'realm' => 'pminvoice_update_all',
       'gid' => 0,
@@ -970,7 +970,7 @@ function pminvoice_node_access_records($node) {
       'grant_delete' => 0,
       'priority' => 0,
     );
-    // Project Management invoice: edit own
+    // Project Management invoice: edit own.
     $grants[] = array(
       'realm' => 'pminvoice_update_own',
       'gid' => $node->uid,
@@ -979,8 +979,8 @@ function pminvoice_node_access_records($node) {
       'grant_delete' => 0,
       'priority' => 0,
     );
-    // Project Management invoice: edit of user organization
-    if ( isset($node->organization_nid) && !empty($node->organization_nid)) {
+    // Project Management invoice: edit of user organization.
+    if (isset($node->organization_nid) && !empty($node->organization_nid)) {
       $grants[] = array(
         'realm' => 'pminvoice_update_if_user_organization',
         'gid' => $node->organization_nid,
@@ -990,7 +990,7 @@ function pminvoice_node_access_records($node) {
         'priority' => 0,
       );
     }
-    // Project Management invoice: delete all
+    // Project Management invoice: delete all.
     $grants[] = array(
       'realm' => 'pminvoice_delete_all',
       'gid' => 0,
@@ -999,7 +999,7 @@ function pminvoice_node_access_records($node) {
       'grant_delete' => 1,
       'priority' => 0,
     );
-    // Project Management invoice: delete own
+    // Project Management invoice: delete own.
     $grants[] = array(
       'realm' => 'pminvoice_delete_own',
       'gid' => $node->uid,
@@ -1008,8 +1008,8 @@ function pminvoice_node_access_records($node) {
       'grant_delete' => 1,
       'priority' => 0,
     );
-    // Project Management invoice: delete of user organization
-    if ( isset($node->organization_nid) && !empty($node->organization_nid)) {
+    // Project Management invoice: delete of user organization.
+    if (isset($node->organization_nid) && !empty($node->organization_nid)) {
       $grants[] = array(
         'realm' => 'pminvoice_delete_if_user_organization',
         'gid' => $node->organization_nid,

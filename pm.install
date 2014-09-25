@@ -70,19 +70,19 @@ function pm_schema() {
         'type' => 'int',
         'not null' => FALSE,
         'default' => 0,
-        'size' => 'small'
+        'size' => 'small',
       ),
       'isdefault'     => array(
         'type' => 'int',
         'not null' => FALSE,
         'default' => 0,
-        'size' => 'tiny'
+        'size' => 'tiny',
       ),
       'isactive'      => array(
         'type' => 'int',
         'not null' => FALSE,
         'default' => 1,
-        'size' => 'tiny'
+        'size' => 'tiny',
       ),
     ),
     'primary key' => array('aid'),
@@ -102,7 +102,7 @@ function pm_update_last_removed() {
 }
 
 /**
- * Enable new module dependencies. Make billing status field available to PM content types.
+ * Enable new module dependencies and create billing status field.
  */
 function pm_update_7101() {
   // Enable new dependencies.

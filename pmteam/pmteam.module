@@ -1,8 +1,7 @@
 <?php
-
 /**
  * @file
- * Functionality for the Project Management Team module
+ * Main module file for the PM Team module.
  */
 
 /**
@@ -16,7 +15,7 @@ function pmteam_node_info() {
       'description' => t('A team for use within Project Management.'),
       'title_label' => t('Team Name'),
       'body_label' => t('Description'),
-    )
+    ),
   );
 }
 
@@ -27,9 +26,9 @@ function pmteam_permission() {
   $name = 'Project Management Team';
   return array(
     "Project Management Team: access" => array(
-        'title' => t('Access %type_name.', array('%type_name' => $name)),
-        'description' => t('Allows the user to see pages and blocks associated with the %type_name, but does not control specific item that is shown within them.', array('%type_name' => $name)),
-      ),
+      'title' => t('Access %type_name.', array('%type_name' => $name)),
+      'description' => t('Allows the user to see pages and blocks associated with the %type_name, but does not control specific item that is shown within them.', array('%type_name' => $name)),
+    ),
   );
 }
 
@@ -39,7 +38,7 @@ function pmteam_permission() {
 function pmteam_node_access($node, $op, $account = NULL) {
   $type = is_string($node) ? $node : $node->type;
   if ($type == 'pmteam') {
-    // If no account is specified, assume that the check is against the current logged in user
+    // If no account is specified, check against the currently logged in user.
     if (is_null($account)) {
       global $user;
       $account = $user;

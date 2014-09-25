@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * List functions for the Project Management module.
@@ -175,10 +174,14 @@ function pm_attribute_list_submit($form, &$form_state) {
   $default_for_domain = array();
   foreach ($_POST as $key => $value) {
     $ar = explode('_', $key);
-    if ($ar[0]=='attribute') {
-      if ($ar[1]=='weight') $attributes[$ar[2]]['weight'] = $value;
-      if ($ar[1]=='isactive') $attributes[$ar[2]]['isactive'] = $value;
-      if ($ar[1]=='default') {
+    if ($ar[0] == 'attribute') {
+      if ($ar[1] == 'weight') {
+        $attributes[$ar[2]]['weight'] = $value;
+      }
+      if ($ar[1] == 'isactive') {
+        $attributes[$ar[2]]['isactive'] = $value;
+      }
+      if ($ar[1] == 'default') {
         $domain = str_replace('|', ' ', $ar[2]);
         $default_for_domain[$domain] = $value;
       }
@@ -419,7 +422,9 @@ function pm_attribute_edit_submit($form, &$form_state) {
  */
 function pm_attribute_form_delete($form, &$form_state) {
   $destination = drupal_get_destination();
-  if (array_key_exists('destination', $_REQUEST)) unset($_REQUEST['destination']);
+  if (array_key_exists('destination', $_REQUEST)) {
+    unset($_REQUEST['destination']);
+  }
   drupal_goto('pm/attributes/delete/' . $form_state['values']['aid'], $destination);
 }
 
@@ -479,7 +484,7 @@ function pm_attribute_form($attribute = NULL) {
   $breadcrumb[] = l(t('Attributes'), 'pm/attributes');
   drupal_set_breadcrumb($breadcrumb);
 
-  if (arg(2)=='add') {
+  if (arg(2) == 'add') {
     if (array_key_exists('domain', $_GET) && !isset($attribute->domain)) {
       $attribute->domain = $_GET['domain'];
     }
@@ -576,7 +581,7 @@ function pm_attribute_form($attribute = NULL) {
 
   $form['save'] = array(
     '#type' => 'submit',
-    '#value' => t('Save')
+    '#value' => t('Save'),
   );
 
   if (isset($attribute->aid)) {
@@ -653,7 +658,7 @@ function _pm_attribute_domain_autocomplete($string = '') {
   }
 
   foreach ($default_domains as $domain) {
-    if (strpos(drupal_strtoupper($domain), drupal_strtoupper($string))===FALSE) {
+    if (strpos(drupal_strtoupper($domain), drupal_strtoupper($string)) === FALSE) {
     }
     else {
       $matches[$domain] = $domain;

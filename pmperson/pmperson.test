@@ -25,7 +25,11 @@ class PMPersonTestCase extends DrupalWebTestCase {
    */
   public function setUp() {
     parent::setUp('pm', 'pmorganization', 'pmperson');
-    $privileged_user = $this->drupalCreateUser(array('Project Management Organization: add', 'Project Management Organization: view all', 'Project Management Person: add'));
+    $privileged_user = $this->drupalCreateUser(array(
+      'Project Management Organization: add',
+      'Project Management Organization: view all',
+      'Project Management Person: add',
+    ));
     $this->drupalLogin($privileged_user);
   }
 

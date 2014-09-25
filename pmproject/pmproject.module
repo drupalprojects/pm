@@ -1,6 +1,7 @@
 <?php
 /**
  * @file
+ * Main module file for the PM Project module.
  */
 
 /**
@@ -25,9 +26,9 @@ function pmproject_permission() {
   $name = 'Project Management Project';
   return array(
     "Project Management Project: access" => array(
-        'title' => t('Access %type_name.', array('%type_name' => $name)),
-        'description' => t('Allows the user to see pages and blocks associated with the %type_name, but does not control specific item that is shown within them.', array('%type_name' => $name)),
-      ),
+      'title' => t('Access %type_name.', array('%type_name' => $name)),
+      'description' => t('Allows the user to see pages and blocks associated with the %type_name, but does not control specific item that is shown within them.', array('%type_name' => $name)),
+    ),
   );
 }
 
@@ -41,7 +42,7 @@ function pmproject_node_info() {
       'base' => 'pmproject',
       'description' => t("A project for Project Management."),
       'title_label' => t("Title"),
-    )
+    ),
   );
 }
 
@@ -84,7 +85,7 @@ function pmproject_views_api() {
 /**
  * Implements hook_token_list().
  */
-function pmproject_token_list($type='all') {
+function pmproject_token_list($type = 'all') {
   $tokens = array();
   if (($type == 'node') || ($type == 'all')) {
     $tokens['node']['pmproject-projectstatus'] = t('Project Management Project: Project Status.');
@@ -99,13 +100,13 @@ function pmproject_token_list($type='all') {
       $tokens['node']['pmproject-organization-title'] = t('Project Management Project: Organization Title.');
     }
     if (module_exists('pmperson')) {
-      // Project Manager
+      // Project Manager.
       $tokens['node']['pmproject-manager-title'] = t('Project Management Project: Project Manager Title.');
       $tokens['node']['pmproject-manager-uid'] = t('Project Management Project: Project Manager User ID.');
       $tokens['node']['pmproject-manager-name'] = t('Project Management Project: Project Manager Name.');
       $tokens['node']['pmproject-manager-fullname'] = t('Project Management Project: Project Manager Full Name.');
       $tokens['node']['pmproject-manager-email'] = t('Project Management Project: Project Manager Email Address.');
-      // Assignee(s)
+      // Assignee(s).
       $tokens['node']['pmproject-assigned-to-email'] = t('Project Management Project: Project Assignee(s) Email Address(s).');
       $tokens['node']['pmproject-assigned-title'] = t('Project Management Project: Project Assignee(s) Title(s).');
     }
@@ -132,7 +133,7 @@ function pmproject_token_values($type, $object = NULL) {
       $values['pmproject-organization-title'] = $node->organization_title;
     }
     if (module_exists('pmperson')) {
-      // Project Manager
+      // Project Manager.
       if ($node->manager_nid) {
         $manager = node_load($node->manager_nid);
         $values['pmproject-manager-uid'] = $manager->user_uid;
@@ -144,15 +145,15 @@ function pmproject_token_values($type, $object = NULL) {
       else {
         $values['pmproject-manager-email'] = NULL;
       }
-      // Project Assignee(s) e-mail
+      // Project Assignee(s) e-mail.
       if ($node->assigned_nid) {
         $values['pmproject-assigned-title'] = $node->assigned_title;
         $assignees_node = node_load($node->assigned_nid);
-        // Assigned to one person
+        // Assigned to one person.
         if ($assignees_node->type === 'pmperson') {
           $values['pmproject-assigned-to-email'] = pmperson_primary_email($assignees_node);
         }
-        // Assigned to a team
+        // Assigned to a team.
         else {
           $assignees_array = $assignees_node->members_array;
           $assignees = array();
@@ -161,7 +162,7 @@ function pmproject_token_values($type, $object = NULL) {
             $assignees[] = pmperson_primary_email($assignee);
           }
           $assigned = implode(", ", $assignees);
-          // Return comma separated list of emails
+          // Return comma separated list of emails.
           $values['pmproject-assigned-to-email'] = $assigned;
         }
       }
