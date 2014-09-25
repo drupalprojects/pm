@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Provides theme functions for Project Management modules.
@@ -62,10 +61,10 @@ function theme_pm_dashboard($link_blocks) {
   $content = '<div id="pmdashboard">';
   if (!empty($link_blocks)) {
     $content .= '<dl class="pmdashboard clear-block">';
-    foreach ($link_blocks as $block_id => $link_block_array) {
+    foreach ($link_blocks as $link_block_array) {
       $content .= '<div class="pmdashboard">';
       if (!empty($link_block_array)) {
-        foreach ($link_block_array as $key => $link_array) {
+        foreach ($link_block_array as $link_array) {
           if (!empty($link_array['theme'])) {
             $content .= theme($link_array['theme'], $link_array);
           }
@@ -92,9 +91,9 @@ function theme_pm_dashboard($link_blocks) {
 function theme_pm_dashboard_block($link_blocks) {
   $content = '<div id="pmdashboard-block">';
   if (!empty($link_blocks)) {
-    foreach ($link_blocks as $block_id => $link_block_array) {
+    foreach ($link_blocks as $link_block_array) {
       if (!empty($link_block_array)) {
-        foreach ($link_block_array as $key => $link_array) {
+        foreach ($link_block_array as $link_array) {
           $content .= '<div class="pmdashboard-icon">';
           if (!empty($link_array['theme'])) {
             $content .= theme($link_array['theme'], $link_array);
@@ -344,7 +343,6 @@ function theme_pm_link($source_module = '', $destination_module = '', $node_nid 
       $list_text = t('Timetrackings');
       $list_path = 'pm/timetrackings';
       $add_icon_type = 'pmtimetracking';
-      $node_links_key = 'timetrackings';
       $add_path = 'node/add/' . $destination_module;
       $dt_id = 'pmtimetrackings';
       break;

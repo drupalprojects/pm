@@ -1,14 +1,13 @@
 <?php
 /**
  * @file
- * Handler for the Project Management Invoice status filter in views
+ * Handler for the Project Management Invoice status filter in views.
  */
 
 /**
  * Filter handler for invoice status.
  */
 class pminvoice_handler_filter_invoice_status extends views_handler_filter_in_operator {
-  var $value_form_type = 'radios';
 
   /**
    * Options for filter values.

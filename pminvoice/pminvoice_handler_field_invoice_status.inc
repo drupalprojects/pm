@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Handler for the Project Management Invoice status field in Views
+ * Handler for the Project Management Invoice status field in Views.
  */
 
 /**

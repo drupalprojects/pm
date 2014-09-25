@@ -16,7 +16,8 @@ Project Management consists of a set of modules as follows:
 - Invoices
 - Expenses
 
-Each of these provides permissions to control the sharing of data with other users and organizations.
+Each of these provides permissions to control the sharing of data with other
+users and organizations.
 NB: This may conflict with other node access modules.
 
 All components are nodes, so can be extended as follows:
@@ -64,7 +65,8 @@ team working on a specific project / task / ticket.
 -- Project allows creation of projects attached to organizations.
 
 - Task
--- Tasks are the parts that compose a project and can be hierarchically nested to build a work breakdown structure.
+-- Tasks are the parts that compose a project and can be hierarchically nested
+to build a work breakdown structure.
 
 - Ticket
 -- Tickets can be used to track bugs, feature requests, or any other 
@@ -80,9 +82,9 @@ organizations, projects, tasks or tickets.
 
 - Invoice
 -- Within Invoice, you can create invoices between yourself and clients.
-A printer friendly version comes included, 
-and with the addition of the tcpdf library (see the INSTALL.txt), you 
-can also download pdf versions of your invoices directly from Project Management.
+A printer friendly version comes included,
+and with the addition of the tcpdf library (see the INSTALL.txt), you can also
+download pdf versions of your invoices directly from Project Management.
 
 - Expense
 -- Expense allows the recording of expenses attached to a specific task 

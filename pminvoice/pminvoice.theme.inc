@@ -5,20 +5,16 @@
  */
 
 /**
- * Returns the HTML code for the invoice view page
+ * Returns the HTML code for the invoice view page.
  *
- * @param $node
- *   The node object that contains the invoice.
- * @param $teaser
- *   True if the teaser is showed.
- * @param $page
- *   True if the full page is showed.
- * @return
+ * @param $variables array
+ *   An array containing variables for the function.
+ *
+ * @return $node array
  *   The node object that contains the invoice.
  */
 function theme_pminvoice_view($variables) {
   $node = $variables['node'];
-  $view_mode = $variables['view_mode'];
 
   $node->content['group1'] = array(
     '#prefix' => '<div class="field">',
@@ -49,7 +45,10 @@ function theme_pminvoice_view($variables) {
   $node->content['group2']['project'] = array(
     '#prefix' => '<div class="project">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Project'), 'value' => l($node->project_title, 'node/' . $node->project_nid))),
+    '#markup' => theme('pm_view_item', array(
+      'label' => t('Project'),
+      'value' => l($node->project_title, 'node/' . $node->project_nid),
+    )),
     '#weight' => 2,
   );
 
@@ -57,7 +56,10 @@ function theme_pminvoice_view($variables) {
     $node->content['group2']['reference'] = array(
       '#prefix' => '<div class="reference">',
       '#suffix' => '</div>',
-      '#markup' => theme('pm_view_item', array('label' => t('Reference'), 'value' => check_plain($node->reference))),
+      '#markup' => theme('pm_view_item', array(
+        'label' => t('Reference'),
+        'value' => check_plain($node->reference),
+      )),
       '#weight' => 3,
     );
   }
@@ -95,22 +97,22 @@ function theme_pminvoice_view($variables) {
 
   if ($node->tax1) {
     $header[] = array(
-      'data' => t(variable_get('pm_tax1_name', 'Tax 1')),
+      'data' => variable_get('pm_tax1_name', t('Tax 1')),
       // 'style' => 'text-align: right;',
     );
   }
 
   if ($node->tax2) {
     $header[] = array(
-      'data' => t(variable_get('pm_tax2_name', 'Tax 2')),
+      'data' => variable_get('pm_tax2_name', t('Tax 2')),
       // 'style' => 'text-align: right;',
     );
   }
 
   $header[] = array(
-      'data' => t('Total'),
-      // 'style' => 'text-align: right;',
-    );
+    'data' => t('Total'),
+    // 'style' => 'text-align: right;',
+  );
 
   $where = array();
   $s  = "SELECT sit.description, sit.amount, ";
@@ -135,10 +137,10 @@ function theme_pminvoice_view($variables) {
     // PHP4 compatibility - for D7 change this to use the original array by reference
     $invoice_items[$key]['amount'] = sprintf("%.2f", $inv_item['amount']);
     if ($node->tax1) {
-    $invoice_items[$key]['tax1'] = sprintf("%.2f", $inv_item['tax1']);
+      $invoice_items[$key]['tax1'] = sprintf("%.2f", $inv_item['tax1']);
     }
     if ($node->tax2) {
-    $invoice_items[$key]['tax2'] = sprintf("%.2f", $inv_item['tax2']);
+      $invoice_items[$key]['tax2'] = sprintf("%.2f", $inv_item['tax2']);
     }
     $invoice_items[$key]['total'] = sprintf("%.2f", $inv_item['total']);
     if ($invoice_items[$key]['src_nid'] != 0 AND $invoice_items[$key]['src_nid'] != NULL) {
@@ -163,7 +165,10 @@ function theme_pminvoice_view($variables) {
   $node->content['group5']['amount'] = array(
     '#prefix' => '<div class="amount">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Amount'), 'value' => sprintf('%.2f', $node->amount))),
+    '#markup' => theme('pm_view_item', array(
+      'label' => t('Amount'),
+      'value' => sprintf('%.2f', $node->amount),
+    )),
     '#weight' => 1,
   );
 
@@ -171,38 +176,37 @@ function theme_pminvoice_view($variables) {
   $node->content['group5']['tax1'] = array(
     '#prefix' => '<div class="tax">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t(variable_get('pm_tax1_name', 'Tax 1')), 'value' => sprintf('%.2f', $node->tax1))),
+    '#markup' => theme('pm_view_item', array(
+      'label' => variable_get('pm_tax1_name', t('Tax 1')),
+      'value' => sprintf('%.2f', $node->tax1),
+    )),
     '#weight' => 2,
   );
   }
 
   if ($node->tax2) {
-  $node->content['group5']['tax2'] = array(
-    '#prefix' => '<div class="tax">',
-    '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t(variable_get('pm_tax2_name', 'Tax 2')), 'value' => sprintf('%.2f', $node->tax2))),
-    '#weight' => 3,
-  );
+    $node->content['group5']['tax2'] = array(
+      '#prefix' => '<div class="tax">',
+      '#suffix' => '</div>',
+      '#markup' => theme('pm_view_item', array(
+        'label' => variable_get('pm_tax2_name', t('Tax 2')),
+        'value' => sprintf('%.2f', $node->tax2),
+      )),
+      '#weight' => 3,
+    );
   }
 
   $node->content['group5']['total'] = array(
     '#prefix' => '<div class="total">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Total'), 'value' => sprintf('%.2f', $node->total))),
+    '#markup' => theme('pm_view_item', array(
+      'label' => t('Total'),
+      'value' => sprintf('%.2f', $node->total),
+    )),
     '#weight' => 4,
   );
 
-  $organization = node_load($node->organization_nid);
   $myorg = node_load(variable_get('pm_organization_nid', 0));
-  if (isset($myorg->orglanguage)) {
-    if ($myorg->orglanguage != $organization->orglanguage) {
-      $language = $organization->orglanguage . ',' . $myorg->orglanguage;
-    }
-    else {
-      $language = $myorg->orglanguage;
-    }
-  }
-
   if (isset($myorg->currency)) {
     $currencies = pm_attributes_bydomain('Currency');
     $node->content['group5']['currency'] = array(

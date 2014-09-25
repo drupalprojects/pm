@@ -1,15 +1,7 @@
 <?php
 /**
  * @file
- *
- * 1: Hooks (help, perm, init, menu, theme, node_info)
- * 2: Access functions
- * 3: Load organization and project details
- * 4: Invoice create / edit form
- * 5: Invoice node manipulation functions
- * 6: Admin settings
- * 7: Views hook
- * 8: Project Managementinvoiceitem legacy functions
+ * Main module file for the PM Invoice module.
  */
 
 /**
@@ -442,7 +434,7 @@ function pminvoice_form(&$node, $form_state) {
     );
 
     $i++;
-  } // foreach
+  }
 
   $form['group5'] = array(
     '#type' => 'markup',
@@ -740,7 +732,7 @@ function pminvoice_delete($node) {
  * Implements hook_load().
  */
 function pminvoice_load($nodes) {
-  foreach ($nodes as $nid => &$node) {
+  foreach ($nodes as &$node) {
     $result = db_select('pminvoice', 'pmin')
       ->fields('pmin')
       ->condition('vid', $node->vid)
@@ -755,7 +747,7 @@ function pminvoice_load($nodes) {
 
     $node->title_old = $node->title;
 
-    // Load invoice items
+    // Load invoice items.
     $result = db_select('pminvoice_items', 'pmini')
       ->fields('pmini')
       ->condition('invoice_vid', $node->vid)
@@ -781,7 +773,7 @@ function pminvoice_view($node, $view_mode) {
 }
 
 /**
- * Admin settings form for pminvoice module
+ * Admin settings form for pminvoice module.
  */
 function pminvoice_admin_settings() {
   $form = array();

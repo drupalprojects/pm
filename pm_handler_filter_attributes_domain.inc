@@ -1,8 +1,9 @@
 <?php
 /**
  * @file
- * Views handler to filter by attribute domain
+ * Views handler to filter by attribute domain.
  */
+
 class pm_handler_filter_attributes_domain extends views_handler_filter_in_operator {
   /**
    * Returns filter options.

@@ -298,8 +298,6 @@ function pm_dashboard_get_links($check_active = TRUE, $type = 'page') {
 /**
  * Orders dashboard links by weight. Helper for pm_dashboard_get_links().
  *
- * @see uasort()
- *
  * @param array $a
  *   Dashboard link array.
  * @param array $b
@@ -307,6 +305,8 @@ function pm_dashboard_get_links($check_active = TRUE, $type = 'page') {
  *
  * @return int
  *   Relative weight of $a and $b.
+ *
+ * @see uasort()
  */
 function _pm_dashboard_sort_links(array $a, array $b) {
   if (intval($a['weight']) == intval($b['weight'])) {
@@ -355,15 +355,23 @@ function pm_pm_dashboard_links($type) {
 function pm_pm_dashboard_types() {
   return array(
     'page' => array(
-      // URL: menu path which should be used, if omitted no menu item will be created.
+      // URL: menu path which should be used, if omitted no menu item will be 
+      // created.
       'url'         => 'pm',
-      // Title: Required. Title of menu item, page title and title for the pm settings.
+      // Title: Required. Title of menu item, page title and title for the pm
+      // settings.
       'title'       => t('Project Management Dashboard'),
-      // Description: Required. Description for the fieldset in the pm settings.
-      'description' => t('You can disable or reorder the links from the !dashboard here', array('!dashboard' => l(t('dashboard'), 'pm'))),
-      // Theme: theme which should be used to display this dashboard. If omitted uses standard theme pm_dashboard.
+      // Description: Required. Description for the fieldset in the pm
+      // settings.
+      'description' => t('You can disable or reorder the links from the !dashboard here', array(
+        '!dashboard' => l(t('dashboard'), 'pm'),
+      )),
+      // Theme: theme which should be used to display this dashboard.
+      // If omitted uses standard theme pm_dashboard.
       'theme'       => 'pm_dashboard',
-      // Menu_options: This array will be merged into the default menu item array. If the menu should have special access arguments, title, it can be set here.
+      // Menu_options: This array will be merged into the default menu item
+      // array. If the menu should have special access arguments, title, it can
+      // be set here.
       // Page callback and page argument shouldn't been overwritten.
       'menu_options' => array(
         'title'       => t('Project Management'),
@@ -372,7 +380,9 @@ function pm_pm_dashboard_types() {
     ),
     'block' => array(
       'title'       => t('Dashboard block'),
-      'description' => t('You can disable or reorder the links from the dashboard !block here', array('!block' => l(t('block'), 'admin/build/block'))),
+      'description' => t('You can disable or reorder the links from the dashboard !block here', array(
+        '!block' => l(t('block'), 'admin/build/block'),
+      )),
       'theme'       => 'pm_dashboard_block',
     ),
   );
@@ -591,10 +601,10 @@ function pm_admin_settings() {
 /**
  * Validate Icon Path form element.
  *
- * @param $form
- *   Form array
- * @param $form_values
- *   Form values
+ * @param array $form
+ *   Form array.
+ * @param array $form_values
+ *   Form values.
  */
 function pm_admin_settings_icons_path_validate($form, $form_values) {
   $icon_path_old = variable_get('pm_icons_path', drupal_get_path('module', 'pm') . '/icons');
@@ -676,12 +686,15 @@ function pm_taxation(&$node) {
     case 0:
       $node->tax2 = 0;
       break;
+
     case 1:
       $node->tax2 = $node->amount * $node->tax2percent / 100;
       break;
+
     case 2:
       $node->tax2 = $node->subtotal * $node->tax2percent / 100;
       break;
+
     default:
       // Error.
       drupal_set_message(t('Error during tax calculations (Project Management module)'), 'error');
@@ -738,7 +751,7 @@ function pm_icon_delete($path, $params = array()) {
 /**
  * Provides an icon link.
  */
-function pm_icon_l($icon, $path, $title, $params = array(), $attributes=array()) {
+function pm_icon_l($icon, $path, $title, $params = array(), $attributes = array()) {
   if (!drupal_valid_path($path)) {
     return '';
   }
@@ -852,7 +865,7 @@ function pm_icon($icon, $title) {
     }
   }
   else {
-    // Icons set to not display
+    // Icons set to not display.
     return $title;
   }
 }
@@ -889,18 +902,22 @@ function pm_icon_default($icon, $title) {
  *
  * Params:
  *  $organization_nid
- *    Leave blank to get a list of all teams and persons, otherwise also provide
+ *    Leave blank to get a list of all teams and persons, otherwise also
+ *    provide
  *  $project_nid
  *    to get a limited list of teams and persons following the following logic:
- *    - If the project is assigned to a person, only that person is listed as an option
- *    - If the project is assigned to a team, all team members are listed as options
- *    - If the project is neither assigned to a person nor a team, all people that are
- *      assigned to the given origanization are listed as options
- *    - In addition, if the project is assigned to a manager, that person is also listed
- *    - Finally, look into all existing teams and list those teams that exclusively
- *      contain members that are already selected
- *    If $organization_nid is provided but $project_nid is omitted, then the logic is as
- *    above, just for all projects of the given organization.
+ *    - If the project is assigned to a person, only that person is listed as
+ *      an option
+ *    - If the project is assigned to a team, all team members are listed as
+ *      options
+ *    - If the project is neither assigned to a person nor a team, all people
+ *      that are assigned to the given organization are listed as options
+ *    - In addition, if the project is assigned to a manager, that person is
+ *      also listed
+ *    - Finally, look into all existing teams and list those teams that
+ *      exclusively contain members that are already selected
+ *    If $organization_nid is provided but $project_nid is omitted, then the
+ *    logic is as above, just for all projects of the given organization.
  */
 function pm_get_assignment_options($organization_nid = 0, $project_nid = 0) {
   $teams = t('Teams:');
@@ -953,7 +970,7 @@ function pm_get_assignment_options($organization_nid = 0, $project_nid = 0) {
             $options[$people][$node->nid] = check_plain($node->title);
           }
         }
-       // Else implies that node is a team.
+        // Else implies that node is a team.
         else {
           if (module_exists('pmteam')) {
             $options[$teams][$node->nid] = check_plain($node->title);
@@ -1018,11 +1035,13 @@ function pm_get_assignment_options($organization_nid = 0, $project_nid = 0) {
     if (!empty($options[$teams])) {
       $query->condition('team.nid', $options[$teams], 'NOT IN');
     }
-    // Only add teams that have at least the same members as persons we added so far.
+    // Only add teams that have at least the same members as persons we added
+    // so far.
     if (!empty($organization_nid) && !empty($options[$people])) {
       // Add all persons that should be in the team.
       $query->condition('team.mnid', array_keys($options[$people]), 'IN');
-      // Add a count, how many of the given persons should be in the other teams.
+      // Add a count, how many of the given persons should be in the other
+      // teams.
       $count = count($options[$people]);
       $query->having('count(team.nid) = :count', array(':count' => $count));
     }
@@ -1056,7 +1075,10 @@ function pm_get_assignment_options($organization_nid = 0, $project_nid = 0) {
 }
 
 /**
- * Helper function to count nodes of type destination module with parent nid of type source module.
+ * Helper function to count nodes
+ *
+ * Only counts nodes of type destination module with parent nid of type source
+ * module.
  *
  * @param string $source_module
  *   A string of module where the request is coming from.
@@ -1066,7 +1088,8 @@ function pm_get_assignment_options($organization_nid = 0, $project_nid = 0) {
  *   Node id of source module.
  *
  * @return ''|int
- *   Empty string if can't be counted or the count of destination nodes in source node.
+ *   Empty string if can't be counted or the count of destination nodes in
+ *   source node.
  *
  * @see theme_pm_link()
  */
@@ -1077,22 +1100,46 @@ function _pm_number_of_items($source_module, $destination_module, $nid) {
   switch ($source_module) {
     case "pmorganization":
       $column_name = 'organization_nid';
-      $valid_destination_modules = array('pmproject', 'pmtask', 'pmticket', 'pmtimetracking', 'pmnote', 'pmperson', 'pmexpense', 'pminvoice');
+      $valid_destination_modules = array(
+        'pmproject',
+        'pmtask',
+        'pmticket',
+        'pmtimetracking',
+        'pmnote',
+        'pmperson',
+        'pmexpense',
+        'pminvoice',
+      );
       break;
 
     case "pmproject":
       $column_name = 'project_nid';
-      $valid_destination_modules = array('pmtask', 'pmticket', 'pmtimetracking', 'pmnote', 'pmexpense', 'pminvoice');
+      $valid_destination_modules = array(
+        'pmtask',
+        'pmticket',
+        'pmtimetracking',
+        'pmnote',
+        'pmexpense',
+        'pminvoice',
+      );
       break;
 
     case "pmtask":
       $column_name = 'task_nid';
-      $valid_destination_modules = array('pmticket', 'pmtimetracking', 'pmnote', 'pmexpense');
+      $valid_destination_modules = array(
+        'pmticket',
+        'pmtimetracking',
+        'pmnote',
+        'pmexpense',
+      );
       break;
 
     case "pmticket":
       $column_name = 'ticket_nid';
-      $valid_destination_modules = array('pmtimetracking', 'pmexpense');
+      $valid_destination_modules = array(
+        'pmtimetracking',
+        'pmexpense',
+      );
       break;
   }
 

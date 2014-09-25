@@ -8,7 +8,7 @@
  * Implements hook_views_data().
  */
 function pminvoice_views_data() {
-  // Invoice core fields
+  // Invoice core fields.
   $data['pminvoice']['table']['group']  = t('Project Management Invoice');
   $data['pminvoice']['table']['join'] = array(
     'node' => array(
@@ -214,14 +214,14 @@ function pminvoice_views_data() {
     'help' => t('Project Management Invoice Status'),
     'field' => array(
       'click sortable' => TRUE,
-      'handler' => 'pminvoice_handler_field_invoice_status'
+      'handler' => 'pminvoice_handler_field_invoice_status',
     ),
     'filter' => array(
       'handler' => 'pminvoice_handler_filter_invoice_status',
     ),
   );
 
-  // Invoice items
+  // Invoice items.
   $data['pminvoice_items']['table']['group']  = t('Project Management Invoice Item');
   $data['pminvoice_items']['table']['join'] = array(
     'node' => array(
