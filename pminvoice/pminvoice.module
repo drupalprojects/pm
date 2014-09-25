@@ -153,7 +153,8 @@ function pminvoice_field_extra_fields_alter(&$info) {
 function pminvoice_node_access($node, $op, $account = NULL) {
   $type = is_string($node) ? $node : $node->type;
   if ($type == 'pminvoice') {
-    // If no account is specified, assume that the check is against the current logged in user
+    // If no account is specified, assume that the check is against the current
+    // logged in user.
     if (is_null($account)) {
       global $user;
       $account = $user;
@@ -254,7 +255,9 @@ function pminvoice_form(&$node, $form_state) {
   $organizations = array();
   foreach ($org_result as $organization) {
     $organizations[$organization->nid] = $organization->title;
-    if (!isset($node->organization_nid)) $node->organization_nid = $organization->nid;
+    if (!isset($node->organization_nid)) {
+      $node->organization_nid = $organization->nid;
+    }
   }
   $form['group2']['organization_nid'] = array(
     '#type' => 'select',
@@ -315,7 +318,7 @@ function pminvoice_form(&$node, $form_state) {
 
   $count = (isset($node->items)) ? count($node->items) : 0;
   for ($k = $count; $k <= $count + 2; $k++) {
-    $node->items[$k] = new stdClass;
+    $node->items[$k] = new stdClass();
     $node->items[$k]->tax1app = variable_get('pm_tax1_app', 1);
     $node->items[$k]->tax1percent = variable_get('pm_tax1_percent', 20);
     $node->items[$k]->tax2app = variable_get('pm_tax2_app', 0);
@@ -345,7 +348,6 @@ function pminvoice_form(&$node, $form_state) {
       '#default_value' => isset($node->items[$i]->description) ? $node->items[$i]->description : NULL,
       '#size' => 80,
     );
-
 
     $form['group4'][$i]['first']['items_' . $i . '_amount'] = array(
       '#type' => 'textfield',
@@ -523,7 +525,7 @@ function pminvoice_insert($node) {
   ))
   ->execute();
 
-  // Insert invoice items
+  // Insert invoice items.
   _pminvoice_insert_items($node);
 
   _pminvoice_aftersave($node);
@@ -559,7 +561,7 @@ function pminvoice_update($node) {
     ->condition('vid', $node->vid)
     ->execute();
 
-    // Update invoice items
+    // Update invoice items.
     db_delete('pminvoice_items')
     ->condition('invoice_vid', $node->vid)
     ->execute();
@@ -574,7 +576,8 @@ function pminvoice_update($node) {
  * Prepares pminvoice for saving.
  */
 function _pminvoice_beforesave(&$node) {
-  // Allow use of comma when inputting numerical values - str_replace with period decimal
+  // Allow use of comma when inputting numerical values - str_replace with
+  // period decimal.
   $node->amount = floatval(str_replace(',', '.', $node->amount));
   $node->tax1 = floatval(str_replace(',', '.', $node->tax1));
   $node->tax2 = floatval(str_replace(',', '.', $node->tax2));
@@ -600,7 +603,7 @@ function _pminvoice_beforesave(&$node) {
   }
 
   // Parse invoice items
-  // from linear to array/object combination
+  // from linear to array/object combination.
   $j = 0;
   $variable = 'items_' . $j . '_description';
   while (isset($node->$variable)) {
@@ -623,7 +626,8 @@ function _pminvoice_beforesave(&$node) {
 
     $variable = 'items_' . $j . '_src_vid';
     $node->items[$j]->src_vid = $node->$variable;
-    // Update taxes
+
+    // Update taxes.
     pm_taxation($node->items[$j]);
 
     $j++;
@@ -653,8 +657,8 @@ function _pminvoice_insert_items($node) {
       'tax2' => $item->tax2,
       'total' => $item->total,
       'weight' => $item->weight,
-//      'src_nid' => $node->items[$j]->src_nid,
-//      'src_vid' => $node->items[$j]->src_vid,
+      // 'src_nid' => $node->items[$j]->src_nid,
+      // 'src_vid' => $node->items[$j]->src_vid,
     ))
     ->execute();
   }
@@ -670,7 +674,7 @@ function _pminvoice_insert_items($node) {
  * Calculate sums for amount and taxes and save to database.
  */
 function _pminvoice_aftersave($node) {
-  // Updates totals
+  // Updates totals.
   $query = db_select('pminvoice_items', 'sii');
   $query->addExpression('sum(amount)', 'tamount');
   $query->addExpression('sum(tax1)', 'ttax1');
@@ -831,8 +835,8 @@ function pminvoice_getitems($invoice_vid) {
 /**
  * Creates next incremental invoice number.
  *
- * @return
- *   varchar text value of the calculated invoice number.
+ * @return varchar $new_invoice_number
+ *   Text value of the calculated invoice number.
  */
 function pminvoice_get_invoice_number() {
   $date = getdate();

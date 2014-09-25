@@ -7,10 +7,10 @@
 /**
  * Returns the HTML code for the invoice view page.
  *
- * @param $variables array
+ * @param array $variables
  *   An array containing variables for the function.
  *
- * @return $node array
+ * @return array $node
  *   The node object that contains the invoice.
  */
 function theme_pminvoice_view($variables) {
@@ -38,7 +38,10 @@ function theme_pminvoice_view($variables) {
   $node->content['group2']['organization'] = array(
     '#prefix' => '<div class="organization">',
     '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array('label' => t('Organization'), 'value' => l($node->organization_title, 'node/' . $node->organization_nid))),
+    '#markup' => theme('pm_view_item', array(
+      'label' => t('Organization'),
+      'value' => l($node->organization_title, 'node/' . $node->organization_nid),
+    )),
     '#weight' => 1,
   );
 
@@ -134,7 +137,8 @@ function theme_pminvoice_view($variables) {
   }
 
   foreach ($invoice_items as $key => $inv_item) {
-    // PHP4 compatibility - for D7 change this to use the original array by reference
+    // PHP4 compatibility - for D7 change this to use the original array by
+    // reference.
     $invoice_items[$key]['amount'] = sprintf("%.2f", $inv_item['amount']);
     if ($node->tax1) {
       $invoice_items[$key]['tax1'] = sprintf("%.2f", $inv_item['tax1']);
@@ -173,15 +177,15 @@ function theme_pminvoice_view($variables) {
   );
 
   if ($node->tax1) {
-  $node->content['group5']['tax1'] = array(
-    '#prefix' => '<div class="tax">',
-    '#suffix' => '</div>',
-    '#markup' => theme('pm_view_item', array(
-      'label' => variable_get('pm_tax1_name', t('Tax 1')),
-      'value' => sprintf('%.2f', $node->tax1),
-    )),
-    '#weight' => 2,
-  );
+    $node->content['group5']['tax1'] = array(
+      '#prefix' => '<div class="tax">',
+      '#suffix' => '</div>',
+      '#markup' => theme('pm_view_item', array(
+        'label' => variable_get('pm_tax1_name', t('Tax 1')),
+        'value' => sprintf('%.2f', $node->tax1),
+      )),
+      '#weight' => 2,
+    );
   }
 
   if ($node->tax2) {

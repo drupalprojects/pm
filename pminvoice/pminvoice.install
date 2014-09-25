@@ -152,7 +152,8 @@ function pminvoice_schema() {
     'fields' => array(
       'vid' => array(
         'type' => 'int',
-        'not null' => TRUE,'default' => 0,
+        'not null' => TRUE,
+        'default' => 0,
       ),
       'nid' => array(
         'type' => 'int',
@@ -198,14 +199,30 @@ function pminvoice_schema() {
       'invoice_vid'         => array('type' => 'int'),
       'weight'              => array('type' => 'int'),
       'description'         => array('type' => 'varchar', 'length' => 128),
-      'amount'              => array('type' => 'numeric', 'precision' => 19, 'scale' => 4),
+      'amount'              => array(
+        'type' => 'numeric',
+        'precision' => 19,
+        'scale' => 4,
+      ),
       'tax1app'             => array('type' => 'int'),
       'tax1percent'         => array('type' => 'float'),
-      'tax1'                => array('type' => 'numeric', 'precision' => 19, 'scale' => 4),
+      'tax1'                => array(
+        'type' => 'numeric',
+        'precision' => 19,
+        'scale' => 4,
+      ),
       'tax2app'             => array('type' => 'int'),
       'tax2percent'         => array('type' => 'float'),
-      'tax2'                => array('type' => 'numeric', 'precision' => 19, 'scale' => 4),
-      'total'               => array('type' => 'numeric', 'precision' => 19, 'scale' => 4),
+      'tax2'                => array(
+        'type' => 'numeric',
+        'precision' => 19,
+        'scale' => 4,
+      ),
+      'total'               => array(
+        'type' => 'numeric',
+        'precision' => 19,
+        'scale' => 4,
+      ),
       'src_nid'             => array('type' => 'int'),
       'src_vid'             => array('type' => 'int'),
     ),
