@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmperson.migrate.inc
+ * Migration functions for the PM Person module.
  */
 
 define('PMPERSON_MIGRATE_MAX_JOB_PER_BATCH', 5);

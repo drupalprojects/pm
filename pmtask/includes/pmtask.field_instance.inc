@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmtask.field_instance.inc
+ * Field instance definitions for the PM Task module.
  */
 
 /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmteam.features.field_instance.inc
+ * Field instance definitions for the PM Team module.
  */
 
 /**

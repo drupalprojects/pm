@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * File: pmtimetracking.migrate.inc.
+ * Migration functions for the PM Timetracking module.
  */
 
 define('PMTIMETRACKING_MIGRATE_MAX_JOB_PER_BATCH', 5);

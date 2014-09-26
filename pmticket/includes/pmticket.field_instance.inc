@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * File: pmticket.field_instance.inc.
+ * Field instance definitions for the PM Ticket module.
  */
 
 /**

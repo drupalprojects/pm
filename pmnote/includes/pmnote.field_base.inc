@@ -1,11 +1,11 @@
 <?php
 /**
  * @file
- * pmnote.field_base.inc
+ * Field definitions for the PM Note module.
  */
 
 /**
- * Field base definitions for PM Task.
+ * Field base definitions for PM Note.
  */
 function pmnote_default_field_bases() {
   $field_bases = array();

@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmorganization.field_base.inc
+ * Field definitions for the PM Organization module.
  */
 
 /**

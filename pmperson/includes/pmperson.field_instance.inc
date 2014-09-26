@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmperson.field_instance.inc
+ * Field instance definitions for the PM Person module.
  */
 
 /**

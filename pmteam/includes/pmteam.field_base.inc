@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmteam.features.field_base.inc
+ * Field definitions for the PM Team module.
  */
 
 /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmticket.migrate.inc
+ * Migration functions for the PM Ticket module.
  */
 
 define('PMTICKET_MIGRATE_MAX_JOB_PER_BATCH', 5);

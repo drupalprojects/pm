@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * File: pmticket.field_base.inc.
+ * Field definitions for the PM Ticket module.
  */
 
 /**

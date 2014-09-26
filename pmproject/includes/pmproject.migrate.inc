@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmproject.migrate.inc
+ * Migration functions for the PM Project module.
  */
 
 define('PMPROJECT_MIGRATE_MAX_JOB_PER_BATCH', 5);

@@ -1,14 +1,12 @@
 <?php
-
 /**
  * @file
- * pmpermission.migrate.inc
+ * Migration functions for the PM Permission module.
  */
 
 define('PMPERMISSION_OBSOLETE', '0');
 define('PMPERMISSION_UNCHANGED', '1');
 define('PMPERMISSION_CANNOT_BE_PORTED', '2');
-
 
 /**
  * Retrieves a array of legacy to new permission mapping keyed by submodule name.

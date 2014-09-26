@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmorganization.migrate.inc
+ * Migration functions for the PM Organization module.
  */
 
 define('PMORGANIZATION_MIGRATE_MAX_JOB_PER_BATCH', 5);

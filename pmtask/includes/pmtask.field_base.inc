@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmtask.field_base.inc
+ * Field definitions for the PM Task module.
  */
 
 /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmproject.field_base.inc
+ * Field definitions for the PM Project module.
  */
 
 /**

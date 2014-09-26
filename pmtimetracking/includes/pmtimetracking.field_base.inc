@@ -1,11 +1,11 @@
 <?php
 /**
  * @file
- * pmtimetracking.field_base.inc
+ * Field definitions for the PM Timetracking module.
  */
 
 /**
- * Field base definitions for PM Task.
+ * Field base definitions for PM Timetracking.
  */
 function pmtimetracking_default_field_bases() {
   $field_bases = array();

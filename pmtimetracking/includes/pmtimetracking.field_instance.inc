@@ -1,11 +1,11 @@
 <?php
 /**
  * @file
- * pmtimetracking.field_instance.inc
+ * Field instance definitions for the PM Timetracking module.
  */
 
 /**
- * Field instance definitions for PM Task.
+ * Field instance definitions for PM Timetracking.
  */
 function pmtimetracking_default_field_instances() {
   $field_instances = array();

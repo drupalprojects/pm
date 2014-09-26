@@ -1,11 +1,11 @@
 <?php
 /**
  * @file
- * pmnote.field_instance.inc
+ * Field instance definitions for the PM Note module.
  */
 
 /**
- * Field instance definitions for PM Task.
+ * Field instance definitions for PM Note.
  */
 function pmnote_default_field_instances() {
   $field_instances = array();

@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmnote.migrate.inc
+ * Migration functions for the PM Note module.
  */
 
 define('PMNOTE_MIGRATE_MAX_JOB_PER_BATCH', 5);
