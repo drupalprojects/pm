@@ -37,9 +37,8 @@ function pmtask_migrate(&$sandbox) {
   return 'PM Task nodes have been migrated to field_api based fields successfully.';
 }
 
-
 /**
- * Check if migration need to be performed.
+ * Check if migration needs to be performed.
  */
 function pmtask_migrate_update_could_be_performed() {
   if (db_table_exists('pmtask')) {

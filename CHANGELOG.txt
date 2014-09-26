@@ -23,8 +23,10 @@ Version 7.x-1.0-alpha4:
 - Issue #2140003 by juliangb: Broken handler showing on invoice list view.
 - Issue #2181699 by juliangb | dbt102: Adding new task to existing project does
   not work right.
-- Issue #2192465 by juliangb | Jeffrey C.: Broken page layout using Corolla theme.
-- Issue #1843040 by juliangb: Cleanup: Move hook_node_prepare() into hook_form().
+- Issue #2192465 by juliangb | Jeffrey C.: Broken page layout using Corolla
+  theme.
+- Issue #1843040 by juliangb: Cleanup: Move hook_node_prepare() into
+  hook_form().
 - Issue #2179365 by juliangb | dbt102: Editing Task Title throws an error.
 - Issue #2140007 by juliangb: Turn off comments on invoices.
 - Issue #2156463 by othermachines: Enable module dependencies during update.
@@ -36,7 +38,8 @@ Version 7.x-1.0-alpha4:
 - Issue #377680 by juliangb | Paraplegic Racehorse: Support for node preview.
 - Issue #2129575 by juliangb: Remove parent ref shortcut from hook_form.
 - Issue #1929158 by juliangb: Use date fields from the date module.
-- Issue #2047761 by juliangb: Improve configuration pages (cleanup lists section).
+- Issue #2047761 by juliangb: Improve configuration pages (cleanup lists 
+  section).
 - Issue #2102861 by juliangb: Implement billing status in Field API.
 - Issue #1804270 by Raphael Dürst, juliangb: Fixed MySQL datatype (FLOAT) for 
   prices is not precise enough.

@@ -1,8 +1,9 @@
 <?php
 /**
  * @file
- * Tests for the Project Management module
+ * Tests for the Project Management module.
  */
+
 class PMTestCase extends DrupalWebTestCase {
   /**
    * Returns meta data for Project Management tests.

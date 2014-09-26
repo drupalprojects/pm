@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmperson.field_group.inc
+ * Field group definitions for the PM Person module.
  */
 
 /**

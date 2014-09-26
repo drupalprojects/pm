@@ -97,7 +97,7 @@ function pmnote_migrate_field_data(&$sandbox) {
 function _pmnote_migrate_migrate_single_node($nid, $vid, $note) {
   $node = node_load($nid, $vid);
 
-  // Ticket >> Task >> Project >> Organization
+  // Ticket >> Task >> Project >> Organization.
   if ($note->task_nid) {
     $node->pmnote_parent[LANGUAGE_NONE][0]['target_id'] = $note->task_nid;
   }

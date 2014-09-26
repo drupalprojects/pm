@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pm.fields.inc
+ * Field creation functions.
  */
 
 define('PM_FIELD_BASE_CREATE_FAILURE', 0);
@@ -17,10 +17,11 @@ define('PM_FIELD_INSTANCE_UPDATE_SUCCESS', 2);
  *
  * @param array $field_bases
  *   Array of field bases to check.
+ *
  * @return array $result
  *   Array of success / failure flags.
  */
-function pm_field_bases_create_if_required($field_bases) {
+function pm_field_bases_create_if_required(array $field_bases) {
   $result = array();
   if (!empty($field_bases) AND is_array($field_bases)) {
     foreach ($field_bases as $key => $field_base) {
@@ -62,10 +63,11 @@ function pm_field_base_create_if_required($field_name, $field_base) {
  *
  * @param array $field_instances
  *   Array of field bases to check.
+ *
  * @return array $result
  *   Array of success / failure flags.
  */
-function pm_field_instances_create_if_required($field_instances) {
+function pm_field_instances_create_if_required(array $field_instances) {
   $result = array();
   if (!empty($field_instances) AND is_array($field_instances)) {
     foreach ($field_instances as $key => $field_instance) {

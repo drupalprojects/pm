@@ -355,7 +355,7 @@ function pm_pm_dashboard_links($type) {
 function pm_pm_dashboard_types() {
   return array(
     'page' => array(
-      // URL: menu path which should be used, if omitted no menu item will be 
+      // URL: menu path which should be used, if omitted no menu item will be
       // created.
       'url'         => 'pm',
       // Title: Required. Title of menu item, page title and title for the pm
@@ -606,14 +606,14 @@ function pm_admin_settings() {
  * @param array $form_values
  *   Form values.
  */
-function pm_admin_settings_icons_path_validate($form, $form_values) {
+function pm_admin_settings_icons_path_validate(array $form, array $form_values) {
   $icon_path_old = variable_get('pm_icons_path', drupal_get_path('module', 'pm') . '/icons');
   $icon_path = $form_values['values']['pm_icons_path'];
   // Check if directory exists.
   if (!is_dir($icon_path)) {
     form_set_error('pm_icons_path', t('Icon path %path does not exist', array('%path' => $icon_path)));
   }
-  // If it exists and changed, delete cache, so there are no old values in the cache.
+  // Directory exists and has changed, so clear the cache.
   elseif ($icon_path != $icon_path_old) {
     cache_clear_all('pm:icons', 'cache', FALSE);
   }
@@ -1075,7 +1075,7 @@ function pm_get_assignment_options($organization_nid = 0, $project_nid = 0) {
 }
 
 /**
- * Helper function to count nodes
+ * Helper function to count nodes.
  *
  * Only counts nodes of type destination module with parent nid of type source
  * module.

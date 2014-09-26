@@ -724,7 +724,7 @@ function pmpermission_grants_list($account, $op, $type) {
 }
 
 /**
- * Get entity ids of enity that has a reference field pointing towards the user id.
+ * Get entity ids having a reference field pointing towards the user id.
  */
 function _pmpermission_get_entity_id_referenced_to_user($entity_type, $bundle, $field_name, $uid) {
   $ids = FALSE;

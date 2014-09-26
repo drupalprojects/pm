@@ -9,10 +9,10 @@ define('PMPERMISSION_UNCHANGED', '1');
 define('PMPERMISSION_CANNOT_BE_PORTED', '2');
 
 /**
- * Retrieves a array of legacy to new permission mapping keyed by submodule name.
+ * Retrieves array of legacy to new permission mappings (keyed by sub-module).
  */
 function pmpermission_migrate_get_legacy_permission_map() {
-  $map = array (
+  $map = array(
     'pmexpense' => array(
       'Project Management expense: access'                                => PMPERMISSION_UNCHANGED,
       'Project Management expense: add'                                   => 'PM permission pmexpense: create',
@@ -190,12 +190,15 @@ function pmpermission_migrate_enable_permissions($type) {
     case 'pmexpense':
       variable_set("pmpermission_node_{$type}_enabled", TRUE);
       break;
+
     default:
       break;
   }
 }
 
-
+/**
+ * Handles migration of legacy permissions for a given sub-module.
+ */
 function pmpermission_migrate_legacy_permissions($module_name) {
   // Enable Permission to be defined by pmpermission.
   // Handover legacy permission to pmpermission based implementations.
@@ -206,22 +209,26 @@ function pmpermission_migrate_legacy_permissions($module_name) {
       case PMPERMISSION_OBSOLETE:
         drupal_set_message(t('Permission "@name" is obsolete and won\'t be migrated.', array('@name' => $old)), 'warning');
         break;
+
       case PMPERMISSION_CANNOT_BE_PORTED:
         drupal_set_message(t('Permission "@name" cannot be ported.', array('@name' => $old)), 'error');
         break;
+
       case PMPERMISSION_UNCHANGED:
         break;
+
       default:
         $rids = _pmpermission_migrate_get_all_roles_having_permission($old);
         $permission = array(
-          $old => 0, // Revoke Permission ( deletes the record )
+          // Revoke old permission (deletes the record) by setting to 0.
+          $old => 0,
           $new => TRUE,
         );
         foreach ($rids as $rid => $role_name) {
           user_role_change_permissions($rid, $permission);
         }
-        // All permission adjustment used by pmpermission module requires node access
-        // to be rebuild.
+        // All permission adjustment used by pmpermission module requires node
+        // access to be rebuilt.
         node_access_needs_rebuild(TRUE);
         break;
     }

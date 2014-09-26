@@ -1,8 +1,9 @@
 <?php
 /**
  * @file
- * Test definitions for the PM Project module
+ * Test definitions for the PM Project module.
  */
+
 class PMProjectTestCase extends DrupalWebTestCase {
 
   /**
