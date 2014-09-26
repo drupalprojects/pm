@@ -48,7 +48,6 @@ function pmproject_migrate_update_could_be_performed() {
   return FALSE;
 }
 
-
 /**
  * Creates and attaches fields to Drupal user.
  */
@@ -64,7 +63,6 @@ function pmproject_migrate_create_fields(&$sandbox) {
   pm_field_instances_create_if_required($field_instances);
   return TRUE;
 }
-
 
 /**
  * Migrate pmproject node fields data to drupal user bundle.
@@ -92,7 +90,6 @@ function pmproject_migrate_field_data(&$sandbox) {
   }
   return empty($count);
 }
-
 
 /**
  * Helper function to migrate single pmproject.

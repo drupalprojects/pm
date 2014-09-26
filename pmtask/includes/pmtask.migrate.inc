@@ -47,7 +47,6 @@ function pmtask_migrate_update_could_be_performed() {
   return FALSE;
 }
 
-
 /**
  * Creates and attaches fields to Drupal user.
  */
@@ -63,7 +62,6 @@ function pmtask_migrate_create_fields(&$sandbox) {
   pm_field_instances_create_if_required($field_instances);
   return TRUE;
 }
-
 
 /**
  * Migrate pmtask node fields data to drupal user bundle.
@@ -91,7 +89,6 @@ function pmtask_migrate_field_data(&$sandbox) {
   }
   return empty($count);
 }
-
 
 /**
  * Helper function to migrate single pmtask.
