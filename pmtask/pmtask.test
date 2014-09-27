@@ -63,7 +63,7 @@ class PMTaskTestCase extends DrupalWebTestCase {
     // Create test content.
     $org = array(
       'title' => $this->randomName(32),
-      'body[und][0][value]' => $this->randomName(64),
+      // 'body[und][0][value]' => $this->randomName(64),
     );
     $prj = array(
       'title' => $this->randomName(32),
@@ -71,7 +71,7 @@ class PMTaskTestCase extends DrupalWebTestCase {
     );
     $task = array(
       'title' => $this->randomName(32),
-      'body[und][0][value]' => $this->randomName(64),
+      // 'body[und][0][value]' => $this->randomName(64),
     );
     $this->drupalPost('node/add/pmorganization', $org, t('Save'));
     $this->drupalPost('node/add/pmproject', $prj, t('Save'));

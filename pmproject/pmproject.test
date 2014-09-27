@@ -59,7 +59,7 @@ class PMProjectTestCase extends DrupalWebTestCase {
     // Create test content.
     $org = array(
       'title' => $this->randomName(32),
-      'body[und][0][value]' => $this->randomName(64),
+      // 'body[und][0][value]' => $this->randomName(64),
     );
     $prj = array(
       'title' => $this->randomName(32),
