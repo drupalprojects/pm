@@ -60,3 +60,7 @@ function pmnote_update_dependencies() {
 
   return $dependencies;
 }
+
+/**
+ * @todo : add dependency on migrated version on pm and pmorganizatin.
+ */
