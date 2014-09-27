@@ -125,7 +125,6 @@ function _pmtask_migrate_migrate_single_node($nid, $vid, $task) {
     $node->pm_currency[LANGUAGE_NONE][0]['value'] = $task->currency;
   }
 
-
   if ($task->taskpriority) {
     $node->pm_priority[LANGUAGE_NONE][0]['value'] = $task->taskpriority;
   }

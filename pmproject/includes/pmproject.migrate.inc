@@ -30,7 +30,6 @@ function pmproject_migrate(&$sandbox) {
   variable_set('pmpermission_field_parent_reference_for_pmproject', 'pmproject_parent');
   variable_set('pmpermission_node_pmproject_enabled', TRUE);
 
-
   module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');
   pmpermission_migrate_execute('pmproject');
 

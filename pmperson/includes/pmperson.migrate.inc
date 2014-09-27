@@ -177,13 +177,9 @@ function pmperson_migrate_page_callback() {
     'table_2_info' => array(
       '#markup' => "<br />
         <h2>Conflicts</h2>
-        <p>
-        This table shows PM Person nodes where a match cannot be made
-        automatically due to data differences between them.
-        </p><p>
-        Edit the PM Person node or user accounts until there are no remaining
-        conflicts.
-        </p>
+        <p>This table shows PM Person nodes where a match cannot be made automatically due to data differences between them.</p>
+        <p>Edit the PM Person node or user accounts until there are no remaining
+        conflicts.</p>
       ",
     ),
     'table_issue_2' => _pmperson_migrate_get_conflicting_email_with_attached_users_table(),
@@ -198,7 +194,7 @@ function pmperson_migrate_fix_existing_users_form($form, $form_state) {
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Adjust pmperson nodes'),
-    '#prefix' => '<br>',
+    '#prefix' => '<br />',
     '#suffix' => t('Automatically match Drupal user with pmperson node using
       email if Drupal user is not associated with any other pmperson node.'),
   );
