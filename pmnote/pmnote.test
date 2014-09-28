@@ -65,7 +65,7 @@ class PMNoteTestCase extends DrupalWebTestCase {
     );
     $prj = array(
       'title' => $this->randomName(32),
-      'organization_nid' => '1',
+      // 'organization_nid' => '1',
     );
     $task = array(
       'title' => $this->randomName(32),
