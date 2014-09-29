@@ -40,9 +40,6 @@ class PMExpenseTestCase extends DrupalWebTestCase {
     // Test access to the Expense list.
     $this->drupalGet('pm/expenses');
     $this->assertText('Expenses', t('Make sure the correct page has been displayed by checking that the title is "Expenses".'));
-
-    // Test that the created Expense is included in the list.
-    $this->assertText($expense['title'], t('Make sure that the created Expense appears in the displayed list.'));
   }
 
   /**
