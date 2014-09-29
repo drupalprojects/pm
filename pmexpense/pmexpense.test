@@ -28,6 +28,24 @@ class PMExpenseTestCase extends DrupalWebTestCase {
   }
 
   /**
+   * Test of access controls on Expense lists.
+   */
+  public function testpmExpenseAccess() {
+    // Create user with permission to access Expense list.
+    $user_access = $this->drupalCreateUser(array(
+      'Project Management expense: access',
+    ));
+    $this->drupalLogin($user_access);
+
+    // Test access to the Expense list.
+    $this->drupalGet('pm/expenses');
+    $this->assertText('Expenses', t('Make sure the correct page has been displayed by checking that the title is "Expenses".'));
+
+    // Test that the created Expense is included in the list.
+    $this->assertText($expense['title'], t('Make sure that the created Expense appears in the displayed list.'));
+  }
+
+  /**
    * Tests creation of an Expense.
    */
   public function testpmexpenseCreate() {
@@ -45,12 +63,12 @@ class PMExpenseTestCase extends DrupalWebTestCase {
 
     // Create user with permissions to add content.
     $user_content = $this->drupalCreateUser(array(
-      'Project Management Organization: add',
-      'Project Management Organization: view all',
-      'Project Management expense: add',
-      'Project Management expense: view all',
-      'Project Management Project: view all',
-      'Project Management Task: view all',
+      'create pmorganization content',
+      // 'Project Management Organization: view all',
+      'create pmexpense content',
+      // 'Project Management expense: view all',
+      // 'Project Management Project: view all',
+      // 'Project Management Task: view all',
     ));
     $this->drupalLogin($user_content);
 
@@ -62,25 +80,12 @@ class PMExpenseTestCase extends DrupalWebTestCase {
 
     // Create an expense node.
     $expense = array(
-      'organization_nid' => '1',
+      // 'organization_nid' => '1',
       'title' => $this->randomName(32),
     );
     $this->drupalPost('node/add/pmexpense', $expense, t('Save'));
 
     // Test that the expense node is created.
     $this->assertText(t('Expense @title has been created.', array('@title' => $expense['title'])));
-
-    // Create user with permission to access Expense list.
-    $user_access = $this->drupalCreateUser(array(
-      'Project Management expense: access',
-    ));
-    $this->drupalLogin($user_access);
-
-    // Test access to the Expense list.
-    $this->drupalGet('pm/expenses');
-    $this->assertText('Expenses', t('Make sure the correct page has been displayed by checking that the title is "Expenses".'));
-
-    // Test that the created Expense is included in the list.
-    $this->assertText($expense['title'], t('Make sure that the created Expense appears in the displayed list.'));
   }
 }
