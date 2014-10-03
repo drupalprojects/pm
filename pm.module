@@ -1277,7 +1277,7 @@ function pm_get_parent($node, $type = 'pmorganiation', $iteration = 10) {
   }
   catch (EntityMetadataWrapperException $exc) {
       watchdog(
-        'MODULE_NAME',
+        'pm',
         'See '  . __FUNCTION__ . '() <pre>' .  $exc->getTraceAsString() . '</pre>',
          NULL, WATCHDOG_ERROR
       );
