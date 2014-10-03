@@ -1241,3 +1241,45 @@ function pm_attribute_value($domain, $key) {
   }
   return $key;
 }
+
+/**
+ * Helper function to return nid of particular bundle in heirarchy.
+ * @param  object  $node      The node whoe's parent's should be hunted for.
+ * @param  string  $type      The parent node type that is being hunted for.
+ * @param  integer $iteration Number of maximum iterations to try for.
+ * @return integer            Node id of the required parent.
+ */
+function pm_get_parent($node, $type = 'pmorganiation', $iteration = 10) {
+  try {
+    $wrapper    = entity_metadata_wrapper('node', $node);
+    while($iteration) {
+      $iteration--;
+      $bundle = $wrapper->getBundle();
+
+      if ($bundle == $type) {
+        return $wrapper->getIdentifier();
+      }
+
+      if ($wrapper->__isset($bundle . '_parent')) {
+        $parent_field = $bundle . '_parent';
+      }
+      else if ($wrapper->__isset('field_' . $bundle . '_parent')) {
+        $parent_field = 'field_' . $bundle . '_parent';
+      }
+      else {
+        return FALSE;
+      }
+      $wrapper = $wrapper->{$parent_field};
+    }
+    if ($node_wrapper->__isset('pm_billing_status')) {
+      $pm_billing_status = $node_wrapper->pm_billing_status->value();
+    }
+  }
+  catch (EntityMetadataWrapperException $exc) {
+      watchdog(
+        'MODULE_NAME',
+        'See '  . __FUNCTION__ . '() <pre>' .  $exc->getTraceAsString() . '</pre>',
+         NULL, WATCHDOG_ERROR
+      );
+  }
+}
