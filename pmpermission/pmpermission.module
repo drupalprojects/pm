@@ -603,6 +603,7 @@ function _pmpermission_get_organization_id($node, $max_depth) {
     return FALSE;
   }
 }
+
 /**
  * Recursively hunt for a particular parent and get its id.
  */
