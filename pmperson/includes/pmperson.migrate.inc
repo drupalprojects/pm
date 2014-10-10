@@ -48,10 +48,6 @@ function pmperson_migrate(&$sandbox) {
   // Delete pmperson node type.
   node_type_delete('pmperson');
 
-  // @todo pmperson table is required by other modules using user reference.
-  // Delete it when all the submodules have been ported.
-  // db_drop_table('pmperson');
-
   // Delete variables previously set by the PM Person module (now redundant).
   variable_del('node_options_pmperson');
   variable_del('node_permissions_pmperson');
