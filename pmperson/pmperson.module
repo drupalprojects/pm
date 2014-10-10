@@ -68,29 +68,6 @@ function pmperson_permission() {
 }
 
 /**
- * Implements hook_pm_dashboard_links().
- *
- * @todo Need to implement the actual view.
- */
-function pmperson_pm_dashboard_links($type) {
-  $links = array();
-  if ($type == 'page' || $type == 'block') {
-    $links[] = array(
-      'theme' => 'pm_dashboard_link',
-      'title' => t('People'),
-      'icon' => 'pmpeople',
-      'path' => 'pm/people',
-      'params' => array(),
-      'node_type' => 'pmperson',
-      'add_type' => 'pmperson',
-      'map' => array(),
-      'weight' => 2,
-    );
-  }
-  return $links;
-}
-
-/**
  * Dummy function to handle errors.
  *
  * TODO: Remove this function when all other PM submodules have been ported.
