@@ -69,6 +69,19 @@ function pmorganization_views_default_views() {
       'empty_column' => 1,
     ),
   );
+  $handler->display->display_options['style_options']['sticky'] = TRUE;
+  $handler->display->display_options['style_options']['empty_table'] = TRUE;
+  /* Header: Global: Text area */
+  $handler->display->display_options['header']['area']['id'] = 'area';
+  $handler->display->display_options['header']['area']['table'] = 'views';
+  $handler->display->display_options['header']['area']['field'] = 'area';
+  /* No results behavior: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
+  $handler->display->display_options['empty']['area']['content'] = 'No Organizations matched your search.';
+  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -113,11 +126,13 @@ function pmorganization_views_default_views() {
   $handler->display->display_options['filters']['type']['value'] = array(
     'pmorganization' => 'pmorganization',
   );
+  $handler->display->display_options['filters']['type']['group'] = 1;
   /* Filter criterion: Content: Title */
   $handler->display->display_options['filters']['title']['id'] = 'title';
   $handler->display->display_options['filters']['title']['table'] = 'node';
   $handler->display->display_options['filters']['title']['field'] = 'title';
   $handler->display->display_options['filters']['title']['operator'] = 'contains';
+  $handler->display->display_options['filters']['title']['group'] = 1;
   $handler->display->display_options['filters']['title']['exposed'] = TRUE;
   $handler->display->display_options['filters']['title']['expose']['operator_id'] = 'title_op';
   $handler->display->display_options['filters']['title']['expose']['label'] = 'Organization';
@@ -128,6 +143,23 @@ function pmorganization_views_default_views() {
     1 => 0,
     3 => 0,
   );
+  /* Filter criterion: Content: Organization Type (pmorganization_type) */
+  $handler->display->display_options['filters']['pmorganization_type_value']['id'] = 'pmorganization_type_value';
+  $handler->display->display_options['filters']['pmorganization_type_value']['table'] = 'field_data_pmorganization_type';
+  $handler->display->display_options['filters']['pmorganization_type_value']['field'] = 'pmorganization_type_value';
+  $handler->display->display_options['filters']['pmorganization_type_value']['group'] = 1;
+  $handler->display->display_options['filters']['pmorganization_type_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['pmorganization_type_value']['expose']['operator_id'] = 'pmorganization_type_value_op';
+  $handler->display->display_options['filters']['pmorganization_type_value']['expose']['label'] = 'Type';
+  $handler->display->display_options['filters']['pmorganization_type_value']['expose']['operator'] = 'pmorganization_type_value_op';
+  $handler->display->display_options['filters']['pmorganization_type_value']['expose']['identifier'] = 'pmorganization_type_value';
+  $handler->display->display_options['filters']['pmorganization_type_value']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    4 => 0,
+  );
+  $handler->display->display_options['filters']['pmorganization_type_value']['reduce_duplicates'] = TRUE;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
