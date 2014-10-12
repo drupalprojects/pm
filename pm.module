@@ -695,17 +695,11 @@ function pm_icon_l($icon, $path, $title, $params = array(), $attributes = array(
     unset($params['destination']);
   }
 
-  $params = _pm_icon_urlencode_helper($params);
-  foreach ($params as $key => $value) {
-    if ($query) {
-      $query .= '&';
-    }
-    $query .= $key . '=' . urlencode($value);
-  }
-
-  // @todo Add back query.
-  $o = l($icon, $path, array('attributes' => $attributes, 'html' => TRUE));
-  return $o;
+  return l($icon, $path, array(
+    'attributes' => $attributes,
+    'html' => TRUE,
+    'query' => _pm_icon_urlencode_helper($params),
+  ));
 }
 
 /**
@@ -724,7 +718,7 @@ function _pm_icon_urlencode_helper($params, $org_key = "") {
       $new_params = array_merge(_pm_icon_urlencode_helper($value, $new_key), $new_params);
     }
     else {
-      $new_params[$new_key] = $value;
+      $new_params[$new_key] = urlencode($value);
     }
   }
   return $new_params;
