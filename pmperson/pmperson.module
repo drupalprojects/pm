@@ -68,15 +68,6 @@ function pmperson_permission() {
 }
 
 /**
- * Dummy function to handle errors.
- *
- * TODO: Remove this function when all other PM submodules have been ported.
- */
-function _pmperson_user_load() {
-
-}
-
-/**
  * Implements hook_ctools_plugin_api().
  */
 function pmperson_ctools_plugin_api($module = NULL, $api = NULL) {
