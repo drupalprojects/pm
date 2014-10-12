@@ -14,21 +14,6 @@ function pm_help($path, $arg) {
     case "admin/help#pm":
       $output = '<p>' . t("Provides a complete project management environment") . '</p>';
       break;
-
-    case "admin/help#pmattribute":
-      $output = '<p>' . t("Provides attributes support for Project Management") . '</p>';
-      $output .= '<p>' . t("Price Modes - Price modes are used calculate the price of the Project Management node when added to an invoice. A price mode can be added to any Project Management node type and any type can be added to an invoice. When a node is added to an invoice it looks for a price mode in the following order:") . '</p>';
-      $output .= '<p>' . t("Ticket, Task, Project, Organization.") . '</p>';
-      $output .= '<p>' . t("It will take the price mode for it's current node or the first valid node type above in it's tree. For example, for a task node type, if that node doesn't have a price mode it will look at the project and then the organization and take the first one it finds. This means you can define a price mode for the organization and it will be used for all nodes under that organization unless it's given a different one.") . '</p>';
-      $output .= '<p>' . t("The following price modes keys are defined:") . '<br />';
-      $output .= '<ul>';
-      $output .= '<li>' . t("not applicable - This is ignored by the system. This means that no price mode is defined.") . '</li>';
-      $output .= '<li>' . t("fixed - Price of 0 is used (so the invoice would need to be manually updated.") . '</li>';
-      $output .= '<li>' . t("hourly - Price taken from node and multiplied by billing duration.") . '</li>';
-      $output .= '<li>' . t("daily - Price given is for daily rate. This price is divided by 8 hours and then multiplied by the billing duration.") . '</li>';
-      $output .= '<li>' . t("fixed_price - Will use the price given as the fixed price for that invoice item.") . '</li>';
-      $output .= '</ul>';
-      break;
   }
 
   return $output;
@@ -45,7 +30,7 @@ function pm_permission() {
     ),
     'Project Management: access administration pages' => array(
       'title' => t('Administer Project Management'),
-      'description' => t('Allow the user to perform administrative tasks on Project Management modules, such as altering configuration and add/edit/delete of attribute values.'),
+      'description' => t('Allow the user to perform administrative tasks on Project Management modules, such as altering configuration.'),
     ),
   );
 }
@@ -100,52 +85,6 @@ function pm_menu() {
     'weight' => -100,
   );
 
-  $items['pm/attributes'] = array(
-    'title' => 'Attributes',
-    'description' => 'Project Management attributes',
-    'page callback' => 'pm_attribute_list',
-    'access arguments' => array('Project Management: access administration pages'),
-    'file' => 'pm.admin.inc',
-    'type' => MENU_NORMAL_ITEM,
-    'weight' => 11,
-  );
-
-  $items['pm/attributes/add'] = array(
-    'title' => 'Add a new attribute',
-    'description' => 'Project Management attributes',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('pm_attribute_add'),
-    'access arguments' => array('Project Management: access administration pages'),
-    'file' => 'pm.admin.inc',
-    'type' => MENU_CALLBACK);
-
-  $items['pm/attributes/edit/%'] = array(
-    'title' => 'Edit an attribute',
-    'description' => 'Project Management attributes',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('pm_attribute_edit', 3),
-    'access arguments' => array('Project Management: access administration pages'),
-    'file' => 'pm.admin.inc',
-    'type' => MENU_CALLBACK);
-
-  $items['pm/attributes/delete/%'] = array(
-    'title' => 'Delete an attribute',
-    'description' => 'Project Management attributes',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('pm_attribute_delete', 3),
-    'access arguments' => array('Project Management: access administration pages'),
-    'file' => 'pm.admin.inc',
-    'type' => MENU_CALLBACK);
-
-  $items['pm/attributes/domain/autocomplete'] = array(
-    'title' => 'List of attributes',
-    'description' => 'Project Management attributes',
-    'page callback' => '_pm_attribute_domain_autocomplete',
-    'page arguments' => array(4),
-    'access arguments' => array('Project Management: access administration pages'),
-    'file' => 'pm.admin.inc',
-    'type' => MENU_CALLBACK);
-
   return $items;
 }
 
@@ -199,13 +138,8 @@ function pm_theme() {
       'file'      => 'pm.theme.inc',
       'arguments' => array('number' => ''),
     ),
-    'pm_attribute_list' => array(
-      'file'      => 'pm.theme.inc',
-      'render element' => 'form',
-    ),
   );
 }
-
 
 /**
  * Function to create a dashboard (call to theme function).
@@ -335,15 +269,6 @@ function pm_pm_dashboard_links($type) {
       'add_type' => '',
       'map' => array(),
       'weight' => 15,
-    );
-    $links[] = array(
-      'theme' => 'pm_dashboard_link',
-      'title' => t('Attributes'),
-      'icon' => 'pmattributes',
-      'path' => 'pm/attributes',
-      'params' => array(),
-      'map' => array(),
-      'weight' => 14,
     );
   }
   return $links;
@@ -1190,56 +1115,6 @@ function _pm_number_of_items($source_module, $destination_module, $nid) {
     $nmb_of_items = db_result(db_query($sql, $nid));
   }
   return $nmb_of_items;
-}
-
-/**
- * Provides attributes in a specified domain.
- */
-function pm_attributes_bydomain($domain) {
-  static $attributes_cache = array();
-  $attributes = array();
-
-  if (array_key_exists($domain, $attributes_cache)) {
-    return $attributes_cache[$domain];
-  }
-
-  $query = db_select('pmattribute', 'sa')
-    ->fields('sa')
-    ->condition('sa.isactive', 1)
-    ->condition('sa.domain', $domain, 'LIKE')
-    ->orderBy('weight', 'ASC')
-    ->orderBy('avalue', 'ASC');
-
-  $result = $query->execute();
-
-  $attributes['values'] = array();
-  foreach ($result as $attribute) {
-    // The variable is deliberately passed through t() for translatability.
-    $attributes['values'][$attribute->akey] = t($attribute->avalue);
-    if ($attribute->isdefault) {
-      $attributes['default'] = $attribute->akey;
-    }
-  }
-  if (is_array($attributes['values']) && !array_key_exists('default', $attributes)) {
-    $v = array_flip($attributes['values']);
-    $attributes['default'] = array_shift($v);
-  }
-
-  $attributes_cache[$domain] = $attributes;
-
-  return $attributes;
-}
-
-/**
- * Provides attribute value for a given domain and key.
- */
-function pm_attribute_value($domain, $key) {
-  $attributes_array = pm_attributes_bydomain($domain);
-  $attributes = $attributes_array['values'];
-  if (array_key_exists($key, $attributes)) {
-    return $attributes[$key];
-  }
-  return $key;
 }
 
 /**

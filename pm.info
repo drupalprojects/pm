@@ -5,15 +5,12 @@ package = Project Management
 configure = admin/config/pm
 
 files[] = pm.test
-files[] = pm_handler_field_attributes_domain.inc
 files[] = pm_handler_field_operation.inc
-files[] = pm_handler_filter_attributes_domain.inc
 
 dependencies[] = date
 dependencies[] = entityreference
 dependencies[] = list
 dependencies[] = views
-
 dependencies[] = addressfield
 dependencies[] = email
 dependencies[] = link

@@ -42,10 +42,6 @@ MANAGEMENT PACKAGE.
 provides a Project Management dashboard which gives quick links for 
 the other Project Management modules as well as to the Project Management 
 administration section.
--- Attributes are the values that are 
-used within Project Management, such as task status, countries, currencies 
-etc. This module only relies on the Project Management base module, but 
-is needed by all of the following modules.
 
 - Organization
 -- This module allows you to create nodes relating to the organizations 
@@ -70,8 +66,8 @@ to build a work breakdown structure.
 
 - Ticket
 -- Tickets can be used to track bugs, feature requests, or any other 
-category as specified via attributes. They can be associated with an 
-organization, project or task.
+category as specified via the fields settings form. They can be associated with
+an organization, project or task.
 
 - Timetracking
 -- This module allows the recording of time spent relating to particular 

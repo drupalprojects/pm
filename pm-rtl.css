@@ -76,10 +76,6 @@ dt#pmexpenses {
   background: transparent url(images/expenses.png) no-repeat top right;
 }
 
-dt#pmattributes {
-  background: transparent url(images/attributes.png) no-repeat top right;
-}
-
 dt#pmconfiguration {
   background: transparent url(images/configuration.png) no-repeat top right;
 }

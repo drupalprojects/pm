@@ -56,45 +56,6 @@ function pm_uninstall() {
 }
 
 /**
- * Implements hook_schema().
- */
-function pm_schema() {
-  $schema['pmattribute'] = array(
-    'fields'          => array(
-      'aid'           => array('type' => 'serial', 'not null' => TRUE),
-      'domain'        => array('type' => 'varchar', 'length' => 100),
-      'akey'          => array('type' => 'varchar', 'length' => 100),
-      'avalue'        => array('type' => 'varchar', 'length' => 100),
-      'parent_domain' => array('type' => 'varchar', 'length' => 100),
-      'weight'        => array(
-        'type' => 'int',
-        'not null' => FALSE,
-        'default' => 0,
-        'size' => 'small',
-      ),
-      'isdefault'     => array(
-        'type' => 'int',
-        'not null' => FALSE,
-        'default' => 0,
-        'size' => 'tiny',
-      ),
-      'isactive'      => array(
-        'type' => 'int',
-        'not null' => FALSE,
-        'default' => 1,
-        'size' => 'tiny',
-      ),
-    ),
-    'primary key' => array('aid'),
-    'indexes' => array(
-      'domain'        => array('domain'),
-    ),
-  );
-
-  return $schema;
-}
-
-/**
  * Implements hook_update_last_removed().
  */
 function pm_update_last_removed() {
@@ -166,4 +127,11 @@ function pm_update_7103(&$sandbox) {
   if (!module_enable($module_list, TRUE)) {
     throw new DrupalUpdateException('This version requires one or more modules that could not be enabled.');
   }
+}
+
+/**
+ * Removal of legacy attribute table.
+ */
+function pm_update_7104() {
+  db_drop_table('pmattribute');
 }

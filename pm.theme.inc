@@ -230,15 +230,6 @@ function theme_pm_link($source_module = '', $destination_module = '', $node_nid 
   }
 
   switch ($destination_module) {
-    case "pmattribute":
-      $user_access_check = 'Project Management: access administration pages';
-      $list_text = t('Attributes');
-      $list_path = 'pm/attributes';
-      $add_icon_type = 'pmattribute';
-      $add_path = 'pm/attributes/add';
-      $dt_id = 'pmattributes';
-      break;
-
     case "pmconfiguration":
       $user_access_check = 'Project Management: access administration pages';
       $list_text = t('Configuration');
@@ -398,54 +389,4 @@ function theme_pm_number_items($number) {
     $content .= '<span class="pmlinks-count">(' . $number . ')</span>';
   }
   return $content;
-}
-
-/**
- * Provides HTML for the Project Management attributes list.
- */
-function theme_pm_attribute_list($form) {
-  drupal_add_tabledrag('attributes', 'order', 'sibling', 'attribute-weight');
-
-  $header = array();
-  $row = array();
-  $rows = array();
-
-  $header = $form['form']['header']['#value'];
-  unset($form['form']['header']);
-
-  if (isset($form['form']['attributes'])) {
-    foreach (element_children($form['form']['attributes']) as $key) {
-      $form['form']['attributes'][$key]['attribute_weight_' . $key]['#attributes']['class'] = array('attribute-weight');
-      $domain = check_markup($form['form']['attributes'][$key]['attribute_domain_' . $key]['#value']);
-      $isdefault = $form['form']['attributes'][$key]['attribute_default_' . $key]['#default_value'];
-      if ($isdefault) {
-        $ischecked = 'checked="checked"';
-      }
-      else {
-        $ischecked = '';
-      }
-      $domain_name = 'attribute_default_' . str_replace(' ', '|', $domain);
-      $default_ctl = '<input type="radio" name="' . $domain_name . '" value="' . $key . '" ' . $ischecked . '"/>';
-      $data = array(
-        $domain,
-        check_markup($form['form']['attributes'][$key]['attribute_akey_' . $key]['#value']),
-        check_markup($form['form']['attributes'][$key]['attribute_avalue_' . $key]['#value']),
-        drupal_render($form['form']['attributes'][$key]['attribute_isactive_' . $key]),
-        $default_ctl,
-        drupal_render($form['form']['attributes'][$key]['attribute_weight_' . $key]),
-        array(
-          'data' => $form['form']['attributes'][$key]['attribute_operations_' . $key]['#value'],
-          'class' => 'pm_list_operations',
-        ),
-      );
-      $row['data'] = $data;
-      $rows[] = $row;
-    }
-  }
-  $o = theme('table', array(
-    'header' => $header,
-    'rows' => $rows,
-    'attributes' => array('id' => 'attributes'),
-  ));
-  return $o;
 }
