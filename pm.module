@@ -93,30 +93,9 @@ function pm_menu() {
  */
 function pm_theme() {
   return array(
-    'pm_form_group' => array(
-      'file'      => 'pm.theme.inc',
-      'render element' => 'element',
-    ),
     'datetime' => array(
       'file'      => 'pm.theme.inc',
       'arguments' => array('element'),
-    ),
-    'dateext' => array(
-      'file'      => 'pm.theme.inc',
-      'arguments' => array('element'),
-    ),
-    'pm_link' => array(
-      'file'      => 'pm.theme.inc',
-      'arguments' => array(
-        'source_module',
-        'destination_module',
-        'node_nid',
-        'weight',
-      ),
-    ),
-    'pm_view_item' => array(
-      'file'      => 'pm.theme.inc',
-      'variables' => array('label', 'value'),
     ),
     'pm_dashboard' => array(
       'file'      => 'pm.theme.inc',
@@ -133,10 +112,6 @@ function pm_theme() {
     'pm_dashboard_links_weight_table' => array(
       'file'      => 'pm.theme.inc',
       'arguments' => array('form' => array()),
-    ),
-    'pm_number_items' => array(
-      'file'      => 'pm.theme.inc',
-      'arguments' => array('number' => ''),
     ),
   );
 }
@@ -1000,124 +975,6 @@ function pm_get_assignment_options($organization_nid = 0, $project_nid = 0) {
 }
 
 /**
- * Helper function to count nodes.
- *
- * Only counts nodes of type destination module with parent nid of type source
- * module.
- *
- * @param string $source_module
- *   A string of module where the request is coming from.
- * @param string $destination_module
- *   A string with name of targeted module.
- * @param int $nid
- *   Node id of source module.
- *
- * @return ''|int
- *   Empty string if can't be counted or the count of destination nodes in
- *   source node.
- *
- * @see theme_pm_link()
- */
-function _pm_number_of_items($source_module, $destination_module, $nid) {
-  $nmb_of_items = '';
-
-  $valid_destination_modules = array();
-  switch ($source_module) {
-    case "pmorganization":
-      $column_name = 'organization_nid';
-      $valid_destination_modules = array(
-        'pmproject',
-        'pmtask',
-        'pmticket',
-        'pmtimetracking',
-        'pmnote',
-        'pmperson',
-        'pmexpense',
-        'pminvoice',
-      );
-      break;
-
-    case "pmproject":
-      $column_name = 'project_nid';
-      $valid_destination_modules = array(
-        'pmtask',
-        'pmticket',
-        'pmtimetracking',
-        'pmnote',
-        'pmexpense',
-        'pminvoice',
-      );
-      break;
-
-    case "pmtask":
-      $column_name = 'task_nid';
-      $valid_destination_modules = array(
-        'pmticket',
-        'pmtimetracking',
-        'pmnote',
-        'pmexpense',
-      );
-      break;
-
-    case "pmticket":
-      $column_name = 'ticket_nid';
-      $valid_destination_modules = array(
-        'pmtimetracking',
-        'pmexpense',
-      );
-      break;
-  }
-
-  if (in_array($destination_module, $valid_destination_modules)) {
-    switch ($destination_module) {
-      case 'pmproject':
-        $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmproject} AS spr ON n.vid=spr.vid WHERE n.status=1 AND
-                n.type='pmproject' and spr." . $column_name . " = %d";
-        break;
-
-      case 'pmtask':
-        $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmtask} AS sta ON n.vid=sta.vid WHERE n.status=1 AND
-                n.type='pmtask' and sta." . $column_name . " = %d";
-        break;
-
-      case 'pmticket':
-        $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmticket} AS sti ON n.vid=sti.vid WHERE n.status=1 AND
-                n.type='pmticket' and sti." . $column_name . " = %d";
-        break;
-
-      case 'pmtimetracking':
-        $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmtimetracking} AS stt ON n.vid=stt.vid WHERE n.status=1 AND
-                n.type='pmtimetracking' and stt." . $column_name . " = %d";
-        break;
-
-      case 'pmperson':
-        $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmperson} AS spe ON n.vid=spe.vid WHERE n.status=1 AND
-                n.type='pmperson' and spe." . $column_name . " = %d";
-        break;
-
-      case 'pmnote':
-        $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmnote} AS sno ON n.vid=sno.vid WHERE n.status=1 AND
-                n.type='pmnote' and sno." . $column_name . " = %d";
-        break;
-
-      case 'pmexpense':
-        $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pmexpense} AS sex ON n.vid=sex.vid WHERE n.status=1 AND
-                n.type='pmexpense' and sex." . $column_name . " = %d";
-        break;
-
-      case 'pminvoice':
-        $sql = "SELECT COUNT(*) FROM {node} AS n INNER JOIN {pminvoice} AS sin ON n.vid=sin.vid WHERE n.status=1 AND
-                n.type='pminvoice' and sin." . $column_name . " = %d";
-        break;
-    }
-    // @todo Convert to DBTNG.
-    // ->addTag('node_access').
-    $nmb_of_items = db_result(db_query($sql, $nid));
-  }
-  return $nmb_of_items;
-}
-
-/**
  * Helper function to return nid of particular bundle in hierarchy.
  *
  * @param object $node
@@ -1127,7 +984,7 @@ function _pm_number_of_items($source_module, $destination_module, $nid) {
  * @param int $iteration
  *   Number of maximum iterations to try for.
  *
- * @return integer
+ * @return int
  *   Node id of the required parent.
  */
 function pm_get_parent($node, $type = 'pmorganization', $iteration = 10) {
