@@ -1118,16 +1118,18 @@ function _pm_number_of_items($source_module, $destination_module, $nid) {
 }
 
 /**
- * Helper function to return nid of particular bundle in heirarchy.
+ * Helper function to return nid of particular bundle in hierarchy.
+ *
  * @param  object  $node      The node whoe's parent's should be hunted for.
  * @param  string  $type      The parent node type that is being hunted for.
  * @param  integer $iteration Number of maximum iterations to try for.
+ *
  * @return integer            Node id of the required parent.
  */
-function pm_get_parent($node, $type = 'pmorganiation', $iteration = 10) {
+function pm_get_parent($node, $type = 'pmorganization', $iteration = 10) {
   try {
     $wrapper    = entity_metadata_wrapper('node', $node);
-    while($iteration) {
+    while ($iteration) {
       $iteration--;
       $bundle = $wrapper->getBundle();
 
@@ -1138,7 +1140,7 @@ function pm_get_parent($node, $type = 'pmorganiation', $iteration = 10) {
       if ($wrapper->__isset($bundle . '_parent')) {
         $parent_field = $bundle . '_parent';
       }
-      else if ($wrapper->__isset('field_' . $bundle . '_parent')) {
+      elseif ($wrapper->__isset('field_' . $bundle . '_parent')) {
         $parent_field = 'field_' . $bundle . '_parent';
       }
       else {
@@ -1151,10 +1153,10 @@ function pm_get_parent($node, $type = 'pmorganiation', $iteration = 10) {
     }
   }
   catch (EntityMetadataWrapperException $exc) {
-      watchdog(
-        'pm',
-        'See '  . __FUNCTION__ . '() <pre>' .  $exc->getTraceAsString() . '</pre>',
-         NULL, WATCHDOG_ERROR
-      );
+    watchdog(
+      'pm',
+      'See '  . __FUNCTION__ . '() <pre>' .  $exc->getTraceAsString() . '</pre>',
+      NULL, WATCHDOG_ERROR
+    );
   }
 }

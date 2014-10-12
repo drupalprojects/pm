@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmexpense.field_instance.inc
+ * Field instance definitions for the PM Expense module.
  */
 
 /**

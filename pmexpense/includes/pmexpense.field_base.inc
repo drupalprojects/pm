@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * pmexpense.field_base.inc
+ * Field definitions for the PM Expense module.
  */
 
 /**
