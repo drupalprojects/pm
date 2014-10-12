@@ -1120,11 +1120,15 @@ function _pm_number_of_items($source_module, $destination_module, $nid) {
 /**
  * Helper function to return nid of particular bundle in hierarchy.
  *
- * @param  object  $node      The node whoe's parent's should be hunted for.
- * @param  string  $type      The parent node type that is being hunted for.
- * @param  integer $iteration Number of maximum iterations to try for.
+ * @param object $node
+ *   The node whose parent's should be hunted for.
+ * @param string $type
+ *   The parent node type that is being hunted for.
+ * @param int $iteration
+ *   Number of maximum iterations to try for.
  *
- * @return integer            Node id of the required parent.
+ * @return integer
+ *   Node id of the required parent.
  */
 function pm_get_parent($node, $type = 'pmorganization', $iteration = 10) {
   try {
