@@ -464,7 +464,7 @@ function pm_admin_settings() {
 
     $form['pm_dashboard_settings'][$type] = array(
       '#type' => 'fieldset',
-      '#title' => t($type_data['title']),
+      '#title' => $type_data['title'],
       '#description' => $type_data['description'],
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
