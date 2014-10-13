@@ -142,7 +142,10 @@ function pmperson_migrate_email_missmatch_count() {
 function pmperson_migrate_page_callback() {
   if (pmperson_migrate_update_could_be_performed()) {
     drupal_set_message(t('PM Person migration conflicts have been resolved.'));
-    drupal_goto('update.php');
+    drupal_goto(
+      'update.php',
+      array('script' => 'update.php')
+    );
   }
 
   $form_fix_1 = drupal_get_form('pmperson_migrate_fix_existing_users_form');
