@@ -99,7 +99,10 @@ function _pmexpense_migrate_migrate_single_node($nid, $vid, $expense) {
   $node = node_load($nid, $vid);
 
   // Ticket >> Task >> Project >> Organization.
-  if ($expense->task_nid) {
+  if ($expense->ticket_nid) {
+    $node->pmexpense_parent[LANGUAGE_NONE][0]['target_id'] = $expense->ticket_nid;
+  }
+  elseif ($expense->task_nid) {
     $node->pmexpense_parent[LANGUAGE_NONE][0]['target_id'] = $expense->task_nid;
   }
   elseif ($expense->project_nid) {
@@ -110,6 +113,9 @@ function _pmexpense_migrate_migrate_single_node($nid, $vid, $expense) {
   }
 
   $node->pm_amount[LANGUAGE_NONE][0]['value'] = $expense->amount;
+  if ($expense->provider_nid) {
+    $node->pm_provider[LANGUAGE_NONE][0]['value'] = $expense->provider_nid;
+  }
 
   node_save($node);
   return TRUE;
