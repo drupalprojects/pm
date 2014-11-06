@@ -582,6 +582,9 @@ function _pmpermission_get_organization_id($node, $max_depth) {
     --$max_depth;
     $bundle_name = $node->type;
     $field_name = _pmpermission_get_field_name($bundle_name, 'parent');
+    if (empty($field_name)) {
+      return FALSE;
+    }
     try {
       $wrapper = entity_metadata_wrapper('node', $node);
       $n = $wrapper->$field_name->value();
