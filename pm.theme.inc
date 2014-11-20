@@ -20,7 +20,7 @@ function theme_pm_dashboard($link_blocks) {
     $content .= '<dl class="pmdashboard clear-block">';
     foreach ($link_blocks as $link_block_array) {
       $content .= '<div class="pmdashboard">';
-      if (!empty($link_block_array)) {
+      if (!empty($link_block_array) AND is_array($link_block_array)) {
         foreach ($link_block_array as $link_array) {
           if (!empty($link_array['theme'])) {
             $content .= theme($link_array['theme'], $link_array);
