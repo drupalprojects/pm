@@ -100,16 +100,7 @@ function pmorganization_default_field_instances() {
   // Exported field_instance: 'node-pmorganization-pm_address'
   $field_instances['node-pmorganization-pm_address'] = array(
     'bundle' => 'pmorganization',
-    'default_value' => array(
-      0 => array(
-        'element_key' => 'node|pmorganization|pm_address|und|0',
-        'thoroughfare' => '',
-        'premise' => '',
-        'postal_code' => '',
-        'locality' => '',
-        'country' => 'DE',
-      ),
-    ),
+    'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
     'display' => array(
