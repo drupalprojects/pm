@@ -11,7 +11,7 @@ function pmteam_install() {
   // Create and attaches fields to pmteam content type.
   module_load_include('inc', 'pmteam', 'includes/pmteam.migrate');
 
-  // @todo Parameter $sandbox is passed as a placeholder.
+  // Parameter $sandbox is passed as a placeholder.
   $sandbox = array();
   pmteam_migrate_create_fields($sandbox);
   variable_set("pmpermission_node_pmteam_enabled", TRUE);

@@ -10,8 +10,7 @@
 function pmpermission_help($path, $arg) {
   switch ($path) {
     case 'admin/help#pm-permission':
-      // @todo Complete placeholder
-      return '<p>' . t('Placeholder help text for PM permission helper module') . '</p>';
+      return '<p>' . t('PM Permission allows you to grant access to content based on interactions with Drupal PM.') . '</p>';
   }
 }
 
