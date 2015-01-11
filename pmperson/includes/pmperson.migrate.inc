@@ -137,7 +137,6 @@ function pmperson_migrate_email_missmatch_count() {
  * Page callback for PM_PMPERSON_RESOLVE_DEPENDENCIES_LINK.
  *
  * @see pmperson_menu()
- * @todo Need to word this better Issue #1412134-84
  */
 function pmperson_migrate_page_callback() {
   if (pmperson_migrate_update_could_be_performed()) {

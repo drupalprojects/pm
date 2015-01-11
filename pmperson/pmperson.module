@@ -54,7 +54,6 @@ function pmperson_forms($form_id, $args) {
   return $forms;
 }
 
-// @todo Need to consider how to protect user information when not stored as a separate node.
 /**
  * Implements hook_permission().
  */
