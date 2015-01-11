@@ -407,7 +407,8 @@ function pmpermission_node_access_records($node) {
   $bundle_name = is_string($node) ? $node : $node->type;
   $grants = array();
   if (!variable_get('node_permissions_' . $bundle_name, 1)) {
-    _pmpermission_grants_default($node, $bundle_name);
+    $default_grants = _pmpermission_grants_default($node, $bundle_name);
+    $grants = array_merge($grants, $default_grants);
   }
   if (module_exists('pmorganization')) {
     if (_pmpermission_get_field_name($bundle_name, 'parent')) {
