@@ -410,7 +410,7 @@ function pmpermission_node_access_records($node) {
     $grants = array_merge($grants, $default_grants);
   }
   if (module_exists('pmorganization')) {
-    if (_pmpermission_get_field_name($bundle_name, 'parent')) {
+    if ($bundle_name = 'pmorganization' OR _pmpermission_get_field_name($bundle_name, 'parent')) {
       $belonged_grants = _pmpermission_grants_belonged($node, $bundle_name, 'Organization');
       if ($belonged_grants) {
         $grants = array_merge($grants, $belonged_grants);
