@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Install, disable, uninstall and update functions for pmissue module.
+ * Install, disable, uninstall and update functions for PM Issue module.
  */
 
 /**
@@ -12,15 +12,13 @@ function pmissue_install() {
 
   // PM Permissions default configurations.
   variable_set('pmpermission_field_assigned_reference', 'pm_assigned');
+  variable_set('pmpermission_field_pm_reference', 'pm_manager');
   variable_set('pmpermission_field_parent_reference_for_pmissue', 'pmissue_parent');
   variable_set('pmpermission_node_pmissue_enabled', TRUE);
 
   // Create and attaches fields to pmissue content type.
   module_load_include('inc', 'pmissue', 'includes/pmissue.migrate');
-
-  // Parameter $sandbox is passed as a placeholder.
-  $sandbox = array();
-  pmissue_migrate_create_fields($sandbox);
+  pmissue_migrate_create_fields();
 }
 
 /**
