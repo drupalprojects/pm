@@ -1,5 +1,5 @@
-name = PM Ticket
-description = "Allows creation of tickets for Projects and Tasks"
+name = PM Ticket (Deprecated)
+description = "Allows creation of tickets for Projects and Tasks. Deprecated in favour of PM Issue module."
 dependencies[] = pm
 dependencies[] = pmorganization
 dependencies[] = pmproject

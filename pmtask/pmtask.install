@@ -71,3 +71,32 @@ function pmtask_update_dependencies() {
 
   return $dependencies;
 }
+
+/**
+ * Implements hook_requirements().
+ */
+function pmtask_requirements($phase) {
+  $requirements = array();
+  $t = get_t();
+  if ($phase == 'runtime') {
+    // Quickly check if there are any pmtask nodes in the node table.
+    $result = db_query('SELECT n.nid FROM {node} n WHERE n.type = :type LIMIT 1', array(':type' => 'pmtask'));
+    $count = $result->rowCount();
+    $link = l('Node Convert', 'https://www.drupal.org/project/node_convert');
+    $description = $t('PM Task have been deprecated in favour of PM Issue.');
+    $description .= "<br>";
+    if($count) {
+      $description .= $t('You can use !link to convert nodes to PM Issue and after that disable this module.', array('!link' => $link));
+    }
+    else {
+      $description .= $t('There are no PM Task nodes in the system, You can disable this module.');
+    }
+    $requirements['pmtask depcrated'] = array(
+      'title' => $t('PM Task'),
+      'description' => $description,
+      'value' => $t('Enabled'),
+      'severity' => REQUIREMENT_WARNING,
+    );
+  }
+  return $requirements;
+}

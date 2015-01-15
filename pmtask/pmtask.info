@@ -1,5 +1,5 @@
-name = PM Task
-description = "Allows recording of tasks for Project Management Organizations and Projects"
+name = PM Task (Deprecated)
+description = "Allows recording of tasks for Project Management Organizations and Projects. Deprecated in favour of  PM Issue module."
 dependencies[] = pm
 dependencies[] = pmorganization
 dependencies[] = pmproject
