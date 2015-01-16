@@ -86,6 +86,7 @@ dt#pmprojects {
   background: transparent url(images/projects.png) no-repeat top left;
 }
 
+dt#pmissues,
 dt#pmtasks {
   background: transparent url(images/tasks.png) no-repeat top left;
 }
