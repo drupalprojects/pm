@@ -169,7 +169,7 @@ function pmissue_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'pmissue_parent',
-    'label' => 'Parent',
+    'label' => 'Project',
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
@@ -209,6 +209,45 @@ function pmissue_default_field_instances() {
     'entity_type' => 'node',
     'field_name' => 'pmissue_related',
     'label' => 'Related Issue',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(),
+      'type' => 'options_select',
+      'weight' => 0,
+    ),
+  );
+
+  // Exported field_instance: 'node-pmissue-pmissue_parent_issue'
+  $field_instances['node-pmissue-pmissue_parent_issue'] = array(
+    'bundle' => 'pmissue',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'inline',
+        'module' => 'entityreference',
+        'settings' => array(
+          'link' => FALSE,
+        ),
+        'type' => 'entityreference_label',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'inline',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'pmissue_parent_issue',
+    'label' => 'Parent Issue',
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
@@ -654,8 +693,9 @@ function pmissue_default_field_instances() {
   t('Description');
   t('Duration');
   t('Duration unit');
-  t('Parent');
+  t('Project');
   t('Related Issue');
+  t('Parent Issue');
   t('Price');
   t('Price Mode');
   t('Priority');
