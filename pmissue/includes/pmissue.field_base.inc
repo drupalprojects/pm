@@ -143,7 +143,7 @@ function pmissue_default_field_bases() {
   // Exported field_base: 'pmissue_related'
   $field_bases['pmissue_related'] = array(
     'active' => 1,
-    'cardinality' => 0,
+    'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'pmissue_related',
