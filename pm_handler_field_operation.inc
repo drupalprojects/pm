@@ -53,16 +53,16 @@ class pm_handler_field_operation extends views_handler_field_node_link {
     }
     else {
       $links = array();
-      if ($link = $this->create_link_if_valid(t('edit'), "node/$id/edit")) {
+      if ($link = $this->create_link_definition(t('edit'), "node/$id/edit")) {
         $links[] = $link;
       }
-      if ($link = $this->create_link_if_valid(t('delete'), "node/$id/delete")) {
+      if ($link = $this->create_link_definition(t('delete'), "node/$id/delete")) {
         $links[] = $link;
       }
       $value = empty($links) ? '' : implode('&nbsp;|&nbsp;', $links);
 
       $output = '';
-      $links = array();
+      // $links = array();
       if ($link = $this->create_link_definition(t('view'), "node/$id")) {
         $links[] = $link;
       }
