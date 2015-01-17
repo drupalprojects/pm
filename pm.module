@@ -1003,9 +1003,6 @@ function pm_get_parent($node, $type = 'pmorganization', $iteration = 10) {
       }
       $wrapper = $wrapper->{$parent_field};
     }
-    if ($node_wrapper->__isset('pm_billing_status')) {
-      $pm_billing_status = $node_wrapper->pm_billing_status->value();
-    }
   }
   catch (EntityMetadataWrapperException $exc) {
     watchdog(
