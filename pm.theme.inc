@@ -49,7 +49,7 @@ function theme_pm_dashboard_block($link_blocks) {
   $content = '<div id="pmdashboard-block">';
   if (!empty($link_blocks)) {
     foreach ($link_blocks as $link_block_array) {
-      if (!empty($link_block_array)) {
+      if (!empty($link_block_array) ANd is_array($link_block_array)) {
         foreach ($link_block_array as $link_array) {
           $content .= '<div class="pmdashboard-icon">';
           if (!empty($link_array['theme'])) {
