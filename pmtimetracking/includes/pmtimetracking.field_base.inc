@@ -91,8 +91,7 @@ function pmtimetracking_default_field_bases() {
         ),
         'target_bundles' => array(
           'pmproject' => 'pmproject',
-          'pmtask' => 'pmtask',
-          'pmticket' => 'pmticket',
+          'pmissue' => 'pmissue',
         ),
       ),
       'target_type' => 'node',
