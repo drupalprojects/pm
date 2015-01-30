@@ -21,7 +21,7 @@ class PMTimetrackingTestCase extends DrupalWebTestCase {
    * Standard configuration for all test cases.
    */
   public function setUp() {
-    parent::setUp('pm', 'pmorganization', 'pmproject', 'pmtask', 'pmticket', 'pmtimetracking');
+    parent::setUp('pm', 'pmorganization', 'pmproject', 'pmissue', 'pmtimetracking');
   }
 
   /**
@@ -32,8 +32,7 @@ class PMTimetrackingTestCase extends DrupalWebTestCase {
     $user = $this->drupalCreateUser(array(
       'create pmorganization content',
       'create pmproject content',
-      'create pmtask content',
-      'create pmticket content',
+      'create pmissue content',
       'create pmtimetracking content',
     ));
     $this->drupalLogin($user);
@@ -47,11 +46,7 @@ class PMTimetrackingTestCase extends DrupalWebTestCase {
       'title' => $this->randomName(32),
       // 'organization_nid' => '1',
     );
-    $task = array(
-      'title' => $this->randomName(32),
-      // 'body[und][0][value]' => $this->randomName(64),
-    );
-    $ticket = array(
+    $issue = array(
       'title' => $this->randomName(32),
       // 'body[und][0][value]' => $this->randomName(64),
     );
@@ -61,8 +56,7 @@ class PMTimetrackingTestCase extends DrupalWebTestCase {
     );
     $this->drupalPost('node/add/pmorganization', $org, t('Save'));
     $this->drupalPost('node/add/pmproject', $prj, t('Save'));
-    $this->drupalPost('node/add/pmtask', $task, t('Save'));
-    $this->drupalPost('node/add/pmticket', $ticket, t('Save'));
+    $this->drupalPost('node/add/pmissue', $issue, t('Save'));
     $this->drupalPost('node/add/pmtimetracking', $timetracking, t('Save'));
 
     $this->assertText(t('Timetracking @title has been created.', array('@title' => $timetracking['title'])));;

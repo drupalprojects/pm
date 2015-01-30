@@ -3,8 +3,7 @@ description = "Allows recording of expenses based on organizations, projects, ta
 dependencies[] = pm
 dependencies[] = pmorganization
 dependencies[] = pmproject
-dependencies[] = pmtask
-dependencies[] = pmticket
+dependencies[] = pmissue
 package = Project Management
 core = 7.x
 
