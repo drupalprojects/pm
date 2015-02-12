@@ -709,24 +709,24 @@ function pm_icon_delete_node($node, $params=array()) {
 /**
  * Provides a Project Management add icon.
  */
-function pm_icon_add($path, $params=array()) {
-  $attributes = array('class' => 'popups-form');
+function pm_icon_add($path, $params = array()) {
+  $attributes = array('class' => array('popups-form'));
   return pm_icon_l('application_add', $path, t('Add'), $params, $attributes);
 }
 
 /**
  * Provides a Project Management edit icon.
  */
-function pm_icon_edit($path, $params=array()) {
-  $attributes = array('class' => 'popups-form');
+function pm_icon_edit($path, $params = array()) {
+  $attributes = array('class' => array('popups-form'));
   return pm_icon_l('application_edit', $path, t('Edit'), $params, $attributes);
 }
 
 /**
  * Provides a Project Management delete icon.
  */
-function pm_icon_delete($path, $params=array()) {
-  $attributes = array('class' => 'popups-form');
+function pm_icon_delete($path, $params = array()) {
+  $attributes = array('class' => array('popups-form'));
   return pm_icon_l('application_delete', $path, t('Delete'), $params, $attributes);
 }
 
