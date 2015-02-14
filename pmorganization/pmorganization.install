@@ -32,9 +32,9 @@ function pmorganization_disable() {
  * Implements hook_uninstall().
  */
 function pmorganization_uninstall() {
-  variable_delete('node_options_pmorganization');
-  variable_delete('pmpermission_field_org_member_reference');
-  variable_delete('pmpermission_node_pmorganization_enabled');
+  variable_del('node_options_pmorganization');
+  variable_del('pmpermission_field_org_member_reference');
+  variable_del('pmpermission_node_pmorganization_enabled');
 
   // Clean up field instances (and field) and its data.
   module_load_include('inc', 'pmorganization', 'includes/pmorganization.field_instance');
