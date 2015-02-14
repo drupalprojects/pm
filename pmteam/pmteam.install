@@ -25,6 +25,28 @@ function pmteam_disable() {
 }
 
 /**
+ * Implements hook_uninstall().
+ */
+function pmteam_uninstall() {
+  variable_del('pmpermission_node_pmteam_enabled');
+  // Clean up field instances (and field) and its data.
+  module_load_include('inc', 'pmteam', 'includes/pmteam.field_instance');
+  module_load_include('inc', 'pmteam', 'includes/pmteam.field_base');
+  $declared_field_bases = pmteam_default_field_bases();
+  $declared_field_instances = pmteam_default_field_instances();
+  $field_instance = field_info_instances('node', 'pmteam');
+
+  foreach ($declared_field_instances as $declared_instance) {
+    $instance = $field_instance[$declared_instance['field_name']];
+    if ($instance) {
+      // Only delete field base if declared by this module.
+      $delete_field_base = isset($declared_field_bases[$declared_instance['field_name']]);
+      field_delete_instance($instance, $delete_field_base);
+    }
+  }
+}
+
+/**
  * Implements hook_update_last_removed().
  */
 function pmteam_update_last_removed() {
