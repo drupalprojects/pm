@@ -36,6 +36,21 @@ function pmtask_disable() {
 function pmtask_uninstall() {
   variable_del('pmpermission_field_parent_reference_for_pmtask');
   variable_del('pmpermission_node_pmtask_enabled');
+  // Clean up field instances (and field) and its data.
+  module_load_include('inc', 'pmtask', 'includes/pmtask.field_instance');
+  module_load_include('inc', 'pmtask', 'includes/pmtask.field_base');
+  $declared_field_bases = pmtask_default_field_bases();
+  $declared_field_instances = pmtask_default_field_instances();
+  $field_instance = field_info_instances('node', 'pmtask');
+
+  foreach ($declared_field_instances as $declared_instance) {
+    $instance = $field_instance[$declared_instance['field_name']];
+    if ($instance) {
+      // Only delete field base if declared by this module.
+      $delete_field_base = isset($declared_field_bases[$declared_instance['field_name']]);
+      field_delete_instance($instance, $delete_field_base);
+    }
+  }
 }
 
 /**
