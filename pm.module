@@ -113,6 +113,10 @@ function pm_theme() {
       'file'      => 'pm.theme.inc',
       'arguments' => array('form' => array()),
     ),
+    'pm_list_default' => array(
+      'template' => 'pm-list-default',
+      'variables' => array('value' => NULL, 'key' => NULL),
+    ),
   );
 }
 
@@ -1020,4 +1024,45 @@ function pm_views_api() {
   return array(
     'api' => 3.0
   );
+}
+
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function pm_field_formatter_info() {
+  return array(
+    'pm_list_default' => array(
+      'label' => t('Project Management Icons'),
+      'field types' => array('list_integer', 'list_float', 'list_text', 'list_boolean'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function pm_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  switch ($display['type']) {
+    case 'pm_list_default':
+      $allowed_values = list_allowed_values($field, $instance, $entity_type, $entity);
+      foreach ($items as $delta => $item) {
+        $value = '';
+        if (isset($allowed_values[$item['value']])) {
+          $value = field_filter_xss($allowed_values[$item['value']]);
+        }
+        else {
+          // If no match was found in allowed values, fall back to the key.
+          $value = field_filter_xss($item['value']);
+        }
+        $key = $item['value'];
+        $output = theme('pm_list_default', array('value' => $value, 'key' => $key));
+        $element[$delta] = array('#markup' => $output);
+      }
+      break;
+  }
+
+  return $element;
 }
