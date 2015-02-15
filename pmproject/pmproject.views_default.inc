@@ -37,16 +37,22 @@ function pmproject_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
     'title' => 'title',
+    'title_1' => 'title_1',
     'pm_projectstatus' => 'pm_projectstatus',
-    'pm_projectpriority' => 'pm_projectpriority',
     'pm_projectcategory' => 'pm_projectcategory',
-    'pm_manager' => 'pm_manager',
-    'edit_node' => 'edit_node',
-    'delete_node' => 'edit_node',
+    'pm_projectpriority' => 'pm_projectpriority',
+    'pm_handler_field_operation' => 'pm_handler_field_operation',
   );
-  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['default'] = 'title_1';
   $handler->display->display_options['style_options']['info'] = array(
     'title' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'title_1' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
@@ -60,13 +66,6 @@ function pmproject_views_default_views() {
       'separator' => '',
       'empty_column' => 0,
     ),
-    'pm_projectpriority' => array(
-      'sortable' => 1,
-      'default_sort_order' => 'asc',
-      'align' => '',
-      'separator' => '',
-      'empty_column' => 0,
-    ),
     'pm_projectcategory' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
@@ -74,33 +73,24 @@ function pmproject_views_default_views() {
       'separator' => '',
       'empty_column' => 0,
     ),
-    'pm_manager' => array(
+    'pm_projectpriority' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
       'empty_column' => 0,
     ),
-    'edit_node' => array(
-      'align' => '',
-      'separator' => ' ',
-      'empty_column' => 1,
-    ),
-    'delete_node' => array(
+    'pm_handler_field_operation' => array(
       'align' => '',
       'separator' => '',
-      'empty_column' => 1,
+      'empty_column' => 0,
     ),
   );
-  $handler->display->display_options['style_options']['sticky'] = TRUE;
-  $handler->display->display_options['style_options']['empty_table'] = TRUE;
-  /* No results behavior: Global: Text area */
-  $handler->display->display_options['empty']['area']['id'] = 'area';
-  $handler->display->display_options['empty']['area']['table'] = 'views';
-  $handler->display->display_options['empty']['area']['field'] = 'area';
-  $handler->display->display_options['empty']['area']['empty'] = TRUE;
-  $handler->display->display_options['empty']['area']['content'] = 'No Projects matched your search.';
-  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
+  /* Relationship: Entity Reference: Referenced Entity */
+  $handler->display->display_options['relationships']['pmproject_parent_target_id']['id'] = 'pmproject_parent_target_id';
+  $handler->display->display_options['relationships']['pmproject_parent_target_id']['table'] = 'field_data_pmproject_parent';
+  $handler->display->display_options['relationships']['pmproject_parent_target_id']['field'] = 'pmproject_parent_target_id';
+  $handler->display->display_options['relationships']['pmproject_parent_target_id']['label'] = 'Organization';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -108,36 +98,35 @@ function pmproject_views_default_views() {
   $handler->display->display_options['fields']['title']['label'] = 'Project';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title_1']['id'] = 'title_1';
+  $handler->display->display_options['fields']['title_1']['table'] = 'node';
+  $handler->display->display_options['fields']['title_1']['field'] = 'title';
+  $handler->display->display_options['fields']['title_1']['relationship'] = 'pmproject_parent_target_id';
+  $handler->display->display_options['fields']['title_1']['label'] = 'Organization';
   /* Field: Content: Status */
   $handler->display->display_options['fields']['pm_projectstatus']['id'] = 'pm_projectstatus';
   $handler->display->display_options['fields']['pm_projectstatus']['table'] = 'field_data_pm_projectstatus';
   $handler->display->display_options['fields']['pm_projectstatus']['field'] = 'pm_projectstatus';
-  /* Field: Content: Priority */
-  $handler->display->display_options['fields']['pm_projectpriority']['id'] = 'pm_projectpriority';
-  $handler->display->display_options['fields']['pm_projectpriority']['table'] = 'field_data_pm_projectpriority';
-  $handler->display->display_options['fields']['pm_projectpriority']['field'] = 'pm_projectpriority';
+  $handler->display->display_options['fields']['pm_projectstatus']['type'] = 'pm_list_default';
   /* Field: Content: Category */
   $handler->display->display_options['fields']['pm_projectcategory']['id'] = 'pm_projectcategory';
   $handler->display->display_options['fields']['pm_projectcategory']['table'] = 'field_data_pm_projectcategory';
   $handler->display->display_options['fields']['pm_projectcategory']['field'] = 'pm_projectcategory';
-  /* Field: Content: Project manager */
-  $handler->display->display_options['fields']['pm_manager']['id'] = 'pm_manager';
-  $handler->display->display_options['fields']['pm_manager']['table'] = 'field_data_pm_manager';
-  $handler->display->display_options['fields']['pm_manager']['field'] = 'pm_manager';
-  $handler->display->display_options['fields']['pm_manager']['settings'] = array(
-    'link' => 1,
-  );
-  /* Field: Content: Edit link */
-  $handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
-  $handler->display->display_options['fields']['edit_node']['table'] = 'views_entity_node';
-  $handler->display->display_options['fields']['edit_node']['field'] = 'edit_node';
-  $handler->display->display_options['fields']['edit_node']['label'] = 'Operations';
-  /* Field: Content: Delete link */
-  $handler->display->display_options['fields']['delete_node']['id'] = 'delete_node';
-  $handler->display->display_options['fields']['delete_node']['table'] = 'views_entity_node';
-  $handler->display->display_options['fields']['delete_node']['field'] = 'delete_node';
-  $handler->display->display_options['fields']['delete_node']['label'] = '';
-  $handler->display->display_options['fields']['delete_node']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['pm_projectcategory']['type'] = 'pm_list_default';
+  /* Field: Content: Priority */
+  $handler->display->display_options['fields']['pm_projectpriority']['id'] = 'pm_projectpriority';
+  $handler->display->display_options['fields']['pm_projectpriority']['table'] = 'field_data_pm_projectpriority';
+  $handler->display->display_options['fields']['pm_projectpriority']['field'] = 'pm_projectpriority';
+  $handler->display->display_options['fields']['pm_projectpriority']['type'] = 'pm_list_default';
+  /* Field: Content: PM Operations */
+  $handler->display->display_options['fields']['pm_handler_field_operation']['id'] = 'pm_handler_field_operation';
+  $handler->display->display_options['fields']['pm_handler_field_operation']['table'] = 'node';
+  $handler->display->display_options['fields']['pm_handler_field_operation']['field'] = 'pm_handler_field_operation';
+  $handler->display->display_options['fields']['pm_handler_field_operation']['label'] = '';
+  $handler->display->display_options['fields']['pm_handler_field_operation']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['pm_handler_field_operation']['display_add_icon'] = 1;
+  $handler->display->display_options['fields']['pm_handler_field_operation']['display_icons'] = 0;
   /* Sort criterion: Content: Title */
   $handler->display->display_options['sorts']['title']['id'] = 'title';
   $handler->display->display_options['sorts']['title']['table'] = 'node';
@@ -156,21 +145,25 @@ function pmproject_views_default_views() {
     'pmproject' => 'pmproject',
   );
   $handler->display->display_options['arguments']['nid']['validate']['fail'] = 'ignore';
-  /* Filter criterion: Content: Published */
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'node';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = 1;
-  $handler->display->display_options['filters']['status']['group'] = 1;
-  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
-  /* Filter criterion: Content: Type */
-  $handler->display->display_options['filters']['type']['id'] = 'type';
-  $handler->display->display_options['filters']['type']['table'] = 'node';
-  $handler->display->display_options['filters']['type']['field'] = 'type';
-  $handler->display->display_options['filters']['type']['value'] = array(
-    'pmproject' => 'pmproject',
+  /* Filter criterion: Content: Title */
+  $handler->display->display_options['filters']['title_1']['id'] = 'title_1';
+  $handler->display->display_options['filters']['title_1']['table'] = 'node';
+  $handler->display->display_options['filters']['title_1']['field'] = 'title';
+  $handler->display->display_options['filters']['title_1']['relationship'] = 'pmproject_parent_target_id';
+  $handler->display->display_options['filters']['title_1']['operator'] = 'contains';
+  $handler->display->display_options['filters']['title_1']['group'] = 1;
+  $handler->display->display_options['filters']['title_1']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['title_1']['expose']['operator_id'] = 'title_1_op';
+  $handler->display->display_options['filters']['title_1']['expose']['label'] = 'Organizaation';
+  $handler->display->display_options['filters']['title_1']['expose']['operator'] = 'title_1_op';
+  $handler->display->display_options['filters']['title_1']['expose']['identifier'] = 'title_1';
+  $handler->display->display_options['filters']['title_1']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    4 => 0,
+    5 => 0,
   );
-  $handler->display->display_options['filters']['type']['group'] = 1;
   /* Filter criterion: Content: Title */
   $handler->display->display_options['filters']['title']['id'] = 'title';
   $handler->display->display_options['filters']['title']['table'] = 'node';
@@ -195,45 +188,25 @@ function pmproject_views_default_views() {
     2 => array(),
     3 => array(),
   );
-  /* Filter criterion: Content: Status (pm_projectstatus) */
-  $handler->display->display_options['filters']['pm_projectstatus_value']['id'] = 'pm_projectstatus_value';
-  $handler->display->display_options['filters']['pm_projectstatus_value']['table'] = 'field_data_pm_projectstatus';
-  $handler->display->display_options['filters']['pm_projectstatus_value']['field'] = 'pm_projectstatus_value';
-  $handler->display->display_options['filters']['pm_projectstatus_value']['group'] = 1;
-  $handler->display->display_options['filters']['pm_projectstatus_value']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['pm_projectstatus_value']['expose']['operator_id'] = 'pm_projectstatus_value_op';
-  $handler->display->display_options['filters']['pm_projectstatus_value']['expose']['label'] = 'Status';
-  $handler->display->display_options['filters']['pm_projectstatus_value']['expose']['operator'] = 'pm_projectstatus_value_op';
-  $handler->display->display_options['filters']['pm_projectstatus_value']['expose']['identifier'] = 'pm_projectstatus_value';
-  $handler->display->display_options['filters']['pm_projectstatus_value']['expose']['remember_roles'] = array(
-    2 => '2',
-    1 => 0,
-    3 => 0,
-    4 => 0,
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = 1;
+  $handler->display->display_options['filters']['status']['group'] = 1;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'pmproject' => 'pmproject',
   );
-  $handler->display->display_options['filters']['pm_projectstatus_value']['reduce_duplicates'] = TRUE;
-  /* Filter criterion: Content: Priority (pm_projectpriority) */
-  $handler->display->display_options['filters']['pm_projectpriority_value']['id'] = 'pm_projectpriority_value';
-  $handler->display->display_options['filters']['pm_projectpriority_value']['table'] = 'field_data_pm_projectpriority';
-  $handler->display->display_options['filters']['pm_projectpriority_value']['field'] = 'pm_projectpriority_value';
-  $handler->display->display_options['filters']['pm_projectpriority_value']['group'] = 1;
-  $handler->display->display_options['filters']['pm_projectpriority_value']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['pm_projectpriority_value']['expose']['operator_id'] = 'pm_projectpriority_value_op';
-  $handler->display->display_options['filters']['pm_projectpriority_value']['expose']['label'] = 'Priority';
-  $handler->display->display_options['filters']['pm_projectpriority_value']['expose']['operator'] = 'pm_projectpriority_value_op';
-  $handler->display->display_options['filters']['pm_projectpriority_value']['expose']['identifier'] = 'pm_projectpriority_value';
-  $handler->display->display_options['filters']['pm_projectpriority_value']['expose']['remember_roles'] = array(
-    2 => '2',
-    1 => 0,
-    3 => 0,
-    4 => 0,
-  );
-  $handler->display->display_options['filters']['pm_projectpriority_value']['reduce_duplicates'] = TRUE;
+  $handler->display->display_options['filters']['type']['group'] = 1;
   /* Filter criterion: Content: Category (pm_projectcategory) */
   $handler->display->display_options['filters']['pm_projectcategory_value']['id'] = 'pm_projectcategory_value';
   $handler->display->display_options['filters']['pm_projectcategory_value']['table'] = 'field_data_pm_projectcategory';
   $handler->display->display_options['filters']['pm_projectcategory_value']['field'] = 'pm_projectcategory_value';
-  $handler->display->display_options['filters']['pm_projectcategory_value']['group'] = 1;
   $handler->display->display_options['filters']['pm_projectcategory_value']['exposed'] = TRUE;
   $handler->display->display_options['filters']['pm_projectcategory_value']['expose']['operator_id'] = 'pm_projectcategory_value_op';
   $handler->display->display_options['filters']['pm_projectcategory_value']['expose']['label'] = 'Category';
@@ -244,8 +217,40 @@ function pmproject_views_default_views() {
     1 => 0,
     3 => 0,
     4 => 0,
+    5 => 0,
   );
-  $handler->display->display_options['filters']['pm_projectcategory_value']['reduce_duplicates'] = TRUE;
+  /* Filter criterion: Content: Priority (pm_projectpriority) */
+  $handler->display->display_options['filters']['pm_projectpriority_value']['id'] = 'pm_projectpriority_value';
+  $handler->display->display_options['filters']['pm_projectpriority_value']['table'] = 'field_data_pm_projectpriority';
+  $handler->display->display_options['filters']['pm_projectpriority_value']['field'] = 'pm_projectpriority_value';
+  $handler->display->display_options['filters']['pm_projectpriority_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['pm_projectpriority_value']['expose']['operator_id'] = 'pm_projectpriority_value_op';
+  $handler->display->display_options['filters']['pm_projectpriority_value']['expose']['label'] = 'Priority';
+  $handler->display->display_options['filters']['pm_projectpriority_value']['expose']['operator'] = 'pm_projectpriority_value_op';
+  $handler->display->display_options['filters']['pm_projectpriority_value']['expose']['identifier'] = 'pm_projectpriority_value';
+  $handler->display->display_options['filters']['pm_projectpriority_value']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    4 => 0,
+    5 => 0,
+  );
+  /* Filter criterion: Content: Status (pm_projectstatus) */
+  $handler->display->display_options['filters']['pm_projectstatus_value']['id'] = 'pm_projectstatus_value';
+  $handler->display->display_options['filters']['pm_projectstatus_value']['table'] = 'field_data_pm_projectstatus';
+  $handler->display->display_options['filters']['pm_projectstatus_value']['field'] = 'pm_projectstatus_value';
+  $handler->display->display_options['filters']['pm_projectstatus_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['pm_projectstatus_value']['expose']['operator_id'] = 'pm_projectstatus_value_op';
+  $handler->display->display_options['filters']['pm_projectstatus_value']['expose']['label'] = 'Status';
+  $handler->display->display_options['filters']['pm_projectstatus_value']['expose']['operator'] = 'pm_projectstatus_value_op';
+  $handler->display->display_options['filters']['pm_projectstatus_value']['expose']['identifier'] = 'pm_projectstatus_value';
+  $handler->display->display_options['filters']['pm_projectstatus_value']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    4 => 0,
+    5 => 0,
+  );
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
