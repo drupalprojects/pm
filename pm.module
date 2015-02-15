@@ -115,7 +115,7 @@ function pm_theme() {
     ),
     'pm_list_default' => array(
       'template' => 'pm-list-default',
-      'variables' => array('value' => NULL, 'key' => NULL),
+      'variables' => array('value' => NULL, 'key' => NULL, 'field_name' => NULL),
     ),
   );
 }
@@ -1044,7 +1044,6 @@ function pm_field_formatter_info() {
  */
 function pm_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
-
   switch ($display['type']) {
     case 'pm_list_default':
       $allowed_values = list_allowed_values($field, $instance, $entity_type, $entity);
@@ -1058,7 +1057,12 @@ function pm_field_formatter_view($entity_type, $entity, $field, $instance, $lang
           $value = field_filter_xss($item['value']);
         }
         $key = $item['value'];
-        $output = theme('pm_list_default', array('value' => $value, 'key' => $key));
+        $output = theme('pm_list_default', array(
+          'value' => $value,
+          'key' => $key,
+          'field_name' => $instance['field_name'],
+          )
+        );
         $element[$delta] = array('#markup' => $output);
       }
       break;
