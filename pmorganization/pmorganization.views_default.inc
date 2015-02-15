@@ -97,17 +97,19 @@ function pmorganization_views_default_views() {
   $handler->display->display_options['fields']['pm_address_country']['hide_empty'] = TRUE;
   $handler->display->display_options['fields']['pm_address_country']['hide_alter_empty'] = FALSE;
   $handler->display->display_options['fields']['pm_address_country']['display_name'] = 1;
-  /* Field: Content: Edit link */
-  $handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
-  $handler->display->display_options['fields']['edit_node']['table'] = 'views_entity_node';
-  $handler->display->display_options['fields']['edit_node']['field'] = 'edit_node';
-  $handler->display->display_options['fields']['edit_node']['label'] = 'Operations';
-  /* Field: Content: Delete link */
-  $handler->display->display_options['fields']['delete_node']['id'] = 'delete_node';
-  $handler->display->display_options['fields']['delete_node']['table'] = 'views_entity_node';
-  $handler->display->display_options['fields']['delete_node']['field'] = 'delete_node';
-  $handler->display->display_options['fields']['delete_node']['label'] = '';
-  $handler->display->display_options['fields']['delete_node']['element_label_colon'] = FALSE;
+  /* Field: Content: Organization Type */
+  $handler->display->display_options['fields']['pmorganization_type']['id'] = 'pmorganization_type';
+  $handler->display->display_options['fields']['pmorganization_type']['table'] = 'field_data_pmorganization_type';
+  $handler->display->display_options['fields']['pmorganization_type']['field'] = 'pmorganization_type';
+  $handler->display->display_options['fields']['pmorganization_type']['label'] = 'Type';
+  $handler->display->display_options['fields']['pmorganization_type']['delta_offset'] = '0';
+  /* Field: Content: PM Operations */
+  $handler->display->display_options['fields']['pm_handler_field_operation']['id'] = 'pm_handler_field_operation';
+  $handler->display->display_options['fields']['pm_handler_field_operation']['table'] = 'node';
+  $handler->display->display_options['fields']['pm_handler_field_operation']['field'] = 'pm_handler_field_operation';
+  $handler->display->display_options['fields']['pm_handler_field_operation']['label'] = 'Operation';
+  $handler->display->display_options['fields']['pm_handler_field_operation']['display_add_icon'] = 1;
+  $handler->display->display_options['fields']['pm_handler_field_operation']['display_icons'] = 1;
   /* Sort criterion: Content: Title */
   $handler->display->display_options['sorts']['title']['id'] = 'title';
   $handler->display->display_options['sorts']['title']['table'] = 'node';
@@ -147,7 +149,6 @@ function pmorganization_views_default_views() {
   $handler->display->display_options['filters']['pmorganization_type_value']['id'] = 'pmorganization_type_value';
   $handler->display->display_options['filters']['pmorganization_type_value']['table'] = 'field_data_pmorganization_type';
   $handler->display->display_options['filters']['pmorganization_type_value']['field'] = 'pmorganization_type_value';
-  $handler->display->display_options['filters']['pmorganization_type_value']['group'] = 1;
   $handler->display->display_options['filters']['pmorganization_type_value']['exposed'] = TRUE;
   $handler->display->display_options['filters']['pmorganization_type_value']['expose']['operator_id'] = 'pmorganization_type_value_op';
   $handler->display->display_options['filters']['pmorganization_type_value']['expose']['label'] = 'Type';
@@ -158,8 +159,8 @@ function pmorganization_views_default_views() {
     1 => 0,
     3 => 0,
     4 => 0,
+    5 => 0,
   );
-  $handler->display->display_options['filters']['pmorganization_type_value']['reduce_duplicates'] = TRUE;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
