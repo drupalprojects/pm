@@ -59,7 +59,6 @@ class pm_handler_field_operation extends views_handler_field_node_link {
       if ($link = $this->create_link_definition(t('delete'), "node/$id/delete")) {
         $links[] = $link;
       }
-      $value = empty($links) ? '' : implode('&nbsp;|&nbsp;', $links);
 
       $output = '';
       // $links = array();
