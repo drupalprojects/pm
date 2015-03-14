@@ -126,7 +126,7 @@ function pmproject_views_default_views() {
   $handler->display->display_options['fields']['pm_handler_field_operation']['label'] = '';
   $handler->display->display_options['fields']['pm_handler_field_operation']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['pm_handler_field_operation']['display_add_icon'] = 1;
-  $handler->display->display_options['fields']['pm_handler_field_operation']['display_icons'] = 0;
+  $handler->display->display_options['fields']['pm_handler_field_operation']['display_icons'] = 1;
   /* Sort criterion: Content: Title */
   $handler->display->display_options['sorts']['title']['id'] = 'title';
   $handler->display->display_options['sorts']['title']['table'] = 'node';
