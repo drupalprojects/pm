@@ -153,14 +153,17 @@ function pmissue_views_default_views() {
   $handler->display->display_options['fields']['pm_status']['id'] = 'pm_status';
   $handler->display->display_options['fields']['pm_status']['table'] = 'field_data_pm_status';
   $handler->display->display_options['fields']['pm_status']['field'] = 'pm_status';
+  $handler->display->display_options['fields']['pm_status']['type'] = 'pm_list_default';
   /* Field: Content: Priority */
   $handler->display->display_options['fields']['pm_priority']['id'] = 'pm_priority';
   $handler->display->display_options['fields']['pm_priority']['table'] = 'field_data_pm_priority';
   $handler->display->display_options['fields']['pm_priority']['field'] = 'pm_priority';
+  $handler->display->display_options['fields']['pm_priority']['type'] = 'pm_list_default';
   /* Field: Content: Category */
   $handler->display->display_options['fields']['pm_category']['id'] = 'pm_category';
   $handler->display->display_options['fields']['pm_category']['table'] = 'field_data_pm_category';
   $handler->display->display_options['fields']['pm_category']['field'] = 'pm_category';
+  $handler->display->display_options['fields']['pm_category']['type'] = 'pm_list_default';
   /* Field: Content: Assigned to */
   $handler->display->display_options['fields']['pm_assigned']['id'] = 'pm_assigned';
   $handler->display->display_options['fields']['pm_assigned']['table'] = 'field_data_pm_assigned';
@@ -168,17 +171,13 @@ function pmissue_views_default_views() {
   $handler->display->display_options['fields']['pm_assigned']['settings'] = array(
     'link' => 1,
   );
-  /* Field: Content: Edit link */
-  $handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
-  $handler->display->display_options['fields']['edit_node']['table'] = 'views_entity_node';
-  $handler->display->display_options['fields']['edit_node']['field'] = 'edit_node';
-  $handler->display->display_options['fields']['edit_node']['label'] = 'Operations';
-  $handler->display->display_options['fields']['edit_node']['hide_empty'] = TRUE;
-  /* Field: Content: Delete link */
-  $handler->display->display_options['fields']['delete_node']['id'] = 'delete_node';
-  $handler->display->display_options['fields']['delete_node']['table'] = 'views_entity_node';
-  $handler->display->display_options['fields']['delete_node']['field'] = 'delete_node';
-  $handler->display->display_options['fields']['delete_node']['hide_empty'] = TRUE;
+  /* Field: Content: PM Operations */
+  $handler->display->display_options['fields']['pm_handler_field_operation']['id'] = 'pm_handler_field_operation';
+  $handler->display->display_options['fields']['pm_handler_field_operation']['table'] = 'node';
+  $handler->display->display_options['fields']['pm_handler_field_operation']['field'] = 'pm_handler_field_operation';
+  $handler->display->display_options['fields']['pm_handler_field_operation']['label'] = 'Operations';
+  $handler->display->display_options['fields']['pm_handler_field_operation']['display_add_icon'] = 1;
+  $handler->display->display_options['fields']['pm_handler_field_operation']['display_icons'] = 1;
   /* Sort criterion: Content: Weight (pm_weight) */
   $handler->display->display_options['sorts']['pm_weight_value']['id'] = 'pm_weight_value';
   $handler->display->display_options['sorts']['pm_weight_value']['table'] = 'field_data_pm_weight';
