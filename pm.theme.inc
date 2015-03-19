@@ -98,7 +98,7 @@ function theme_pm_dashboard_link($link_array) {
 
   if (empty($link_array['nid']) || 0 == $link_array['nid']) {
     if (variable_get('pm_icons_display', TRUE)) {
-      $content .= '<dt id="' . $dt_id . '" class="pmcomponent">';
+      $content .= '<dt class="pmcomponent">' . pm_helper_get_fa_icon($dt_id);
     }
     else {
       $content .= '<dt class="pmcomponent">';
@@ -108,7 +108,7 @@ function theme_pm_dashboard_link($link_array) {
   }
   else {
     $content = array(
-      '#prefix' => variable_get('pm_icons_display', TRUE) ? '<dt id="' . $dt_id . '" class="pmcomponent">' : '<dt class="pmcomponent">',
+      '#prefix' => variable_get('pm_icons_display', TRUE) ? '<dt class="pmcomponent">' . pm_helper_get_fa_icon($dt_id) : '<dt class="pmcomponent">',
       '#suffix' => '</dt>',
       '#value' => $link,
       '#weight' => $link_array['weight'],

@@ -4,6 +4,10 @@
   width: 100%;
 }
 
+#pmdashboard .pmcomponent {
+  font-size: 2em;
+}
+
 div.pmdashboard {
   float: left;
   width: 50%;

@@ -725,26 +725,14 @@ function pm_icon($icon, $title) {
   $icon = str_replace(' ', '_', $icon);
 
   if (variable_get('pm_icons_display', TRUE) == TRUE) {
-    $available = cache_get('pm:icons');
-    if (!is_object($available)) {
-      // Cache miss.
-      $available = pm_icon_recache();
-    }
+    $fa_icon = pm_helper_get_fa_icon($icon, '');
 
-    // Normal situation - display icon image.
-    if (in_array($icon . '.png', $available->data)) {
-      // Construct path relative to folder stored in settings.
-      $img_src = variable_get('pm_icons_path', drupal_get_path('module', 'pm') . '/icons') . '/' . $icon . '.png';
-      // Return the icon.
-      return theme('image', array(
-        'path' => $img_src,
-        'alt' => $title,
-        'title' => $title,
-      ));
+    // @todo: Should we force default? what if other module handles the icon?
+    if (empty($fa_icon)) {
+      return pm_icon_default($icon, $title);
     }
     else {
-      // Icon not found.
-      return pm_icon_default($icon, $title);
+      return $fa_icon;
     }
   }
   else {
@@ -778,6 +766,107 @@ function pm_icon_default($icon, $title) {
   // For now, just return $title.
   // A future extension could be more intelligent using $icon.
   return $title;
+}
+
+
+/**
+ * Helper to attach fontawesome icons.
+ */
+function pm_helper_get_fa_icon($key, $default_class = 'fa_wrench') {
+  $key = str_replace(' ', '_', $key);
+  $key = str_replace('-', '_', $key);
+  switch ($key) {
+    case 'pmconfiguration':
+      $class = 'fa-gear';
+      break;
+    case 'pmexpenses':
+      $class = 'fa-money';
+      break;
+    case 'pmnotes':
+      $class = 'fa-file-o';
+      break;
+    case 'pmtimetrackings':
+      $class = 'fa-clock-o';
+      break;
+    case 'pmtickets':
+      $class = 'fa-ticket';
+      break;
+    case 'pmtasks':
+      $class = 'fa-tasks';
+      break;
+    case 'pmprojects':
+      $class = 'fa-flask';
+      break;
+    case 'pmteams':
+      $class = 'fa-users';
+      break;
+    case 'pmorganizations':
+      $class = 'fa-institution';
+      break;
+    case 'pmissues':
+      $class = 'fa-ticket';
+      break;
+    case 'application_add':
+      $class = 'fa-plus';
+      break;
+    case 'application_delete':
+      $class = 'fa-minus pm-status-warning';
+      break;
+    case 'application_edit':
+      $class = 'fa-edit';
+      break;
+
+    //issue type.
+    case 'bug':
+      $class = 'fa-bug';
+      break;
+    case 'task':
+      $class ='fa-tasks';
+      break;
+    case 'feature_request':
+      $class = 'fa-ticket';
+      break;
+    case 'support':
+      $class = 'fa-phone';
+      break;
+    // project type
+    case 'development':
+      $class = 'fa-flask';
+      break;
+    // progress
+    case 'in_progress':
+      $class = 'fa-arrow-right pm-status-info';
+      break;
+    case 'completed':
+      $class = 'fa-check pm-status-success';
+      break;
+    case 'on_hold':
+      $class = 'fa-pause pm-status-warning';
+      break;
+    case 'inserted':
+      $class = 'fa-square pm-status-normal';
+      break;
+    // priority
+    case '1_low':
+      $class = 'fa-square-o pm-status-info';
+      break;
+    case '2_normal':
+      $class = 'fa-square-o pm-status-success';
+      break;
+    case '3_high':
+      $class = 'fa-square-o pm-status-warning';
+      break;
+    case '4_urgent':
+      $class = 'fa-square-o pm-status-danger';
+      break;
+    case 'default':
+      $class = '';
+      break;
+    default:
+      dpm($key);
+      return '';
+  }
+  return "<i class='fa $class fa-fw'></i>";
 }
 
 /**
