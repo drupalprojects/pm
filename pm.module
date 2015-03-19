@@ -36,13 +36,6 @@ function pm_permission() {
 }
 
 /**
- * Implements hook_init().
- */
-function pm_init() {
-  drupal_add_css(drupal_get_path('module', 'pm') . '/pm.css');
-}
-
-/**
  * Implements hook_menu().
  */
 function pm_menu() {

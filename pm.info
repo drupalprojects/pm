@@ -4,6 +4,9 @@ core = 7.x
 package = Project Management
 configure = admin/config/pm
 
+stylesheets[all][] = pm.css
+stylesheets[all][] = pm-rtl.css
+
 files[] = pm.test
 files[] = pm_handler_field_operation.inc
 
