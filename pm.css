@@ -1,15 +1,25 @@
+.pm-status-danger-onfocus:active,
+.pm-status-danger-onfocus:hover,
 .pm-status-danger {
-  color: red;
+  color: #f00;
 }
+.pm-status-warning-onfocus:active,
+.pm-status-warning-onfocus:hover,
 .pm-status-warning {
-  color: orange;
+  color: #840;
 }
+.pm-status-success-onfocus:active,
+.pm-status-success-onfocus:hover,
 .pm-status-success {
-  color: green;
+  color: #238800;
 }
+.pm-status-info-onfocus:active,
+.pm-status-info-onfocus:hover,
 .pm-status-info {
-  color: blue;
+  color: #2346ff;
 }
+.pm-status-normal-onfocus:active,
+.pm-status-normal-onfocus:hover,
 .pm-status-normal {
-  color: dark-grey;
+  color: #555555;
 }

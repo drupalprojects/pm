@@ -780,7 +780,7 @@ function pm_helper_get_fa_icon($key, $default_class = 'fa_wrench') {
       $class = 'fa-plus';
       break;
     case 'application_delete':
-      $class = 'fa-minus pm-status-warning';
+      $class = 'fa-remove pm-status-danger-onfocus';
       break;
     case 'application_edit':
       $class = 'fa-edit';
@@ -805,7 +805,7 @@ function pm_helper_get_fa_icon($key, $default_class = 'fa_wrench') {
       break;
     // progress
     case 'in_progress':
-      $class = 'fa-arrow-right pm-status-info';
+      $class = 'fa-play pm-status-info';
       break;
     case 'completed':
       $class = 'fa-check pm-status-success';
