@@ -331,15 +331,6 @@ function pm_admin_settings() {
     '#weight' => $w++,
   );
 
-  $form['icons']['pm_icons_path'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Icons directory'),
-    '#default_value' => variable_get('pm_icons_path', drupal_get_path('module', 'pm') . '/icons'),
-    '#description' => t("The directory that contains Project Management's icons."),
-    '#weight' => $w++,
-    '#element_validate' => array('pm_admin_settings_icons_path_validate'),
-  );
-
   $form['taxation'] = array(
     '#type' => 'fieldset',
     '#title' => t('Taxation defaults'),
@@ -485,27 +476,6 @@ function pm_admin_settings() {
   $form['#submit'] = array('pm_admin_settings_form_submit');
 
   return system_settings_form($form);
-}
-
-/**
- * Validate Icon Path form element.
- *
- * @param array $form
- *   Form array.
- * @param array $form_values
- *   Form values.
- */
-function pm_admin_settings_icons_path_validate(array $form, array $form_values) {
-  $icon_path_old = variable_get('pm_icons_path', drupal_get_path('module', 'pm') . '/icons');
-  $icon_path = $form_values['values']['pm_icons_path'];
-  // Check if directory exists.
-  if (!is_dir($icon_path)) {
-    form_set_error('pm_icons_path', t('Icon path %path does not exist', array('%path' => $icon_path)));
-  }
-  // Directory exists and has changed, so clear the cache.
-  elseif ($icon_path != $icon_path_old) {
-    cache_clear_all('pm:icons', 'cache', FALSE);
-  }
 }
 
 /**

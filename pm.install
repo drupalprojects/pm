@@ -140,3 +140,10 @@ function pm_update_7104() {
 function pm_update_7105() {
   variable_del('pm_organization_nid');
 }
+
+/**
+ * Removal of legacy variable related to icons.
+ */
+function pm_update_7108() {
+  variable_del('pm_icons_path');
+}
