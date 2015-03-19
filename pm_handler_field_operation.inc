@@ -37,39 +37,39 @@ class pm_handler_field_operation extends views_handler_field_node_link {
    * Renders field to show icon.
    */
   function render($values) {
-    $id = $values->nid;
-    $node = new stdClass();
-    $node->nid = $values->nid;
-    $node->status = 1;
-    if ($this->options['display_icons']) {
-      $value = "";
-      $value .= pm_icon_edit_node($node, $_GET);
-      if (!empty($value)) {
-        $value .= '&nbsp;';
-      }
-      $value .= pm_icon_delete_node($node, $_GET);
+    if ($node = $this->get_value($values)) {
+      $id = $node->nid;
 
-      return $value;
-    }
-    else {
-      $links = array();
-      if ($link = $this->create_link_definition(t('edit'), "node/$id/edit")) {
-        $links[] = $link;
-      }
-      if ($link = $this->create_link_definition(t('delete'), "node/$id/delete")) {
-        $links[] = $link;
-      }
+      if ($this->options['display_icons']) {
+        $value = "";
+        $value .= pm_icon_edit_node($node, $_GET);
+        if (!empty($value)) {
+          $value .= '&nbsp;';
+        }
+        $value .= pm_icon_delete_node($node, $_GET);
 
-      $output = '';
-      // $links = array();
-      if ($link = $this->create_link_definition(t('view'), "node/$id")) {
-        $links[] = $link;
+        return $value;
       }
-      $vars = array(
-        'title' => t('Quick Links'),
-        'links' => $links,
-      );
-      return theme('ctools_dropdown', $vars);
+      else {
+        $links = array();
+        if ($link = $this->create_link_definition(t('edit'), "node/$id/edit")) {
+          $links[] = $link;
+        }
+        if ($link = $this->create_link_definition(t('delete'), "node/$id/delete")) {
+          $links[] = $link;
+        }
+
+        $output = '';
+        // $links = array();
+        if ($link = $this->create_link_definition(t('view'), "node/$id")) {
+          $links[] = $link;
+        }
+        $vars = array(
+          'title' => t('Quick Links'),
+          'links' => $links,
+        );
+        return theme('links', $vars);
+      }
     }
   }
 
