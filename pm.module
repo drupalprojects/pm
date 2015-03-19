@@ -86,10 +86,6 @@ function pm_menu() {
  */
 function pm_theme() {
   return array(
-    'datetime' => array(
-      'file'      => 'pm.theme.inc',
-      'arguments' => array('element'),
-    ),
     'pm_dashboard' => array(
       'file'      => 'pm.theme.inc',
       'arguments' => array('links' => array()),
@@ -101,10 +97,6 @@ function pm_theme() {
     'pm_dashboard_link' => array(
       'file'      => 'pm.theme.inc',
       'arguments' => array('link_blocks' => array()),
-    ),
-    'pm_dashboard_links_weight_table' => array(
-      'file'      => 'pm.theme.inc',
-      'arguments' => array('form' => array()),
     ),
     'pm_list_default' => array(
       'template' => 'pm-list-default',

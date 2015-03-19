@@ -5,13 +5,6 @@
  */
 
 /**
- * Provides theming for the datetime element.
- */
-function theme_datetime($element) {
-  return theme('form_element', $element, '<div class="container-inline">' . $element['#children'] . '</div>');
-}
-
-/**
  * Provides HTML for a Project Management dashboard.
  */
 function theme_pm_dashboard($link_blocks) {
@@ -122,43 +115,4 @@ function theme_pm_dashboard_link($link_array) {
     );
   }
   return $content;
-}
-
-/**
- * Provides HTML for the Project Management dashboard weight table.
- */
-function theme_pm_dashboard_links_weight_table($form = array()) {
-  $type = $form['#infix'];
-  $rows = array();
-  foreach ($form as $id => &$value) {
-    if ($id[0] == '#') {
-      continue;
-    }
-    $value[$type . '_pm_dashboard_link_weight_' . $id]['#attributes']['class'] = $type . 'dashboard-link-table-weight';
-
-    $row = array();
-    $row[] = $value['#value'];
-    $row[] = drupal_render($value[$type . '_pm_dashboard_link_active_' . $id]);
-    $row[] = drupal_render($value[$type . '_pm_dashboard_link_weight_' . $id]);
-    unset($value['#value']);
-    if (!empty($row)) {
-      $rows[] = array(
-        'data' => $row,
-        'class' => 'draggable',
-      );
-    }
-  }
-  $headers = array(t('Link'), t('Active'), t('Weight'));
-
-  $output = theme('table', array(
-    'headers' => $headers,
-    'rows' => $rows,
-    'attributes' => array('id' => $type . 'dashboard-link-table'),
-  ));
-
-  drupal_add_tabledrag($type . 'dashboard-link-table', 'order', 'sibling', $type . 'dashboard-link-table-weight');
-
-  $output .= drupal_render($form);
-
-  return $output;
 }
