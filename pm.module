@@ -1011,7 +1011,7 @@ function pm_get_parent($node, $type = 'pmorganization', $iteration = 10) {
   catch (EntityMetadataWrapperException $exc) {
     watchdog(
       'pm',
-      'See '  . __FUNCTION__ . '() <pre>' .  $exc->getTraceAsString() . '</pre>',
+      'See ' . __FUNCTION__ . '() <pre>' . $exc->getTraceAsString() . '</pre>',
       NULL, WATCHDOG_ERROR
     );
   }
@@ -1022,7 +1022,7 @@ function pm_get_parent($node, $type = 'pmorganization', $iteration = 10) {
  */
 function pm_views_api() {
   return array(
-    'api' => 3.0
+    'api' => 3.0,
   );
 }
 
@@ -1034,7 +1034,12 @@ function pm_field_formatter_info() {
   return array(
     'pm_list_default' => array(
       'label' => t('Project Management Icons'),
-      'field types' => array('list_integer', 'list_float', 'list_text', 'list_boolean'),
+      'field types' => array(
+        'list_integer',
+        'list_float',
+        'list_text',
+        'list_boolean',
+      ),
     ),
   );
 }
