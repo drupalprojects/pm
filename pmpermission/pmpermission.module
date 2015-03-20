@@ -572,10 +572,21 @@ function _pmpermission_grants_assigned($node, $type, $assigned) {
 }
 
 /**
- * Finds the organization attached to a node.
+ * Finds the nid of the organization attached to a node.
  */
 function _pmpermission_get_organization_id($node, $max_depth) {
-  if ($node->type == 'pmorganization') {
+  return pmpermission_get_parent_nid_of_node($node, 'pmorganization', $max_depth);
+}
+
+/**
+ * Recursively hunts and find out the first parent node of given type.
+ * @param  $node        The node for which the parent to be found.
+ * @param  $parent_type The content type of parent node.
+ * @param  $max_depth   How many levels up should the function traverse.
+ * @return nid of the parent node if found, FALSE otherwise.
+ */
+function pmpermission_get_parent_nid_of_node($node, $parent_type, $max_depth = 10) {
+  if ($node->type == $parent_type) {
     return $node->nid;
   }
   if ($max_depth) {
@@ -591,11 +602,11 @@ function _pmpermission_get_organization_id($node, $max_depth) {
       if (empty($n)) {
         return FALSE;
       }
-      elseif ($n->type == 'pmorganization') {
+      elseif ($n->type == $parent_type) {
         return $n->nid;
       }
       else {
-        return _pmpermission_get_organization_id($n, $max_depth);
+        return pmpermission_get_parent_nid_of_node($n, $parent_type, $max_depth);
       }
     }
     catch (Exception $e) {
