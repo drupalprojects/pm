@@ -23,3 +23,11 @@
 .pm-status-normal {
   color: #555555;
 }
+
+span.pm-no-icon {
+  border: 1px solid #aaaaaa;
+  color: #aaaaaa;
+  padding: 0 2px;
+  margin: 0 2px;
+}
+

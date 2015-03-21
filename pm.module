@@ -707,7 +707,7 @@ function pm_icon($icon, $title) {
   }
   else {
     // Icons set to not display.
-    return $title;
+    return '<span class="pm-no-icon">' . $title . '<span>';
   }
 }
 
