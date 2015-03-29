@@ -17,3 +17,4 @@ dependencies[] = addressfield
 dependencies[] = email
 dependencies[] = link
 dependencies[] = number
+dependencies[] = fontawesome
