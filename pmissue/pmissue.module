@@ -120,7 +120,7 @@ function pmissue_pm_dashboard_links($type) {
   if ($type == 'page' || $type == 'block') {
     $links[] = array(
       'theme' => 'pm_dashboard_link',
-      'title' => t('Issue'),
+      'title' => t('Issues'),
       'icon' => 'pmissues',
       'path' => 'pm/issues',
       'params' => array(),
