@@ -771,7 +771,7 @@ function pm_helper_get_fa_icon($key, $default_class = 'fa_wrench') {
       break;
 
     case 'pmprojects':
-      $class = 'fa-flask';
+      $class = 'fa-cubes';
       break;
 
     case 'pmteams':
@@ -783,7 +783,7 @@ function pm_helper_get_fa_icon($key, $default_class = 'fa_wrench') {
       break;
 
     case 'pmissues':
-      $class = 'fa-ticket';
+      $class = 'fa-cube';
       break;
 
     case 'application_add':
@@ -839,19 +839,19 @@ function pm_helper_get_fa_icon($key, $default_class = 'fa_wrench') {
 
     // Priority.
     case '1_low':
-      $class = 'fa-square-o pm-status-info';
+      $class = 'fa-circle pm-status-info';
       break;
 
     case '2_normal':
-      $class = 'fa-square-o pm-status-success';
+      $class = 'fa-circle pm-status-success';
       break;
 
     case '3_high':
-      $class = 'fa-square-o pm-status-warning';
+      $class = 'fa-circle pm-status-warning';
       break;
 
     case '4_urgent':
-      $class = 'fa-square-o pm-status-danger';
+      $class = 'fa-circle pm-status-danger';
       break;
 
     case 'default':
