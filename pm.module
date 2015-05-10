@@ -331,6 +331,14 @@ function pm_admin_settings() {
     '#weight' => $w++,
   );
 
+  $form['icons']['pm_icons_use_storm_icons'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Use legacy storm icon set.'),
+    '#default_value' => variable_get('pm_icons_use_storm_icons', FALSE),
+    '#description' => t('By default, PM tries to use fontawesome icon set if available. If this box is checked, it will use legacy sorm icon set.'),
+    '#weight' => $w++,
+  );
+
   $form['taxation'] = array(
     '#type' => 'fieldset',
     '#title' => t('Taxation defaults'),
@@ -738,6 +746,15 @@ function pm_icon_default($icon, $title) {
   return $title;
 }
 
+/**
+ * Set body class to use pm default icons if required.
+ */
+function pm_preprocess_html(&$vars){
+  // If fontawesome is not enabled or
+  $use_legacy_icons = variable_get('pm_icons_use_storm_icons', FALSE);
+  $font_awesome_enabled = module_exists('fontawesome');
+  $vars['classes_array'][] = ($use_legacy_icons OR !$font_awesome_enabled) ? "pm-use-storm-icons" : "pm-use-fa-icons";
+}
 
 /**
  * Helper to attach fontawesome icons.
@@ -862,7 +879,7 @@ function pm_helper_get_fa_icon($key, $default_class = 'fa_wrench') {
       // @todo: Discuss how to handle other keys.
       return '';
   }
-  return "<i class='fa $class fa-fw'></i>";
+  return "<i class='fa pm-icon $class fa-fw'></i>";
 }
 
 /**

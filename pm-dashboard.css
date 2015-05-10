@@ -58,6 +58,11 @@ div.pmdashboard {
   width: 50%;
 }
 
+#pmdashboard-block .pmcomponent{
+    display: block;
+    clear: both;
+}
+
 #pmdashboard-block {
   overflow: hidden;
 }
@@ -74,5 +79,56 @@ div.pmdashboard {
 
 #header-region #pmdashboard-block * {
   display: inline-block;
+}
+
+.pm-use-storm-icons #pmdashboard .pmcomponent a i.fa.fa-plus {
+  background: rgba(0,0,0,1) url(icons/application_add.png) no-repeat center center;
+}
+
+.pm-use-storm-icons #pmdashboard-block .pmcomponent i.fa {
+  min-width: 16px;
+  min-height: 16px;
+  background-size: 100% auto;
+}
+
+.pm-use-storm-icons #pmdashboard .pmcomponent i.fa{
+  min-width: 32px;
+  min-height: 32px;
+  opacity: 1;
+}
+
+.pm-use-storm-icons i.fa-institution{
+  background-image: url(images/organizations.png);
+}
+
+.pm-use-storm-icons i.fa-cubes{
+  background-image: url(images/projects.png);
+}
+
+.pm-use-storm-icons i.fa-cube{
+  background-image: url(images/tasks.png);
+}
+
+.pm-use-storm-icons i.fa-money{
+  background-image: url(images/expenses.png);
+}
+.pm-use-storm-icons i.fa-gear{
+  background-image: url(images/configuration.png);
+}
+
+.pm-use-storm-icons i.fa-file-o{
+  background-image: url(images/notes.png);
+}
+
+.pm-use-storm-icons i.fa-clock-o{
+  background-image: url(images/timetrackings.png);
+}
+
+.pm-use-storm-icons .pmcomponent i.fa-tasks{
+  background-image: url(images/tasks.png);
+}
+
+.pm-use-storm-icons .pmcomponent i.fa-ticket{
+  background-image: url(images/tickets.png);
 }
 
