@@ -1,5 +1,5 @@
-name = Project Management
-description = "Base module of a set designed to help in Project Management."
+name = PM
+description = "Base module of the Drupal PM set for Project Management."
 core = 7.x
 package = Project Management
 configure = admin/config/pm
