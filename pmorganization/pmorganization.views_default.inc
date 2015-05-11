@@ -56,14 +56,14 @@ function pmorganization_views_default_views() {
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
-      'empty_column' => 0,
-    ),
-    'edit_node' => array(
-      'align' => '',
-      'separator' => ' ',
       'empty_column' => 1,
     ),
-    'delete_node' => array(
+    'pmorganization_type' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 1,
+    ),
+    'pm_handler_field_operation' => array(
       'align' => '',
       'separator' => '',
       'empty_column' => 1,
