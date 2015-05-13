@@ -95,7 +95,7 @@ function theme_pm_dashboard_link($link_array) {
   }
 
   if (empty($link_array['nid']) || 0 == $link_array['nid']) {
-    if (variable_get('pm_icons_display', TRUE)) {
+    if (variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR) !== PM_ICON_SET_NO_ICON) {
       $content .= '<dt class="pmcomponent">' . pm_helper_get_fa_icon($dt_id);
     }
     else {
@@ -106,7 +106,7 @@ function theme_pm_dashboard_link($link_array) {
   }
   else {
     $content = array(
-      '#prefix' => variable_get('pm_icons_display', TRUE) ? '<dt class="pmcomponent">' . pm_helper_get_fa_icon($dt_id) : '<dt class="pmcomponent">',
+      '#prefix' => (variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR) !== PM_ICON_SET_NO_ICON) ? '<dt class="pmcomponent">' . pm_helper_get_fa_icon($dt_id) : '<dt class="pmcomponent">',
       '#suffix' => '</dt>',
       '#value' => $link,
       '#weight' => $link_array['weight'],
