@@ -69,7 +69,7 @@ function pm_update_7108() {
 /**
  * Migrate pm_icons_display settings to new pm_icon variable.
  */
-function pm_update_7109() {
+function pm_update_7200() {
   $display_icon = variable_get('pm_icons_display', TRUE);
   if ($display_icon) {
     variable_set('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR);
