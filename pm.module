@@ -4,6 +4,11 @@
  * Main module file for the Project Management module.
  */
 
+define('PM_ICON_SET_DEFAULT_BEHAVIOUR', 'default');
+define('PM_ICON_SET_FONTAWESOME', 'fontawesome');
+define('PM_ICON_SET_STORM', 'storm');
+define('PM_ICON_SET_NO_ICON', 'none');
+
 /**
  * Implements hook_help().
  */
@@ -33,13 +38,6 @@ function pm_permission() {
       'description' => t('Allow the user to perform administrative tasks on Project Management modules, such as altering configuration.'),
     ),
   );
-}
-
-/**
- * Implements hook_init().
- */
-function pm_init() {
-  drupal_add_css(drupal_get_path('module', 'pm') . '/pm.css');
 }
 
 /**
@@ -93,10 +91,6 @@ function pm_menu() {
  */
 function pm_theme() {
   return array(
-    'datetime' => array(
-      'file'      => 'pm.theme.inc',
-      'arguments' => array('element'),
-    ),
     'pm_dashboard' => array(
       'file'      => 'pm.theme.inc',
       'arguments' => array('links' => array()),
@@ -108,10 +102,6 @@ function pm_theme() {
     'pm_dashboard_link' => array(
       'file'      => 'pm.theme.inc',
       'arguments' => array('link_blocks' => array()),
-    ),
-    'pm_dashboard_links_weight_table' => array(
-      'file'      => 'pm.theme.inc',
-      'arguments' => array('form' => array()),
     ),
     'pm_list_default' => array(
       'template' => 'pm-list-default',
@@ -338,21 +328,19 @@ function pm_admin_settings() {
     '#weight' => $w++,
   );
 
-  $form['icons']['pm_icons_display'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display Project Management icons'),
-    '#default_value' => variable_get('pm_icons_display', TRUE),
-    '#description' => t('The icons that ship with Project Management may not fit well with some themes. If this box is unchecked, icons will be hidden.'),
-    '#weight' => $w++,
+  $icon_options = array(
+    PM_ICON_SET_DEFAULT_BEHAVIOUR => t('<strong>Default Behaviour</strong> : Uses PM Legacy icons if fontawesome is not installed.'),
+    PM_ICON_SET_FONTAWESOME => t('<strong>fontawesome</strong> : Requires fontawesome module and libraries to be installed.)'),
+    PM_ICON_SET_STORM => t('<strong>PM legacy icons</strong> : Deprecated - this option will be removed in a future release)'),
+    PM_ICON_SET_NO_ICON => t('<strong>No icons</strong> : The icons that ship with Project Management may not fit well with some themes. If this option is selected, icons will be hidden.'),
   );
-
-  $form['icons']['pm_icons_path'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Icons directory'),
-    '#default_value' => variable_get('pm_icons_path', drupal_get_path('module', 'pm') . '/icons'),
-    '#description' => t("The directory that contains Project Management's icons."),
+  $form['icons']['pm_icon'] = array(
+    '#type' => 'radios',
+    '#multiple' => FALSE,
+    '#title' => t('Project Management icons'),
+    '#options' => $icon_options,
+    '#default_value' => variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR),
     '#weight' => $w++,
-    '#element_validate' => array('pm_admin_settings_icons_path_validate'),
   );
 
   $form['taxation'] = array(
@@ -500,27 +488,6 @@ function pm_admin_settings() {
   $form['#submit'] = array('pm_admin_settings_form_submit');
 
   return system_settings_form($form);
-}
-
-/**
- * Validate Icon Path form element.
- *
- * @param array $form
- *   Form array.
- * @param array $form_values
- *   Form values.
- */
-function pm_admin_settings_icons_path_validate(array $form, array $form_values) {
-  $icon_path_old = variable_get('pm_icons_path', drupal_get_path('module', 'pm') . '/icons');
-  $icon_path = $form_values['values']['pm_icons_path'];
-  // Check if directory exists.
-  if (!is_dir($icon_path)) {
-    form_set_error('pm_icons_path', t('Icon path %path does not exist', array('%path' => $icon_path)));
-  }
-  // Directory exists and has changed, so clear the cache.
-  elseif ($icon_path != $icon_path_old) {
-    cache_clear_all('pm:icons', 'cache', FALSE);
-  }
 }
 
 /**
@@ -739,32 +706,20 @@ function pm_icon($icon, $title) {
 
   $icon = str_replace(' ', '_', $icon);
 
-  if (variable_get('pm_icons_display', TRUE) == TRUE) {
-    $available = cache_get('pm:icons');
-    if (!is_object($available)) {
-      // Cache miss.
-      $available = pm_icon_recache();
-    }
+  if (variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR) !== PM_ICON_SET_NO_ICON) {
+    $fa_icon = pm_helper_get_fa_icon($icon, '');
 
-    // Normal situation - display icon image.
-    if (in_array($icon . '.png', $available->data)) {
-      // Construct path relative to folder stored in settings.
-      $img_src = variable_get('pm_icons_path', drupal_get_path('module', 'pm') . '/icons') . '/' . $icon . '.png';
-      // Return the icon.
-      return theme('image', array(
-        'path' => $img_src,
-        'alt' => $title,
-        'title' => $title,
-      ));
+    // @todo: Should we force default? what if other module handles the icon?
+    if (empty($fa_icon)) {
+      return pm_icon_default($icon, $title);
     }
     else {
-      // Icon not found.
-      return pm_icon_default($icon, $title);
+      return $fa_icon;
     }
   }
   else {
     // Icons set to not display.
-    return $title;
+    return '<span class="pm-no-icon">' . $title . '</span>';
   }
 }
 
@@ -793,6 +748,160 @@ function pm_icon_default($icon, $title) {
   // For now, just return $title.
   // A future extension could be more intelligent using $icon.
   return $title;
+}
+
+/**
+ * Set body class to use pm default icons if required.
+ */
+function pm_preprocess_html(&$vars) {
+  $pm_icon = variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR);
+  $font_awesome_enabled = module_exists('fontawesome');
+  switch ($pm_icon) {
+    case PM_ICON_SET_DEFAULT_BEHAVIOUR:
+      $vars['classes_array'][] = ($font_awesome_enabled) ? "pm-use-fa-icons" : "pm-use-storm-icons";
+
+      break;
+
+    case PM_ICON_SET_FONTAWESOME:
+      $vars['classes_array'][] = "pm-use-fa-icons";
+
+      break;
+
+    case PM_ICON_SET_STORM:
+      $vars['classes_array'][] = "pm-use-storm-icons";
+
+      break;
+
+  }
+}
+
+/**
+ * Helper to attach fontawesome icons.
+ */
+function pm_helper_get_fa_icon($key, $default_class = 'fa_wrench') {
+  if ((variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR) == PM_ICON_SET_NO_ICON)) {
+    return '';
+  }
+  $key = str_replace(' ', '_', $key);
+  $key = str_replace('-', '_', $key);
+  switch ($key) {
+    case 'pmconfiguration':
+      $class = 'fa-gear';
+      break;
+
+    case 'pmexpenses':
+      $class = 'fa-money';
+      break;
+
+    case 'pmnotes':
+      $class = 'fa-file-o';
+      break;
+
+    case 'pmtimetrackings':
+      $class = 'fa-clock-o';
+      break;
+
+    case 'pmtickets':
+      $class = 'fa-ticket';
+      break;
+
+    case 'pmtasks':
+      $class = 'fa-tasks';
+      break;
+
+    case 'pmprojects':
+      $class = 'fa-cubes';
+      break;
+
+    case 'pmteams':
+      $class = 'fa-users';
+      break;
+
+    case 'pmorganizations':
+      $class = 'fa-institution';
+      break;
+
+    case 'pmissues':
+      $class = 'fa-cube';
+      break;
+
+    case 'application_add':
+      $class = 'fa-plus';
+      break;
+
+    case 'application_delete':
+      $class = 'fa-remove pm-status-danger-onfocus';
+      break;
+
+    case 'application_edit':
+      $class = 'fa-edit';
+      break;
+
+    // Issue type.
+    case 'bug':
+      $class = 'fa-bug';
+      break;
+
+    case 'task':
+      $class = 'fa-tasks';
+      break;
+
+    case 'feature_request':
+      $class = 'fa-ticket';
+      break;
+
+    case 'support':
+      $class = 'fa-phone';
+      break;
+
+    // Project type.
+    case 'development':
+      $class = 'fa-flask';
+      break;
+
+    // Progress.
+    case 'in_progress':
+      $class = 'fa-play pm-status-info';
+      break;
+
+    case 'completed':
+      $class = 'fa-check pm-status-success';
+      break;
+
+    case 'on_hold':
+      $class = 'fa-pause pm-status-warning';
+      break;
+
+    case 'inserted':
+      $class = 'fa-square pm-status-normal';
+      break;
+
+    // Priority.
+    case '1_low':
+      $class = 'fa-circle pm-status-info';
+      break;
+
+    case '2_normal':
+      $class = 'fa-circle pm-status-success';
+      break;
+
+    case '3_high':
+      $class = 'fa-circle pm-status-warning';
+      break;
+
+    case '4_urgent':
+      $class = 'fa-circle pm-status-danger';
+      break;
+
+    case 'default':
+      $class = '';
+      break;
+
+    default:
+      // @todo: Discuss how to handle other keys.
+      return '';
+  }
+  return "<i class='fa pm-icon $class fa-fw'></i>";
 }
 
 /**

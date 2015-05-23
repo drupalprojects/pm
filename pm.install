@@ -58,3 +58,24 @@ function pm_update_7104() {
 function pm_update_7105() {
   variable_del('pm_organization_nid');
 }
+
+/**
+ * Removal of legacy variable related to icons.
+ */
+function pm_update_7108() {
+  variable_del('pm_icons_path');
+}
+
+/**
+ * Migrate pm_icons_display settings to new pm_icon variable.
+ */
+function pm_update_7200() {
+  $display_icon = variable_get('pm_icons_display', TRUE);
+  if ($display_icon) {
+    variable_set('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR);
+  }
+  else {
+    variable_set('pm_icon', PM_ICON_SET_NO_ICON);
+  }
+  variable_del('pm_icons_display');
+}

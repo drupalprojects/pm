@@ -1,251 +1,98 @@
-table.formgroup {
-  width: auto;
-  margin: 0;
-  clear: both;
-  border: none;
+.pm-status-danger-onfocus:active,
+.pm-status-danger-onfocus:hover,
+.pm-status-danger {
+  color: #f00;
+}
+.pm-status-warning-onfocus:active,
+.pm-status-warning-onfocus:hover,
+.pm-status-warning {
+  color: #840;
+}
+.pm-status-success-onfocus:active,
+.pm-status-success-onfocus:hover,
+.pm-status-success {
+  color: #238800;
+}
+.pm-status-info-onfocus:active,
+.pm-status-info-onfocus:hover,
+.pm-status-info {
+  color: #0071B3;
+}
+.pm-status-normal-onfocus:active,
+.pm-status-normal-onfocus:hover,
+.pm-status-normal {
+  color: #555555;
 }
 
-table.formgroup tr td {
-  padding-left: 0px;
-  padding-right: 5px;
-  border: none;
+span.pm-no-icon {
+  border: 1px solid #aaaaaa;
+  color: #aaaaaa;
+  padding: 0 2px;
+  margin: 0 2px;
 }
 
-table.formgroup tr td div.form-item {
-  margin-top: 0px;
-  margin-bottom: 5px;
+.pm-use-storm-icons i.fa.pm-icon:before{
+  content: '' !important;
 }
 
-tbody {
-  border: none !important;
-}
-
-th.pm_list_operations {
-  text-align: right;
-  white-space: nowrap;
-  padding: 0.3em 0.5em;
-}
-
-td.pm_list_operations {
-  text-align: right;
-  white-space: nowrap;
-}
-
-div.pm_quick_shortcuts {
-  clear: both;
-}
-
-ul.pm_quick_shortcuts {
-  list-style-type: none;
-  margin: 0;
-}
-
-ul.pm_quick_shortcuts li {
-  background: transparent;
-  background-color: #5294c1;
-  display: inline;
-  float: left;
-  padding: 0;
-  margin: 0 1pt 1pt 0;
-}
-
-ul.pm_quick_shortcuts li a {
-  display: block;
-  width: 20px;
-  height: 20px;
-  text-align: center;
-  font-weight: bold;
-  color: #ffffff;
-}
-
-tr.formgroup {
-  background-color: #ffffff !important;
-  border: none !important;
-}
-
-dl.pmdashboard {
-  overflow: auto;
-}
-
-dt.pmcomponent {
-  padding-left: 40px;
-  padding-top: 10px;
-  height: 40px;
-}
-
-dt.pmcomponent a {
-  font-weight: bold;
-  margin-right: 5px;
-}
-
-dt#pmorganizations {
-  background: transparent url(images/organizations.png) no-repeat top left;
-}
-
-dt#pmprojects {
-  background: transparent url(images/projects.png) no-repeat top left;
-}
-
-dt#pmissues,
-dt#pmtasks {
-  background: transparent url(images/tasks.png) no-repeat top left;
-}
-
-dt#pmtickets {
-  background: transparent url(images/tickets.png) no-repeat top left;
-}
-
-dt#pmpeople {
-  background: transparent url(images/people.png) no-repeat top left;
-}
-
-dt#pmteams {
-  background: transparent url(images/teams.png) no-repeat top left;
-}
-
-dt#pmknowledgebase {
-  background: transparent url(images/knowledgebase.png) no-repeat top left;
-}
-
-dt#pmtimetrackings {
-  background: transparent url(images/timetrackings.png) no-repeat top left;
-}
-
-dt#pmnotes {
-  background: transparent url(images/notes.png) no-repeat top left;
-}
-
-dt#pminvoices {
-  background: transparent url(images/invoices.png) no-repeat top left;
-}
-
-dt#pmexpenses {
-  background: transparent url(images/expenses.png) no-repeat top left;
-}
-
-dt#pmconfiguration {
-  background: transparent url(images/configuration.png) no-repeat top left;
-}
-
-.container-inline .container-inline-date div,
-.container-inline div.container-inline-date,
-.container-inline .container-inline-date input {
-  display: block;
-}
-
-.view .attachment .pm-icon-add-view {
-  float: right;
-}
-
-/**
- * LIST formatter
- */
-.pm-list-default-wrapper .pm-icon{
-  width: 20px;
-  height: 20px;
+.pm-use-storm-icons i.fa.pm-icon{
+  min-width: 16px;
+  min-height: 16px;
   display: inline-block;
   float: left;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
-.pm-icon.pm-list-default-icon-1,
-.pm-icon.pm-list-default-icon-low,
-.pm-icon.pm-list-default-icon-1-low,
-.pm-icon.pm-list-default-icon-open,
-.pm-icon.pm-list-default-icon-green {
-  background: url(icons/priority_1-low.png) center center no-repeat;
+.pm-use-storm-icons i.fa.fa-plus{
+  background-image: url(icons/application_add.png);
 }
 
-.pm-icon.pm-list-default-icon-2,
-.pm-icon.pm-list-default-icon-normal,
-.pm-icon.pm-list-default-icon-2-normal,
-.pm-icon.pm-list-default-icon-blue {
-  background: url(icons/priority_2-normal.png) center center no-repeat;
+.pm-use-storm-icons i.fa.fa-edit{
+  background-image: url(icons/application_edit.png);
 }
 
-.pm-icon.pm-list-default-icon-3,
-.pm-icon.pm-list-default-icon-high,
-.pm-icon.pm-list-default-icon-3-high,
-.pm-icon.pm-list-default-icon-orange {
-  background: url(icons/priority_3-high.png) center center no-repeat;
+.pm-use-storm-icons i.fa.fa-remove{
+  background-image: url(icons/application_delete.png);
+}
+.pm-use-storm-icons i.fa.fa-pause{
+  background-image: url(icons/status_on_hold.png);
+}
+.pm-use-storm-icons i.fa.fa-play{
+  background-image: url(icons/status_in_progress.png);
+}
+.pm-use-storm-icons i.fa.fa-check{
+  background-image: url(icons/status_completed.png);
 }
 
-.pm-icon.pm-list-default-icon-4,
-.pm-icon.pm-list-default-icon-urgent,
-.pm-icon.pm-list-default-icon-4-urgent,
-.pm-icon.pm-list-default-icon-overdue,
-.pm-icon.pm-list-default-icon-red {
-  background: url(icons/priority_4-urgent.png) center center no-repeat;
+.pm-use-storm-icons i.fa.fa-square{
+  background-image: url(icons/status_inserted.png);
+}
+.pm-use-storm-icons i.fa.fa-flask{
+  background-image: url(icons/projectcategory_development.png);
+}
+.pm-use-storm-icons i.fa.fa-phone{
+  background-image: url(icons/category_support.png);
+}
+.pm-use-storm-icons i.fa.fa-bug{
+  background-image: url(icons/category_bug.png);
+}
+.pm-use-storm-icons i.fa.fa-tasks{
+  background-image: url(icons/category_task.png);
+}
+.pm-use-storm-icons i.fa.fa-ticket{
+  background-image: url(icons/category_feature_request.png);
+}
+.pm-use-storm-icons i.fa.fa-circle.pm-status-info{
+  background-image: url(icons/priority_1-low.png);
+}
+.pm-use-storm-icons i.fa.fa-circle.pm-status-success{
+  background-image: url(icons/priority_2-normal.png);
+}
+.pm-use-storm-icons i.fa.fa-circle.pm-status-warning{
+  background-image: url(icons/priority_3-high.png);
+}
+.pm-use-storm-icons i.fa.fa-circle.pm-status-danger{
+  background-image: url(icons/priority_4-urgent.png);
 }
 
-.pm-icon.pm-list-default-icon-inserted {
-  background: url(icons/status_inserted.png) center center no-repeat;
-}
-.pm-icon.pm-list-default-icon-in_progress {
-  background: url(icons/status_in_progress.png) center center no-repeat;
-}
-.pm-icon.pm-list-default-icon-on_hold {
-  background: url(icons/status_on_hold.png) center center no-repeat;
-}
-.pm-icon.pm-list-default-icon-completed {
-  background: url(icons/status_completed.png) center center no-repeat;
-}
-.pm-icon.pm-list-default-icon-proposal {
-  background: url(icons/status_proposal.png) center center no-repeat;
-}
-
-.pm-icon.pm-list-default-icon-development {
-  background: url(icons/projectcategory_development.png) center center no-repeat;
-}
-.pm-icon.pm-list-default-icon-support {
-  background: url(icons/projectcategory_support.png) center center no-repeat;
-}
-
-.pm-icon.pm-list-default-icon-task {
-  background: url(icons/category_task.png) center center no-repeat;
-}
-.pm-icon.pm-list-default-icon-support {
-  background: url(icons/category_support.png) center center no-repeat;
-}
-.pm-icon.pm-list-default-icon-bug {
-  background: url(icons/category_bug.png) center center no-repeat;
-}
-.pm-icon.pm-list-default-icon-feature_request {
-  background: url(icons/category_feature_request.png) center center no-repeat;
-}
-
-.pm-icon.pm-list-default-icon-tickets {
-  background: url(icons/tickets.png) center center no-repeat;
-}
-.pm-icon.pm-list-default-icon-tasks {
-  background: url(icons/tasks.png) center center no-repeat;
-}
-.pm-icon.pm-list-default-icon-expenses {
-  background: url(icons/expenses.png) center center no-repeat;
-}
-
-.pm-icon.pm-list-default-icon-notes {
-  background: url(icons/notes.png) center center no-repeat;
-}
-
-.pm-icon.pm-list-default-icon-projects {
-  background: url(icons/projects.png) center center no-repeat;
-}
-.pm-icon.pm-list-default-icon-report {
-  background: url(icons/report.png) center center no-repeat;
-}
-.pm-icon.pm-list-default-icon-teammembers {
-  background: url(icons/teammembers.png) center center no-repeat;
-}
-
-.pm-icon.pm-list-default-icon-activity {
-  background: url(icons/worktype_activity.png) center center no-repeat;
-}
-.pm-icon.pm-list-default-icon-phase {
-  background: url(icons/worktype_phase.png) center center no-repeat;
-}
-.pm-icon.pm-list-default-icon-project {
-  background: url(icons/worktype_project.png) center center no-repeat;
-}
-.pm-icon.pm-list-default-icon-activity {
-  background: url(icons/worktype_activity.png) center center no-repeat;
-}

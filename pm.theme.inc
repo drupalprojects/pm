@@ -5,13 +5,6 @@
  */
 
 /**
- * Provides theming for the datetime element.
- */
-function theme_datetime($element) {
-  return theme('form_element', $element, '<div class="container-inline">' . $element['#children'] . '</div>');
-}
-
-/**
  * Provides HTML for a Project Management dashboard.
  */
 function theme_pm_dashboard($link_blocks) {
@@ -51,14 +44,12 @@ function theme_pm_dashboard_block($link_blocks) {
     foreach ($link_blocks as $link_block_array) {
       if (!empty($link_block_array) AND is_array($link_block_array)) {
         foreach ($link_block_array as $link_array) {
-          $content .= '<div class="pmdashboard-icon">';
           if (!empty($link_array['theme'])) {
             $content .= theme($link_array['theme'], $link_array);
           }
           else {
             $content .= theme('pm_dashboard_link', $link_array);
           }
-          $content .= '</div>';
         }
       }
     }
@@ -104,8 +95,8 @@ function theme_pm_dashboard_link($link_array) {
   }
 
   if (empty($link_array['nid']) || 0 == $link_array['nid']) {
-    if (variable_get('pm_icons_display', TRUE)) {
-      $content .= '<dt id="' . $dt_id . '" class="pmcomponent">';
+    if (variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR) !== PM_ICON_SET_NO_ICON) {
+      $content .= '<dt class="pmcomponent">' . pm_helper_get_fa_icon($dt_id);
     }
     else {
       $content .= '<dt class="pmcomponent">';
@@ -115,50 +106,11 @@ function theme_pm_dashboard_link($link_array) {
   }
   else {
     $content = array(
-      '#prefix' => variable_get('pm_icons_display', TRUE) ? '<dt id="' . $dt_id . '" class="pmcomponent">' : '<dt class="pmcomponent">',
+      '#prefix' => (variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR) !== PM_ICON_SET_NO_ICON) ? '<dt class="pmcomponent">' . pm_helper_get_fa_icon($dt_id) : '<dt class="pmcomponent">',
       '#suffix' => '</dt>',
       '#value' => $link,
       '#weight' => $link_array['weight'],
     );
   }
   return $content;
-}
-
-/**
- * Provides HTML for the Project Management dashboard weight table.
- */
-function theme_pm_dashboard_links_weight_table($form = array()) {
-  $type = $form['#infix'];
-  $rows = array();
-  foreach ($form as $id => &$value) {
-    if ($id[0] == '#') {
-      continue;
-    }
-    $value[$type . '_pm_dashboard_link_weight_' . $id]['#attributes']['class'] = $type . 'dashboard-link-table-weight';
-
-    $row = array();
-    $row[] = $value['#value'];
-    $row[] = drupal_render($value[$type . '_pm_dashboard_link_active_' . $id]);
-    $row[] = drupal_render($value[$type . '_pm_dashboard_link_weight_' . $id]);
-    unset($value['#value']);
-    if (!empty($row)) {
-      $rows[] = array(
-        'data' => $row,
-        'class' => 'draggable',
-      );
-    }
-  }
-  $headers = array(t('Link'), t('Active'), t('Weight'));
-
-  $output = theme('table', array(
-    'headers' => $headers,
-    'rows' => $rows,
-    'attributes' => array('id' => $type . 'dashboard-link-table'),
-  ));
-
-  drupal_add_tabledrag($type . 'dashboard-link-table', 'order', 'sibling', $type . 'dashboard-link-table-weight');
-
-  $output .= drupal_render($form);
-
-  return $output;
 }
