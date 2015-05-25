@@ -264,7 +264,7 @@ function pm_pm_dashboard_types() {
       'url'         => 'pm',
       // Title: Required. Title of menu item, page title and title for the pm
       // settings.
-      'title'       => t('Project Management Dashboard'),
+      'title'       => t('Project Management'),
       // Description: Required. Description for the fieldset in the pm
       // settings.
       'description' => t('You can disable or reorder the links from the !dashboard here', array(
