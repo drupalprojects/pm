@@ -27,11 +27,11 @@ function pmperson_disable() {
  */
 function pmperson_uninstall() {
   // Clean up field instances (and field) and its data.
-  module_load_include('inc', 'pmorganization', 'includes/pmorganization.field_instance');
-  module_load_include('inc', 'pmorganization', 'includes/pmorganization.field_base');
-  $declared_field_bases = pmorganization_default_field_bases();
-  $declared_field_instances = pmorganization_default_field_instances();
-  $field_instance = field_info_instances('node', 'pmorganization');
+  module_load_include('inc', 'pmperson', 'includes/pmperson.field_instance');
+  module_load_include('inc', 'pmperson', 'includes/pmperson.field_base');
+  $declared_field_bases = pmperson_default_field_bases();
+  $declared_field_instances = pmperson_default_field_instances();
+  $field_instance = field_info_instances('user', 'user');
 
   foreach ($declared_field_instances as $declared_instance) {
     $instance = $field_instance[$declared_instance['field_name']];
