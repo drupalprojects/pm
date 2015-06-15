@@ -787,3 +787,159 @@ function _pmpermission_watchdog_log($error, $backtrace = TRUE) {
   watchdog('PHP', $err_msg, WATCHDOG_ERROR);
   drupal_set_message($err_msg, 'error');
 }
+
+
+/**
+ * Implements hook_node_update().
+ */
+function pmpermission_node_update($node) {
+
+  $enabled = pmpermission_get_enabled_types();
+  $type = $node->type;
+
+  if (in_array($type, $enabled)) {
+    if (pmpermission_check_if_child_permission_needs_update($node)) {
+      pmpermission_hunt_and_update_all_child_permission($node);
+    }
+  }
+}
+
+/**
+ * Check and performs access update if supplied pmorganization.
+ */
+function pmpermission_hunt_and_update_all_child_permission($node) {
+  $nids = pmpermission_get_all_child_nids($node->nid);
+  if ($nids) {
+    $batch = array(
+      'title' => t('Rebuilding access permissions for the @type "@title"', array('@type' => $node->type,'@title' => $node->title)),
+      'operations' => array(
+        array('_pmpermission_node_access_rebuild_batch_operation', array($nids)),
+      ),
+      'finished' => '_pmpermission_node_access_rebuild_batch_finished',
+    );
+    batch_set($batch);
+  }
+}
+
+/**
+ * Check if current node is directly under pmorganization, and has changed.
+ */
+function pmpermission_check_if_child_permission_needs_update($node) {
+  $type = $node->type;
+  $wrapper = entity_metadata_wrapper('node', $node);
+  $parent_field = variable_get("pmpermission_field_parent_reference_for_{$type}", NULL);
+  $parent_new = $wrapper->$parent_field->value();
+  $new_id = (isset($parent_new->nid)) ? $parent_new->nid : NULL;
+
+  $wrapper = entity_metadata_wrapper('node', $node->original);
+  $parent_old = $wrapper->$parent_field->value();
+
+  $old_id = (isset($parent_old->nid)) ? $parent_old->nid : NULL;
+
+  return ($new_id != $old_id);
+}
+
+/**
+ * Helper function to get all child nids under current node.
+ */
+function pmpermission_get_all_child_nids($nid) {
+  $parents = array($nid);
+  _pmpermission_get_all_child_nids($parents, $result);
+  return $result;
+}
+
+/**
+ * Recursively hunt for child nodes of pmorganization.
+ */
+function _pmpermission_get_all_child_nids($nids, &$result = NULL) {
+  static $depth = 0;
+  $depth++;
+  if ($depth >= 10) {
+    return;
+  }
+  // First Pass, let it go.
+  if ($result === NULL) {
+    $result = array();
+    $new_ids = $nids;
+  }
+  else {
+    // In
+    $new_ids = array_diff($nids, $result);
+    $result = array_merge($result, $new_ids);
+    if (empty($new_ids)) {
+      return;
+    }
+  }
+  $ids = array();
+  foreach ($new_ids as $nid) {
+      $enabled = pmpermission_get_enabled_types();
+      if ($enabled) {
+        foreach ($enabled as $type) {
+          $parent_field = variable_get("pmpermission_field_parent_reference_for_{$type}", NULL);
+          if ($parent_field) {
+            $query = new EntityFieldQuery();
+            $query->entityCondition('entity_type', 'node')
+              ->entityCondition('bundle', array($type), 'IN')
+              ->fieldCondition($parent_field, 'target_id', $nid)
+              ->addMetaData('account', user_load(1));
+            $r = $query->execute();
+            if (isset($r['node'])) {
+              $keys = array_keys($r['node']);
+              $ids = array_merge($ids, $keys);
+            }
+          }
+        }
+      }
+  }
+  _pmpermission_get_all_child_nids($ids, $result);
+}
+
+/**
+ * Custom batch operation for rebuilding permission.
+ * @see pmpermission_hunt_and_update_all_child_permission().
+ */
+function _pmpermission_node_access_rebuild_batch_operation($nids, &$context) {
+  if (empty($context['sandbox'])) {
+    // Initiate multistep processing.
+    $context['sandbox']['progress'] = 0;
+    $context['sandbox']['max'] = count($nids);
+    $context['sandbox']['nids'] = drupal_map_assoc($nids);
+    if (empty($nids)) {
+      $context['finished'] = 1;
+      return;
+    }
+  }
+
+  $nids = array_slice($context['sandbox']['nids'], 0, 20);
+  $nodes = node_load_multiple($nids, array(), TRUE);
+  foreach ($nodes as $nid => $node) {
+    // To preserve database integrity, only acquire grants if the node
+    // loads successfully.
+    if (!empty($node)) {
+      node_access_acquire_grants($node);
+    }
+    unset($context['sandbox']['nids'][$nid]);
+    $context['sandbox']['progress']++;
+    $context['message'] = t('Now processing %node', array('%node' => $node->title));
+  }
+
+  // Multistep processing : report progress.
+  if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
+    $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
+  }
+}
+
+/**
+ * Custom batch finish callback.
+ *
+ * @see pmpermission_hunt_and_update_all_child_permission()
+ */
+function _pmpermission_node_access_rebuild_batch_finished($success, $results, $operations) {
+  if ($success) {
+    drupal_set_message(t('The image access permissions have been rebuilt.'));
+  }
+  else {
+    drupal_set_message(t('The image access permissions have not been properly rebuilt.'), 'error');
+  }
+  cache_clear_all();
+}
