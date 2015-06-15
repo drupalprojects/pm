@@ -580,10 +580,16 @@ function _pmpermission_get_organization_id($node, $max_depth) {
 
 /**
  * Recursively hunts and find out the first parent node of given type.
- * @param  $node        The node for which the parent to be found.
- * @param  $parent_type The content type of parent node.
- * @param  $max_depth   How many levels up should the function traverse.
- * @return nid of the parent node if found, FALSE otherwise.
+ *
+ * @param object $node
+ *   The node for which the parent to be found.
+ * @param string $parent_type
+ *   The content type of parent node.
+ * @param int $max_depth
+ *   How many levels up should the function traverse.
+ *
+ * @return mixed
+ *   nid of the parent node if found, FALSE otherwise.
  */
 function pmpermission_get_parent_nid_of_node($node, $parent_type, $max_depth = 10) {
   if ($node->type == $parent_type) {
@@ -811,7 +817,7 @@ function pmpermission_hunt_and_update_all_child_permission($node) {
   $nids = pmpermission_get_all_child_nids($node->nid);
   if ($nids) {
     $batch = array(
-      'title' => t('Rebuilding access permissions for the @type "@title"', array('@type' => $node->type,'@title' => $node->title)),
+      'title' => t('Rebuilding access permissions for the @type "@title"', array('@type' => $node->type, '@title' => $node->title)),
       'operations' => array(
         array('_pmpermission_node_access_rebuild_batch_operation', array($nids)),
       ),
@@ -857,13 +863,11 @@ function _pmpermission_get_all_child_nids($nids, &$result = NULL) {
   if ($depth >= 10) {
     return;
   }
-  // First Pass, let it go.
   if ($result === NULL) {
     $result = array();
     $new_ids = $nids;
   }
   else {
-    // In
     $new_ids = array_diff($nids, $result);
     $result = array_merge($result, $new_ids);
     if (empty($new_ids)) {
@@ -872,31 +876,32 @@ function _pmpermission_get_all_child_nids($nids, &$result = NULL) {
   }
   $ids = array();
   foreach ($new_ids as $nid) {
-      $enabled = pmpermission_get_enabled_types();
-      if ($enabled) {
-        foreach ($enabled as $type) {
-          $parent_field = variable_get("pmpermission_field_parent_reference_for_{$type}", NULL);
-          if ($parent_field) {
-            $query = new EntityFieldQuery();
-            $query->entityCondition('entity_type', 'node')
-              ->entityCondition('bundle', array($type), 'IN')
-              ->fieldCondition($parent_field, 'target_id', $nid)
-              ->addMetaData('account', user_load(1));
-            $r = $query->execute();
-            if (isset($r['node'])) {
-              $keys = array_keys($r['node']);
-              $ids = array_merge($ids, $keys);
-            }
+    $enabled = pmpermission_get_enabled_types();
+    if ($enabled) {
+      foreach ($enabled as $type) {
+        $parent_field = variable_get("pmpermission_field_parent_reference_for_{$type}", NULL);
+        if ($parent_field) {
+          $query = new EntityFieldQuery();
+          $query->entityCondition('entity_type', 'node')
+            ->entityCondition('bundle', array($type), 'IN')
+            ->fieldCondition($parent_field, 'target_id', $nid)
+            ->addMetaData('account', user_load(1));
+          $r = $query->execute();
+          if (isset($r['node'])) {
+            $keys = array_keys($r['node']);
+            $ids = array_merge($ids, $keys);
           }
         }
       }
+    }
   }
   _pmpermission_get_all_child_nids($ids, $result);
 }
 
 /**
  * Custom batch operation for rebuilding permission.
- * @see pmpermission_hunt_and_update_all_child_permission().
+ *
+ * @see pmpermission_hunt_and_update_all_child_permission()
  */
 function _pmpermission_node_access_rebuild_batch_operation($nids, &$context) {
   if (empty($context['sandbox'])) {
