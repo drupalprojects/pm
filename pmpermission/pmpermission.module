@@ -834,6 +834,10 @@ function pmpermission_check_if_child_permission_needs_update($node) {
   $type = $node->type;
   $wrapper = entity_metadata_wrapper('node', $node);
   $parent_field = variable_get("pmpermission_field_parent_reference_for_{$type}", NULL);
+  // No update required if parent field is absent.
+  if (empty($parent_field)) {
+    return FALSE;
+  }
   $parent_new = $wrapper->$parent_field->value();
   $new_id = (isset($parent_new->nid)) ? $parent_new->nid : NULL;
 
