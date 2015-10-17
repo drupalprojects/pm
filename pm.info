@@ -7,6 +7,7 @@ configure = admin/config/pm
 stylesheets[all][] = pm.css
 
 files[] = pm.test
+files[] = pm_handler_area_addcontent.inc
 files[] = pm_handler_field_operation.inc
 
 dependencies[] = date
