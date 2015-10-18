@@ -32,19 +32,19 @@ class PMIssueTestCase extends DrupalWebTestCase {
    */
   public function testpmissueAccess() {
     // Anonymous user.
-    $this->drupalGet('pm/tasks');
+    $this->drupalGet('pm/issues');
     $this->assertResponse(403, 'Access is denied to the anonymous user.');
 
     // Authenticated user.
     $authenticated_user = $this->drupalCreateUser();
     $this->drupalLogin($authenticated_user);
-    $this->drupalGet('pm/tasks');
+    $this->drupalGet('pm/issues');
     $this->assertResponse(403, 'Access is denied to the authenticated user.');
 
     // Privileged user.
     $privileged_user = $this->drupalCreateUser(array('Project Management Issue: access'));
     $this->drupalLogin($privileged_user);
-    $this->drupalGet('pm/tasks');
+    $this->drupalGet('pm/issues');
     $this->assertText(t('Issues'), t('Access granted for the privileged user. Correct page has been confirmed by checking that the title is "Issues".'));
   }
 
