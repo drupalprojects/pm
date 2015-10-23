@@ -79,3 +79,15 @@ function pm_update_7200() {
   }
   variable_del('pm_icons_display');
 }
+
+/**
+ * Remove legacy variables related to taxation.
+ */
+function pm_update_7201() {
+  variable_del('pm_tax1_app');
+  variable_del('pm_tax1_name');
+  variable_del('pm_tax1_percent');
+  variable_del('pm_tax2_app');
+  variable_del('pm_tax2_name');
+  variable_del('pm_tax2_percent');
+}
