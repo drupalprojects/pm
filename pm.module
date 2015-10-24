@@ -1132,6 +1132,7 @@ function pm_get_parent($node, $type = 'pmorganization', $iteration = 10) {
 function pm_views_api() {
   return array(
     'api' => 3.0,
+    'path' => drupal_get_path('module', 'pm') . '/includes/views',
   );
 }
 
