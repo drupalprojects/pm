@@ -52,7 +52,7 @@ class pm_handler_area_addcontent extends views_handler_area {
         'html' => TRUE,
       );
 
-      if ($this->options['redirect'] === 1) {
+      if ($this->options['redirect'] == TRUE) {
         $link_options['query'] = array('destination' => current_path());
       }
 
