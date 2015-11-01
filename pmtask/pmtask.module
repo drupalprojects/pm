@@ -84,35 +84,6 @@ function pmtask_views_api() {
 }
 
 /**
- * Implements hook_token_list().
- */
-function pmtask_token_list($type = 'all') {
-  $tokens = array();
-  if (($type == 'node') || ($type == 'all')) {
-    $tokens['node']['pmtask-organization-nid'] = t('Project Management Task: Organization Node ID.');
-    $tokens['node']['pmtask-organization-title'] = t('Project Management Task: Organization Title.');
-    $tokens['node']['pmtask-project-nid'] = t('Project Management Task: Project Node ID.');
-    $tokens['node']['pmtask-project-title'] = t('Project Management Task: Project Title.');
-  }
-  return $tokens;
-}
-
-/**
- * Implements hook_token_values().
- */
-function pmtask_token_values($type, $object = NULL) {
-  $values = array();
-  $node = $object;
-  if ((($type == 'node') || ($type == 'all')) && ($node->type === 'pmtask')) {
-    $values['pmtask-organization-nid'] = $node->organization_nid;
-    $values['pmtask-organization-title'] = $node->organization_title;
-    $values['pmtask-project-nid'] = $node->project_nid;
-    $values['pmtask-project-title'] = $node->project_title;
-  }
-  return $values;
-}
-
-/**
  * Implements hook_pm_dashboard_links().
  */
 function pmtask_pm_dashboard_links($type) {
