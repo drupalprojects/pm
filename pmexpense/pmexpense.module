@@ -39,12 +39,11 @@ function pmexpense_node_info() {
     'pmexpense' => array(
       'name' => t('Expense'),
       'base' => 'pmexpense',
-      'description' => t("An expense for Project Management."),
-      'title_label' => t("Title"),
+      'description' => t('Use <em>Expense</em> within <em>Project Management</em> for recording money spent and allocating to the relevant work.'),
+      'title_label' => t('Title'),
     ),
   );
 }
-
 
 /**
  * Implements hook_pmexpense_form().

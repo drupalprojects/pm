@@ -40,9 +40,9 @@ function pmorganization_node_info() {
     'pmorganization' => array(
       'name' => t('Organization'),
       'base' => 'pmorganization',
-      'description' => t("An organization for Project Management."),
-      'title_label' => t("Name"),
-      'body_label' => t("Description"),
+      'description' => t('Use <em>Organization</em> within <em>Project Management</em> for recording formal groups of people, such as clients/customers/service providers.'),
+      'title_label' => t('Name'),
+      'body_label' => t('Description'),
     ),
   );
 }
