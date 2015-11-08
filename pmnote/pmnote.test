@@ -24,7 +24,7 @@ class PMNoteTestCase extends DrupalWebTestCase {
    * Set up of test environment.
    */
   public function setUp() {
-    parent::setUp('views', 'pm', 'pmorganization', 'pmproject', 'pmissue', 'pmnote');
+    parent::setUp('views', 'pm', 'pmorganization', 'pmproject', 'pmtask', 'pmticket', 'pmnote');
   }
 
   /**
