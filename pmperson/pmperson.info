@@ -4,3 +4,5 @@ dependencies[] = pm
 dependencies[] = link
 package = Project Management
 core = 7.x
+
+files[] = pmperson.test
