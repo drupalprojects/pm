@@ -8,5 +8,4 @@ dependencies[] = addressfield
 
 package = Project Management
 core = 7.x
-configure = admin/config/pm/pmorganization
 files[] = pmorganization.test
