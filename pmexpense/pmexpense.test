@@ -24,7 +24,7 @@ class PMExpenseTestCase extends DrupalWebTestCase {
    * Defines modules to be enabled for each test run.
    */
   public function setUp() {
-    parent::setUp('pm', 'pmorganization', 'pmproject', 'pmissue', 'pmexpense');
+    parent::setUp('pm', 'pmorganization', 'pmproject', 'pmtask', 'pmticket', 'pmexpense');
   }
 
   /**
