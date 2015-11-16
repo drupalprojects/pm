@@ -5,15 +5,6 @@
  */
 
 /**
- * Implements hook_uninstall().
- */
-function pm_uninstall() {
-  variable_del('pm_icons_path');
-
-  drupal_uninstall_schema('pm');
-}
-
-/**
  * Implements hook_update_last_removed().
  */
 function pm_update_last_removed() {

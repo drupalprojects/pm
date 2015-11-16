@@ -224,26 +224,6 @@ function _pm_dashboard_sort_links(array $a, array $b) {
 }
 
 /**
- * Implements hook_pm_dashboard_links().
- */
-function pm_pm_dashboard_links($type) {
-  $links = array();
-  if ($type == 'page' || $type == 'block') {
-    $links[] = array(
-      'title' => t('Configuration'),
-      'icon' => 'pmconfiguration',
-      'path' => 'admin/config/pm',
-      'params' => array(),
-      'node_type' => '',
-      'add_type' => '',
-      'map' => array(),
-      'weight' => 15,
-    );
-  }
-  return $links;
-}
-
-/**
  * Implements hook_pm_dashboard_types().
  */
 function pm_pm_dashboard_types() {

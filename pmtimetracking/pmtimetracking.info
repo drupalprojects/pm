@@ -3,7 +3,8 @@ description = "Allows recording of times worked based on project, task and/or ti
 dependencies[] = pm
 dependencies[] = pmorganization
 dependencies[] = pmproject
-dependencies[] = pmissue
+dependencies[] = pmtask
+dependencies[] = pmticket
 package = Project Management
 core = 7.x
 
