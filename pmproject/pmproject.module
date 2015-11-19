@@ -40,7 +40,7 @@ function pmproject_node_info() {
     'pmproject' => array(
       'name' => t('Project'),
       'base' => 'pmproject',
-      'description' => t('Use <em>Project</em> within <em>Project Management</em> for recording high level work requirements."),
+      'description' => t('Use <em>Project</em> within <em>Project Management</em> for recording high level work requirements.'),
       'title_label' => t('Title'),
     ),
   );
