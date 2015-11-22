@@ -39,7 +39,7 @@ function pmticket_node_info() {
     'pmticket' => array(
       'name' => t('Ticket'),
       'base' => 'pmticket',
-      'description' => t('Use <em>Ticket</em> within <em>Project Management</em> to record and track items that need resolution.'),
+      'description' => t('Use <em>tickets</em> to record and track items that need resolution within <em>Project Management</em>.'),
       'title_label' => t('Title'),
     ),
   );

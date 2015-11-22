@@ -39,7 +39,7 @@ function pmexpense_node_info() {
     'pmexpense' => array(
       'name' => t('Expense'),
       'base' => 'pmexpense',
-      'description' => t('Use <em>Expense</em> within <em>Project Management</em> for recording money spent and allocating to the relevant work.'),
+      'description' => t('Use <em>expenses</em> for recording money spent and allocating to the relevant work within <em>Project Management</em>.'),
       'title_label' => t('Title'),
     ),
   );

@@ -40,7 +40,7 @@ function pmissue_node_info() {
     'pmissue' => array(
       'name' => t('Issue'),
       'base' => 'pmissue',
-      'description' => t('Use <em>Issue</em> within <em>Project Management</em> for tracking items that need resolution and granular work requirements.'),
+      'description' => t('Use <em>issues</em> for tracking items that need resolution and granular work requirements within <em>Project Management</em>.'),
       'title_label' => t('Title'),
     ),
   );
