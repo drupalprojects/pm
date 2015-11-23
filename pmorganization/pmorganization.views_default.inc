@@ -71,10 +71,12 @@ function pmorganization_views_default_views() {
   );
   $handler->display->display_options['style_options']['sticky'] = TRUE;
   $handler->display->display_options['style_options']['empty_table'] = TRUE;
-  /* Header: Global: Text area */
-  $handler->display->display_options['header']['area']['id'] = 'area';
-  $handler->display->display_options['header']['area']['table'] = 'views';
-  $handler->display->display_options['header']['area']['field'] = 'area';
+  /* Header: Content: PM Add Content Link */
+  $handler->display->display_options['header']['pm_handler_area_addcontent']['id'] = 'pm_handler_area_addcontent';
+  $handler->display->display_options['header']['pm_handler_area_addcontent']['table'] = 'node';
+  $handler->display->display_options['header']['pm_handler_area_addcontent']['field'] = 'pm_handler_area_addcontent';
+  $handler->display->display_options['header']['pm_handler_area_addcontent']['node_type'] = 'pmorganization';
+  $handler->display->display_options['header']['pm_handler_area_addcontent']['redirect'] = TRUE;
   /* No results behavior: Global: Text area */
   $handler->display->display_options['empty']['area']['id'] = 'area';
   $handler->display->display_options['empty']['area']['table'] = 'views';
