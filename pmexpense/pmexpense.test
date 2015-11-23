@@ -1,11 +1,11 @@
 <?php
 /**
  * @file
- * Test definitions for the PM Expense module.
+ * Test definitions for PM Expense.
  */
 
 /**
- * Defines tests for the PM Expense module.
+ * Define a test case for PM Expense.
  */
 class PMExpenseTestCase extends DrupalWebTestCase {
 
@@ -85,4 +85,5 @@ class PMExpenseTestCase extends DrupalWebTestCase {
     // Test that the expense node is created.
     $this->assertText(t('Expense @title has been created.', array('@title' => $expense['title'])));
   }
+
 }

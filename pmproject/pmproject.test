@@ -1,9 +1,12 @@
 <?php
 /**
  * @file
- * Test definitions for the PM Project module.
+ * Test definitions for PM Project.
  */
 
+/**
+ * Define a test case for PM Project.
+ */
 class PMProjectTestCase extends DrupalWebTestCase {
 
   /**
@@ -70,4 +73,5 @@ class PMProjectTestCase extends DrupalWebTestCase {
 
     $this->assertText(t('Project @title has been created.', array('@title' => $prj['title'])));;
   }
+
 }

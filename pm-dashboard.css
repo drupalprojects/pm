@@ -1,66 +1,68 @@
-/* Creates two columns, each 50% of page width */
-
 #pmdashboard {
   width: 100%;
 }
+
 #pmdashboard .pmcomponent {
-    display: block;
-    width: 90%;
-    margin: 10px;
-    overflow: hidden;
-    background: #efefef;
-    height: 50px;
-    position: relative;
-    padding: 0 0 0 0;
-    font-size: 20px;
-    line-height: 50px;
+  display: block;
+  width: 90%;
+  margin: 10px;
+  overflow: hidden;
+  background: #efefef;
+  height: 50px;
+  position: relative;
+  padding: 0 0 0 0;
+  font-size: 20px;
+  line-height: 50px;
 }
 
 #pmdashboard .pmcomponent a {
-    color: #222;
-    text-decoration: none;
+  color: #222;
+  text-decoration: none;
 }
+
 #pmdashboard .pmcomponent a:hover {
-    color: #777;
-    text-decoration: none;
+  color: #777;
+  text-decoration: none;
 }
+
 #pmdashboard .pmcomponent i.fa {
-    border: none;
-    opacity: 0.5;
-    color: black;
-    height: 100%;
-    height: 50px;
-    width: 50px;
-    padding: 0px 5px;
+  border: none;
+  opacity: 0.5;
+  color: black;
+  height: 100%;
+  height: 50px;
+  width: 50px;
+  padding: 0px 5px;
 }
+
 #pmdashboard .pmcomponent a i.fa.fa-plus {
-    border: none;
-    opacity: 0.2;
-    color: black;
-    background: rgba(0,0,0,0.3);
-    height: 100%;
-    float: right;
-    height: 50px;
-    width: 50px;
-    line-height: 50px;
-    position: absolute;
-    top: 0;
-    right: 0;
+  border: none;
+  opacity: 0.2;
+  color: black;
+  background: rgba(0,0,0,0.3);
+  height: 100%;
+  float: right;
+  height: 50px;
+  width: 50px;
+  line-height: 50px;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 #pmdashboard .pmcomponent a i.fa-plus:hover {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
-
+/* Creates two columns, each 50% of page width */
 div.pmdashboard {
   float: left;
   width: 50%;
 }
 
-#pmdashboard-block .pmcomponent{
-    display: block;
-    clear: both;
+#pmdashboard-block .pmcomponent {
+  display: block;
+  clear: both;
 }
 
 #pmdashboard-block {
@@ -91,44 +93,43 @@ div.pmdashboard {
   background-size: 100% auto;
 }
 
-.pm-use-storm-icons #pmdashboard .pmcomponent i.fa{
+.pm-use-storm-icons #pmdashboard .pmcomponent i.fa {
   min-width: 32px;
   min-height: 32px;
   opacity: 1;
 }
 
-.pm-use-storm-icons i.fa-institution{
+.pm-use-storm-icons i.fa-institution {
   background-image: url(images/organizations.png);
 }
 
-.pm-use-storm-icons i.fa-cubes{
+.pm-use-storm-icons i.fa-cubes {
   background-image: url(images/projects.png);
 }
 
-.pm-use-storm-icons i.fa-cube{
+.pm-use-storm-icons i.fa-cube {
   background-image: url(images/tasks.png);
 }
 
-.pm-use-storm-icons i.fa-money{
+.pm-use-storm-icons i.fa-money {
   background-image: url(images/expenses.png);
 }
-.pm-use-storm-icons i.fa-gear{
+.pm-use-storm-icons i.fa-gear {
   background-image: url(images/configuration.png);
 }
 
-.pm-use-storm-icons i.fa-file-o{
+.pm-use-storm-icons i.fa-file-o {
   background-image: url(images/notes.png);
 }
 
-.pm-use-storm-icons i.fa-clock-o{
+.pm-use-storm-icons i.fa-clock-o {
   background-image: url(images/timetrackings.png);
 }
 
-.pm-use-storm-icons .pmcomponent i.fa-tasks{
+.pm-use-storm-icons .pmcomponent i.fa-tasks {
   background-image: url(images/tasks.png);
 }
 
-.pm-use-storm-icons .pmcomponent i.fa-ticket{
+.pm-use-storm-icons .pmcomponent i.fa-ticket {
   background-image: url(images/tickets.png);
 }
-

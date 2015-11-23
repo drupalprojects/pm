@@ -1,11 +1,11 @@
 <?php
 /**
  * @file
- * Test definitions for the PM Note module.
+ * Test definitions for PM Note.
  */
 
 /**
- * Test definition for the PM Note module.
+ * Define a test case for PM Note.
  */
 class PMNoteTestCase extends DrupalWebTestCase {
 
@@ -88,4 +88,5 @@ class PMNoteTestCase extends DrupalWebTestCase {
 
     $this->assertText(t('Note @title has been created.', array('@title' => $note['title'])));;
   }
+
 }

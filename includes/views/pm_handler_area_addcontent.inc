@@ -1,9 +1,14 @@
 <?php
+/**
+ * @file
+ * Area handler for PM add content link.
+ */
 
 /**
- * Defines the PM Add Content area handler.
+ * Area handler for PM add content link.
  */
 class pm_handler_area_addcontent extends views_handler_area {
+
   /**
    * Get this field's label.
    */
@@ -19,6 +24,7 @@ class pm_handler_area_addcontent extends views_handler_area {
     );
     return $options;
   }
+
   /**
    * Define options form.
    */
@@ -36,8 +42,9 @@ class pm_handler_area_addcontent extends views_handler_area {
       '#default_value' => $this->options['redirect'],
     );
   }
+
   /**
-   * Render the area
+   * Render the area.
    */
   function render($empty = FALSE) {
     // Only show a link if the user has permissions for the destination.
@@ -62,4 +69,5 @@ class pm_handler_area_addcontent extends views_handler_area {
       return '';
     }
   }
+
 }
