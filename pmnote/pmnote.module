@@ -40,7 +40,7 @@ function pmnote_node_info() {
     'pmnote' => array(
       'name' => t('Note'),
       'base' => 'pmnote',
-      'description' => t('Use <em>notes</em> to record free text that can be attached to another element within Project Management within <em>Project Management</em>.'),
+      'description' => t('Use <em>notes</em> for free text that can be attached to another element within <em>Project Management</em>.'),
     ),
   );
 }

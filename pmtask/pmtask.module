@@ -40,7 +40,7 @@ function pmtask_node_info() {
     'pmtask' => array(
       'name' => t('Task'),
       'base' => 'pmtask',
-      'description' => t('Use <em>tasks</em> to record granular information on work requirements within <em>Project Management</em>.'),
+      'description' => t('Use <em>tasks</em> for granular work plans that can be structured within <em>Project Management</em>.'),
       'title_label' => t('Title'),
     ),
   );
