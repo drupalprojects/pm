@@ -4,7 +4,8 @@ dependencies[] = views
 dependencies[] = pm
 dependencies[] = pmorganization
 dependencies[] = pmproject
-dependencies[] = pmissue
+dependencies[] = pmtask
+dependencies[] = pmticket
 package = Project Management
 core = 7.x
 

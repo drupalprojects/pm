@@ -24,7 +24,7 @@ class PMNoteTestCase extends DrupalWebTestCase {
    * Set up of test environment.
    */
   public function setUp() {
-    parent::setUp('views', 'pm', 'pmorganization', 'pmproject', 'pmissue', 'pmnote');
+    parent::setUp('views', 'pm', 'pmorganization', 'pmproject', 'pmtask', 'pmticket', 'pmnote');
   }
 
   /**
@@ -53,7 +53,8 @@ class PMNoteTestCase extends DrupalWebTestCase {
     $user = $this->drupalCreateUser(array(
       'create pmorganization content',
       'create pmproject content',
-      'create pmissue content',
+      'create pmtask content',
+      'create pmticket content',
       'create pmnote content',
     ));
     $this->drupalLogin($user);
@@ -67,7 +68,11 @@ class PMNoteTestCase extends DrupalWebTestCase {
       'title' => $this->randomName(32),
       // 'organization_nid' => '1',
     );
-    $issue = array(
+    $task = array(
+      'title' => $this->randomName(32),
+      // 'body[und][0][value]' => $this->randomName(64),
+    );
+    $ticket = array(
       'title' => $this->randomName(32),
       // 'body[und][0][value]' => $this->randomName(64),
     );
@@ -77,7 +82,8 @@ class PMNoteTestCase extends DrupalWebTestCase {
     );
     $this->drupalPost('node/add/pmorganization', $org, t('Save'));
     $this->drupalPost('node/add/pmproject', $prj, t('Save'));
-    $this->drupalPost('node/add/pmissue', $issue, t('Save'));
+    $this->drupalPost('node/add/pmtask', $task, t('Save'));
+    $this->drupalPost('node/add/pmticket', $ticket, t('Save'));
     $this->drupalPost('node/add/pmnote', $note, t('Save'));
 
     $this->assertText(t('Note @title has been created.', array('@title' => $note['title'])));;

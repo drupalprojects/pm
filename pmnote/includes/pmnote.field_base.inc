@@ -77,6 +77,8 @@ function pmnote_default_field_bases() {
         'target_bundles' => array(
           'pmorganization' => 'pmorganization',
           'pmproject' => 'pmproject',
+          'pmtask' => 'pmtask',
+          'pmticket' => 'pmticket',
           'pmissue' => 'pmissue',
         ),
       ),

@@ -86,6 +86,12 @@ function pmproject_views_default_views() {
       'empty_column' => 1,
     ),
   );
+  /* Header: Content: PM Add Content Link */
+  $handler->display->display_options['header']['pm_handler_area_addcontent']['id'] = 'pm_handler_area_addcontent';
+  $handler->display->display_options['header']['pm_handler_area_addcontent']['table'] = 'node';
+  $handler->display->display_options['header']['pm_handler_area_addcontent']['field'] = 'pm_handler_area_addcontent';
+  $handler->display->display_options['header']['pm_handler_area_addcontent']['node_type'] = 'pmproject';
+  $handler->display->display_options['header']['pm_handler_area_addcontent']['redirect'] = TRUE;
   /* Relationship: Entity Reference: Referenced Entity */
   $handler->display->display_options['relationships']['pmproject_parent_target_id']['id'] = 'pmproject_parent_target_id';
   $handler->display->display_options['relationships']['pmproject_parent_target_id']['table'] = 'field_data_pmproject_parent';
