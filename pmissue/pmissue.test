@@ -1,11 +1,11 @@
 <?php
 /**
  * @file
- * Test definitions for the PM Issue module.
+ * Test definitions for PM Issue.
  */
 
 /**
- * Class defining PM Issue test cases.
+ * Define a test case for PM Issue.
  */
 class PMIssueTestCase extends DrupalWebTestCase {
 
@@ -79,4 +79,5 @@ class PMIssueTestCase extends DrupalWebTestCase {
 
     $this->assertText(t('Issue @title has been created.', array('@title' => $task['title'])));;
   }
+
 }
