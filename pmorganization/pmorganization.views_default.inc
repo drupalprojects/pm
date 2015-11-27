@@ -1,7 +1,6 @@
 <?php
 /**
  * @file
- *
  * Views integration default settings.
  *
  * Stores default values for views. The view provides a list of organization

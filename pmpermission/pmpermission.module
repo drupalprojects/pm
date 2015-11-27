@@ -854,6 +854,7 @@ function pmpermission_check_if_child_permission_needs_update($node) {
  */
 function pmpermission_get_all_child_nids($nid) {
   $parents = array($nid);
+  $result = NULL;
   _pmpermission_get_all_child_nids($parents, $result);
   return $result;
 }

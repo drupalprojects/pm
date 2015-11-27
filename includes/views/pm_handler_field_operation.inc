@@ -1,9 +1,12 @@
 <?php
 /**
  * @file
- * Field handler to present a link node edit.
+ * Field handler for PM operation (edit and delete) links.
  */
 
+/**
+ * Field handler for PM operation (edit and delete) links.
+ */
 class pm_handler_field_operation extends views_handler_field_node_link {
   /**
    * Defines views field options.
@@ -71,7 +74,7 @@ class pm_handler_field_operation extends views_handler_field_node_link {
   }
 
   /**
-   * check if path is valid and create links. returns false otherwise.
+   * Check if path is valid and create links. Returns false otherwise.
    */
   function create_link_if_valid($title, $path) {
     if (drupal_valid_path($path)) {
@@ -81,16 +84,17 @@ class pm_handler_field_operation extends views_handler_field_node_link {
   }
 
   /**
-   * check if path is valid and create links. returns false otherwise.
+   * Check if path is valid and create links. Returns false otherwise.
    */
   function create_link_definition($title, $path) {
     $link = FALSE;
     if (drupal_valid_path($path)) {
       $link = array(
         'title' => $title,
-        'href' => $path
+        'href' => $path,
       );
     }
     return $link;
   }
+
 }

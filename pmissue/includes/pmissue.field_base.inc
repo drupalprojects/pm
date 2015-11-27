@@ -183,7 +183,6 @@ function pmissue_default_field_bases() {
     'type' => 'entityreference',
   );
 
-
   // Exported field_base: 'pmissue_parent_issue'
   $field_bases['pmissue_parent_issue'] = array(
     'active' => 1,

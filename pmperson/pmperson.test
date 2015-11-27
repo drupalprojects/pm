@@ -1,11 +1,11 @@
 <?php
 /**
  * @file
- * Test definitions for the PM Person module.
+ * Test definitions for PM Person.
  */
 
 /**
- * Test definition for the PM Person module.
+ * Define a test case for PM Person.
  */
 class PMPersonTestCase extends DrupalWebTestCase {
 
@@ -68,4 +68,5 @@ class PMPersonTestCase extends DrupalWebTestCase {
     $this->drupalPost('node/add/pmperson', $person, t('Save'));
     $this->assertText(t('Person @title has been created.', array('@title' => $person['title'])));
   }
+
 }

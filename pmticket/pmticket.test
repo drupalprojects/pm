@@ -1,9 +1,12 @@
 <?php
 /**
  * @file
- * Test definitions for the PM Ticket module.
+ * Test definitions for PM Ticket.
  */
 
+/**
+ * Define a test case for PM Ticket.
+ */
 class PMTicketTestCase extends DrupalWebTestCase {
 
   /**
@@ -79,4 +82,5 @@ class PMTicketTestCase extends DrupalWebTestCase {
 
     $this->assertText(t('Ticket @title has been created.', array('@title' => $ticket['title'])));;
   }
+
 }

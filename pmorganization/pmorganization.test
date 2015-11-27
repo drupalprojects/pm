@@ -1,9 +1,12 @@
 <?php
 /**
  * @file
- * Test definitions for the PM Organization module.
+ * Test definitions for PM Organization.
  */
 
+/**
+ * Define a test case for PM Organization.
+ */
 class PMOrganizationTestCase extends DrupalWebTestCase {
 
   /**
@@ -64,4 +67,5 @@ class PMOrganizationTestCase extends DrupalWebTestCase {
     $this->drupalPost('node/add/pmorganization', $edit, t('Save'));
     $this->assertText(t('Organization @title has been created.', array('@title' => $edit['title'])));
   }
+
 }

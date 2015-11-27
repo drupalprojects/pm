@@ -417,7 +417,6 @@ function pmissue_views_default_views() {
   );
   $handler->display->display_options['arguments']['nid']['validate']['fail'] = 'ignore';
 
-
   $views[$view->name] = $view;
 
   return $views;
