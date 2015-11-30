@@ -63,6 +63,12 @@ function pmtimetracking_update_7106(&$sandbox) {
   }
 }
 
+/**
+ * Remove legacy variable.
+ */
+function pmtimetracking_update_7201() {
+  variable_del('pmtimetracking_auto_duration');
+}
 
 /**
  * Implements hook_update_dependencies().
