@@ -89,4 +89,14 @@ class PMNoteTestCase extends DrupalWebTestCase {
     $this->assertText(t('Note @title has been created.', array('@title' => $note['title'])));;
   }
 
+  /**
+   * Tests module uninstall path.
+   */
+  public function testpmnoteUninstall() {
+    $module = 'pmnote';
+
+    module_disable($module);
+    module_uninstall($module);
+  }
+
 }

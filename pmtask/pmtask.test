@@ -80,4 +80,14 @@ class PMTaskTestCase extends DrupalWebTestCase {
     $this->assertText(t('Task @title has been created.', array('@title' => $task['title'])));;
   }
 
+  /**
+   * Tests module uninstall path.
+   */
+  public function testpmtaskUninstall() {
+    $module = 'pmtask';
+
+    module_disable($module);
+    module_uninstall($module);
+  }
+
 }

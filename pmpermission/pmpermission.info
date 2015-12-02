@@ -5,3 +5,5 @@ package = Project Management
 configure = admin/config/pm/pmpermission
 
 dependencies[] = pm
+
+files[] = pmpermission.test

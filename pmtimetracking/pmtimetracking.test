@@ -71,4 +71,14 @@ class PMTimetrackingTestCase extends DrupalWebTestCase {
     $this->assertText(t('Timetracking @title has been created.', array('@title' => $timetracking['title'])));;
   }
 
+  /**
+   * Tests module uninstall path.
+   */
+  public function testpmtimetrackingUninstall() {
+    $module = 'pmtimetracking';
+
+    module_disable($module);
+    module_uninstall($module);
+  }
+
 }

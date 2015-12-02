@@ -1,0 +1,40 @@
+<?php
+/**
+ * @file
+ * Test definitions for PM Permission.
+ */
+
+/**
+ * Define a test case for PM Permission.
+ */
+class PmpermissionTestCase extends DrupalWebTestCase {
+
+  /**
+   * Returns meta data for PM Permission tests.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'PM Permission functionality',
+      'description' => 'Test the functionality of PM Permission.',
+      'group' => 'Project Management',
+    );
+  }
+
+  /**
+   * Standard set up for all tests.
+   */
+  public function setUp() {
+    parent::setUp('pm', 'pmpermission');
+  }
+
+  /**
+   * Tests module uninstall path.
+   */
+  public function testpmpermissionUninstall() {
+    $module = 'pmpermission';
+
+    module_disable($module);
+    module_uninstall($module);
+  }
+
+}

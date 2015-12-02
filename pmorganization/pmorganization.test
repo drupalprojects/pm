@@ -68,4 +68,14 @@ class PMOrganizationTestCase extends DrupalWebTestCase {
     $this->assertText(t('Organization @title has been created.', array('@title' => $edit['title'])));
   }
 
+  /**
+   * Tests module uninstall path.
+   */
+  public function testpmorganizationUninstall() {
+    $module = 'pmorganization';
+
+    module_disable($module);
+    module_uninstall($module);
+  }
+
 }

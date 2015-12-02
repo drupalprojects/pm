@@ -74,4 +74,14 @@ class PMProjectTestCase extends DrupalWebTestCase {
     $this->assertText(t('Project @title has been created.', array('@title' => $prj['title'])));;
   }
 
+  /**
+   * Tests module uninstall path.
+   */
+  public function testpmprojectUninstall() {
+    $module = 'pmproject';
+
+    module_disable($module);
+    module_uninstall($module);
+  }
+
 }

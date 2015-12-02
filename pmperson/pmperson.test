@@ -69,4 +69,14 @@ class PMPersonTestCase extends DrupalWebTestCase {
     $this->assertText(t('Person @title has been created.', array('@title' => $person['title'])));
   }
 
+  /**
+   * Tests module uninstall path.
+   */
+  public function testpmpersonUninstall() {
+    $module = 'pmperson';
+
+    module_disable($module);
+    module_uninstall($module);
+  }
+
 }

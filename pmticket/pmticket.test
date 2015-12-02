@@ -83,4 +83,14 @@ class PMTicketTestCase extends DrupalWebTestCase {
     $this->assertText(t('Ticket @title has been created.', array('@title' => $ticket['title'])));;
   }
 
+  /**
+   * Tests module uninstall path.
+   */
+  public function testpmticketUninstall() {
+    $module = 'pmticket';
+
+    module_disable($module);
+    module_uninstall($module);
+  }
+
 }

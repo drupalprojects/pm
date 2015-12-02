@@ -69,4 +69,14 @@ class PMTestCase extends DrupalWebTestCase {
     $this->assertText(t('Project Management'), t('Make sure the correct page has been displayed by checking that the title of the settings page is "Project Management".'));
   }
 
+  /**
+   * Tests module uninstall path.
+   */
+  public function testpmUninstall() {
+    $module = 'pm';
+
+    module_disable($module);
+    module_uninstall($module);
+  }
+
 }

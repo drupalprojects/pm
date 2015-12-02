@@ -86,4 +86,14 @@ class PMExpenseTestCase extends DrupalWebTestCase {
     $this->assertText(t('Expense @title has been created.', array('@title' => $expense['title'])));
   }
 
+  /**
+   * Tests module uninstall path.
+   */
+  public function testpmexpenseUninstall() {
+    $module = 'pmexpense';
+
+    module_disable($module);
+    module_uninstall($module);
+  }
+
 }
