@@ -96,7 +96,7 @@ class PMNoteTestCase extends DrupalWebTestCase {
     $module = array('pmnote');
 
     module_disable($module);
-    module_uninstall($module);
+    Drupal_uninstall_modules($module);
   }
 
 }

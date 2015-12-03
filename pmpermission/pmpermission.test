@@ -34,7 +34,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $module = array('pmpermission');
 
     module_disable($module);
-    module_uninstall($module);
+    drupal_uninstall_modules($module);
   }
 
 }

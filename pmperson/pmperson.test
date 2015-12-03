@@ -34,7 +34,7 @@ class PMPersonTestCase extends DrupalWebTestCase {
     $module = array('pmperson');
 
     module_disable($module);
-    module_uninstall($module);
+    drupal_uninstall_modules($module);
   }
 
 }

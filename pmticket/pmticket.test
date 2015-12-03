@@ -90,7 +90,7 @@ class PMTicketTestCase extends DrupalWebTestCase {
     $module = array('pmticket');
 
     module_disable($module);
-    module_uninstall($module);
+    drupal_uninstall_modules($module);
   }
 
 }

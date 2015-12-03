@@ -87,7 +87,7 @@ class PMIssueTestCase extends DrupalWebTestCase {
     $module = array('pmissue');
 
     module_disable($module);
-    module_uninstall($module);
+    drupal_uninstall_modules($module);
   }
 
 }
