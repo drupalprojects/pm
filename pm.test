@@ -73,10 +73,10 @@ class PMTestCase extends DrupalWebTestCase {
    * Tests module uninstall path.
    */
   public function testpmUninstall() {
-    $module = 'pm';
+    $module = array('pm');
 
     module_disable($module);
-    module_uninstall($module);
+    drupal_uninstall_modules($module);
   }
 
 }
