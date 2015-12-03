@@ -31,7 +31,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
    * Tests module uninstall path.
    */
   public function testpmpermissionUninstall() {
-    $module = 'pmpermission';
+    $module = array('pmpermission');
 
     module_disable($module);
     module_uninstall($module);

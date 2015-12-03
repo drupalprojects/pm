@@ -90,7 +90,7 @@ class PMExpenseTestCase extends DrupalWebTestCase {
    * Tests module uninstall path.
    */
   public function testpmexpenseUninstall() {
-    $module = 'pmexpense';
+    $module = array('pmexpense');
 
     module_disable($module);
     module_uninstall($module);

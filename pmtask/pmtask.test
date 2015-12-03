@@ -84,7 +84,7 @@ class PMTaskTestCase extends DrupalWebTestCase {
    * Tests module uninstall path.
    */
   public function testpmtaskUninstall() {
-    $module = 'pmtask';
+    $module = array('pmtask');
 
     module_disable($module);
     module_uninstall($module);

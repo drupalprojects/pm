@@ -84,7 +84,7 @@ class PMIssueTestCase extends DrupalWebTestCase {
    * Tests module uninstall path.
    */
   public function testpmissueUninstall() {
-    $module = 'pmissue';
+    $module = array('pmissue');
 
     module_disable($module);
     module_uninstall($module);

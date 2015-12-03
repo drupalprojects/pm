@@ -72,7 +72,7 @@ class PMOrganizationTestCase extends DrupalWebTestCase {
    * Tests module uninstall path.
    */
   public function testpmorganizationUninstall() {
-    $module = 'pmorganization';
+    $module = array('pmorganization');
 
     module_disable($module);
     module_uninstall($module);

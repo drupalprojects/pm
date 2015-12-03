@@ -50,7 +50,7 @@ class PMTeamTestCase extends DrupalWebTestCase {
    * Tests module uninstall path.
    */
   public function testpmteamUninstall() {
-    $module = 'pmteam';
+    $module = array('pmteam');
 
     module_disable($module);
     module_uninstall($module);

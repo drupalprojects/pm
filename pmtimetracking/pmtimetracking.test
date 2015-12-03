@@ -75,7 +75,7 @@ class PMTimetrackingTestCase extends DrupalWebTestCase {
    * Tests module uninstall path.
    */
   public function testpmtimetrackingUninstall() {
-    $module = 'pmtimetracking';
+    $module = array('pmtimetracking');
 
     module_disable($module);
     module_uninstall($module);

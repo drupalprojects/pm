@@ -93,7 +93,7 @@ class PMNoteTestCase extends DrupalWebTestCase {
    * Tests module uninstall path.
    */
   public function testpmnoteUninstall() {
-    $module = 'pmnote';
+    $module = array('pmnote');
 
     module_disable($module);
     module_uninstall($module);

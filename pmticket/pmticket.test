@@ -87,7 +87,7 @@ class PMTicketTestCase extends DrupalWebTestCase {
    * Tests module uninstall path.
    */
   public function testpmticketUninstall() {
-    $module = 'pmticket';
+    $module = array('pmticket');
 
     module_disable($module);
     module_uninstall($module);
