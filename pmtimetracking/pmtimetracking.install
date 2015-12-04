@@ -23,26 +23,29 @@ function pmtimetracking_install() {
 }
 
 /**
+ * Implements hook_disable().
+ */
+function pmtimetracking_disable() {
+  module_load_include('inc', 'pm', 'includes/pm.install');
+  $module = 'pmtimetracking';
+
+  // Set standardised message.
+  pm_disable_message($module, 'timetrackings');
+}
+
+/**
  * Implements hook_uninstall().
  */
 function pmtimetracking_uninstall() {
-  variable_del('pmpermission_field_parent_reference_for_pmtimetracking');
-  variable_del('pmpermission_node_pmtimetracking_enabled');
-  // Clean up field instances (and field) and its data.
-  module_load_include('inc', 'pmtimetracking', 'includes/pmtimetracking.field_instance');
-  module_load_include('inc', 'pmtimetracking', 'includes/pmtimetracking.field_base');
-  $declared_field_bases = pmtimetracking_default_field_bases();
-  $declared_field_instances = pmtimetracking_default_field_instances();
-  $field_instance = field_info_instances('node', 'pmtimetracking');
+  module_load_include('inc', 'pm', 'includes/pm.install');
+  $module = 'pmtimetracking';
 
-  foreach ($declared_field_instances as $declared_instance) {
-    $instance = $field_instance[$declared_instance['field_name']];
-    if ($instance) {
-      // Only delete field base if declared by this module.
-      $delete_field_base = isset($declared_field_bases[$declared_instance['field_name']]);
-      field_delete_instance($instance, $delete_field_base);
-    }
-  }
+  // Delete items created by his module.
+  pm_uninstall_variables($module);
+  pm_uninstall_fields($module);
+
+  // Set standardised message.
+  pm_uninstall_message($module, 'timetrackings');
 }
 
 /**
