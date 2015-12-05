@@ -25,12 +25,11 @@ function pm_disable_message($module, $entity_name) {
  * Sets a standardised message on PM module uninstall.
  */
 function pm_uninstall_message($module, $entity_name) {
-  $module_info = system_get_info('module', $module);
-
   $message = t(
     '@module_name has been uninstalled. Fields attached to @entity_name have been deleted.',
     array(
-      '@module_name' => $module_info['name'],
+      // The human readable name is not available after disabling the module.
+      '@module_name' => $module,
       '@entity_name' => $entity_name,
     )
   );
