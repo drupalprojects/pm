@@ -8,10 +8,12 @@
  * Sets a standardised message on PM module disable.
  */
 function pm_disable_message($module, $entity_name) {
+  $module_info = system_get_info('module', $module);
+
   $message = t(
     '@module_name has been disabled. Fields attached to @entity_name will remain until the module is uninstalled.',
     array(
-      '@module_name' => module_name($module),
+      '@module_name' => $module_info['name'],
       '@entity_name' => $entity_name,
     )
   );
@@ -23,10 +25,12 @@ function pm_disable_message($module, $entity_name) {
  * Sets a standardised message on PM module uninstall.
  */
 function pm_uninstall_message($module, $entity_name) {
+  $module_info = system_get_info('module', $module);
+
   $message = t(
     '@module_name has been uninstalled. Fields attached to @entity_name have been deleted.',
     array(
-      '@module_name' => module_name($module),
+      '@module_name' => $module_info['name'],
       '@entity_name' => $entity_name,
     )
   );
