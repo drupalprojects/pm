@@ -16,7 +16,7 @@ function pm_disable_message($module, $entity_name) {
     )
   );
 
-  drupal_set_message($message, 'warning');
+  drupal_set_message($message);
 }
 
 /**
