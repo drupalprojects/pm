@@ -28,6 +28,39 @@ class PmpermissionTestCase extends DrupalWebTestCase {
   }
 
   /**
+   * Tests permissions after parent change.
+   */
+  public function testpmpermissionChangeParent() {
+    // Enable modules required only for this test.
+    $modules = array(
+      'pmorganization',
+      'pmproject',
+    );
+    module_enable($modules, TRUE);
+
+    // Create one user to author nodes.
+
+    // Create two users for testing view permissions (A & B).
+
+    // Create two organization nodes (A & B).
+
+    // Assign each user to their respective organization.
+
+    // Create one project node, attached to organization A.
+
+    // Test that user A can view the project.
+
+    // Test that user B can not view the project.
+
+    // Attach the project to organization B.
+
+    // Test that user A can not view the project.
+
+    // Test that user B can view the project.
+
+  }
+
+  /**
    * Tests module uninstall path.
    */
   public function testpmpermissionUninstall() {
