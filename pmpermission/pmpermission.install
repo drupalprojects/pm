@@ -8,7 +8,9 @@
  * Implements hook_uninstall().
  */
 function pmpermission_uninstall() {
-  db_delete('variable')
-    ->condition('name', 'pmpermission_%', 'LIKE')
-    ->execute();
+  module_load_include('inc', 'pm', 'includes/pm.install');
+  $module = 'pmpermission';
+
+  // Delete items created by his module.
+  pm_uninstall_variables($module);
 }
