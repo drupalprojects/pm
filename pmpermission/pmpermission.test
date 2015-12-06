@@ -56,11 +56,20 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     // Create two organization nodes (A & B).
     $this->drupalLogin($author);
 
+    $organization_settings = array(
+      'type' = 'pmorganization',
+    );
+    $organization_a = drupalCreateNode($organization_settings);
+    $organization_b = drupalCreateNode($organization_settings);
 
     // Assign each user to their respective organization.
 
     // Create one project node, attached to organization A.
-
+    $project_settings = array(
+      'type' = 'pmproject',
+      'pmproject_parent' = $organization_a->nid,
+    );
+    $project = drupalCreateNode($project_settings);
 
     // Test that user A can view the project.
     $this->drupalLogin($user_a);
