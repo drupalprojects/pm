@@ -70,8 +70,8 @@ class PmpermissionTestCase extends DrupalWebTestCase {
 
     // Create one project node, attached to organization A.
     $project_settings = array(
-      'type' = 'pmproject',
-      'pmproject_parent' = $organization_a->nid,
+      'type' => 'pmproject',
+      'pmproject_parent' => $organization_a->nid,
     );
     $project = drupalCreateNode($project_settings);
 
@@ -87,7 +87,8 @@ class PmpermissionTestCase extends DrupalWebTestCase {
 
     // Attach the project to organization B.
     $this->drupalLogin($author);
-
+    $project->pmproject_parent = $organization_b->nid;
+    node_save($project);
 
     // Test that user A can not view the project.
     $this->drupalLogin($user_a);
