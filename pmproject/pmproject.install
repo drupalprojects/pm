@@ -27,7 +27,7 @@ function pmproject_install() {
 /**
  * Implements hook_disable().
  */
-function pm project_disable() {
+function pmproject_disable() {
   module_load_include('inc', 'pm', 'includes/pm.install');
   $module = 'pmproject';
 
