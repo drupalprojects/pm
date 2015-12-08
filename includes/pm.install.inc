@@ -66,7 +66,7 @@ function pm_uninstall_fields($module) {
 
   foreach ($field_instances as $instance) {
     // Only attempt to delete instances that still exist.
-    $instance_info = field_info_instance($instance);
+    $instance_info = field_info_instance($instance['entity_type'], $instance['field_name'], $instance['bundle']);
 
     if ($instance_info) {
       // Only delete field base if provided in the list of bases.
