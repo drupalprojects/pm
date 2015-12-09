@@ -97,7 +97,9 @@ class PMTestCase extends DrupalWebTestCase {
       'pmtimetracking',
     );
 
-    module_enable($submodules, TRUE);
+    $result = module_enable($submodules, TRUE);
+
+    $this->assertTrue($result, t('Modules enabled successfully.'));
   }
 
 }
