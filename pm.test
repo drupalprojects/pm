@@ -79,4 +79,27 @@ class PMTestCase extends DrupalWebTestCase {
     drupal_uninstall_modules($module);
   }
 
+  /**
+   * Tests compatibility between submodules.
+   */
+  public function testpmEnableAll() {
+    $submodules = array(
+      'pmexpense',
+      'pmissue',
+      'pmnote',
+      'pmorganization',
+      'pmpermission',
+      'pmperson',
+      'pmproject',
+      'pmtask',
+      'pmteam',
+      'pmticket',
+      'pmtimetracking',
+    );
+
+    $result = module_enable($submodules, TRUE);
+
+    $this->assertTrue($result, t('Modules enabled successfully.'));
+  }
+
 }
