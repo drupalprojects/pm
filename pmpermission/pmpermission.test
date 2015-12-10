@@ -44,12 +44,14 @@ class PmpermissionTestCase extends DrupalWebTestCase {
       'create pmproject content',
       'PM permission pmproject: update all',
     );
+    $this->checkPermissions($author_permissions, TRUE);
     $author = $this->drupalCreateUser($author_permissions);
 
     // Create two users for testing view permissions (A & B).
     $user_permissions = array(
       'PM permission pmproject: view own Organization',
     );
+    $this->checkPermissions($user_permissions, TRUE);
     $user_a = $this->drupalCreateUser($user_permissions);
     $user_b = $this->drupalCreateUser($user_permissions);
 
