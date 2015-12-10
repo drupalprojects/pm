@@ -93,7 +93,8 @@ class PMExpenseTestCase extends DrupalWebTestCase {
     $module = array('pmexpense');
 
     module_disable($module);
-    drupal_uninstall_modules($module);
+    $result = drupal_uninstall_modules($module);
+    $this->AssertTrue($result, t('Module successfully uninstalled.'));
   }
 
 }

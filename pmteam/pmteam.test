@@ -53,7 +53,8 @@ class PMTeamTestCase extends DrupalWebTestCase {
     $module = array('pmteam');
 
     module_disable($module);
-    drupal_uninstall_modules($module);
+    $result = drupal_uninstall_modules($module);
+    $this->AssertTrue($result, t('Module successfully uninstalled.'));
   }
 
 }
