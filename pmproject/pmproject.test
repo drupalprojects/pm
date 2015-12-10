@@ -81,7 +81,8 @@ class PMProjectTestCase extends DrupalWebTestCase {
     $module = array('pmproject');
 
     module_disable($module);
-    drupal_uninstall_modules($module);
+    $result = drupal_uninstall_modules($module);
+    $this->AssertTrue($result, t('Module successfully uninstalled.'));
   }
 
 }
