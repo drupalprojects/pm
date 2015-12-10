@@ -46,6 +46,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     );
     $this->checkPermissions($author_permissions, TRUE);
     $author = $this->drupalCreateUser($author_permissions);
+    $this->assertTrue(is_object($author), 'Author user successfully created.');
 
     // Create two users for testing view permissions (A & B).
     $user_permissions = array(
