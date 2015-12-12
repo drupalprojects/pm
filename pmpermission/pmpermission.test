@@ -36,7 +36,8 @@ class PmpermissionTestCase extends DrupalWebTestCase {
       'pmorganization',
       'pmproject',
     );
-    module_enable($modules, TRUE);
+    $result = module_enable($modules, TRUE);
+    $this->AssertTrue($result, 'Modules were enabled successfully.');
 
     // Create one user to author nodes.
     $author_permissions = array(
@@ -57,7 +58,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $user_b = $this->drupalCreateUser($user_permissions);
 
     // Create two organization nodes (A & B) with respective users as members.
-    $this->drupalLogin($author);
+    //$this->drupalLogin($author);
 
     /* $organization_a_settings = array(
       'type' => 'pmorganization',
