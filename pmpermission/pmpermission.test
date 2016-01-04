@@ -38,6 +38,9 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     );
     module_enable($modules, TRUE);
 
+    $this->resetAll();
+    drupal_cron_run();
+
     // Create one user to author nodes.
     $author_permissions = array(
       'create pmorganization content',
