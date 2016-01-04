@@ -60,7 +60,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $user_a = $this->drupalCreateUser($user_permissions);
     $user_b = $this->drupalCreateUser($user_permissions);
     $this->assertTrue(is_object($user_a), 'User A successfully created.');
-    $this->assertTrue(is_object($User_b), 'User B successfully created.');
+    $this->assertTrue(is_object($user_b), 'User B successfully created.');
 
     // Create two organization nodes (A & B) with respective users as members.
     $this->drupalLogin($author);
