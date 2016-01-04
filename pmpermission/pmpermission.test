@@ -63,7 +63,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $this->assertTrue(is_object($User_b), 'User B successfully created.');
 
     // Create two organization nodes (A & B) with respective users as members.
-    //$this->drupalLogin($author);
+    $this->drupalLogin($author);
 
     /* $organization_a_settings = array(
       'type' => 'pmorganization',
