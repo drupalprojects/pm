@@ -60,13 +60,13 @@ function theme_pm_view_item($variables) {
  */
 function theme_pm_dashboard($link_blocks) {
   $content = '<div id="pmdashboard">';
-  if (!empty($link_blocks)) {
+  if (is_array($link_blocks)) {
     $content .= '<dl class="pmdashboard clear-block">';
     foreach ($link_blocks as $block_id => $link_block_array) {
       $content .= '<div class="pmdashboard">';
-      if (!empty($link_block_array)) {
+      if (is_array($link_block_array)) {
         foreach ($link_block_array as $key => $link_array) {
-          if (!empty($link_array['theme'])) {
+          if (is_array($link_array['theme'])) {
             $content .= theme($link_array['theme'], $link_array);
           }
           else {
