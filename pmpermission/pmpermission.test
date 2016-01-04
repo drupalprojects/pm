@@ -45,7 +45,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $author_permissions = array(
       'create pmorganization content',
       'create pmproject content',
-      'PM permission pmproject: update all',
+      //'PM permission pmproject: update all',
     );
     $this->checkPermissions($author_permissions, TRUE);
     $author = $this->drupalCreateUser($author_permissions);
