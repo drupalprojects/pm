@@ -24,7 +24,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
    * Standard set up for all tests.
    */
   public function setUp() {
-    parent::setUp('pm', 'pmpermission', 'pmorganization');
+    parent::setUp('pm', 'pmpermission', 'pmorganization', 'pmproject');
   }
 
   /**
