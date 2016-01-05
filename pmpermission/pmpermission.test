@@ -41,11 +41,14 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $this->resetAll();
     drupal_cron_run();
 
+    // Allow PM Permission to override project permissions.
+    variable_set('node_permissions_pmproject', 0);
+
     // Create one user to author nodes.
     $author_permissions = array(
       'create pmorganization content',
       'create pmproject content',
-      //'PM permission pmproject: update all',
+      'PM permission pmproject: update all',
     );
     $this->checkPermissions($author_permissions, TRUE);
     $author = $this->drupalCreateUser($author_permissions);
