@@ -81,16 +81,16 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $organization_b = $this->drupalCreateNode($organization_b_settings);
 
     // Create one project node, attached to organization A.
-    /* $project_settings = array(
+    $project_settings = array(
       'type' => 'pmproject',
       'pmproject_parent' => $organization_a->nid,
     );
-    $project = $this->drupalCreateNode($project_settings); */
+    $project = $this->drupalCreateNode($project_settings);
 
     // Test that user A can view the project.
-    //$this->drupalLogin($user_a);
-    //$this->drupalGet('node/' . $project->nid);
-    //$this->assertResponse(200, 'Access granted to user A when project is attached to organization A.');
+    $this->drupalLogin($user_a);
+    $this->drupalGet('node/' . $project->nid);
+    $this->assertResponse(200, 'Access granted to user A when project is attached to organization A.');
 
     // Test that user B can not view the project.
     //$this->drupalLogin($user_b);
