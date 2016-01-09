@@ -43,7 +43,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
 
     // Test that anonymous users can not view the node.
     $this->drupalGet('node/' . $organization->nid);
-    $this->assertResponse(403, 'Access is denied to anonymous user.')
+    $this->assertResponse(403, 'Access is denied to anonymous user.');
 
     // Create user and test that user can view the node.
     $user_permissions = array(
