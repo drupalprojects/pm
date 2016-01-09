@@ -28,6 +28,38 @@ class PmpermissionTestCase extends DrupalWebTestCase {
   }
 
   /**
+   * Tests "view all" permission.
+   */
+  public function testpmpermissionViewAll() {
+    // Allow PM Permission to override organization permissions.
+    variable_set('node_permissions_pmorganization', 0);
+
+    // Create a node to test against.
+    $organization_settings = array(
+      'type' => 'pmorganization',
+    );
+    $organization = $this->drupalCreateNode($organization_settings);
+    $this->assertTrue(isset($organization->nid), 'Node successfully created.');
+
+    // Test that anonymous users can not view the node.
+    $this->drupalGet('node/' . $organization->nid);
+    $this->assertResponse(403, 'Access is denied to anonymous user.')
+
+    // Create user and test that user can view the node.
+    $user_permissions = array(
+      'PM permission pmorganization: view all',
+    );
+    $this->checkPermissions($user_permissions, TRUE);
+
+    $user = $this->drupalCreateUser($user_permissions);
+    $this->assertTrue(is_object($user), 'User successfully created.');
+    
+    $this->drupalLogin($user);
+    $this->drupalGet('node/' . $organization->nid);
+    $this->assertResponse(200, 'Access granted to user.');
+ }
+
+  /**
    * Tests permissions after parent change.
    */
   public function testpmpermissionChangeParent() {
