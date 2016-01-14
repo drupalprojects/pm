@@ -45,6 +45,17 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $this->drupalGet('node/' . $organization->nid);
     $this->assertResponse(403, 'Access is denied to anonymous user.');
 
+    // Create basic user and test that user cannot view the node.
+    $basic_user = $this->drupalCreateUser(array());
+    $this->assertTrue(is_object($basic_user), 'Basic user successfully created.');
+    
+    $this->drupalLogin($basic_user);
+    $this->drupalGet('node/' . $organization->nid);
+    $this->assertResponse(403, 'Access is denied to basic user.');
+
+    // Investigate test failure by checking via node_access().
+    $access = node_access('view', $organization->nid, $basic_user->uid);
+    
     // Create user and test that user can view the node.
     $user_permissions = array(
       'PM permission pmorganization: view all',
