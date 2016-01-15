@@ -55,6 +55,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
 
     // Investigate test failure by checking via node_access().
     $access = node_access('view', $organization->nid, $basic_user->uid);
+    $this->assertTrue($basic == FALSE, 'Basic user access denied'); 
     
     // Create user and test that user can view the node.
     $user_permissions = array(
