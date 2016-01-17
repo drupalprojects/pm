@@ -25,6 +25,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
    */
   public function setUp() {
     parent::setUp('pm', 'pmpermission', 'pmorganization', 'pmproject');
+    node_access_rebuild();
   }
 
   /**
