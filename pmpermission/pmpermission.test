@@ -89,7 +89,13 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     // Create a node to test against.
     $organization_settings = array(
       'type' => 'pmorganization',
-      'pmorganization_members' => $user_b->uid,
+      'pmorganization_members' => array(
+        'und' => array(
+          0 => array(
+            'value' => $user_b->uid
+          ),
+        ),
+      ),
     );
     $organization = $this->drupalCreateNode($organization_settings);
     $this->assertTrue(isset($organization->nid), 'Node successfully created.');
