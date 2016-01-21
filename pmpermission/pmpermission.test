@@ -85,6 +85,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $user_b = $this->drupalCreateUser($user_permissions);
     $this->assertTrue(is_object($user_a), 'User A successfully created.');
     $this->assertTrue(is_object($user_b), 'User B successfully created.');
+    $this->assertTrue(is_numeric($user_b->uid), 'User B uid set.');
 
     // Create a node to test against.
     $organization_settings = array(
@@ -93,7 +94,6 @@ class PmpermissionTestCase extends DrupalWebTestCase {
         LANGUAGE_NONE => array(
           0 => array(
             'value' => array(
-              'target_type' => 'user',
               'target_id' => $user_b->uid,
             ),
           ),
