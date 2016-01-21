@@ -90,9 +90,11 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $organization_settings = array(
       'type' => 'pmorganization',
       'pmorganization_members' => array(
-        'und' => array(
+        LANGUAGE_NONE => array(
           0 => array(
-            'value' => $user_b->uid
+            'value' => array(
+              'target_id' => $user_b->uid,
+            ),
           ),
         ),
       ),
