@@ -93,6 +93,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
         LANGUAGE_NONE => array(
           0 => array(
             'value' => array(
+              'target_type' => 'user',
               'target_id' => $user_b->uid,
             ),
           ),
