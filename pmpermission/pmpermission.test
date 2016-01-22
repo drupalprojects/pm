@@ -86,18 +86,18 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     );
     $this->checkPermissions($user_permissions, TRUE);
 
-    $user_a = $this->drupalCreateUser($user_permissions);
-    $user_b = $this->drupalCreateUser($user_permissions);
-    $this->assertTrue(is_object($user_a), 'User A successfully created.');
-    $this->assertTrue(is_object($user_b), 'User B successfully created.');
-    $this->assertTrue(is_numeric($user_b->uid), 'User B uid set.');
+    $users['a'] = $this->drupalCreateUser($user_permissions);
+    $users['b'] = $this->drupalCreateUser($user_permissions);
+    $this->assertTrue(is_object($users['a']), 'User A successfully created.');
+    $this->assertTrue(is_object($users['b']), 'User B successfully created.');
+    $this->assertTrue(is_numeric($users['b']->uid), 'User B uid set.');
 
     // As admin, create a node to test against.
     $this->drupalLogin($admin);
     $organization_settings = array(
       'type' => 'pmorganization',
     );
-    $organization_settings['pmorganization_members'][LANGUAGE_NONE][]['value']['target_id'] = $user_b->uid;
+    $organization_settings['pmorganization_members'][LANGUAGE_NONE][]['value']['target_id'] = $users['b']->uid;
     $organization = $this->drupalCreateNode($organization_settings);
     $this->assertTrue(isset($organization->nid), 'Node successfully created.');
 
@@ -107,12 +107,12 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $this->assertResponse(403, 'Access is denied to anonymous user.');
 
     // Test that user A can not view the node.
-    $this->drupalLogin($user_a);
+    $this->drupalLogin($users['a']);
     $this->drupalGet('node/' . $organization->nid);
     $this->assertResponse(403, 'Access is denied to user A.');
 
     // Test that user B can view the node.
-    $this->drupalLogin($user_b);
+    $this->drupalLogin($users['b']);
     $this->drupalGet('node/' . $organization->nid);
     $this->assertResponse(200, 'Access granted to user B.');
   }
