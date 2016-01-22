@@ -96,16 +96,8 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $this->drupalLogin($admin);
     $organization_settings = array(
       'type' => 'pmorganization',
-      'pmorganization_members' => array(
-        LANGUAGE_NONE => array(
-          0 => array(
-            'value' => array(
-              'target_id' => $user_b->uid,
-            ),
-          ),
-        ),
-      ),
     );
+    $organization_settings['pmorganization_members'][LANGUAGE_NONE][]['value']['target_id'] = $user_b->uid;
     $organization = $this->drupalCreateNode($organization_settings);
     $this->assertTrue(isset($organization->nid), 'Node successfully created.');
 
