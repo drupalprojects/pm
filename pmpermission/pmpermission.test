@@ -76,6 +76,10 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     // Allow PM Permission to override organization permissions.
     variable_set('node_permissions_pmorganization', 0);
 
+    // Setup users.
+    $users = array();
+    $users['admin'] = user_load(1);
+    
     // Create two users for testing view permissions (A & B).
     $user_permissions = array(
       'PM permission pmorganization: view own Organization',
@@ -88,7 +92,8 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $this->assertTrue(is_object($user_b), 'User B successfully created.');
     $this->assertTrue(is_numeric($user_b->uid), 'User B uid set.');
 
-    // Create a node to test against.
+    // As admin, create a node to test against.
+    $this->drupalLogin($admin);
     $organization_settings = array(
       'type' => 'pmorganization',
       'pmorganization_members' => array(
@@ -105,6 +110,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $this->assertTrue(isset($organization->nid), 'Node successfully created.');
 
     // Test that anonymous users can not view the node.
+    $this->drupalLogout();
     $this->drupalGet('node/' . $organization->nid);
     $this->assertResponse(403, 'Access is denied to anonymous user.');
 
