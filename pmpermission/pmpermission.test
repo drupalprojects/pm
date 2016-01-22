@@ -47,25 +47,26 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $this->assertResponse(403, 'Access is denied to anonymous user.');
 
     // Create basic user and test that user cannot view the node.
-    $basic_user = $this->drupalCreateUser(array());
-    $this->assertTrue(is_object($basic_user), 'Basic user successfully created.');
+    $users = array();
+    $users['basic'] = $this->drupalCreateUser(array());
+    $this->assertTrue(is_object($users['basic']), 'Basic user successfully created.');
     
-    $this->drupalLogin($basic_user);
+    $this->drupalLogin($users['basic']);
     $this->drupalGet('node/' . $organization->nid);
     $this->assertResponse(403, 'Access is denied to basic user.');
     
-    // Create user and test that user can view the node.
+    // Create privileged user and test that user can view the node.
     $user_permissions = array(
       'PM permission pmorganization: view all',
     );
     $this->checkPermissions($user_permissions, TRUE);
 
-    $user = $this->drupalCreateUser($user_permissions);
-    $this->assertTrue(is_object($user), 'User successfully created.');
+    $users['privileged'] = $this->drupalCreateUser($user_permissions);
+    $this->assertTrue(is_object($users['privileged']), 'Privileged user successfully created.');
     
-    $this->drupalLogin($user);
+    $this->drupalLogin($users['privileged']);
     $this->drupalGet('node/' . $organization->nid);
-    $this->assertResponse(200, 'Access granted to user.');
+    $this->assertResponse(200, 'Access granted to privileged user.');
  }
 
   /**
