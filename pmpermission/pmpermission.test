@@ -95,7 +95,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $this->assertTrue(is_numeric($users['b']->uid), 'User B uid set.');
 
     // As admin, create a node to test against.
-    $this->drupalLogin($admin);
+    $this->drupalLogin($users['admin']);
     $organization_settings = array(
       'type' => 'pmorganization',
     );
