@@ -91,7 +91,8 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $users['b'] = $this->drupalCreateUser($user_permissions);
     $this->assertTrue(is_object($users['a']), 'User A successfully created.');
     $this->assertTrue(is_object($users['b']), 'User B successfully created.');
-    $this->assertTrue(is_numeric($users['b']->uid), 'User B uid set.');
+    $this->assertTrue(is_numeric($users['b']->uid), 'User B uid is numeric.');
+    $this->assertTrue(!is_null($users['b']->uid), 'User B uid is not null.');
 
     // Create a node to test against.
     $organization_settings = array(
