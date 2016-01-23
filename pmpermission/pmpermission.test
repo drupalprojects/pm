@@ -80,7 +80,6 @@ class PmpermissionTestCase extends DrupalWebTestCase {
 
     // Setup users.
     $users = array();
-    $users['admin'] = user_load(1);
     
     // Create two users for testing view permissions (A & B).
     $user_permissions = array(
@@ -94,10 +93,10 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $this->assertTrue(is_object($users['b']), 'User B successfully created.');
     $this->assertTrue(is_numeric($users['b']->uid), 'User B uid set.');
 
-    // As admin, create a node to test against.
-    $this->drupalLogin($users['admin']);
+    // Create a node to test against.
     $organization_settings = array(
       'type' => 'pmorganization',
+      'uid' => 1,
     );
     $organization_settings['pmorganization_members'][LANGUAGE_NONE][]['value']['target_id'] = $users['b']->uid;
     $organization = $this->drupalCreateNode($organization_settings);
