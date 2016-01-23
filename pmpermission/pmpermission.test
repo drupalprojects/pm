@@ -138,7 +138,6 @@ class PmpermissionTestCase extends DrupalWebTestCase {
 
     // Setup users.
     $users = array();
-    $users['admin'] = user_load(1);
 
     // Create two users for testing view permissions (A & B).
     $user_permissions = array(
@@ -151,16 +150,16 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $this->assertTrue(is_object($users['b']), 'User B successfully created.');
 
     // Create two organization nodes (A & B) with respective users as members.
-    $this->drupalLogin($users['admin']);
-
     $organization_a_settings = array(
       'type' => 'pmorganization',
+      'uid' => 1,
       'pmorganization_members' => $users['a']->uid,
     );
     $organization_a = $this->drupalCreateNode($organization_a_settings);
 
     $organization_b_settings = array(
       'type' => 'pmorganization',
+      'uid' => 1,
       'pmorganization_members' => $users['b']->uid,
     );
     $organization_b = $this->drupalCreateNode($organization_b_settings);
@@ -168,6 +167,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     // Create one project node, attached to organization A.
     $project_settings = array(
       'type' => 'pmproject',
+      'uid' => 1,
       'pmproject_parent' => $organization_a->nid,
     );
     $project = $this->drupalCreateNode($project_settings);
@@ -183,7 +183,6 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $this->assertResponse(403, 'Access is denied to user B when project is attached to organization A.');
 
     // Attach the project to organization B.
-    $this->drupalLogin($users['admin']);
     $project->pmproject_parent = $organization_b->nid;
     node_save($project);
 
