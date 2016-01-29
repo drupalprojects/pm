@@ -1,11 +1,16 @@
 name = PM Organization
 description = "Allows storing of organizations for use within Project Management"
-dependencies[] = pm
-dependencies[] = views
-dependencies[] = link
-dependencies[] = email
-dependencies[] = addressfield
 
 package = Project Management
 core = 7.x
+
+dependencies[] = addressfield
+dependencies[] = email
+dependencies[] = entityreference
+dependencies[] = link
+dependencies[] = list
+dependencies[] = pm
+dependencies[] = text
+dependencies[] = views
+
 files[] = pmorganization.test

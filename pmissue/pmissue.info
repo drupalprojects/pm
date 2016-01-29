@@ -1,8 +1,16 @@
 name = PM Issue
 description = "Allows recording of tasks/tickets for Project Management Organizations and Projects"
-dependencies[] = pm
-dependencies[] = pmorganization
-dependencies[] = pmproject
+
 package = Project Management
 core = 7.x
+
+dependencies[] = date
+dependencies[] = entityreference
+dependencies[] = list
+dependencies[] = pm
+dependencies[] = text
+; Legacy
+dependencies[] = pmorganization
+dependencies[] = pmproject
+
 files[] = pmissue.test
