@@ -1,9 +1,17 @@
 name = PM Ticket
 description = "Allows creation of tickets for Projects and Tasks."
+
+package = Project Management
+core = 7.x
+
+dependencies[] = date
+dependencies[] = entityreference
+dependencies[] = list
 dependencies[] = pm
+dependencies[] = text
+; Legacy
 dependencies[] = pmorganization
 dependencies[] = pmproject
 dependencies[] = pmtask
-package = Project Management
-core = 7.x
+
 files[] = pmticket.test

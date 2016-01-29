@@ -1,5 +1,6 @@
 name = PM Permission
 description = "Provides permission handling for the Project Management Suite of modules. Warning: Without this module, no access controls are applied to PM."
+
 core = 7.x
 package = Project Management
 configure = admin/config/pm/pmpermission

@@ -3,10 +3,11 @@ description = "Allows recording of teams made up of Organizations and People."
 core = 7.x
 package = Project Management
 
-dependencies[] = views
-dependencies[] = pm
-dependencies[] = pmorganization
 dependencies[] = entityreference
 dependencies[] = options
+dependencies[] = pm
+dependencies[] = views
+; Legacy
+dependencies[] = pmorganization
 
 files[] = pmteam.test
