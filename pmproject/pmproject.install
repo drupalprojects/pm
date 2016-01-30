@@ -51,6 +51,52 @@ function pmproject_uninstall() {
 }
 
 /**
+ * Implements hook_schema().
+ */
+function pmproject_schema() {
+  $schema['pmproject_index'] = array(
+    'description' => 'Maintains denormalized information about pm project relationships.',
+    'fields' => array(
+      'nid' => array(
+        'description' => 'The {node}.nid this record tracks.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'pmproject_nid' => array(
+        'description' => 'The pmproject nid.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the node was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'pmproject_nid' => array('pmproject_nid'),
+    ),
+    'foreign keys' => array(
+      'tracked_node' => array(
+        'table' => 'node',
+        'columns' => array('nid' => 'nid'),
+      ),
+      'pmproject_nid' => array(
+        'table' => 'node',
+        'columns' => array('pmproject_nid' => 'nid'),
+      ),
+    ),
+  );
+  return $schema;
+}
+
+/**
  * Implements hook_update_last_removed().
  */
 function pmproject_update_last_removed() {
