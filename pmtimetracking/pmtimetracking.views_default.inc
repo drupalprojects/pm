@@ -37,15 +37,30 @@ function pmtimetracking_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
     'title' => 'title',
+    'title_1' => 'title_1',
+    'title_2' => 'title_2',
     'pm_date' => 'pm_date',
     'pm_duration' => 'pm_duration',
     'pm_durationunit' => 'pm_durationunit',
-    'edit_node' => 'edit_node',
-    'delete_node' => 'edit_node',
+    'pm_handler_field_operation' => 'pm_handler_field_operation',
   );
   $handler->display->display_options['style_options']['default'] = 'pm_date';
   $handler->display->display_options['style_options']['info'] = array(
     'title' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'title_1' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'title_2' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
@@ -73,15 +88,10 @@ function pmtimetracking_views_default_views() {
       'separator' => '',
       'empty_column' => 0,
     ),
-    'edit_node' => array(
-      'align' => '',
-      'separator' => ' ',
-      'empty_column' => 1,
-    ),
-    'delete_node' => array(
+    'pm_handler_field_operation' => array(
       'align' => '',
       'separator' => '',
-      'empty_column' => 1,
+      'empty_column' => 0,
     ),
   );
   $handler->display->display_options['style_options']['sticky'] = TRUE;
@@ -103,6 +113,14 @@ function pmtimetracking_views_default_views() {
   $handler->display->display_options['relationships']['uid']['id'] = 'uid';
   $handler->display->display_options['relationships']['uid']['table'] = 'node';
   $handler->display->display_options['relationships']['uid']['field'] = 'uid';
+  /* Relationship: Drupal PM: PM Organization */
+  $handler->display->display_options['relationships']['pmorganization_nid']['id'] = 'pmorganization_nid';
+  $handler->display->display_options['relationships']['pmorganization_nid']['table'] = 'pmorganization_index';
+  $handler->display->display_options['relationships']['pmorganization_nid']['field'] = 'pmorganization_nid';
+  /* Relationship: Drupal PM: PM Project */
+  $handler->display->display_options['relationships']['pmproject_nid']['id'] = 'pmproject_nid';
+  $handler->display->display_options['relationships']['pmproject_nid']['table'] = 'pmproject_index';
+  $handler->display->display_options['relationships']['pmproject_nid']['field'] = 'pmproject_nid';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -110,6 +128,18 @@ function pmtimetracking_views_default_views() {
   $handler->display->display_options['fields']['title']['label'] = 'Timetracking';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title_1']['id'] = 'title_1';
+  $handler->display->display_options['fields']['title_1']['table'] = 'node';
+  $handler->display->display_options['fields']['title_1']['field'] = 'title';
+  $handler->display->display_options['fields']['title_1']['relationship'] = 'pmorganization_nid';
+  $handler->display->display_options['fields']['title_1']['label'] = 'Organization';
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title_2']['id'] = 'title_2';
+  $handler->display->display_options['fields']['title_2']['table'] = 'node';
+  $handler->display->display_options['fields']['title_2']['field'] = 'title';
+  $handler->display->display_options['fields']['title_2']['relationship'] = 'pmproject_nid';
+  $handler->display->display_options['fields']['title_2']['label'] = 'Project';
   /* Field: Content: Date */
   $handler->display->display_options['fields']['pm_date']['id'] = 'pm_date';
   $handler->display->display_options['fields']['pm_date']['table'] = 'field_data_pm_date';
@@ -130,22 +160,13 @@ function pmtimetracking_views_default_views() {
   $handler->display->display_options['fields']['pm_durationunit']['id'] = 'pm_durationunit';
   $handler->display->display_options['fields']['pm_durationunit']['table'] = 'field_data_pm_durationunit';
   $handler->display->display_options['fields']['pm_durationunit']['field'] = 'pm_durationunit';
-  /* Field: Content: Edit link */
-  $handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
-  $handler->display->display_options['fields']['edit_node']['table'] = 'views_entity_node';
-  $handler->display->display_options['fields']['edit_node']['field'] = 'edit_node';
-  $handler->display->display_options['fields']['edit_node']['label'] = 'Operations';
-  $handler->display->display_options['fields']['edit_node']['hide_empty'] = TRUE;
-  /* Field: Content: Delete link */
-  $handler->display->display_options['fields']['delete_node']['id'] = 'delete_node';
-  $handler->display->display_options['fields']['delete_node']['table'] = 'views_entity_node';
-  $handler->display->display_options['fields']['delete_node']['field'] = 'delete_node';
-  $handler->display->display_options['fields']['delete_node']['hide_empty'] = TRUE;
-  /* Sort criterion: Content: Date -  start date (pm_date) */
-  $handler->display->display_options['sorts']['pm_date_value']['id'] = 'pm_date_value';
-  $handler->display->display_options['sorts']['pm_date_value']['table'] = 'field_data_pm_date';
-  $handler->display->display_options['sorts']['pm_date_value']['field'] = 'pm_date_value';
-  $handler->display->display_options['sorts']['pm_date_value']['order'] = 'DESC';
+  /* Field: Content: PM Operations */
+  $handler->display->display_options['fields']['pm_handler_field_operation']['id'] = 'pm_handler_field_operation';
+  $handler->display->display_options['fields']['pm_handler_field_operation']['table'] = 'node';
+  $handler->display->display_options['fields']['pm_handler_field_operation']['field'] = 'pm_handler_field_operation';
+  $handler->display->display_options['fields']['pm_handler_field_operation']['label'] = 'Operations';
+  $handler->display->display_options['fields']['pm_handler_field_operation']['display_add_icon'] = 1;
+  $handler->display->display_options['fields']['pm_handler_field_operation']['display_icons'] = 1;
   /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
@@ -212,6 +233,36 @@ function pmtimetracking_views_default_views() {
     1 => 0,
     3 => 0,
     4 => 0,
+  );
+  /* Filter criterion: Content: Title */
+  $handler->display->display_options['filters']['title_1']['id'] = 'title_1';
+  $handler->display->display_options['filters']['title_1']['table'] = 'node';
+  $handler->display->display_options['filters']['title_1']['field'] = 'title';
+  $handler->display->display_options['filters']['title_1']['relationship'] = 'pmorganization_nid';
+  $handler->display->display_options['filters']['title_1']['operator'] = 'contains';
+  $handler->display->display_options['filters']['title_1']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['title_1']['expose']['operator_id'] = 'title_1_op';
+  $handler->display->display_options['filters']['title_1']['expose']['label'] = 'Organization';
+  $handler->display->display_options['filters']['title_1']['expose']['operator'] = 'title_1_op';
+  $handler->display->display_options['filters']['title_1']['expose']['identifier'] = 'title_1';
+  $handler->display->display_options['filters']['title_1']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+  );
+  /* Filter criterion: Content: Title */
+  $handler->display->display_options['filters']['title_2']['id'] = 'title_2';
+  $handler->display->display_options['filters']['title_2']['table'] = 'node';
+  $handler->display->display_options['filters']['title_2']['field'] = 'title';
+  $handler->display->display_options['filters']['title_2']['relationship'] = 'pmproject_nid';
+  $handler->display->display_options['filters']['title_2']['operator'] = 'contains';
+  $handler->display->display_options['filters']['title_2']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['title_2']['expose']['operator_id'] = 'title_2_op';
+  $handler->display->display_options['filters']['title_2']['expose']['label'] = 'Project';
+  $handler->display->display_options['filters']['title_2']['expose']['operator'] = 'title_2_op';
+  $handler->display->display_options['filters']['title_2']['expose']['identifier'] = 'title_2';
+  $handler->display->display_options['filters']['title_2']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
   );
 
   /* Display: Page */
