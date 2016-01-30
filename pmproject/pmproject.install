@@ -118,6 +118,14 @@ function pmproject_update_7105(&$sandbox) {
 }
 
 /**
+ * Create pmproject_index table.
+ */
+function pmproject_update_7300() {
+  $schema = module_invoke('pmproject', 'schema');
+  db_create_table('pmproject_index', $schema['pmproject_index']);
+}
+
+/**
  * Implements hook_update_dependencies().
  */
 function pmproject_update_dependencies() {
