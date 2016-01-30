@@ -591,7 +591,12 @@ function _pmpermission_get_organization_id($node, $max_depth) {
  * @return mixed
  *   nid of the parent node if found, FALSE otherwise.
  */
-function pmpermission_get_parent_nid_of_node($node, $parent_type, $max_depth = 10) {
+function pmpermission_get_parent_nid_of_node($node, $parent_type, $max_depth = NULL) {
+
+  if ($max_depth == NULL) {
+    $max_depth = variable_get('pmpermission_relation_search_depth', 10);
+  }
+
   if ($node->type == $parent_type) {
     return $node->nid;
   }
