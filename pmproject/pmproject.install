@@ -126,6 +126,54 @@ function pmproject_update_7300() {
 }
 
 /**
+ * Build pmproject_index for all nodes.
+ */
+function pmproject_update_7301(&$sandbox) {
+  // Retrieve all records.
+  $result = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->orderBy('n.nid', 'ASC')
+    ->execute();
+
+  // Use the sandbox to store the information needed to track progression.
+  if (!isset($sandbox['progress'])) {
+    $sandbox['progress'] = 0;
+    $sandbox['max'] = $result->rowCount();
+    $sandbox['messages'] = array();
+    $sandbox['current_node'] = -1;
+  }
+
+  // Process nodes by groups of 50.
+  $limit = 50;
+
+  // Retrieve the next group of nids.
+  $query = db_select('node', 'n')->extend('PagerDefault');
+
+  $result = $query->fields('n', array('nid'))
+      ->orderBy('n.nid', 'ASC')
+      ->condition('n.nid', $sandbox['current_node'], '>')
+      ->limit($limit)->execute();
+
+  foreach ($result as $row) {
+    $node = node_load($row->nid);
+    // Rebuild the pmproject_index.
+    pmproject_delete_node_index($node);
+    pmproject_build_node_index($node);
+    // Update our progress information.
+    $sandbox['progress']++;
+    $sandbox['current_node'] = $row->nid;
+  }
+
+  $sandbox['#finished'] = ($sandbox['progress'] >= $sandbox['max'])
+    ? TRUE
+    : ($sandbox['progress'] / $sandbox['max']);
+
+  if ($sandbox['#finished']) {
+    return t('PM Project index rebuild has been completed.');
+  }
+}
+
+/**
  * Implements hook_update_dependencies().
  */
 function pmproject_update_dependencies() {
