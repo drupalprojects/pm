@@ -117,7 +117,7 @@ function pmorganization_update_7104(&$sandbox) {
 /**
  * Create pmorganization_index table.
  */
-function pmorganization_update_7105() {
+function pmorganization_update_7300() {
   $schema = module_invoke('pmorganization', 'schema');
   db_create_table('pmorganization_index', $schema['pmorganization_index']);
 }
@@ -126,7 +126,7 @@ function pmorganization_update_7105() {
 /**
  * Build pmorganization_index for all nodes.
  */
-function pmorganization_update_7106(&$sandbox) {
+function pmorganization_update_7301(&$sandbox) {
   // Retrieve all records.
   $result = db_select('node', 'n')
     ->fields('n', array('nid'))
