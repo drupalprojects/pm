@@ -34,13 +34,28 @@ function pmnote_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
     'title_1' => 'title_1',
+    'title' => 'title',
+    'title_2' => 'title_2',
     'body' => 'body',
-    'edit_node' => 'edit_node',
-    'delete_node' => 'edit_node',
+    'pm_handler_field_operation' => 'pm_handler_field_operation',
   );
-  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['default'] = 'title_1';
   $handler->display->display_options['style_options']['info'] = array(
     'title_1' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'title' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'title_2' => array(
       'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
@@ -54,15 +69,10 @@ function pmnote_views_default_views() {
       'separator' => '',
       'empty_column' => 0,
     ),
-    'edit_node' => array(
-      'align' => '',
-      'separator' => ' ',
-      'empty_column' => 1,
-    ),
-    'delete_node' => array(
+    'pm_handler_field_operation' => array(
       'align' => '',
       'separator' => '',
-      'empty_column' => 1,
+      'empty_column' => 0,
     ),
   );
   $handler->display->display_options['style_options']['sticky'] = TRUE;
