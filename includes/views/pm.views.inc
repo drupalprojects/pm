@@ -14,6 +14,7 @@ function pm_views_data_alter(&$data) {
     'help' => t('Provides a link to add new content of the specified type to users with permissions to do so.'),
     'area' => array(
       'handler' => 'pm_handler_area_addcontent',
+      'group' => t('Drupal PM'),
     ),
   );
 
