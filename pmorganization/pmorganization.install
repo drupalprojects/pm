@@ -22,6 +22,52 @@ function pmorganization_install() {
 }
 
 /**
+ * Implements hook_schema().
+ */
+function pmorganization_schema() {
+  $schema['pmorganization_index'] = array(
+    'description' => 'Maintains denormalized information about pm organization relationships.',
+    'fields' => array(
+      'nid' => array(
+        'description' => 'The {node}.nid this record tracks.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'pmorganization_nid' => array(
+        'description' => 'The pmorganization nid.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the node was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'pmorganization_nid' => array('pmorganization_nid'),
+    ),
+    'foreign keys' => array(
+      'tracked_node' => array(
+        'table' => 'node',
+        'columns' => array('nid' => 'nid'),
+      ),
+      'pmorganization_nid' => array(
+        'table' => 'node',
+        'columns' => array('pmorganization_nid' => 'nid'),
+      ),
+    ),
+  );
+  return $schema;
+}
+
+/**
  * Implements hook_disable().
  */
 function pmorganization_disable() {
@@ -66,6 +112,14 @@ function pmorganization_update_7104(&$sandbox) {
   if (pmorganization_migrate_update_could_be_performed()) {
     return pmorganization_migrate($sandbox);
   }
+}
+
+/**
+ * Create pmorganization_index table.
+ */
+function pmorganization_update_7105() {
+  $schema = module_invoke('pmorganization', 'schema');
+  db_create_table('pmorganization_index', $schema['pmorganization_index']);
 }
 
 /**
