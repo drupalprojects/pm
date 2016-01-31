@@ -107,6 +107,11 @@ function pm_theme() {
       'template' => 'pm-list-default',
       'variables' => array('value' => NULL, 'key' => NULL, 'field_name' => NULL),
     ),
+    'pm_parent_breadcrumb' => array(
+      'file' => 'pm.theme.inc',
+      'variables' => array('data' => array());
+      ),
+    ),
   );
 }
 
@@ -806,6 +811,12 @@ function pm_field_formatter_info() {
         'list_boolean',
       ),
     ),
+    'pm_parent_breadcrumb' => array(
+      'label' => t('Project Management Parent Breadcrumb'),
+      'field types' = array(
+        'entityreference',
+      ),
+    ),
   );
 }
 
@@ -814,7 +825,9 @@ function pm_field_formatter_info() {
  */
 function pm_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
+  
   switch ($display['type']) {
+  
     case 'pm_list_default':
       $allowed_values = list_allowed_values($field, $instance, $entity_type, $entity);
       foreach ($items as $delta => $item) {
@@ -836,7 +849,52 @@ function pm_field_formatter_view($entity_type, $entity, $field, $instance, $lang
         $element[$delta] = array('#markup' => $output);
       }
       break;
+    
+    case 'pm_parent_breadcrumb':
+      foreach ($items as $delta => $item) {
+        $element[$delta] = array(
+          '#data' = pm_get_parents($entity_type, $entity, $field),
+          '#theme' => 'pm_parent_breadcrumb',
+        );
+      }
+      break;
   }
 
   return $element;
+}
+
+/**
+ * Recursively gather all parents for a given entity.
+ */
+function pm_get_parents($entity_type, $entity, $field) {
+  $data = array();
+  $field_name = $field['field name'];
+  $e = $entity;
+  
+  $wrapper = entity_metadata_wrapper($entity_type, $entity);
+  $data[] = pm_get_parent_label($entity_type, $wrapper);
+  
+  for ($i = 0; $i < 4; $i++) {
+    $wrapper = entity_metadata_wrapper($entity_type, $entity);
+    if (isset($e->$field_name)) 
+      $data[] = pm_get_parent_label($entity_type, $wrapper);
+    }
+    else {
+      break;
+    }
+    $e = $wrapper->$field_name->value();
+  }
+  return array_reverse($data);
+}
+
+/**
+ * Get the label for a given entity.
+ */
+function pm_get_parent_label($entity_type, $wrapper) {
+  $label = $wrapper->label();
+  $id = $wrapper->getIdentifier();
+  
+  $path = $entity_type . '/' . $id;
+  
+  return drupal_valid_path($path) ? l($title, $path) : $title;
 }

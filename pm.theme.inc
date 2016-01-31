@@ -114,3 +114,11 @@ function theme_pm_dashboard_link($link_array) {
   }
   return $content;
 }
+
+/**
+ * Provides HTML for the pm_parent_breadcrumb field formatter.
+ */
+function theme_pm_parent_breadcrumb($variables) {
+  $breadcrumb = implode(' > ', $variables['data']);
+  return '<div class="pm_parent_breadcrumb">' . $breadcrumb . '</div>';
+}
