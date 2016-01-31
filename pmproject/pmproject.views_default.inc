@@ -92,23 +92,21 @@ function pmproject_views_default_views() {
   $handler->display->display_options['header']['pm_handler_area_addcontent']['field'] = 'pm_handler_area_addcontent';
   $handler->display->display_options['header']['pm_handler_area_addcontent']['node_type'] = 'pmproject';
   $handler->display->display_options['header']['pm_handler_area_addcontent']['redirect'] = TRUE;
-  /* Relationship: Entity Reference: Referenced Entity */
-  $handler->display->display_options['relationships']['pmproject_parent_target_id']['id'] = 'pmproject_parent_target_id';
-  $handler->display->display_options['relationships']['pmproject_parent_target_id']['table'] = 'field_data_pmproject_parent';
-  $handler->display->display_options['relationships']['pmproject_parent_target_id']['field'] = 'pmproject_parent_target_id';
-  $handler->display->display_options['relationships']['pmproject_parent_target_id']['label'] = 'Organization';
+  /* Relationship: Drupal PM: PM Organization */
+  $handler->display->display_options['relationships']['pmorganization_nid']['id'] = 'pmorganization_nid';
+  $handler->display->display_options['relationships']['pmorganization_nid']['table'] = 'pmorganization_index';
+  $handler->display->display_options['relationships']['pmorganization_nid']['field'] = 'pmorganization_nid';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['label'] = 'Title';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title_1']['id'] = 'title_1';
   $handler->display->display_options['fields']['title_1']['table'] = 'node';
   $handler->display->display_options['fields']['title_1']['field'] = 'title';
-  $handler->display->display_options['fields']['title_1']['relationship'] = 'pmproject_parent_target_id';
+  $handler->display->display_options['fields']['title_1']['relationship'] = 'pmorganization_nid';
   $handler->display->display_options['fields']['title_1']['label'] = 'Organization';
   /* Field: Content: Status */
   $handler->display->display_options['fields']['pm_projectstatus']['id'] = 'pm_projectstatus';
