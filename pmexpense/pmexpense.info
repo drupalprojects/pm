@@ -8,10 +8,5 @@ dependencies[] = date
 dependencies[] = list
 dependencies[] = pm
 dependencies[] = views
-; Legacy
-dependencies[] = pmorganization
-dependencies[] = pmproject
-dependencies[] = pmtask
-dependencies[] = pmticket
 
 files[] = pmexpense.test

@@ -9,10 +9,5 @@ dependencies[] = entityreference
 dependencies[] = list
 dependencies[] = pm
 dependencies[] = text
-; Legacy
-dependencies[] = pmorganization
-dependencies[] = pmproject
-dependencies[] = pmtask
-dependencies[] = pmticket
 
 files[] = pmtimetracking.test

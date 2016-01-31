@@ -7,7 +7,5 @@ dependencies[] = entityreference
 dependencies[] = options
 dependencies[] = pm
 dependencies[] = views
-; Legacy
-dependencies[] = pmorganization
 
 files[] = pmteam.test

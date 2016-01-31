@@ -9,8 +9,5 @@ dependencies[] = entityreference
 dependencies[] = list
 dependencies[] = pm
 dependencies[] = text
-; Legacy
-dependencies[] = pmorganization
-dependencies[] = pmproject
 
 files[] = pmissue.test

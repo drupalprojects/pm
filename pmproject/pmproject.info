@@ -10,7 +10,5 @@ dependencies[] = list
 dependencies[] = pm
 dependencies[] = text
 dependencies[] = views
-; Legacy
-dependencies[] = pmorganization
 
 files[] = pmproject.test
