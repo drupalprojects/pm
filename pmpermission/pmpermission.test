@@ -153,15 +153,15 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $organization_a_settings = array(
       'type' => 'pmorganization',
       'uid' => 1,
-      'pmorganization_members' => $users['a']->uid,
     );
+    $organization_settings['pmorganization_members'][LANGUAGE_NONE][]['target_id'] = $users['a']->uid;
     $organization_a = $this->drupalCreateNode($organization_a_settings);
 
     $organization_b_settings = array(
       'type' => 'pmorganization',
       'uid' => 1,
-      'pmorganization_members' => $users['b']->uid,
     );
+    $organization_settings['pmorganization_members'][LANGUAGE_NONE][]['target_id'] = $users['b']->uid;
     $organization_b = $this->drupalCreateNode($organization_b_settings);
 
     // Create one project node, attached to organization A.
