@@ -148,13 +148,23 @@ function pm_field_extra_fields() {
  * Implements hook_entity_view().
  */
 function pm_entity_view($entity, $type, $view_mode, $langcode) {
-  list(, , $bundle) = entity_extract_ids($type, $entity);
+  list($id, $vid, $bundle) = entity_extract_ids($type, $entity);
   $extrafields = field_extra_fields_get_display($type, $bundle, $view_mode);
   if (isset($extrafields[PM_CONTEXTUAL_LINK_PSEUDO_FIELD])
       && isset($extrafields[PM_CONTEXTUAL_LINK_PSEUDO_FIELD]['visible'])
       && $extrafields[PM_CONTEXTUAL_LINK_PSEUDO_FIELD]['visible']) {
-    // Your logic here.
-    $entity->content[PM_CONTEXTUAL_LINK_PSEUDO_FIELD] = array('#markup' => '[PLACEHOLDER CONTEXTUAL LINK]');
+    $links = module_invoke_all('pm_contextual_links', $entity, $type, $view_mode, $langcode);
+    ksort($links);
+    if (!empty($links)) {
+      $entity->content[PM_CONTEXTUAL_LINK_PSEUDO_FIELD] = array(
+        '#theme' => 'links__ctools_dropbutton',
+        '#links' => $links,
+      );
+    }
+    else {
+      $entity->content[PM_CONTEXTUAL_LINK_PSEUDO_FIELD] = '';
+    }
+
   }
 }
 
