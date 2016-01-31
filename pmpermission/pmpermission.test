@@ -99,7 +99,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
       'type' => 'pmorganization',
       'uid' => 1,
     );
-    $organization_settings['pmorganization_members'][LANGUAGE_NONE][][] = $users['b']->uid;
+    $organization_settings['pmorganization_members'][LANGUAGE_NONE][]['target_id'] = $users['b']->uid;
     $organization = $this->drupalCreateNode($organization_settings);
     $this->assertTrue(isset($organization->nid), 'Node successfully created.');
 
@@ -123,17 +123,6 @@ class PmpermissionTestCase extends DrupalWebTestCase {
    * Tests permissions after parent change.
    */
   public function testpmpermissionChangeParent() {
-    // Enable modules required only for this test.
-    $modules = array(
-      'pmorganization',
-      'pmproject',
-    );
-    $result = module_enable($modules, TRUE);
-    $this->AssertTrue($result, 'Modules were enabled successfully.');
-
-    $this->resetAll();
-    drupal_cron_run();
-
     // Allow PM Permission to override project permissions.
     variable_set('node_permissions_pmproject', 0);
 
@@ -154,23 +143,23 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $organization_a_settings = array(
       'type' => 'pmorganization',
       'uid' => 1,
-      'pmorganization_members' => $users['a']->uid,
     );
+    $organization_a_settings['pmorganization_members'][LANGUAGE_NONE][]['target_id'] = $users['a']->uid;
     $organization_a = $this->drupalCreateNode($organization_a_settings);
 
     $organization_b_settings = array(
       'type' => 'pmorganization',
       'uid' => 1,
-      'pmorganization_members' => $users['b']->uid,
     );
+    $organization_b_settings['pmorganization_members'][LANGUAGE_NONE][]['target_id'] = $users['b']->uid;
     $organization_b = $this->drupalCreateNode($organization_b_settings);
 
     // Create one project node, attached to organization A.
     $project_settings = array(
       'type' => 'pmproject',
       'uid' => 1,
-      'pmproject_parent' => $organization_a->nid,
     );
+    $project_settings['pmproject_parent'][LANGUAGE_NONE][]['target_id'] = $organization_a->nid; 
     $project = $this->drupalCreateNode($project_settings);
 
     // Test that user A can view the project.
@@ -184,7 +173,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $this->assertResponse(403, 'Access is denied to user B when project is attached to organization A.');
 
     // Attach the project to organization B.
-    $project->pmproject_parent = $organization_b->nid;
+    $project->pmproject_parent[LANGUAGE_NONE][0]['target_id'] = $organization_b->nid;
     node_save($project);
 
     // Test that user A can not view the project.

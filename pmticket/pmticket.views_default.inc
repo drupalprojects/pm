@@ -104,7 +104,7 @@ function pmticket_views_default_views() {
   );
   $handler->display->display_options['style_options']['sticky'] = TRUE;
   $handler->display->display_options['style_options']['empty_table'] = TRUE;
-  /* Header: Content: PM Add Content Link */
+  /* Header: Drupal PM: PM Add Content Link */
   $handler->display->display_options['header']['pm_handler_area_addcontent']['id'] = 'pm_handler_area_addcontent';
   $handler->display->display_options['header']['pm_handler_area_addcontent']['table'] = 'node';
   $handler->display->display_options['header']['pm_handler_area_addcontent']['field'] = 'pm_handler_area_addcontent';
@@ -147,14 +147,17 @@ function pmticket_views_default_views() {
   $handler->display->display_options['fields']['pm_status']['id'] = 'pm_status';
   $handler->display->display_options['fields']['pm_status']['table'] = 'field_data_pm_status';
   $handler->display->display_options['fields']['pm_status']['field'] = 'pm_status';
+  $handler->display->display_options['fields']['pm_status']['type'] = 'pm_list_default';
   /* Field: Content: Priority */
   $handler->display->display_options['fields']['pm_priority']['id'] = 'pm_priority';
   $handler->display->display_options['fields']['pm_priority']['table'] = 'field_data_pm_priority';
   $handler->display->display_options['fields']['pm_priority']['field'] = 'pm_priority';
+  $handler->display->display_options['fields']['pm_priority']['type'] = 'pm_list_default';
   /* Field: Content: Category */
   $handler->display->display_options['fields']['pm_category']['id'] = 'pm_category';
   $handler->display->display_options['fields']['pm_category']['table'] = 'field_data_pm_category';
   $handler->display->display_options['fields']['pm_category']['field'] = 'pm_category';
+  $handler->display->display_options['fields']['pm_category']['type'] = 'pm_list_default';
   /* Field: Content: Assigned to */
   $handler->display->display_options['fields']['pm_assigned']['id'] = 'pm_assigned';
   $handler->display->display_options['fields']['pm_assigned']['table'] = 'field_data_pm_assigned';
@@ -162,7 +165,7 @@ function pmticket_views_default_views() {
   $handler->display->display_options['fields']['pm_assigned']['settings'] = array(
     'link' => 1,
   );
-  /* Field: Content: PM Operations */
+  /* Field: Drupal PM: PM Operations */
   $handler->display->display_options['fields']['pm_handler_field_operation']['id'] = 'pm_handler_field_operation';
   $handler->display->display_options['fields']['pm_handler_field_operation']['table'] = 'node';
   $handler->display->display_options['fields']['pm_handler_field_operation']['field'] = 'pm_handler_field_operation';
