@@ -123,16 +123,6 @@ class PmpermissionTestCase extends DrupalWebTestCase {
    * Tests permissions after parent change.
    */
   public function testpmpermissionChangeParent() {
-    // Enable modules required only for this test.
-    $modules = array(
-      'pmorganization',
-      'pmproject',
-    );
-    module_enable($modules, TRUE);
-
-    $this->resetAll();
-    drupal_cron_run();
-
     // Allow PM Permission to override project permissions.
     variable_set('node_permissions_pmproject', 0);
 
