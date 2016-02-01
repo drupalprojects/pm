@@ -69,7 +69,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
     $this->drupalLogin($users['privileged']);
     $this->drupalGet('node/' . $organization->nid);
     $this->assertResponse(200, 'Access granted to privileged user.');
- }
+  }
 
   /**
    * Tests "belonged" permission.
@@ -80,7 +80,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
 
     // Setup users.
     $users = array();
-    
+
     // Create two users for testing view permissions (A & B).
     $user_permissions = array(
       'PM permission pmorganization: view own Organization',
@@ -159,7 +159,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
       'type' => 'pmproject',
       'uid' => 1,
     );
-    $project_settings['pmproject_parent'][LANGUAGE_NONE][]['target_id'] = $organization_a->nid; 
+    $project_settings['pmproject_parent'][LANGUAGE_NONE][]['target_id'] = $organization_a->nid;
     $project = $this->drupalCreateNode($project_settings);
 
     // Test that user A can view the project.

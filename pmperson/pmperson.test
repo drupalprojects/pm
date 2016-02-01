@@ -25,7 +25,7 @@ class PMPersonTestCase extends DrupalWebTestCase {
    */
   public function setUp() {
     parent::setUp('pm', 'pmperson');
-}
+  }
 
   /**
    * Tests module uninstall path.
