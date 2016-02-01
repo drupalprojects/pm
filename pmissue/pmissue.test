@@ -64,7 +64,7 @@ class PMIssueTestCase extends DrupalWebTestCase {
     );
     $this->drupalPost('node/add/pmissue', $issue, t('Save'));
 
-    $this->assertText(t('Issue @title has been created.', array('@title' => $task['title'])));;
+    $this->assertText(t('Issue @title has been created.', array('@title' => $issue['title'])));;
   }
 
   /**
