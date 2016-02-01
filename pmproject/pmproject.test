@@ -24,7 +24,7 @@ class PMProjectTestCase extends DrupalWebTestCase {
    * Standard configuration for all test cases.
    */
   public function setUp() {
-    parent::setUp('views', 'pm', 'pmorganization', 'pmproject');
+    parent::setUp('views', 'pm', 'pmproject');
   }
 
   /**
@@ -54,21 +54,14 @@ class PMProjectTestCase extends DrupalWebTestCase {
   public function testpmprojectCreate() {
     // Log in with permission to create test content.
     $user = $this->drupalCreateUser(array(
-      'create pmorganization content',
       'create pmproject content',
     ));
     $this->drupalLogin($user);
 
     // Create test content.
-    $org = array(
-      'title' => $this->randomName(32),
-      // 'body[und][0][value]' => $this->randomName(64),
-    );
     $prj = array(
       'title' => $this->randomName(32),
-      'pmproject_parent[und]' => '1',
     );
-    $this->drupalPost('node/add/pmorganization', $org, t('Save'));
     $this->drupalPost('node/add/pmproject', $prj, t('Save'));
 
     $this->assertText(t('Project @title has been created.', array('@title' => $prj['title'])));;

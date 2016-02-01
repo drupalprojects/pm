@@ -1,6 +1,7 @@
 name = PM Ticket
 description = "Allows creation of tickets for Projects and Tasks."
 
+
 package = Project Management
 core = 7.x
 
@@ -9,9 +10,5 @@ dependencies[] = entityreference
 dependencies[] = list
 dependencies[] = pm
 dependencies[] = text
-; Legacy
-dependencies[] = pmorganization
-dependencies[] = pmproject
-dependencies[] = pmtask
 
 files[] = pmticket.test
