@@ -24,7 +24,7 @@ class PMIssueTestCase extends DrupalWebTestCase {
    * Provides standard set up for all test cases.
    */
   public function setUp() {
-    parent::setUp('pm', 'pmorganization', 'pmproject', 'pmissue');
+    parent::setUp('pm', 'pmissue');
   }
 
   /**
@@ -54,28 +54,15 @@ class PMIssueTestCase extends DrupalWebTestCase {
   public function testpmissueCreate() {
     // Log in with permission to create test content.
     $user = $this->drupalCreateUser(array(
-      'create pmorganization content',
-      'create pmproject content',
       'create pmissue content',
     ));
     $this->drupalLogin($user);
 
     // Create test content.
-    $org = array(
+    $issue = array(
       'title' => $this->randomName(32),
-      // 'body[und][0][value]' => $this->randomName(64),
     );
-    $prj = array(
-      'title' => $this->randomName(32),
-      // 'organization_nid' => '1',
-    );
-    $task = array(
-      'title' => $this->randomName(32),
-      // 'body[und][0][value]' => $this->randomName(64),
-    );
-    $this->drupalPost('node/add/pmorganization', $org, t('Save'));
-    $this->drupalPost('node/add/pmproject', $prj, t('Save'));
-    $this->drupalPost('node/add/pmissue', $task, t('Save'));
+    $this->drupalPost('node/add/pmissue', $issue, t('Save'));
 
     $this->assertText(t('Issue @title has been created.', array('@title' => $task['title'])));;
   }
