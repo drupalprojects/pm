@@ -1,7 +1,6 @@
 name = PM Issue
 description = "Allows recording of tasks/tickets for Project Management Organizations and Projects"
 
-
 package = Project Management
 core = 7.x
 

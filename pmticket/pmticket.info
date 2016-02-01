@@ -1,7 +1,6 @@
 name = PM Ticket
 description = "Allows creation of tickets for Projects and Tasks."
 
-
 package = Project Management
 core = 7.x
 

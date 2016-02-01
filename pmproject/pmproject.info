@@ -1,7 +1,6 @@
 name = PM Project
 description = "Allows recording of projects based on Project Management Organizations"
 
-
 package = Project Management
 core = 7.x
 

@@ -1,7 +1,6 @@
 name = PM Expense
 description = "Allows recording of expenses based on organizations, projects, tasks and tickets."
 
-
 package = Project Management
 core = 7.x
 

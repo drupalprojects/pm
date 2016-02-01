@@ -1,7 +1,6 @@
 name = PM Timetracking
 description = "Allows recording of times worked based on project, task and/or ticket"
 
-
 package = Project Management
 core = 7.x
 
