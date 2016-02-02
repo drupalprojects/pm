@@ -812,9 +812,7 @@ function pm_field_formatter_info() {
     ),
     'pm_parent_breadcrumb' => array(
       'label' => t('Project Management Parent Breadcrumb'),
-      'field types' = array(
-        'entityreference',
-      ),
+      'field types' => array('entityreference'),
     ),
   );
 }
