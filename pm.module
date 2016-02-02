@@ -893,5 +893,5 @@ function pm_get_parent_label($entity_type, $wrapper) {
   
   $path = $entity_type . '/' . $id;
   
-  return drupal_valid_path($path) ? l($title, $path) : $title;
+  return drupal_valid_path($path) ? l($label, $path) : $label;
 }
