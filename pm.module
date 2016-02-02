@@ -867,10 +867,10 @@ function pm_get_parents($entity_type, $entity, $field) {
   $data = array();
   $field_name = $field['field name'];
   $e = $entity;
-  
+
   $wrapper = entity_metadata_wrapper($entity_type, $entity);
   $data[] = pm_get_parent_label($entity_type, $wrapper);
-  
+
   for ($i = 0; $i < 4; $i++) {
     $wrapper = entity_metadata_wrapper($entity_type, $entity);
     if (isset($e->$field_name)) {
@@ -892,6 +892,6 @@ function pm_get_parent_label($entity_type, $wrapper) {
   $id = $wrapper->getIdentifier();
   
   $path = $entity_type . '/' . $id;
-  
+
   return drupal_valid_path($path) ? l($label, $path) : $label;
 }
