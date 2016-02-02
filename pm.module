@@ -875,8 +875,7 @@ function pm_get_parents($entity_type, $entity, $field) {
     $wrapper = entity_metadata_wrapper($entity_type, $entity);
     if (isset($e->$field_name)) 
       $data[] = pm_get_parent_label($entity_type, $wrapper);
-    }
-    else {
+    } else {
       break;
     }
     $e = $wrapper->$field_name->value();
