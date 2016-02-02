@@ -24,7 +24,7 @@ class PMExpenseTestCase extends DrupalWebTestCase {
    * Defines modules to be enabled for each test run.
    */
   public function setUp() {
-    parent::setUp('pm', 'pmorganization', 'pmproject', 'pmtask', 'pmticket', 'pmexpense');
+    parent::setUp('pm', 'pmexpense');
   }
 
   /**
@@ -60,24 +60,12 @@ class PMExpenseTestCase extends DrupalWebTestCase {
 
     // Create user with permissions to add content.
     $user_content = $this->drupalCreateUser(array(
-      'create pmorganization content',
-      // 'Project Management Organization: view all',
       'create pmexpense content',
-      // 'Project Management expense: view all',
-      // 'Project Management Project: view all',
-      // 'Project Management Task: view all',
     ));
     $this->drupalLogin($user_content);
 
-    // Create an organization node.
-    $org = array(
-      'title' => $this->randomName(32),
-    );
-    $this->drupalPost('node/add/pmorganization', $org, t('Save'));
-
     // Create an expense node.
     $expense = array(
-      // 'organization_nid' => '1',
       'title' => $this->randomName(32),
     );
     $this->drupalPost('node/add/pmexpense', $expense, t('Save'));

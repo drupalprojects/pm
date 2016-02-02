@@ -1,11 +1,13 @@
 name = PM Timetracking
 description = "Allows recording of times worked based on project, task and/or ticket"
-dependencies[] = pm
-dependencies[] = pmorganization
-dependencies[] = pmproject
-dependencies[] = pmtask
-dependencies[] = pmticket
+
 package = Project Management
 core = 7.x
+
+dependencies[] = date
+dependencies[] = entityreference
+dependencies[] = list
+dependencies[] = pm
+dependencies[] = text
 
 files[] = pmtimetracking.test
