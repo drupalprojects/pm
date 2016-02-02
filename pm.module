@@ -109,8 +109,7 @@ function pm_theme() {
     ),
     'pm_parent_breadcrumb' => array(
       'file' => 'pm.theme.inc',
-      'variables' => array('data' => array());
-      ),
+      'variables' => array('data' => array()),
     ),
   );
 }
