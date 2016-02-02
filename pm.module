@@ -822,9 +822,9 @@ function pm_field_formatter_info() {
  */
 function pm_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
-  
+
   switch ($display['type']) {
-  
+
     case 'pm_list_default':
       $allowed_values = list_allowed_values($field, $instance, $entity_type, $entity);
       foreach ($items as $delta => $item) {
@@ -846,7 +846,7 @@ function pm_field_formatter_view($entity_type, $entity, $field, $instance, $lang
         $element[$delta] = array('#markup' => $output);
       }
       break;
-    
+
     case 'pm_parent_breadcrumb':
       foreach ($items as $delta => $item) {
         $element[$delta] = array(
@@ -873,9 +873,10 @@ function pm_get_parents($entity_type, $entity, $field) {
   
   for ($i = 0; $i < 4; $i++) {
     $wrapper = entity_metadata_wrapper($entity_type, $entity);
-    if (isset($e->$field_name)) 
+    if (isset($e->$field_name)) {
       $data[] = pm_get_parent_label($entity_type, $wrapper);
-    } else {
+    }
+    else {
       break;
     }
     $e = $wrapper->$field_name->value();
