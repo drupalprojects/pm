@@ -19,6 +19,11 @@ function pm_admin_settings() {
     '#weight' => $w++,
   );
 
+  $form['recommended']['help'] = array(
+    '#type' => 'markup',
+    '#markup' => t('The following modules significantly enhance Drupal PM and are recommended for installation.'),
+  );
+
   $form['icons'] = array(
     '#type' => 'fieldset',
     '#title' => t('Icons'),
