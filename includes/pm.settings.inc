@@ -11,6 +11,14 @@ function pm_admin_settings() {
   $form = array();
   $w = -10;
 
+  $form['recommended'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Recommended modules'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#weight' => $w++,
+  );
+
   $form['icons'] = array(
     '#type' => 'fieldset',
     '#title' => t('Icons'),
