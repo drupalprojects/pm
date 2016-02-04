@@ -21,7 +21,7 @@ function pm_admin_settings() {
 
   $form['recommended']['help'] = array(
     '#type' => 'markup',
-    '#markup' => t('The following modules significantly enhance Drupal PM and are recommended for installation.'),
+    '#markup' => t('The following modules significantly enhance Project Management and are recommended for installation.'),
   );
 
   $form['icons'] = array(
