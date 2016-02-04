@@ -81,6 +81,8 @@ function pm_menu() {
     'page arguments' => array('pm_admin_settings'),
     'access arguments' => array('Project Management: access administration pages'),
     'weight' => -100,
+    'file' => 'pm.settings.inc',
+    'file path' => drupal_get_path('module', 'pm') . '/includes',
   );
 
   return $items;
