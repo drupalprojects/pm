@@ -272,6 +272,7 @@ function _pmperson_migrate_get_conflicting_email_with_attached_users_table() {
 
   return $render;
 }
+
 /**
  * Get list of pmnodes that has conlficting email with existing Drupal user.
  */
@@ -326,6 +327,7 @@ function _pmperson_migrate_get_conflicting_email_with_existing_users_table() {
 
   return $render;
 }
+
 /**
  * Custom function to map row values to display values.
  *
