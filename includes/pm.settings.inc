@@ -50,7 +50,7 @@ function pm_admin_settings() {
     PM_ICON_SET_DEFAULT_BEHAVIOUR => t('<strong>Default:</strong> Displays fontawesome icons if the fontawesome module is installed. Otherwise reverts to PM legacy icons.'),
     PM_ICON_SET_FONTAWESOME => t('<strong>fontawesome icons:</strong> Displays fontawesome icons. Requires fontawesome module and libraries to be installed.'),
     PM_ICON_SET_STORM => t('<strong>PM legacy icons:</strong> Displays PM legacy icons. Deprecated - this option will be removed in a future release.'),
-    PM_ICON_SET_NO_ICON => t('<strong>None:</strong> Hides all items. Select this option if the icons available do not suit your selected theme.'),
+    PM_ICON_SET_NO_ICON => t('<strong>None:</strong> Hides all icons. Select this option if the icons available do not suit your selected theme.'),
   );
   $form['icons']['pm_icon'] = array(
     '#type' => 'radios',
