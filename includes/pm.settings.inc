@@ -15,7 +15,7 @@ function pm_admin_settings() {
     '#type' => 'fieldset',
     '#title' => t('Recommended modules'),
     '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
+    '#collapsed' => FALSE,
     '#weight' => $w++,
   );
 
@@ -41,8 +41,8 @@ function pm_admin_settings() {
   $form['icons'] = array(
     '#type' => 'fieldset',
     '#title' => t('Icons'),
-    '#collapsed' => TRUE,
     '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
     '#weight' => $w++,
   );
 
