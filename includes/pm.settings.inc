@@ -23,6 +23,13 @@ function pm_admin_settings() {
     '#type' => 'markup',
     '#markup' => t('The following modules significantly enhance Project Management and are recommended for installation.'),
   );
+  
+  $form['recommended']['pm_recommended_ignore'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Ignore missing recommended modules'),
+    '#description' => t('When selected, no warnings will be shown if recommended modules are missing.'),
+    '#default_value' => variable_get('pm_recommended_ignore', FALSE),
+  );
 
   $form['icons'] = array(
     '#type' => 'fieldset',
