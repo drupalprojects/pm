@@ -35,7 +35,7 @@ function pm_admin_settings() {
 
   $form['recommended']['table'] = array(
     '#type' => 'markup',
-    '#markup' => pm_get_recommended_modules_table(),
+    '#markup' => pm_recommended_modules_table(),
   );
 
   $form['icons'] = array(
