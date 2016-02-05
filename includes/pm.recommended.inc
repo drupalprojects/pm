@@ -19,7 +19,7 @@ function pm_recommended_modules_table() {
 
   // Retrieve row information.
   $modules = module_invoke_all('pm_recommended_modules_info');
-  
+
   foreach ($modules as $module) {
     $rows[] = array(
       'name' => $module['name'],
@@ -45,5 +45,5 @@ function pm_pm_recommended_modules_info() {
       'name' => t('Field Group'),
       'functionality' => t('Allows fields to be structured into labelled groups. This module is pre-configured by Project Management to work "out of the box", although the configuration can also be customised.'),
     ),
-  )
+  );
 }
