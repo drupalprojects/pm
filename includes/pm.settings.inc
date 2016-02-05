@@ -31,7 +31,7 @@ function pm_admin_settings() {
     '#default_value' => variable_get('pm_recommended_ignore', FALSE),
   );
 
-
+  module_load_include('inc', 'pm', 'includes/pm.recommended');
 
   $form['recommended']['table'] = array(
     '#type' => 'markup',
