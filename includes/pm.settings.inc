@@ -31,6 +31,13 @@ function pm_admin_settings() {
     '#default_value' => variable_get('pm_recommended_ignore', FALSE),
   );
 
+
+
+  $form['recommended']['table'] = array(
+    '#type' => 'markup',
+    '#markup' => pm_get_recommended_modules_table(),
+  );
+
   $form['icons'] = array(
     '#type' => 'fieldset',
     '#title' => t('Icons'),
