@@ -52,6 +52,7 @@ function pm_admin_settings() {
     PM_ICON_SET_STORM => t('<strong>PM legacy icons:</strong> Displays PM legacy icons. Deprecated - this option will be removed in a future release.'),
     PM_ICON_SET_NO_ICON => t('<strong>None:</strong> Hides all icons. Select this option if the icons available do not suit your selected theme.'),
   );
+
   $form['icons']['pm_icon'] = array(
     '#type' => 'radios',
     '#multiple' => FALSE,
@@ -59,6 +60,19 @@ function pm_admin_settings() {
     '#options' => $icon_options,
     '#default_value' => variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR),
     '#weight' => $w++,
+  );
+  
+  if (module_exists('fontawesome')) {
+    $fontawesome_status = 'Module is enabled.';
+  }
+  else {
+    $fontawesome_status = 'Module is not enabled.';
+  }
+  
+  $form['icons']['fontawesome_status'] = array(
+    '#type' => 'item',
+    '#title' => t('fontawesome status'),
+    '#markup' => $fontawesome_status,
   );
 
   return system_settings_form($form);
