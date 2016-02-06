@@ -68,7 +68,7 @@ function pm_admin_settings() {
   else {
     $fontawesome_status = 'Module is not enabled.';
   }
- 
+
   $form['icons']['fontawesome_status'] = array(
     '#type' => 'item',
     '#title' => t('fontawesome status'),
