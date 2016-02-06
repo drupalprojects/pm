@@ -61,14 +61,14 @@ function pm_admin_settings() {
     '#default_value' => variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR),
     '#weight' => $w++,
   );
-  
+
   if (module_exists('fontawesome')) {
     $fontawesome_status = 'Module is enabled.';
   }
   else {
     $fontawesome_status = 'Module is not enabled.';
   }
-  
+ 
   $form['icons']['fontawesome_status'] = array(
     '#type' => 'item',
     '#title' => t('fontawesome status'),
