@@ -18,12 +18,33 @@ function pm_recommended_modules_table() {
   $rows = array();
 
   // Retrieve row information.
-  $modules = module_invoke_all('pm_recommended_modules_info');
+  $available_modules = array();
 
-  foreach ($modules as $module) {
+  foreach (system_rebuild_module_data() as $available_module) {
+    $available_modules[$available_module['name']] = $available_module['status']
+  }
+  
+  $recommended_modules = module_invoke_all('pm_recommended_modules_info');
+
+  foreach ($recommended_modules as $shortname => $recommended_module) {
+
+    if (isset($available_modules[$shortname])) {
+    
+      if ((bool) $available_modules[$shortname]) {
+        $status = '<span class="admin-enabled">enabled</span>';
+      }
+      else {
+        $status = '<span class="admin-disabled">disabled</span>';
+      }
+
+    }
+    else {
+      $status = '<span class="admin-missing">missing</span>';
+    }
+
     $rows[] = array(
-      'name' => $module['name'],
-      'functionality' => $module['functionality'],
+      'name' => '<strong>' . $recommended_module['name'] . '</strong> (' . $status . ')',
+      'functionality' => $recommended_module['functionality'],
       'operations' => '',
     );
   }
