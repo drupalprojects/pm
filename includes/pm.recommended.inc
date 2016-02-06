@@ -36,13 +36,19 @@ function pm_recommended_modules_table() {
       }
       else {
         $status = '<span class="admin-disabled">disabled</span>';
-        $operations = '';
+        
+        if (drupal_valid_path('admin/modules')) {      
+          $operations = l('Enable', 'admin/modules');
+        }
+        else {
+          $operations = 'Contact an administrator to enable this module';
+        }
       }
 
     }
     else {
       $status = '<span class="admin-missing">missing</span>';
-      $operations = '';
+      $operations = l('Download', $recommended_module['download']);
     }
 
     $rows[] = array(
@@ -68,6 +74,7 @@ function pm_pm_recommended_modules_info() {
     'fieldgroup' => array(
       'name' => t('Field Group'),
       'functionality' => t('Allows fields to be structured into labelled groups. This module is pre-configured by Project Management to work "out of the box", although the configuration can also be customised.'),
+      'download' => 'https://www.drupal.org/project/fieldgroup',
     ),
   );
 }
