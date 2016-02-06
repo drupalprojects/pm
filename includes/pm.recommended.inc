@@ -72,10 +72,10 @@ function pm_recommended_modules_table() {
  */
 function pm_pm_recommended_modules_info() {
   return array(
-    'fieldgroup' => array(
+    'field_group' => array(
       'name' => t('Field Group'),
       'functionality' => t('Allows fields to be structured into labelled groups. This module is pre-configured by Project Management to work "out of the box", although the configuration can also be customised.'),
-      'download' => 'https://www.drupal.org/project/fieldgroup',
+      'download' => 'https://www.drupal.org/project/field_group',
     ),
   );
 }
