@@ -21,7 +21,7 @@ function pm_recommended_modules_table() {
   $available_modules = array();
 
   foreach (system_rebuild_module_data() as $available_module) {
-    $name = $available_module['name'];
+    $name = $available_module->name;
     $available_modules[$name] = $available_module->status;
   }
 
