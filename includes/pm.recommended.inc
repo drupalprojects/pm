@@ -23,21 +23,21 @@ function pm_recommended_modules_table() {
   foreach (system_rebuild_module_data() as $available_module) {
     $available_modules[$available_module['name']] = $available_module['status'];
   }
-  
+
   $recommended_modules = module_invoke_all('pm_recommended_modules_info');
 
   foreach ($recommended_modules as $shortname => $recommended_module) {
 
     if (isset($available_modules[$shortname])) {
-    
+
       if ((bool) $available_modules[$shortname]) {
         $status = '<span class="admin-enabled">enabled</span>';
         $operations = '';
       }
       else {
         $status = '<span class="admin-disabled">disabled</span>';
-        
-        if (drupal_valid_path('admin/modules')) {      
+
+        if (drupal_valid_path('admin/modules')) {
           $operations = l('Enable', 'admin/modules');
         }
         else {
