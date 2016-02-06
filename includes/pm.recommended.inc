@@ -39,7 +39,7 @@ function pm_recommended_modules_table() {
         $status = '<span class="admin-disabled">disabled</span>';
 
         if (drupal_valid_path('admin/modules')) {
-          $operations = l('Enable', 'admin/modules');
+          $operations = l(t('Enable'), 'admin/modules');
         }
         else {
           $operations = 'Contact an administrator to enable this module';
@@ -49,7 +49,7 @@ function pm_recommended_modules_table() {
     }
     else {
       $status = '<span class="admin-missing">missing</span>';
-      $operations = l('Download', $recommended_module['download']);
+      $operations = l(t('Download'), $recommended_module['download']);
     }
 
     $rows[] = array(
