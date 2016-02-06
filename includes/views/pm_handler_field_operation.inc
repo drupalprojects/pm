@@ -11,7 +11,7 @@ class pm_handler_field_operation extends views_handler_field_node_link {
   /**
    * Defines views field options.
    */
-  function option_definition() {
+  public function option_definition() {
     $options = parent::option_definition();
     $options['display_add_icon'] = array('default' => TRUE);
     $options['display_icons'] = array('default' => TRUE);
@@ -21,7 +21,7 @@ class pm_handler_field_operation extends views_handler_field_node_link {
   /**
    * Defines views field option form.
    */
-  function options_form(&$form, &$form_state) {
+  public function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
     $form['display_icons'] = array(
       '#type' => 'checkbox',
@@ -39,7 +39,7 @@ class pm_handler_field_operation extends views_handler_field_node_link {
   /**
    * Renders field to show icon.
    */
-  function render($values) {
+  public function render($values) {
     if ($node = $this->get_value($values)) {
       $id = $node->nid;
 
@@ -76,7 +76,7 @@ class pm_handler_field_operation extends views_handler_field_node_link {
   /**
    * Check if path is valid and create links. Returns false otherwise.
    */
-  function create_link_if_valid($title, $path) {
+  public function create_link_if_valid($title, $path) {
     if (drupal_valid_path($path)) {
       return l($title, $path, array('query' => drupal_get_destination()));
     }
@@ -86,7 +86,7 @@ class pm_handler_field_operation extends views_handler_field_node_link {
   /**
    * Check if path is valid and create links. Returns false otherwise.
    */
-  function create_link_definition($title, $path) {
+  public function create_link_definition($title, $path) {
     $link = FALSE;
     if (drupal_valid_path($path)) {
       $link = array(
