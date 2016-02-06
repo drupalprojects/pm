@@ -32,20 +32,23 @@ function pm_recommended_modules_table() {
     
       if ((bool) $available_modules[$shortname]) {
         $status = '<span class="admin-enabled">enabled</span>';
+        $operations = '';
       }
       else {
         $status = '<span class="admin-disabled">disabled</span>';
+        $operations = '';
       }
 
     }
     else {
       $status = '<span class="admin-missing">missing</span>';
+      $operations = '';
     }
 
     $rows[] = array(
       'name' => '<strong>' . $recommended_module['name'] . '</strong> (' . $status . ')',
       'functionality' => $recommended_module['functionality'],
-      'operations' => '',
+      'operations' => $operations,
     );
   }
 
