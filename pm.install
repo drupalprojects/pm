@@ -14,11 +14,23 @@ function pm_requirements($phase) {
   if ($phase == 'runtime') {
 
     if (variable_get('pm_recommended_ignore', FALSE) == FALSE) {
-      $requirements['pm'] = array(
-        'title' => $t('Project Management'),
-        'value' => $t('Recommended modules not ignored.'),
-        'severity' => REQUIREMENT_INFO,
-      );
+      module_load_include('inc', 'pm', 'includes/pm.recommended');
+
+      if (pm_recommended_modules_number_missing() > 0) {
+        $requirements['pm'] = array(
+          'title' => $t('Project Management'),
+          'value' => $t('Recommended modules not all enabled.'),
+          'description' => $t('Visit the Project Management configuration page for details or to suppress this warning.'),
+          'severity' => REQUIREMENT_WARNING,
+        );
+      }
+      else {
+        $requirements['pm'] = array(
+          'title' => $t('Project Management'),
+          'value' => $t('All recommended modules enabled.'),
+          'severity' => REQUIREMENT_OK,
+        );
+      }
     }
     else {
       $requirements['pm'] = array(
