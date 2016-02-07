@@ -138,7 +138,7 @@ function pm_field_extra_fields() {
       $bundle = $info[1];
       $extra[$entity_type][$bundle]['display'][PM_CONTEXTUAL_LINK_PSEUDO_FIELD] = array(
         'label' => t('Drupal PM contextual links.'),
-        'description' => t('Add a contextual link exposing various Drpual PM related tasks on Drupal Entities.'),
+        'description' => t('Add a contextual link exposing various Drupal PM related tasks on Drupal Entities.'),
         'weight' => 50,
       );
     }
