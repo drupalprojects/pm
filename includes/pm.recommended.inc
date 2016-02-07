@@ -73,9 +73,14 @@ function pm_recommended_modules_table() {
 function pm_pm_recommended_modules_info() {
   return array(
     'field_group' => array(
-      'name' => t('Field Group'),
+      'name' => 'Field Group',
       'functionality' => t('Allows fields to be structured into labelled groups. This module is pre-configured by Project Management to work "out of the box", although the configuration can also be customised.'),
       'download' => 'https://www.drupal.org/project/field_group',
     ),
+    'fontawesome' => array(
+      'name' => 'Font Awesome',
+      'functionality' => t('Replaces the included legacy icons with modern icons in the Bootstrap style. This gives an opportunity to harmonize styles across the site.'),
+      'download' => 'https://www.drupal.org/project/fontawesome',
+    )
   );
 }
