@@ -24,7 +24,7 @@ class PMTicketTestCase extends DrupalWebTestCase {
    * Standard configuration for all test cases.
    */
   public function setUp() {
-    parent::setUp('pm', 'pmorganization', 'pmproject', 'pmtask', 'pmticket');
+    parent::setUp('pm', 'pmticket');
   }
 
   /**
@@ -51,33 +51,14 @@ class PMTicketTestCase extends DrupalWebTestCase {
   public function testpmticketCreate() {
     // Log in with permission to create test content.
     $user = $this->drupalCreateUser(array(
-      'create pmorganization content',
-      'create pmproject content',
-      'create pmtask content',
       'create pmticket content',
     ));
     $this->drupalLogin($user);
 
     // Create test content.
-    $org = array(
-      'title' => $this->randomName(32),
-      // 'body[und][0][value]' => $this->randomName(64),
-    );
-    $prj = array(
-      'title' => $this->randomName(32),
-      // 'organization_nid' => '1',
-    );
-    $task = array(
-      'title' => $this->randomName(32),
-      // 'body[und][0][value]' => $this->randomName(64),
-    );
     $ticket = array(
       'title' => $this->randomName(32),
-      // 'body[und][0][value]' => $this->randomName(64),
     );
-    $this->drupalPost('node/add/pmorganization', $org, t('Save'));
-    $this->drupalPost('node/add/pmproject', $prj, t('Save'));
-    $this->drupalPost('node/add/pmtask', $task, t('Save'));
     $this->drupalPost('node/add/pmticket', $ticket, t('Save'));
 
     $this->assertText(t('Ticket @title has been created.', array('@title' => $ticket['title'])));;
@@ -90,7 +71,8 @@ class PMTicketTestCase extends DrupalWebTestCase {
     $module = array('pmticket');
 
     module_disable($module);
-    drupal_uninstall_modules($module);
+    $result = drupal_uninstall_modules($module);
+    $this->AssertTrue($result, t('Module successfully uninstalled.'));
   }
 
 }

@@ -120,40 +120,31 @@ function pmissue_views_default_views() {
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
   $handler->display->display_options['empty']['area']['content'] = 'No results match your search.';
   $handler->display->display_options['empty']['area']['format'] = 'plain_text';
-  /* Relationship: Entity Reference: Referenced Entity */
-  $handler->display->display_options['relationships']['pmissue_parent_issue_target_id']['id'] = 'pmissue_parent_issue_target_id';
-  $handler->display->display_options['relationships']['pmissue_parent_issue_target_id']['table'] = 'field_data_pmissue_parent_issue';
-  $handler->display->display_options['relationships']['pmissue_parent_issue_target_id']['field'] = 'pmissue_parent_issue_target_id';
-  $handler->display->display_options['relationships']['pmissue_parent_issue_target_id']['label'] = 'Parent Issue';
-  /* Relationship: Entity Reference: Referenced Entity */
-  $handler->display->display_options['relationships']['pmissue_parent_target_id']['id'] = 'pmissue_parent_target_id';
-  $handler->display->display_options['relationships']['pmissue_parent_target_id']['table'] = 'field_data_pmissue_parent';
-  $handler->display->display_options['relationships']['pmissue_parent_target_id']['field'] = 'pmissue_parent_target_id';
-  $handler->display->display_options['relationships']['pmissue_parent_target_id']['label'] = 'Project';
-  /* Relationship: Entity Reference: Referenced Entity */
-  $handler->display->display_options['relationships']['pmproject_parent_target_id']['id'] = 'pmproject_parent_target_id';
-  $handler->display->display_options['relationships']['pmproject_parent_target_id']['table'] = 'field_data_pmproject_parent';
-  $handler->display->display_options['relationships']['pmproject_parent_target_id']['field'] = 'pmproject_parent_target_id';
-  $handler->display->display_options['relationships']['pmproject_parent_target_id']['relationship'] = 'pmissue_parent_target_id';
-  $handler->display->display_options['relationships']['pmproject_parent_target_id']['label'] = 'Organization';
+  /* Relationship: Drupal PM: PM Organization */
+  $handler->display->display_options['relationships']['pmorganization_nid']['id'] = 'pmorganization_nid';
+  $handler->display->display_options['relationships']['pmorganization_nid']['table'] = 'pmorganization_index';
+  $handler->display->display_options['relationships']['pmorganization_nid']['field'] = 'pmorganization_nid';
+  /* Relationship: Drupal PM: PM Project */
+  $handler->display->display_options['relationships']['pmproject_nid']['id'] = 'pmproject_nid';
+  $handler->display->display_options['relationships']['pmproject_nid']['table'] = 'pmproject_index';
+  $handler->display->display_options['relationships']['pmproject_nid']['field'] = 'pmproject_nid';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['label'] = 'Title';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title_1']['id'] = 'title_1';
   $handler->display->display_options['fields']['title_1']['table'] = 'node';
   $handler->display->display_options['fields']['title_1']['field'] = 'title';
-  $handler->display->display_options['fields']['title_1']['relationship'] = 'pmissue_parent_target_id';
+  $handler->display->display_options['fields']['title_1']['relationship'] = 'pmproject_nid';
   $handler->display->display_options['fields']['title_1']['label'] = 'Project';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title_2']['id'] = 'title_2';
   $handler->display->display_options['fields']['title_2']['table'] = 'node';
   $handler->display->display_options['fields']['title_2']['field'] = 'title';
-  $handler->display->display_options['fields']['title_2']['relationship'] = 'pmproject_parent_target_id';
+  $handler->display->display_options['fields']['title_2']['relationship'] = 'pmorganization_nid';
   $handler->display->display_options['fields']['title_2']['label'] = 'Organization';
   /* Field: Content: Status */
   $handler->display->display_options['fields']['pm_status']['id'] = 'pm_status';
@@ -197,7 +188,7 @@ function pmissue_views_default_views() {
   $handler->display->display_options['arguments']['nid']['id'] = 'nid';
   $handler->display->display_options['arguments']['nid']['table'] = 'node';
   $handler->display->display_options['arguments']['nid']['field'] = 'nid';
-  $handler->display->display_options['arguments']['nid']['relationship'] = 'project_nid';
+  $handler->display->display_options['arguments']['nid']['relationship'] = 'pmproject_nid';
   $handler->display->display_options['arguments']['nid']['default_action'] = 'default';
   $handler->display->display_options['arguments']['nid']['title_enable'] = TRUE;
   $handler->display->display_options['arguments']['nid']['title'] = 'Issues for %1';
@@ -215,7 +206,7 @@ function pmissue_views_default_views() {
   $handler->display->display_options['arguments']['nid_1']['id'] = 'nid_1';
   $handler->display->display_options['arguments']['nid_1']['table'] = 'node';
   $handler->display->display_options['arguments']['nid_1']['field'] = 'nid';
-  $handler->display->display_options['arguments']['nid_1']['relationship'] = 'organization_nid_1';
+  $handler->display->display_options['arguments']['nid_1']['relationship'] = 'pmorganization_nid';
   $handler->display->display_options['arguments']['nid_1']['default_action'] = 'default';
   $handler->display->display_options['arguments']['nid_1']['title_enable'] = TRUE;
   $handler->display->display_options['arguments']['nid_1']['title'] = ' for %1';
@@ -316,7 +307,7 @@ function pmissue_views_default_views() {
   $handler->display->display_options['filters']['title_1']['id'] = 'title_1';
   $handler->display->display_options['filters']['title_1']['table'] = 'node';
   $handler->display->display_options['filters']['title_1']['field'] = 'title';
-  $handler->display->display_options['filters']['title_1']['relationship'] = 'pmissue_parent_target_id';
+  $handler->display->display_options['filters']['title_1']['relationship'] = 'pmproject_nid';
   $handler->display->display_options['filters']['title_1']['exposed'] = TRUE;
   $handler->display->display_options['filters']['title_1']['expose']['operator_id'] = 'title_1_op';
   $handler->display->display_options['filters']['title_1']['expose']['label'] = 'Project';
@@ -325,15 +316,12 @@ function pmissue_views_default_views() {
   $handler->display->display_options['filters']['title_1']['expose']['remember_roles'] = array(
     2 => '2',
     1 => 0,
-    3 => 0,
-    4 => 0,
-    5 => 0,
   );
   /* Filter criterion: Content: Title */
   $handler->display->display_options['filters']['title_2']['id'] = 'title_2';
   $handler->display->display_options['filters']['title_2']['table'] = 'node';
   $handler->display->display_options['filters']['title_2']['field'] = 'title';
-  $handler->display->display_options['filters']['title_2']['relationship'] = 'pmproject_parent_target_id';
+  $handler->display->display_options['filters']['title_2']['relationship'] = 'pmorganization_nid';
   $handler->display->display_options['filters']['title_2']['exposed'] = TRUE;
   $handler->display->display_options['filters']['title_2']['expose']['operator_id'] = 'title_2_op';
   $handler->display->display_options['filters']['title_2']['expose']['label'] = 'Organization';
@@ -342,9 +330,6 @@ function pmissue_views_default_views() {
   $handler->display->display_options['filters']['title_2']['expose']['remember_roles'] = array(
     2 => '2',
     1 => 0,
-    3 => 0,
-    4 => 0,
-    5 => 0,
   );
 
   /* Display: Page */

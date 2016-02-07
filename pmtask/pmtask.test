@@ -24,7 +24,7 @@ class PMTaskTestCase extends DrupalWebTestCase {
    * Provides standard set up for all test cases.
    */
   public function setUp() {
-    parent::setUp('pm', 'pmorganization', 'pmproject', 'pmtask');
+    parent::setUp('pm', 'pmtask');
   }
 
   /**
@@ -54,27 +54,14 @@ class PMTaskTestCase extends DrupalWebTestCase {
   public function testpmtaskCreate() {
     // Log in with permission to create test content.
     $user = $this->drupalCreateUser(array(
-      'create pmorganization content',
-      'create pmproject content',
       'create pmtask content',
     ));
     $this->drupalLogin($user);
 
     // Create test content.
-    $org = array(
-      'title' => $this->randomName(32),
-      // 'body[und][0][value]' => $this->randomName(64),
-    );
-    $prj = array(
-      'title' => $this->randomName(32),
-      // 'organization_nid' => '1',
-    );
     $task = array(
       'title' => $this->randomName(32),
-      // 'body[und][0][value]' => $this->randomName(64),
     );
-    $this->drupalPost('node/add/pmorganization', $org, t('Save'));
-    $this->drupalPost('node/add/pmproject', $prj, t('Save'));
     $this->drupalPost('node/add/pmtask', $task, t('Save'));
 
     $this->assertText(t('Task @title has been created.', array('@title' => $task['title'])));;
@@ -87,7 +74,8 @@ class PMTaskTestCase extends DrupalWebTestCase {
     $module = array('pmtask');
 
     module_disable($module);
-    drupal_uninstall_modules($module);
+    $result = drupal_uninstall_modules($module);
+    $this->AssertTrue($result, t('Module successfully uninstalled.'));
   }
 
 }

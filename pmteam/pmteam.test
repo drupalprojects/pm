@@ -24,7 +24,7 @@ class PMTeamTestCase extends DrupalWebTestCase {
    * Sets up all Project Management test cases.
    */
   public function setUp() {
-    parent::setUp('views', 'pm', 'pmorganization', 'pmteam');
+    parent::setUp('views', 'pm', 'pmteam');
   }
 
   /**
@@ -53,7 +53,8 @@ class PMTeamTestCase extends DrupalWebTestCase {
     $module = array('pmteam');
 
     module_disable($module);
-    drupal_uninstall_modules($module);
+    $result = drupal_uninstall_modules($module);
+    $this->AssertTrue($result, t('Module successfully uninstalled.'));
   }
 
 }

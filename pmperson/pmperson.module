@@ -10,13 +10,20 @@ define('PMPERSON_RESOLVE_DEPENDENCIES_LINK', 'admin/config/pm/pmperson_migration
  * Implements hook_menu().
  */
 function pmperson_menu() {
-  $items[PMPERSON_RESOLVE_DEPENDENCIES_LINK] = array(
-    'title' => 'PM Person migration conflicts',
-    'page callback' => 'pmperson_migrate_page_callback',
-    'access callback' => 'pmperson_update_access_allowed',
-    'type' => MENU_NORMAL_ITEM,
-    'file' => 'includes/pmperson.migrate.inc',
-  );
+  module_load_include('inc', 'pmperson', 'includes/pmperson.migrate');
+
+  $items = array();
+
+  if (pmperson_migrate_update_could_be_performed() == FALSE) {
+    $items[PMPERSON_RESOLVE_DEPENDENCIES_LINK] = array(
+      'title' => 'PM Person migration conflicts',
+      'page callback' => 'pmperson_migrate_page_callback',
+      'access callback' => 'pmperson_update_access_allowed',
+      'type' => MENU_NORMAL_ITEM,
+      'file' => 'includes/pmperson.migrate.inc',
+    );
+  }
+
   return $items;
 }
 

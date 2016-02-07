@@ -9,6 +9,8 @@ define('PM_ICON_SET_FONTAWESOME', 'fontawesome');
 define('PM_ICON_SET_STORM', 'storm');
 define('PM_ICON_SET_NO_ICON', 'none');
 
+define('PM_CONTEXTUAL_LINK_PSEUDO_FIELD', 'pm_contextual_link');
+
 /**
  * Implements hook_help().
  */
@@ -110,6 +112,62 @@ function pm_theme() {
       'variables' => array('value' => NULL, 'key' => NULL, 'field_name' => NULL),
     ),
   );
+}
+
+/**
+ * Implements hook_field_extra_fields().
+ */
+function pm_field_extra_fields() {
+  $default = array(
+    'node:pmorganization' => 'node:pmorganization',
+    'node:pmproject' => 'node:pmproject',
+    'node:pmissue' => 'node:pmissue',
+    'node:pmtask' => 'node:pmtask',
+    'node:pmticket' => 'node:pmticket',
+    'node:pmtimetracking' => 'node:pmtimetracking',
+    'node:pmteam' => 'node:pmteam',
+    'node:pmnote' => 'node:pmnote',
+    'node:pmexpense' => 'node:pmexpense',
+    'user:user' => 'user:user',
+  );
+  $enabled_content_types = variable_get('pm_contextual_links_enabled_content_types', $default);
+  foreach ($enabled_content_types as $info) {
+    if ($info) {
+      $info = explode(':', $info);
+      $entity_type = $info[0];
+      $bundle = $info[1];
+      $extra[$entity_type][$bundle]['display'][PM_CONTEXTUAL_LINK_PSEUDO_FIELD] = array(
+        'label' => t('Drupal PM contextual links.'),
+        'description' => t('Add a contextual link exposing various Drpual PM related tasks on Drupal Entities.'),
+        'weight' => 50,
+      );
+    }
+  }
+  return $extra;
+}
+
+/**
+ * Implements hook_entity_view().
+ */
+function pm_entity_view($entity, $type, $view_mode, $langcode) {
+  list($id, $vid, $bundle) = entity_extract_ids($type, $entity);
+  $extrafields = field_extra_fields_get_display($type, $bundle, $view_mode);
+  if (isset($extrafields[PM_CONTEXTUAL_LINK_PSEUDO_FIELD])
+      && isset($extrafields[PM_CONTEXTUAL_LINK_PSEUDO_FIELD]['visible'])
+      && $extrafields[PM_CONTEXTUAL_LINK_PSEUDO_FIELD]['visible']) {
+    $links = module_invoke_all('pm_contextual_links', $entity, $type, $view_mode, $langcode);
+    ksort($links);
+    if (!empty($links)) {
+      $entity->content[PM_CONTEXTUAL_LINK_PSEUDO_FIELD] = array(
+        '#theme' => 'links__ctools_dropbutton',
+        '#links' => $links,
+      );
+    }
+    else {
+      $entity->content[PM_CONTEXTUAL_LINK_PSEUDO_FIELD] = '';
+    }
+
+  }
 }
 
 /**

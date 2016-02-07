@@ -24,7 +24,7 @@ class PMTimetrackingTestCase extends DrupalWebTestCase {
    * Standard configuration for all test cases.
    */
   public function setUp() {
-    parent::setUp('pm', 'pmorganization', 'pmproject', 'pmtask', 'pmticket', 'pmtimetracking');
+    parent::setUp('pm', 'pmtimetracking');
   }
 
   /**
@@ -33,39 +33,14 @@ class PMTimetrackingTestCase extends DrupalWebTestCase {
   public function testpmtimetrackingCreate() {
     // Log in with permission to create test content.
     $user = $this->drupalCreateUser(array(
-      'create pmorganization content',
-      'create pmproject content',
-      'create pmtask content',
-      'create pmticket content',
       'create pmtimetracking content',
     ));
     $this->drupalLogin($user);
 
     // Create test content.
-    $org = array(
-      'title' => $this->randomName(32),
-      // 'body[und][0][value]' => $this->randomName(64),
-    );
-    $prj = array(
-      'title' => $this->randomName(32),
-      // 'organization_nid' => '1',
-    );
-    $task = array(
-      'title' => $this->randomName(32),
-      // 'body[und][0][value]' => $this->randomName(64),
-    );
-    $ticket = array(
-      'title' => $this->randomName(32),
-      // 'body[und][0][value]' => $this->randomName(64),
-    );
     $timetracking = array(
       'title' => $this->randomName(32),
-      // 'body[und][0][value]' => $this->randomName(64),
     );
-    $this->drupalPost('node/add/pmorganization', $org, t('Save'));
-    $this->drupalPost('node/add/pmproject', $prj, t('Save'));
-    $this->drupalPost('node/add/pmtask', $task, t('Save'));
-    $this->drupalPost('node/add/pmticket', $ticket, t('Save'));
     $this->drupalPost('node/add/pmtimetracking', $timetracking, t('Save'));
 
     $this->assertText(t('Timetracking @title has been created.', array('@title' => $timetracking['title'])));;
@@ -78,7 +53,8 @@ class PMTimetrackingTestCase extends DrupalWebTestCase {
     $module = array('pmtimetracking');
 
     module_disable($module);
-    drupal_uninstall_modules($module);
+    $result = drupal_uninstall_modules($module);
+    $this->AssertTrue($result, t('Module successfully uninstalled.'));
   }
 
 }
