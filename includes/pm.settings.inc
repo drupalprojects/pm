@@ -11,6 +11,7 @@ function pm_admin_settings() {
   $form = array();
   $w = -10;
 
+  // Recommended modules.
   $form['recommended'] = array(
     '#type' => 'fieldset',
     '#title' => t('Recommended modules'),
@@ -38,6 +39,7 @@ function pm_admin_settings() {
     '#default_value' => variable_get('pm_recommended_ignore', FALSE),
   );
 
+  // Icons.
   $form['icons'] = array(
     '#type' => 'fieldset',
     '#title' => t('Icons'),
@@ -47,8 +49,8 @@ function pm_admin_settings() {
   );
 
   $icon_options = array(
-    PM_ICON_SET_DEFAULT_BEHAVIOUR => t('<strong>Default:</strong> Displays fontawesome icons if the fontawesome module is installed. Otherwise reverts to PM legacy icons.'),
-    PM_ICON_SET_FONTAWESOME => t('<strong>fontawesome:</strong> Displays fontawesome icons. Requires fontawesome module and libraries to be installed.'),
+    PM_ICON_SET_DEFAULT_BEHAVIOUR => t('<strong>Default:</strong> Displays Font Awesome icons if the Font Awesome module and library are installed. Otherwise reverts to PM legacy icons.'),
+    PM_ICON_SET_FONTAWESOME => t('<strong>Font Awesome:</strong> Displays Font Awesome icons. Requires Font Awesome module and library to be installed.'),
     PM_ICON_SET_STORM => t('<strong>PM legacy:</strong> Displays PM legacy icons. Deprecated - this option will be removed in a future release.'),
     PM_ICON_SET_NO_ICON => t('<strong>None:</strong> Hides all icons. Select this option if the icons available do not suit your selected theme.'),
   );
@@ -63,16 +65,23 @@ function pm_admin_settings() {
   );
 
   if (module_exists('fontawesome')) {
-    $fontawesome_status = 'Module is enabled.';
+    $fa_module_status = 'Font Awesome module is <span class="admin-enabled">enabled</span>.';
+
+    if (($library = libraries_detect($name)) && !empty($library['installed'])) {
+      $fa_library_status = ' Font Awesome library is <span class="admin-enabled">installed</span>.';
+    }
+    else {
+      $fa_library_status = ' Font Awesome library is <span class="admin-missing">not installed - ' . $library['error message'] . '</span>.';
+    }
   }
   else {
-    $fontawesome_status = 'Module is not enabled.';
+    $fa_module_status = 'Font Awesome module is <span class="admin-missing">not enabled</span>.';
+    $fa_library_status = '';
   }
 
-  $form['icons']['fontawesome_status'] = array(
-    '#type' => 'item',
-    '#title' => t('fontawesome status'),
-    '#markup' => $fontawesome_status,
+  $form['icons']['fa_status'] = array(
+    '#type' => 'markup',
+    '#markup' => $fa_module_status . $fa_library_status,
   );
 
   return system_settings_form($form);
