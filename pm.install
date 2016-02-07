@@ -11,15 +11,15 @@ function pm_requirements($phase) {
   $requirements = array();
 
   if ($phase == 'runtime') {
-  
+
     if (variable_get('pm_recommended_ignore', FALSE) == TRUE) {
       $requirements['pm'] = array(
         'title' => $t('Project Management'),
         'value' => $t('Recommended modules not ignored.'),
         'severity' => REQUIREMENT_INFO,
-      );  
+      );
     }
-    else { 
+    else {
       $requirements['pm'] = array(
         'title' => $t('Project Management'),
         'value' => $t('Recommended modules ignored.'),
