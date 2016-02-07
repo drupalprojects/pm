@@ -65,17 +65,17 @@ function pm_admin_settings() {
   );
 
   if (module_exists('fontawesome')) {
-    $fa_module_status = 'Font Awesome module is <span class="admin-enabled">enabled</span>.';
+    $fa_module_status = 'The <em>Font Awesome</em> module is <span class="admin-enabled">enabled</span>.';
 
     if (($library = libraries_detect('fontawesome')) && !empty($library['installed'])) {
-      $fa_library_status = ' Font Awesome library is <span class="admin-enabled">installed</span>.';
+      $fa_library_status = ' The <em>Font Awesome</em> library is <span class="admin-enabled">installed</span>.';
     }
     else {
-      $fa_library_status = ' Font Awesome library is <span class="admin-missing">not installed - ' . $library['error message'] . '</span>.';
+      $fa_library_status = ' <span class="admin-missing">' . $library['error message'] . '</span>';
     }
   }
   else {
-    $fa_module_status = 'Font Awesome module is <span class="admin-missing">not enabled</span>.';
+    $fa_module_status = 'The <em>Font Awesome</em> module is <span class="admin-missing">not enabled</span>.';
     $fa_library_status = '';
   }
 
