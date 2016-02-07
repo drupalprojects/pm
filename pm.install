@@ -16,7 +16,9 @@ function pm_requirements($phase) {
     if (variable_get('pm_recommended_ignore', FALSE) == FALSE) {
       module_load_include('inc', 'pm', 'includes/pm.recommended');
 
-      if (pm_recommended_modules_number_missing() > 0) {
+      $counts = pm_recommended_modules_count();
+
+      if (($counts['disabled'] + $counts['missing']) > 0) {
         $requirements['pm'] = array(
           'title' => $t('Project Management'),
           'value' => $t('Recommended modules not all enabled.'),
