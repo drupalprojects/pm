@@ -5,6 +5,34 @@
  */
 
 /**
+ * Implements hook_requirements().
+ */
+function pm_requirements($phase) {
+  $requirements = array();
+
+  if ($phase == 'runtime') {
+  
+    if (variable_get('pm_recommended_ignore', FALSE) == TRUE) {
+      $requirements['pm'] = array(
+        'title' => $t('Project Management'),
+        'value' => $t('Recommended modules not ignored.'),
+        'severity' => REQUIREMENT_INFO,
+      );  
+    }
+    else { 
+      $requirements['pm'] = array(
+        'title' => $t('Project Management'),
+        'value' => $t('Recommended modules ignored.'),
+        'severity' => REQUIREMENT_INFO,
+      );
+    }
+
+  }
+
+  return $requirements;
+}
+
+/**
  * Implements hook_update_last_removed().
  */
 function pm_update_last_removed() {
