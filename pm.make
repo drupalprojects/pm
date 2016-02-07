@@ -16,3 +16,4 @@ projects[] = views
 ; Other recommended modules.
 ; Not required, but enhance Drupal PM functionality.
 projects[] = field_group
+projects[] = fontawesome
