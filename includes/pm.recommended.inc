@@ -81,6 +81,6 @@ function pm_pm_recommended_modules_info() {
       'name' => 'Font Awesome',
       'functionality' => t('Replaces the included legacy icons with modern icons in the Bootstrap style. This gives an opportunity to harmonize styles across the site.'),
       'download' => 'https://www.drupal.org/project/fontawesome',
-    )
+    ),
   );
 }
