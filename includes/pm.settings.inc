@@ -67,7 +67,7 @@ function pm_admin_settings() {
   if (module_exists('fontawesome')) {
     $fa_module_status = 'Font Awesome module is <span class="admin-enabled">enabled</span>.';
 
-    if (($library = libraries_detect($name)) && !empty($library['installed'])) {
+    if (($library = libraries_detect('fontawesome')) && !empty($library['installed'])) {
       $fa_library_status = ' Font Awesome library is <span class="admin-enabled">installed</span>.';
     }
     else {
