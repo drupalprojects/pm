@@ -18,12 +18,7 @@ function pm_recommended_modules_table() {
   $rows = array();
 
   // Retrieve row information.
-  $available_modules = array();
-
-  foreach (system_rebuild_module_data() as $available_module) {
-    $name = $available_module->name;
-    $available_modules[$name] = $available_module->status;
-  }
+  $available_modules = pm_get_available_modules(); 
 
   $recommended_modules = module_invoke_all('pm_recommended_modules_info');
 
@@ -31,7 +26,7 @@ function pm_recommended_modules_table() {
 
     if (isset($available_modules[$shortname])) {
 
-      if ((bool) $available_modules[$shortname]) {
+      if ((bool) $available_modules[$shortname]['status']) {
         $status = '<span class="admin-enabled">enabled</span>';
         $operations = '';
       }
@@ -65,6 +60,20 @@ function pm_recommended_modules_table() {
     'rows' => $rows,
     'empty' => t('No additional modules are currently recommended.'),
   ));
+}
+
+/**
+ * Helper function to determine all modules available to install.
+ */
+function pm_get_available_modules() {
+  $available_modules = array();
+
+  foreach (system_rebuild_module_data() as $available_module) {
+    $name = $available_module->name;
+    $available_modules[$name]['status'] = $available_module->status;
+  }
+  
+  return $available_modules;
 }
 
 /**
