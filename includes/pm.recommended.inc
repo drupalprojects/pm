@@ -18,9 +18,8 @@ function pm_recommended_modules_table() {
   $rows = array();
 
   // Retrieve row information.
-  $available_modules = pm_get_available_modules(); 
-
   $recommended_modules = module_invoke_all('pm_recommended_modules_info');
+  $available_modules = pm_get_available_modules();
 
   foreach ($recommended_modules as $shortname => $recommended_module) {
 
@@ -60,6 +59,38 @@ function pm_recommended_modules_table() {
     'rows' => $rows,
     'empty' => t('No additional modules are currently recommended.'),
   ));
+}
+
+/**
+ * Determines the number of recommended modules, by status.
+ */
+function pm_recommended_modules_count() {
+  $recommended_modules = module_invoke_all('pm_recommended_modules_info');
+  $available_modules = pm_get_available_modules();
+
+  $num_enabled = 0;
+  $num_disabled = 0;
+  $num_missing = 0;
+
+  foreach ($recommended_modules as $shortname => $recommended_module) {
+    if (isset($available_modules[$shortname])) {
+      if ((bool) $available_modules[$shortname]['status']) {
+        $num_enabled++;
+      }
+      else {
+        $num_disabled++;
+      }
+    }
+    else {
+      $num_missing++;
+    }
+  }
+  
+  return array(
+    'enabled' => $num_enabled,
+    'disabled' => $num_disabled,
+    'missing' => $num_missing,
+  );
 }
 
 /**
