@@ -13,7 +13,6 @@ class pm_handler_field_operation extends views_handler_field_node_link {
    */
   public function option_definition() {
     $options = parent::option_definition();
-    $options['display_add_icon'] = array('default' => TRUE);
     $options['display_icons'] = array('default' => TRUE);
     return $options;
   }
@@ -26,13 +25,8 @@ class pm_handler_field_operation extends views_handler_field_node_link {
     $form['display_icons'] = array(
       '#type' => 'checkbox',
       '#title' => t('Display icon links'),
-      '#description' => t('Display a icon or a text link for edit, delete and add node links.'),
+      '#description' => t('Display a icon or a text link for edit, delete and view node links.'),
       '#default_value' => $this->options['display_icons'],
-    );
-    $form['display_add_icon'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Display a node add icon in the views header?'),
-      '#default_value' => $this->options['display_add_icon'],
     );
   }
 
