@@ -70,16 +70,6 @@ class pm_handler_field_operation extends views_handler_field_node_link {
   /**
    * Check if path is valid and create links. Returns false otherwise.
    */
-  public function create_link_if_valid($title, $path) {
-    if (drupal_valid_path($path)) {
-      return l($title, $path, array('query' => drupal_get_destination()));
-    }
-    return FALSE;
-  }
-
-  /**
-   * Check if path is valid and create links. Returns false otherwise.
-   */
   public function create_link_definition($title, $path) {
     $link = FALSE;
     if (drupal_valid_path($path)) {
