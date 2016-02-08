@@ -118,14 +118,14 @@ function pmperson_migrate_update_could_be_performed() {
  * Gets count of email conflicts between pmperson nad drupal user.
  */
 function pmperson_migrate_email_missmatch_count() {
-  $results = db_query(" SELECT pm.nid FROM pmperson as pm
-                        LEFT JOIN users as u
+  $results = db_query(" SELECT pm.nid FROM {pmperson} as pm
+                        LEFT JOIN {users} as u
                         ON pm.user_uid = u.uid
                         WHERE pm.email <> u.mail AND u.mail <> ''");
   $count = $results->rowCount();
 
-  $results = db_query(" SELECT pm.nid FROM pmperson as pm
-                        LEFT JOIN users as u
+  $results = db_query(" SELECT pm.nid FROM {pmperson} as pm
+                        LEFT JOIN {users} as u
                         ON pm.user_uid <> u.uid
                         WHERE pm.email = u.mail AND pm.user_uid = '0'");
 
