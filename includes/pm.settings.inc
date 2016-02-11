@@ -12,11 +12,13 @@ function pm_admin_settings() {
   $w = -10;
 
   // Recommended modules.
+  module_load_include('inc', 'pm', 'includes/pm.recommended');
+
   $form['recommended'] = array(
     '#type' => 'fieldset',
     '#title' => t('Recommended modules'),
     '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
+    '#collapsed' => !pm_recommended_modules_problem(),
     '#weight' => $w++,
   );
 
@@ -25,18 +27,9 @@ function pm_admin_settings() {
     '#markup' => t('The following modules significantly enhance Project Management and are recommended for installation.'),
   );
 
-  module_load_include('inc', 'pm', 'includes/pm.recommended');
-
   $form['recommended']['table'] = array(
     '#type' => 'markup',
     '#markup' => pm_recommended_modules_table(),
-  );
-
-  $form['recommended']['pm_recommended_ignore'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Ignore missing recommended modules'),
-    '#description' => t('When selected, no warnings will be shown if recommended modules are missing.'),
-    '#default_value' => variable_get('pm_recommended_ignore', FALSE),
   );
 
   // Icons.

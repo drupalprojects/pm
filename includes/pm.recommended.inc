@@ -62,6 +62,18 @@ function pm_recommended_modules_table() {
 }
 
 /**
+ * Determines whether any recommended modules are missing or disabled.
+ */
+function pm_recommended_modules_problem() {
+  $counts = pm_recommended_modules_count();
+  
+  if ($counts['missing'] > 0 || $counts['disabled'] > 0) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
  * Determines the number of recommended modules, by status.
  */
 function pm_recommended_modules_count() {
