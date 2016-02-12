@@ -32,6 +32,22 @@ function pmtimetracking_permission() {
 }
 
 /**
+ * Implements hook_menu().
+ */
+function pmtimetracking_menu() {
+  $items = array();
+
+  $items['admin/config/pm/timetracking'] = array(
+    'title' => 'Timetrackings',
+    'description' => 'Configure billing settings for PM Timetracking.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pmtimetracking_admin_settings'),
+    'access arguments' => array('Project Management: access administration pages'),
+  );
+
+  return $items;
+}
+/**
  * Implements hook_node_info().
  */
 function pmtimetracking_node_info() {
