@@ -66,7 +66,7 @@ function pm_recommended_modules_table() {
  */
 function pm_recommended_modules_problem() {
   $counts = pm_recommended_modules_count();
-  
+
   if ($counts['missing'] > 0 || $counts['disabled'] > 0) {
     return TRUE;
   }
@@ -97,7 +97,7 @@ function pm_recommended_modules_count() {
       $num_missing++;
     }
   }
-  
+
   return array(
     'enabled' => $num_enabled,
     'disabled' => $num_disabled,
@@ -115,7 +115,7 @@ function pm_get_available_modules() {
     $name = $available_module->name;
     $available_modules[$name]['status'] = $available_module->status;
   }
-  
+
   return $available_modules;
 }
 
