@@ -119,20 +119,19 @@ function pmtimetracking_node_presave($node) {
 
     // Set duration based on start and end times.
     if ((bool) variable_get('pmtimetracking_auto_duration', TRUE)) {
-      $start_datetime = StrToTime($node->pm_date['und'][0]['value']);
-      $end_datetime = StrToTime($node->pm_date['und'][0]['value2']);
+      $start_datetime = strtotime($node->pm_date[LANGUAGE_NONE][0]['value']);
+      $end_datetime = strtotime($node->pm_date[LANGUAGE_NONE][0]['value2']);
 
       $duration_seconds = $end_datetime - $start_datetime;
-      $duration_hours = $duration_seconds / (60*60);
+      $duration_hours = $duration_seconds / (60 * 60);
 
-      $node->pm_duration['und'][0]['value'] = $duration_hours;
-      
-      $node->pm_durationunit['und'][0]['value'] = 'hour';
+      $node->pm_duration[LANGUAGE_NONE][0]['value'] = $duration_hours;
+      $node->pm_durationunit[LANGUAGE_NONE][0]['value'] = 'hour';
     }
 
     // Set billing duration based on duration.
     if ((bool) variable_get('pmtimetracking_auto_billing_duration', TRUE)) {
-      $node->pm_billing_duration['und'][0]['value'] = $node->pm_duration['und'][0]['value'];
+      $node->pm_billing_duration[LANGUAGE_NONE][0]['value'] = $node->pm_duration[LANGUAGE_NONE][0]['value'];
     }
   }
 }
