@@ -133,7 +133,7 @@ function pmorganization_node_insert($node) {
  * The index lists all terms that are related to a given node entity, and is
  * therefore maintained at the entity level.
  *
- * @param $node
+ * @param object $node
  *   The node object.
  */
 function pmorganization_build_node_index($node) {
@@ -144,10 +144,10 @@ function pmorganization_build_node_index($node) {
     // If a node property is not set in the node object when node_save() is
     // called, the old value from $node->original is used.
     if (!empty($node->original)) {
-      $status = (int)(!empty($node->status) || (!isset($node->status) && !empty($node->original->status)));
+      $status = (int) (!empty($node->status) || (!isset($node->status) && !empty($node->original->status)));
     }
     else {
-      $status = (int)(!empty($node->status));
+      $status = (int) (!empty($node->status));
     }
   }
   // We only maintain the pmorganization index for published nodes.
@@ -157,7 +157,11 @@ function pmorganization_build_node_index($node) {
 
     // Insert index entries for all the node's terms.
     if (!empty($pmorganization_nid)) {
-      $query = db_insert('pmorganization_index')->fields(array('nid', 'pmorganization_nid', 'created'));
+      $query = db_insert('pmorganization_index')->fields(array(
+        'nid',
+        'pmorganization_nid',
+        'created',
+      ));
       $query->values(array(
         'nid' => $node->nid,
         'pmorganization_nid' => $pmorganization_nid,
@@ -185,7 +189,7 @@ function pmorganization_node_delete($node) {
   pmorganization_delete_node_index($node);
 
   if (variable_get('pmorganization_maintain_index_table', TRUE) AND $node->type = 'pmorganization') {
-    // Clean up the {pmorganization_index} table when pmorganization are deleted.
+    // Clean up the {pmorganization_index} table when pmorganization is deleted.
     db_delete('pmorganization_index')->condition('pmorganization_nid', $node->nid)->execute();
   }
 }
@@ -193,7 +197,7 @@ function pmorganization_node_delete($node) {
 /**
  * Deletes pmorganization index entries for a given node.
  *
- * @param $node
+ * @param object $node
  *   The node object.
  */
 function pmorganization_delete_node_index($node) {

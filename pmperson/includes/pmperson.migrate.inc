@@ -272,6 +272,7 @@ function _pmperson_migrate_get_conflicting_email_with_attached_users_table() {
 
   return $render;
 }
+
 /**
  * Get list of pmnodes that has conlficting email with existing Drupal user.
  */
@@ -326,6 +327,7 @@ function _pmperson_migrate_get_conflicting_email_with_existing_users_table() {
 
   return $render;
 }
+
 /**
  * Custom function to map row values to display values.
  *
@@ -504,7 +506,8 @@ function _pmperson_migrate_generate_unique_username($username, $reset = FALSE, $
 function _pmperson_migrate_check_if_username_exists($username) {
   $result = db_query('SELECT u.uid FROM {users} u WHERE name = :name', array(':name' => $username));
   if ($result) {
-    foreach ($result as $r) {
+    $number_of_rows = $result->rowCount();
+    if ($number_of_rows > 0) {
       return TRUE;
     }
   }

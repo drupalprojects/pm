@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Helper functions for the install, disable, uninstall and update of PM modules.
+ * Helper functions for install, disable, uninstall and update of PM modules.
  */
 
 /**
@@ -42,7 +42,7 @@ function pm_uninstall_message($module, $entity_name) {
  */
 function pm_uninstall_variables($module) {
   // All variables in the module namespace.
- db_delete('variable')
+  db_delete('variable')
     ->condition('name', $module . '_%', 'LIKE')
     ->execute();
 

@@ -24,7 +24,8 @@ class PMIssueTestCase extends DrupalWebTestCase {
    * Provides standard set up for all test cases.
    */
   public function setUp() {
-    parent::setUp('pm', 'pmissue');
+    // @todo Remove pmorganization dependency.
+    parent::setUp('pm', 'pmorganization', 'pmissue');
   }
 
   /**
