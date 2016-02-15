@@ -133,7 +133,7 @@ function pmorganization_node_insert($node) {
  * The index lists all terms that are related to a given node entity, and is
  * therefore maintained at the entity level.
  *
- * @param $node
+ * @param object $node
  *   The node object.
  */
 function pmorganization_build_node_index($node) {
@@ -160,7 +160,7 @@ function pmorganization_build_node_index($node) {
       $query = db_insert('pmorganization_index')->fields(array(
         'nid',
         'pmorganization_nid',
-        'created'
+        'created',
       ));
       $query->values(array(
         'nid' => $node->nid,
@@ -189,7 +189,7 @@ function pmorganization_node_delete($node) {
   pmorganization_delete_node_index($node);
 
   if (variable_get('pmorganization_maintain_index_table', TRUE) AND $node->type = 'pmorganization') {
-    // Clean up the {pmorganization_index} table when pmorganization are deleted.
+    // Clean up the {pmorganization_index} table when pmorganization is deleted.
     db_delete('pmorganization_index')->condition('pmorganization_nid', $node->nid)->execute();
   }
 }
@@ -197,7 +197,7 @@ function pmorganization_node_delete($node) {
 /**
  * Deletes pmorganization index entries for a given node.
  *
- * @param $node
+ * @param object $node
  *   The node object.
  */
 function pmorganization_delete_node_index($node) {

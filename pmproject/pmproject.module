@@ -235,7 +235,7 @@ function pmproject_node_insert($node) {
  * The index lists all terms that are related to a given node entity, and is
  * therefore maintained at the entity level.
  *
- * @param $node
+ * @param object $node
  *   The node object.
  */
 function pmproject_build_node_index($node) {
@@ -262,7 +262,7 @@ function pmproject_build_node_index($node) {
       $query = db_insert('pmproject_index')->fields(array(
         'nid',
         'pmproject_nid',
-        'created'
+        'created',
       ));
       $query->values(array(
         'nid' => $node->nid,
@@ -299,7 +299,7 @@ function pmproject_node_delete($node) {
 /**
  * Deletes pmproject index entries for a given node.
  *
- * @param $node
+ * @param object $node
  *   The node object.
  */
 function pmproject_delete_node_index($node) {
