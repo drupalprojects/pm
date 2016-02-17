@@ -238,6 +238,7 @@ function pmtimetracking_default_field_instances() {
   );
 
   // Exported field_instance: 'node-pmtimetracking-pm_duration'
+  // Warning: In older installations this field will be of type 'text'.
   $field_instances['node-pmtimetracking-pm_duration'] = array(
     'bundle' => 'pmtimetracking',
     'default_value' => NULL,
@@ -246,9 +247,14 @@ function pmtimetracking_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'inline',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
+        'module' => 'number',
+        'settings' => array(
+          'decimal_separator' => '.',
+          'prefix_suffix' => TRUE,
+          'scale' => 2,
+          'thousand_separator' => ' ',
+        ),
+        'type' => 'number_decimal',
         'weight' => 5,
       ),
       'teaser' => array(
@@ -263,16 +269,17 @@ function pmtimetracking_default_field_instances() {
     'label' => 'Duration',
     'required' => 0,
     'settings' => array(
-      'text_processing' => 0,
+      'max' => '',
+      'min' => 0,
+      'prefix' => '',
+      'suffix' => '',
       'user_register_form' => FALSE,
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'text',
-      'settings' => array(
-        'size' => 60,
-      ),
-      'type' => 'text_textfield',
+      'module' => 'number',
+      'settings' => array(),
+      'type' => 'number',
       'weight' => 3,
     ),
   );

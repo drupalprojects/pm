@@ -84,32 +84,22 @@ function pmproject_default_field_bases() {
   );
 
   // Exported field_base: 'pm_duration'
+  // Warning: In older installations this field will be of type 'text'.
   $field_bases['pm_duration'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'pm_duration',
-    'foreign keys' => array(
-      'format' => array(
-        'columns' => array(
-          'format' => 'format',
-        ),
-        'table' => 'filter_format',
-      ),
-    ),
-    'indexes' => array(
-      'format' => array(
-        0 => 'format',
-      ),
-    ),
+    'foreign keys' => array(),
+    'indexes' => array(),
     'locked' => 0,
-    'module' => 'text',
+    'module' => 'number',
     'settings' => array(
-      'max_length' => 255,
+      'decimal_separator' => '.',
     ),
     'translatable' => 0,
-    'type' => 'text',
+    'type' => 'number_float',
   );
 
   // Exported field_base: 'pm_durationunit'
