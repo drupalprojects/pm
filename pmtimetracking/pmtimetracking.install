@@ -64,10 +64,11 @@ function pmtimetracking_update_7106(&$sandbox) {
 }
 
 /**
- * Remove legacy variable.
+ * Deactivate auto duration settings to maintain behaviour of existing sites.
  */
 function pmtimetracking_update_7201() {
-  variable_del('pmtimetracking_auto_duration');
+  variable_set('pmtimetracking_auto_duration', FALSE);
+  variable_set('pmtimetracking_auto_billing_duration', FALSE);
 }
 
 /**

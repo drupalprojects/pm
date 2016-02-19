@@ -32,6 +32,22 @@ function pmtimetracking_permission() {
 }
 
 /**
+ * Implements hook_menu().
+ */
+function pmtimetracking_menu() {
+  $items = array();
+
+  $items['admin/config/pm/timetracking'] = array(
+    'title' => 'Timetrackings',
+    'description' => 'Configuration settings for PM Timetracking.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pmtimetracking_admin_settings'),
+    'access arguments' => array('Project Management: access administration pages'),
+  );
+
+  return $items;
+}
+/**
  * Implements hook_node_info().
  */
 function pmtimetracking_node_info() {
@@ -69,6 +85,71 @@ function pmtimetracking_view($node, $view_mode) {
     drupal_set_breadcrumb($breadcrumb);
   }
   return $node;
+}
+
+/**
+ * Callback for the pmtimetracking admin settings page.
+ */
+function pmtimetracking_admin_settings() {
+  $form = array();
+
+  $form['pmtimetracking_auto_duration'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Automatically set duration based on start and end times.'),
+    '#default_value' => variable_get('pmtimetracking_auto_duration', TRUE),
+    '#description' => t('When checked, users will not be able to manually set the duration or duration unit. Instead, the duration will be set to the difference (in hours) between the start and end times.'),
+  );
+
+  $form['pmtimetracking_auto_billing_duration'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Automatically set billing duration equal to duration.'),
+    '#default_value' => variable_get('pmtimetracking_auto_billing_duration', TRUE),
+    '#description' => t('When checked, users will not be able to manually set the billing duration. Instead, the billing duration will be set equal to the duration.'),
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_node_presave().
+ */
+function pmtimetracking_node_presave($node) {
+  // Only act on pmtimetracking nodes.
+  if ($node->type == 'pmtimetracking') {
+
+    // Set duration based on start and end times.
+    if ((bool) variable_get('pmtimetracking_auto_duration', TRUE)) {
+      $start_datetime = strtotime($node->pm_date[LANGUAGE_NONE][0]['value']);
+      $end_datetime = strtotime($node->pm_date[LANGUAGE_NONE][0]['value2']);
+
+      $duration_seconds = $end_datetime - $start_datetime;
+      $duration_hours = $duration_seconds / (60 * 60);
+
+      $node->pm_duration[LANGUAGE_NONE][0]['value'] = $duration_hours;
+      $node->pm_durationunit[LANGUAGE_NONE][0]['value'] = 'hour';
+    }
+
+    // Set billing duration based on duration.
+    if ((bool) variable_get('pmtimetracking_auto_billing_duration', TRUE)) {
+      $node->pm_billing_duration[LANGUAGE_NONE][0]['value'] = $node->pm_duration[LANGUAGE_NONE][0]['value'];
+    }
+  }
+}
+
+/**
+ * Implements hook_form_pmtimetracking_node_form_alter().
+ */
+function pmtimetracking_form_pmtimetracking_node_form_alter(&$form, &$form_state, $form_id) {
+  // Hide duration and duration unit fields.
+  if ((bool) variable_get('pmtimetracking_auto_duration', TRUE)) {
+    $form['pm_duration']['#access'] = 0;
+    $form['pm_durationunit']['#access'] = 0;
+  }
+
+  // Hide billing duration field.
+  if ((bool) variable_get('pmtimetracking_auto_billing_duration', TRUE)) {
+    $form['pm_billing_duration']['#access'] = 0;
+  }
 }
 
 /**
