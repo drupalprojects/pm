@@ -946,10 +946,10 @@ function _pmpermission_node_access_rebuild_batch_operation($nids, &$context) {
  */
 function _pmpermission_node_access_rebuild_batch_finished($success, $results, $operations) {
   if ($success) {
-    drupal_set_message(t('The image access permissions have been rebuilt.'));
+    drupal_set_message(t('The <em>Project Management</em> permissions have been rebuilt.'));
   }
   else {
-    drupal_set_message(t('The image access permissions have not been properly rebuilt.'), 'error');
+    drupal_set_message(t('The <em>Project Management</em> permissions have not been properly rebuilt.'), 'error');
   }
   cache_clear_all();
 }
