@@ -96,7 +96,7 @@ function pmteam_update_7103(&$sandbox) {
  */
 function pmteam_update_7200() {
   $field = array(
-    'field_name' => 'pmteam_parent',
+    'field_name' => 'pmteam_organization',
     'cardinality' => 1,
   );
   field_update_field($field);
