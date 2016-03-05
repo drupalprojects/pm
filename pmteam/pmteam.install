@@ -30,6 +30,8 @@ function pmteam_disable() {
  */
 function pmteam_uninstall() {
   variable_del('pmpermission_node_pmteam_enabled');
+  variable_del('pmpermission_field_parent_reference_for_pmteam');
+
   // Clean up field instances (and field) and its data.
   module_load_include('inc', 'pmteam', 'includes/pmteam.field_instance');
   module_load_include('inc', 'pmteam', 'includes/pmteam.field_base');
