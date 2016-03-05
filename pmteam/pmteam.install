@@ -104,6 +104,13 @@ function pmteam_update_7200() {
 }
 
 /**
+ * Set pmpermission_field_parent_reference_for_pmteam variable.
+ */
+function pmteam_update_7201() {
+  variable_set('pmpermission_field_parent_reference_for_pmteam', 'pmteam_organization');
+}
+
+/**
  * Implements hook_update_dependencies().
  */
 function pmteam_update_dependencies() {
