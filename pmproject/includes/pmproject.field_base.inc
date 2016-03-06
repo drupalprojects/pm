@@ -253,21 +253,13 @@ function pmproject_default_field_bases() {
     'type' => 'list_text',
   );
 
-  // Exported field_base: 'pmproject_parent'
+  // Exported field_base: 'pmproject_parent'.
   $field_bases['pmproject_parent'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'pmproject_parent',
-    'foreign keys' => array(
-      'node' => array(
-        'columns' => array(
-          'target_id' => 'nid',
-        ),
-        'table' => 'node',
-      ),
-    ),
     'indexes' => array(
       'target_id' => array(
         0 => 'target_id',
