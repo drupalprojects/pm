@@ -48,7 +48,9 @@ function pmissue_uninstall() {
 }
 
 /**
- * Add entityreference_prepopulate behaviour to pmissue_parent.
+ * Add entityreference_prepopulate behaviour to pmissue fields.
+ *
+ * Fields altered pmissue_parent & pmissue_parent_issue.
  */
 function pmissue_update_7300() {
   $entity_type = 'node';
@@ -59,6 +61,14 @@ function pmissue_update_7300() {
   module_load_include('inc', 'pmissue', 'includes/pmissue.field_instance');
   $field_instances = pmissue_default_field_instances();
   $field_instance = $field_instances['node-pmissue-pmissue_parent'];
+
+  $instance_info = field_info_instance($entity_type, $field_name, $bundle_name);
+  $instance_info['settings']['behaviors']['prepopulate'] = $field_instance['settings']['behaviors']['prepopulate'];
+  $instance_info['default_value_function'] = $field_instance['default_value_function'];
+  field_update_instance($instance_info);
+
+  $field_name = 'pmissue_parent_issue';
+  $field_instance = $field_instances['node-pmissue-pmissue_parent_issue'];
 
   $instance_info = field_info_instance($entity_type, $field_name, $bundle_name);
   $instance_info['settings']['behaviors']['prepopulate'] = $field_instance['settings']['behaviors']['prepopulate'];
