@@ -75,6 +75,26 @@ function pmtimetracking_update_7201() {
 }
 
 /**
+ * Add entityreference_prepopulate behaviour to pmtimetracking_parent.
+ */
+function pmtimetracking_update_7302() {
+  $entity_type = 'node';
+  $field_name = 'pmtimetracking_parent';
+  $bundle_name = 'pmtimetracking';
+
+  // Get defaults from the configurations.
+  module_load_include('inc', 'pmtimetracking', 'includes/pmtimetracking.field_instance');
+  $field_instances = pmtimetracking_default_field_instances();
+  $field_instance = $field_instances['node-pmtimetracking-pmtimetracking_parent'];
+
+  $instance_info = field_info_instance($entity_type, $field_name, $bundle_name);
+  $instance_info['settings']['behaviors']['prepopulate'] = $field_instance['settings']['behaviors']['prepopulate'];
+  $instance_info['default_value_function'] = $field_instance['default_value_function'];
+  field_update_instance($instance_info);
+
+}
+
+/**
  * Implements hook_update_dependencies().
  */
 function pmtimetracking_update_dependencies() {
