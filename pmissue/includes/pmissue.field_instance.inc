@@ -236,10 +236,11 @@ function pmissue_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-pmissue-pmissue_parent_issue'
+  // Exported field_instance: 'node-pmissue-pmissue_parent_issue'.
   $field_instances['node-pmissue-pmissue_parent_issue'] = array(
     'bundle' => 'pmissue',
     'default_value' => NULL,
+    'default_value_function' => 'entityreference_prepopulate_field_default_value',
     'deleted' => 0,
     'description' => '',
     'display' => array(
@@ -264,6 +265,19 @@ function pmissue_default_field_instances() {
     'label' => 'Parent Issue',
     'required' => 0,
     'settings' => array(
+      'behaviors' => array(
+        'prepopulate' => array(
+          'action' => 'disable',
+          'action_on_edit' => 0,
+          'fallback' => 'none',
+          'providers' => array(
+            'og_context' => FALSE,
+            'url' => 1,
+          ),
+          'skip_perm' => 0,
+          'status' => 1,
+        ),
+      ),
       'user_register_form' => FALSE,
     ),
     'widget' => array(
