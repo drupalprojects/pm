@@ -5,6 +5,17 @@
  */
 
 /**
+ * Implements hook_uninstall().
+ */
+function pm_uninstall() {
+  module_load_include('inc', 'pm', 'includes/pm.install');
+  $module = 'pm';
+
+  // Delete variables used by this module.
+  pm_uninstall_variables($module);
+}
+
+/**
  * Implements hook_update_last_removed().
  */
 function pm_update_last_removed() {
