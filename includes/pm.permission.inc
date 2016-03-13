@@ -350,44 +350,6 @@ function _pm_permission_get_field_name($bundle_name, $category) {
   return FALSE;
 }
 
-/**
- * Implements hook_node_access_records().
- */
-function pm_permission_node_access_records($node) {
-  if (empty($node->status)) {
-    // Lets Drupal take care of permission to unpublished nodes.
-    return array();
-  }
-  $bundle_name = is_string($node) ? $node : $node->type;
-  $grants = array();
-  if (!variable_get('node_permissions_' . $bundle_name, 1)) {
-    $default_grants = _pm_permission_grants_default($node, $bundle_name);
-    $grants = array_merge($grants, $default_grants);
-  }
-  if (module_exists('pmorganization')) {
-    if ($bundle_name == 'pmorganization' OR _pm_permission_get_field_name($bundle_name, 'parent')) {
-      $belonged_grants = _pm_permission_grants_belonged($node, $bundle_name, 'Organization');
-      if ($belonged_grants) {
-        $grants = array_merge($grants, $belonged_grants);
-      }
-    }
-  }
-  if (module_exists('pmproject')) {
-    if (_pm_permission_get_field_name($bundle_name, 'pm')) {
-      $assigned_grants_pm = _pm_permission_grants_assigned($node, $bundle_name, 'Project Manager');
-      if ($assigned_grants_pm) {
-        $grants = array_merge($grants, $assigned_grants_pm);
-      }
-    }
-  }
-  if (_pm_permission_get_field_name($bundle_name, 'assigned')) {
-    $assigned_grants_assigned = _pm_permission_grants_assigned($node, $bundle_name, 'Assigned');
-    if ($assigned_grants_assigned) {
-      $grants = array_merge($grants, $assigned_grants_assigned);
-    }
-  }
-  return $grants;
-}
 
 /**
  * Generate default grants similar to drupal core.
