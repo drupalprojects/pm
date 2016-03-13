@@ -7,7 +7,7 @@
 /**
  * Admin settings form.
  */
-function pmpermission_admin() {
+function pm_permission_admin() {
   $form = array();
   $form['pmpermission_node'] = array(
     '#type' => 'fieldset',
@@ -110,7 +110,7 @@ function pmpermission_admin() {
 
   $form = system_settings_form($form);
 
-  $form['#submit'][] = 'pmpermission_admin_submit';
+  $form['#submit'][] = 'pm_permission_admin_submit';
 
   return $form;
 }
@@ -118,7 +118,7 @@ function pmpermission_admin() {
 /**
  * Admin settings form submit handler.
  */
-function pmpermission_admin_submit($form, $form_state) {
+function pm_permission_admin_submit($form, $form_state) {
   $values = $form_state['values'];
   $agree = $values['pmpermission_override_core_permissions_agree'];
   $overrides = $values['pmpermission_override_core_permissions'];

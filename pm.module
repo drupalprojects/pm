@@ -89,12 +89,14 @@ function pm_menu() {
     'file path' => drupal_get_path('module', 'pm') . '/includes',
   );
 
-  $items['admin/config/pm/pmpermission'] = array(
+  $items['admin/config/pm/pm_permission'] = array(
     'title' => 'Permissions',
     'description' => 'Configure access controls based on PM fields.',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('pmpermission_admin'),
+    'page arguments' => array('pm_permission_admin'),
     'access arguments' => array('administer pm permission'),
+    'file' => 'pm.permission.inc',
+    'file path' => drupal_get_path('module', 'pm') . '/includes',
   );
 
   return $items;
