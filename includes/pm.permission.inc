@@ -187,26 +187,6 @@ function pm_permission_get_enabled_types() {
 }
 
 /**
- * Implements hook_permission().
- */
-function pm_permission_permission() {
-
-  $permissions = array(
-    'administer pm permission' => array(
-      'title' => t('Administer Project Management Permission'),
-      'restrict access' => TRUE,
-    ),
-  );
-
-  // Generate override node permissions for all applicable node types.
-  foreach (pm_permission_get_enabled_types() as $bundle_name) {
-    $permissions += pm_permission_permission_per_bundle($bundle_name);
-  }
-  return $permissions;
-
-}
-
-/**
  * Creates an array of permission name for the given node bundle.
  *
  * @param string $bundle_name

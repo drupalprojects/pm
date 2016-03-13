@@ -11,6 +11,8 @@ define('PM_ICON_SET_NO_ICON', 'none');
 
 define('PM_CONTEXTUAL_LINK_PSEUDO_FIELD', 'pm_contextual_link');
 
+module_load_include('inc', 'pm', 'includes/pm.permission');
+
 /**
  * Implements hook_help().
  */
@@ -32,7 +34,19 @@ function pm_help($path, $arg) {
  * Implements hook_permission().
  */
 function pm_permission() {
-  return array(
+  $permissions = array(
+    'administer pm permission' => array(
+      'title' => t('Administer Project Management Permission'),
+      'restrict access' => TRUE,
+    ),
+  );
+
+  // Generate override node permissions for all applicable node types.
+  foreach (pm_permission_get_enabled_types() as $bundle_name) {
+    $permissions += pm_permission_permission_per_bundle($bundle_name);
+  }
+
+  $permissions += array(
     'Project Management: access dashboard' => array(
       'title' => t('Access Dashboard'),
       'description' => t('Allows the user to access the Project Management dashboard. The items included on the dashboard are set through permissions on the individual modules that provide those links.'),
@@ -42,6 +56,8 @@ function pm_permission() {
       'description' => t('Allow the user to perform administrative tasks on Project Management modules, such as altering configuration.'),
     ),
   );
+
+  return $permissions;
 }
 
 /**
