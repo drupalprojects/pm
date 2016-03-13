@@ -25,11 +25,11 @@ function pmexpense_migrate(&$sandbox) {
   variable_del('node_options_pmexpense');
 
   // PM Permissions default configurations.
-  variable_set('pmpermission_field_parent_reference_for_pmexpense', 'pmexpense_parent');
-  variable_set('pmpermission_node_pmexpense_enabled', TRUE);
+  variable_set('pm_permission_field_parent_reference_for_pmexpense', 'pmexpense_parent');
+  variable_set('pm_permission_node_pmexpense_enabled', TRUE);
 
-  module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');
-  pmpermission_migrate_execute('pmexpense');
+  module_load_include('inc', 'pm', 'includes/pm.permission.migrate');
+  pm_permission_migrate_execute('pmexpense');
 
   $sandbox['#finished'] = 1;
   return 'PM Note nodes have been migrated to field_api based fields successfully.';

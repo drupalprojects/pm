@@ -11,8 +11,8 @@ function pmexpense_install() {
   variable_set('node_options_pmexpense', array('status'));
 
   // PM Permissions default configurations.
-  variable_set('pmpermission_field_parent_reference_for_pmexpense', 'pmexpense_parent');
-  variable_set('pmpermission_node_pmexpense_enabled', TRUE);
+  variable_set('pm_permission_field_parent_reference_for_pmexpense', 'pmexpense_parent');
+  variable_set('pm_permission_node_pmexpense_enabled', TRUE);
 
   // Create and attaches fields to pmexpense content type.
   module_load_include('inc', 'pmexpense', 'includes/pmexpense.migrate');
