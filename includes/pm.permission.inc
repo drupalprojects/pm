@@ -4,15 +4,6 @@
  * Main module file for the pmpermission module.
  */
 
-/**
- * Implements hook_help().
- */
-function pmpermission_help($path, $arg) {
-  switch ($path) {
-    case 'admin/help#pm-permission':
-      return '<p>' . t('PM Permission allows you to grant access to content based on interactions with Drupal PM.') . '</p>';
-  }
-}
 
 /**
  * Implements hook_menu().
