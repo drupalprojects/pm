@@ -73,6 +73,26 @@ function pmproject_view($node, $view_mode) {
 }
 
 /**
+ * Implements hook_pm_contextual_links().
+ */
+function pmproject_pm_contextual_links($entity, $type, $view_mode, $langcode) {
+  $links = array();
+  list($id, $vid, $bundle) = entity_extract_ids($type, $entity);
+  if ($type == 'node') {
+    $field_info = field_info_field('pmproject_parent');
+    $target_bundles = $field_info['settings']['handler_settings']['target_bundles'];
+    if (in_array($bundle, $target_bundles)) {
+      $links[t('Add Project')] = array(
+        'title' => t('Add Project'),
+        'href' => 'node/add/pmproject',
+        'query' => array('pmproject_parent' => $id),
+      );
+    }
+  }
+  return $links;
+}
+
+/**
  * Implements hook_views_api().
  */
 function pmproject_views_api() {
@@ -215,31 +235,35 @@ function pmproject_node_insert($node) {
  * The index lists all terms that are related to a given node entity, and is
  * therefore maintained at the entity level.
  *
- * @param $node
+ * @param object $node
  *   The node object.
  */
 function pmproject_build_node_index($node) {
   // We maintain a denormalized table of term/node relationships, containing
   // only data for current, published nodes.
   $status = NULL;
-  if (variable_get('pmproject_maintain_index_table', TRUE) AND module_exists('pmpermission')) {
+  if (variable_get('pmproject_maintain_index_table', TRUE)) {
     // If a node property is not set in the node object when node_save() is
     // called, the old value from $node->original is used.
     if (!empty($node->original)) {
-      $status = (int)(!empty($node->status) || (!isset($node->status) && !empty($node->original->status)));
+      $status = (int) (!empty($node->status) || (!isset($node->status) && !empty($node->original->status)));
     }
     else {
-      $status = (int)(!empty($node->status));
+      $status = (int) (!empty($node->status));
     }
   }
   // We only maintain the pmproject index for published nodes.
   if ($status) {
     // Hunt for PM Organization.
-    $pmproject_nid = pmpermission_get_parent_nid_of_node($node, 'pmproject');;
+    $pmproject_nid = pm_permission_get_parent_nid_of_node($node, 'pmproject');;
 
     // Insert index entries for all the node's terms.
     if (!empty($pmproject_nid)) {
-      $query = db_insert('pmproject_index')->fields(array('nid', 'pmproject_nid', 'created'));
+      $query = db_insert('pmproject_index')->fields(array(
+        'nid',
+        'pmproject_nid',
+        'created',
+      ));
       $query->values(array(
         'nid' => $node->nid,
         'pmproject_nid' => $pmproject_nid,
@@ -275,7 +299,7 @@ function pmproject_node_delete($node) {
 /**
  * Deletes pmproject index entries for a given node.
  *
- * @param $node
+ * @param object $node
  *   The node object.
  */
 function pmproject_delete_node_index($node) {

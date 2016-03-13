@@ -52,8 +52,8 @@ function pmperson_migrate(&$sandbox) {
   variable_del('node_options_pmperson');
   variable_del('node_permissions_pmperson');
 
-  module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');
-  pmpermission_migrate_execute('pmperson');
+  module_load_include('inc', 'pm', 'includes/pm.permission.migrate');
+  pm_permission_migrate_execute('pmperson');
 
   $sandbox['#finished'] = 1;
   return 'PM Person nodes have been migrated to fields on Drupal users.';
@@ -118,14 +118,14 @@ function pmperson_migrate_update_could_be_performed() {
  * Gets count of email conflicts between pmperson nad drupal user.
  */
 function pmperson_migrate_email_missmatch_count() {
-  $results = db_query(" SELECT pm.nid FROM pmperson as pm
-                        LEFT JOIN users as u
+  $results = db_query(" SELECT pm.nid FROM {pmperson} as pm
+                        LEFT JOIN {users} as u
                         ON pm.user_uid = u.uid
                         WHERE pm.email <> u.mail AND u.mail <> ''");
   $count = $results->rowCount();
 
-  $results = db_query(" SELECT pm.nid FROM pmperson as pm
-                        LEFT JOIN users as u
+  $results = db_query(" SELECT pm.nid FROM {pmperson} as pm
+                        LEFT JOIN {users} as u
                         ON pm.user_uid <> u.uid
                         WHERE pm.email = u.mail AND pm.user_uid = '0'");
 
@@ -272,6 +272,7 @@ function _pmperson_migrate_get_conflicting_email_with_attached_users_table() {
 
   return $render;
 }
+
 /**
  * Get list of pmnodes that has conlficting email with existing Drupal user.
  */
@@ -326,6 +327,7 @@ function _pmperson_migrate_get_conflicting_email_with_existing_users_table() {
 
   return $render;
 }
+
 /**
  * Custom function to map row values to display values.
  *
@@ -504,7 +506,8 @@ function _pmperson_migrate_generate_unique_username($username, $reset = FALSE, $
 function _pmperson_migrate_check_if_username_exists($username) {
   $result = db_query('SELECT u.uid FROM {users} u WHERE name = :name', array(':name' => $username));
   if ($result) {
-    foreach ($result as $r) {
+    $number_of_rows = $result->rowCount();
+    if ($number_of_rows > 0) {
       return TRUE;
     }
   }

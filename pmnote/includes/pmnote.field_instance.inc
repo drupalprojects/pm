@@ -54,10 +54,11 @@ function pmnote_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-pmnote-pmnote_parent'
+  // Exported field_instance: 'node-pmnote-pmnote_parent'.
   $field_instances['node-pmnote-pmnote_parent'] = array(
     'bundle' => 'pmnote',
     'default_value' => NULL,
+    'default_value_function' => 'entityreference_prepopulate_field_default_value',
     'deleted' => 0,
     'description' => '',
     'display' => array(
@@ -82,6 +83,19 @@ function pmnote_default_field_instances() {
     'label' => 'Organization/Project/Task',
     'required' => 0,
     'settings' => array(
+      'behaviors' => array(
+        'prepopulate' => array(
+          'action' => 'disable',
+          'action_on_edit' => 0,
+          'fallback' => 'none',
+          'providers' => array(
+            'og_context' => FALSE,
+            'url' => 1,
+          ),
+          'skip_perm' => 0,
+          'status' => 1,
+        ),
+      ),
       'user_register_form' => FALSE,
     ),
     'widget' => array(

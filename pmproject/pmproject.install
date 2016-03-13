@@ -11,10 +11,10 @@ function pmproject_install() {
   variable_set('node_options_pmproject', array('status'));
 
   // PM Permissions default configurations.
-  variable_set('pmpermission_field_assigned_reference', 'pm_assigned');
-  variable_set('pmpermission_field_pm_reference', 'pm_manager');
-  variable_set('pmpermission_field_parent_reference_for_pmproject', 'pmproject_parent');
-  variable_set('pmpermission_node_pmproject_enabled', TRUE);
+  variable_set('pm_permission_field_assigned_reference', 'pm_assigned');
+  variable_set('pm_permission_field_pm_reference', 'pm_manager');
+  variable_set('pm_permission_field_parent_reference_for_pmproject', 'pmproject_parent');
+  variable_set('pm_permission_node_pmproject_enabled', TRUE);
 
   // Create and attaches fields to pmproject content type.
   module_load_include('inc', 'pmproject', 'includes/pmproject.migrate');
@@ -171,6 +171,26 @@ function pmproject_update_7301(&$sandbox) {
   if ($sandbox['#finished']) {
     return t('PM Project index rebuild has been completed.');
   }
+}
+
+/**
+ * Add entityreference_prepopulate behaviour to pmproject_parent.
+ */
+function pmproject_update_7302() {
+  $entity_type = 'node';
+  $field_name = 'pmproject_parent';
+  $bundle_name = 'pmproject';
+
+  // Get defaults from the configurations.
+  module_load_include('inc', 'pmproject', 'includes/pmproject.field_instance');
+  $field_instances = pmproject_default_field_instances();
+  $field_instance = $field_instances['node-pmproject-pmproject_parent'];
+
+  $instance_info = field_info_instance($entity_type, $field_name, $bundle_name);
+  $instance_info['settings']['behaviors']['prepopulate'] = $field_instance['settings']['behaviors']['prepopulate'];
+  $instance_info['default_value_function'] = $field_instance['default_value_function'];
+  field_update_instance($instance_info);
+
 }
 
 /**

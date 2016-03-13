@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Helper functions for the disable and uninstall of PM modules.
+ * Helper functions for install, disable, uninstall and update of PM modules.
  */
 
 /**
@@ -50,8 +50,8 @@ function pm_uninstall_variables($module) {
   variable_del('node_options_' . $module);
 
   // PM Permission configuration for the specified module.
-  variable_del('pmpermission_node_' . $module . '_enabled');
-  variable_del('pmpermission_field_parent_reference_for_' . $module);
+  variable_del('pm_permission_node_' . $module . '_enabled');
+  variable_del('pm_permission_field_parent_reference_for_' . $module);
 }
 
 /**

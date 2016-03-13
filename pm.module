@@ -9,6 +9,10 @@ define('PM_ICON_SET_FONTAWESOME', 'fontawesome');
 define('PM_ICON_SET_STORM', 'storm');
 define('PM_ICON_SET_NO_ICON', 'none');
 
+define('PM_CONTEXTUAL_LINK_PSEUDO_FIELD', 'pm_contextual_link');
+
+module_load_include('inc', 'pm', 'includes/pm.permission');
+
 /**
  * Implements hook_help().
  */
@@ -19,6 +23,8 @@ function pm_help($path, $arg) {
     case "admin/help#pm":
       $output = '<p>' . t("Provides a complete project management environment") . '</p>';
       break;
+    case 'admin/help#pm-permission':
+      return '<p>' . t('PM Permission allows you to grant access to content based on interactions with Drupal PM.') . '</p>';
   }
 
   return $output;
@@ -28,7 +34,19 @@ function pm_help($path, $arg) {
  * Implements hook_permission().
  */
 function pm_permission() {
-  return array(
+  $permissions = array(
+    'administer pm permission' => array(
+      'title' => t('Administer Project Management Permission'),
+      'restrict access' => TRUE,
+    ),
+  );
+
+  // Generate override node permissions for all applicable node types.
+  foreach (pm_permission_get_enabled_types() as $bundle_name) {
+    $permissions += pm_permission_permission_per_bundle($bundle_name);
+  }
+
+  $permissions += array(
     'Project Management: access dashboard' => array(
       'title' => t('Access Dashboard'),
       'description' => t('Allows the user to access the Project Management dashboard. The items included on the dashboard are set through permissions on the individual modules that provide those links.'),
@@ -38,6 +56,8 @@ function pm_permission() {
       'description' => t('Allow the user to perform administrative tasks on Project Management modules, such as altering configuration.'),
     ),
   );
+
+  return $permissions;
 }
 
 /**
@@ -76,11 +96,23 @@ function pm_menu() {
 
   $items['admin/config/pm/pm'] = array(
     'title' => 'Project Management',
-    'description' => 'Project Management settings including display and taxation.',
+    'description' => 'Project Management general settings.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('pm_admin_settings'),
     'access arguments' => array('Project Management: access administration pages'),
     'weight' => -100,
+    'file' => 'pm.settings.inc',
+    'file path' => drupal_get_path('module', 'pm') . '/includes',
+  );
+
+  $items['admin/config/pm/pm_permission'] = array(
+    'title' => 'Permissions',
+    'description' => 'Configure access controls based on PM fields.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pm_permission_admin'),
+    'access arguments' => array('administer pm permission'),
+    'file' => 'pm.permission.inc',
+    'file path' => drupal_get_path('module', 'pm') . '/includes',
   );
 
   return $items;
@@ -112,6 +144,62 @@ function pm_theme() {
       'variables' => array('data' => array()),
     ),
   );
+}
+
+/**
+ * Implements hook_field_extra_fields().
+ */
+function pm_field_extra_fields() {
+  $default = array(
+    'node:pmorganization' => 'node:pmorganization',
+    'node:pmproject' => 'node:pmproject',
+    'node:pmissue' => 'node:pmissue',
+    'node:pmtask' => 'node:pmtask',
+    'node:pmticket' => 'node:pmticket',
+    'node:pmtimetracking' => 'node:pmtimetracking',
+    'node:pmteam' => 'node:pmteam',
+    'node:pmnote' => 'node:pmnote',
+    'node:pmexpense' => 'node:pmexpense',
+    'user:user' => 'user:user',
+  );
+  $enabled_content_types = variable_get('pm_contextual_links_enabled_content_types', $default);
+  foreach ($enabled_content_types as $info) {
+    if ($info) {
+      $info = explode(':', $info);
+      $entity_type = $info[0];
+      $bundle = $info[1];
+      $extra[$entity_type][$bundle]['display'][PM_CONTEXTUAL_LINK_PSEUDO_FIELD] = array(
+        'label' => t('Drupal PM contextual links.'),
+        'description' => t('Add a contextual link exposing various Drupal PM related tasks on Drupal Entities.'),
+        'weight' => 50,
+      );
+    }
+  }
+  return $extra;
+}
+
+/**
+ * Implements hook_entity_view().
+ */
+function pm_entity_view($entity, $type, $view_mode, $langcode) {
+  list($id, $vid, $bundle) = entity_extract_ids($type, $entity);
+  $extrafields = field_extra_fields_get_display($type, $bundle, $view_mode);
+  if (isset($extrafields[PM_CONTEXTUAL_LINK_PSEUDO_FIELD])
+      && isset($extrafields[PM_CONTEXTUAL_LINK_PSEUDO_FIELD]['visible'])
+      && $extrafields[PM_CONTEXTUAL_LINK_PSEUDO_FIELD]['visible']) {
+    $links = module_invoke_all('pm_contextual_links', $entity, $type, $view_mode, $langcode);
+    ksort($links);
+    if (!empty($links)) {
+      $entity->content[PM_CONTEXTUAL_LINK_PSEUDO_FIELD] = array(
+        '#theme' => 'links__ctools_dropbutton',
+        '#links' => $links,
+      );
+    }
+    else {
+      $entity->content[PM_CONTEXTUAL_LINK_PSEUDO_FIELD] = '';
+    }
+
+  }
 }
 
 /**
@@ -228,6 +316,26 @@ function _pm_dashboard_sort_links(array $a, array $b) {
 }
 
 /**
+ * Implements hook_pm_dashboard_links().
+ */
+function pm_pm_dashboard_links($type) {
+  $links = array();
+  if ($type == 'page' || $type == 'block') {
+    $links[] = array(
+      'title' => t('Configuration'),
+      'icon' => 'pmconfiguration',
+      'path' => 'admin/config/pm',
+      'params' => array(),
+      'node_type' => '',
+      'add_type' => '',
+      'map' => array(),
+      'weight' => 15,
+    );
+  }
+  return $links;
+}
+
+/**
  * Implements hook_pm_dashboard_types().
  */
 function pm_pm_dashboard_types() {
@@ -295,119 +403,6 @@ function pm_block_view($delta = '') {
   }
 
   return $block;
-}
-
-/**
- * Defines the administration settings form for the Project Management module.
- */
-function pm_admin_settings() {
-  $form = array();
-  $w = -10;
-
-  $form['icons'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Icons'),
-    '#collapsed' => TRUE,
-    '#collapsible' => TRUE,
-    '#weight' => $w++,
-  );
-
-  $icon_options = array(
-    PM_ICON_SET_DEFAULT_BEHAVIOUR => t('<strong>Default Behaviour</strong> : Uses PM Legacy icons if fontawesome is not installed.'),
-    PM_ICON_SET_FONTAWESOME => t('<strong>fontawesome</strong> : Requires fontawesome module and libraries to be installed.)'),
-    PM_ICON_SET_STORM => t('<strong>PM legacy icons</strong> : Deprecated - this option will be removed in a future release)'),
-    PM_ICON_SET_NO_ICON => t('<strong>No icons</strong> : The icons that ship with Project Management may not fit well with some themes. If this option is selected, icons will be hidden.'),
-  );
-  $form['icons']['pm_icon'] = array(
-    '#type' => 'radios',
-    '#multiple' => FALSE,
-    '#title' => t('Project Management icons'),
-    '#options' => $icon_options,
-    '#default_value' => variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR),
-    '#weight' => $w++,
-  );
-
-  // Dashboard settings.
-  $form['pm_dashboard_settings'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Dashboard settings'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-
-  $types = module_invoke_all('pm_dashboard_types');
-  foreach ($types as $type => $type_data) {
-    $all_links_options = array();
-    $all_links = pm_dashboard_get_links(FALSE, $type);
-    foreach ($all_links as $link) {
-      $all_links_options[$link['path']] = l($link['title'], $link['path']);
-    }
-
-    $default_dashboard_settings = variable_get('pm_' . $type . 'dashboard_settings', array());
-
-    $form['pm_dashboard_settings'][$type] = array(
-      '#type' => 'fieldset',
-      '#title' => $type_data['title'],
-      '#description' => $type_data['description'],
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
-    );
-    $form['pm_dashboard_settings'][$type]['dashboard_links'] = array(
-      '#infix' => $type,
-    );
-
-    $weight = 0;
-    foreach ($all_links_options as $path => $title) {
-      $form['pm_dashboard_settings'][$type]['dashboard_links'][$path][$type . '_pm_dashboard_link_active_' . $path] = array(
-        '#type' => 'checkbox',
-        '#title' => $title,
-        '#default_value' => isset($default_dashboard_settings[$path]['active']) ? $default_dashboard_settings[$path]['active'] : TRUE,
-      );
-      $form['pm_dashboard_settings'][$type]['dashboard_links'][$path][$type . '_pm_dashboard_link_weight_' . $path] = array(
-        '#type' => 'weight',
-        '#default_value' => isset($default_dashboard_settings[$path]['weight']) ? $default_dashboard_settings[$path]['weight'] : $weight,
-        '#delta' => 30,
-      );
-      $form['pm_dashboard_settings'][$type]['dashboard_links'][$path]['#value'] = $title;
-      $weight++;
-    }
-  }
-
-  if (empty($form['#submit'])) {
-    $form['#submit'] = array();
-  }
-  $form['#submit'] = array('pm_admin_settings_form_submit');
-
-  return system_settings_form($form);
-}
-
-/**
- * Submit function for admin settings form.
- */
-function pm_admin_settings_form_submit($form, $form_state) {
-  $op = isset($form_state['values']['op']) ? $form_state['values']['op'] : '';
-  // Reset.
-  if ($op == t('Reset to defaults')) {
-    $types = module_invoke_all('pm_dashboard_types');
-    foreach ($types as $type => $type_data) {
-      variable_del('pm_' . $type . 'dashboard_settings');
-    };
-    return;
-  }
-
-  // Get options.
-  $types = module_invoke_all('pm_dashboard_types');
-  foreach ($types as $type => $type_data) {
-    $all_links = pm_dashboard_get_links(FALSE, $type);
-    $settings = array();
-    foreach ($all_links as $link) {
-      $path = $link['path'];
-      $settings[$path]['active'] = $form_state['values'][$type . '_pm_dashboard_link_active_' . $path];
-      $settings[$path]['weight'] = $form_state['values'][$type . '_pm_dashboard_link_weight_' . $path];
-    }
-    variable_set('pm_' . $type . 'dashboard_settings', $settings);
-  }
-
 }
 
 /**
@@ -890,8 +885,92 @@ function pm_get_parents($entity_type, $entity, $field) {
 function pm_get_parent_label($entity_type, $wrapper) {
   $label = $wrapper->label();
   $id = $wrapper->getIdentifier();
-  
+
   $path = $entity_type . '/' . $id;
 
   return drupal_valid_path($path) ? l($label, $path) : $label;
+}
+
+/**
+ * Implements hook_node_access_records().
+ */
+function pm_node_access_records($node) {
+  if (empty($node->status)) {
+    // Lets Drupal take care of permission to unpublished nodes.
+    return array();
+  }
+  $bundle_name = is_string($node) ? $node : $node->type;
+  $grants = array();
+  if (!variable_get('node_permissions_' . $bundle_name, 1)) {
+    $default_grants = _pm_permission_grants_default($node, $bundle_name);
+    $grants = array_merge($grants, $default_grants);
+  }
+  if (module_exists('pmorganization')) {
+    if ($bundle_name == 'pmorganization' OR _pm_permission_get_field_name($bundle_name, 'parent')) {
+      $belonged_grants = _pm_permission_grants_belonged($node, $bundle_name, 'Organization');
+      if ($belonged_grants) {
+        $grants = array_merge($grants, $belonged_grants);
+      }
+    }
+  }
+  if (module_exists('pmproject')) {
+    if (_pm_permission_get_field_name($bundle_name, 'pm')) {
+      $assigned_grants_pm = _pm_permission_grants_assigned($node, $bundle_name, 'Project Manager');
+      if ($assigned_grants_pm) {
+        $grants = array_merge($grants, $assigned_grants_pm);
+      }
+    }
+  }
+  if (_pm_permission_get_field_name($bundle_name, 'assigned')) {
+    $assigned_grants_assigned = _pm_permission_grants_assigned($node, $bundle_name, 'Assigned');
+    if ($assigned_grants_assigned) {
+      $grants = array_merge($grants, $assigned_grants_assigned);
+    }
+  }
+  return $grants;
+}
+
+/**
+ * Implements hook_node_grants().
+ */
+function pm_node_grants($account, $op) {
+
+  $grants = array();
+  foreach (pm_permission_get_enabled_types() as $type) {
+    $grant_per_type = pm_permission_grants_list($account, $op, $type);
+    if ($grant_per_type) {
+      $grants += $grant_per_type;
+    }
+  }
+  return $grants;
+}
+
+/**
+ * Implements hook_node_access().
+ */
+function pm_node_access($node, $op, $account) {
+  $type = is_string($node) ? $node : $node->type;
+
+  if (variable_get("pm_permission_node_{$type}_enabled", FALSE) && $op == 'create') {
+    if (user_access("PM permission $type: create", $account)) {
+      return NODE_ACCESS_ALLOW;
+    }
+  }
+  // Returning nothing from this function would have the same effect.
+  return NODE_ACCESS_IGNORE;
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function pm_node_update($node) {
+
+  $enabled = pm_permission_get_enabled_types();
+  $type = $node->type;
+
+  if (in_array($type, $enabled)) {
+    if (pm_permission_check_if_child_permission_needs_update($node)) {
+      pm_permission_hunt_and_update_all_child_permission($node);
+    }
+  }
 }

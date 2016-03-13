@@ -26,8 +26,8 @@ function pmteam_migrate(&$sandbox) {
   db_drop_table('pmteam');
   variable_del('node_options_pmteam');
 
-  module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');
-  pmpermission_migrate_execute('pmteam');
+  module_load_include('inc', 'pm', 'includes/pm.permission.migrate');
+  pm_permission_migrate_execute('pmteam');
 
   $sandbox['#finished'] = 1;
   return 'PM Team nodes have been migrated to field_api based fields successfully.';

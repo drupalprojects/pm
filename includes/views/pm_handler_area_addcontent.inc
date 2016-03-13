@@ -12,7 +12,7 @@ class pm_handler_area_addcontent extends views_handler_area {
   /**
    * Get this field's label.
    */
-  function option_definition() {
+  public function option_definition() {
     $options = parent::option_definition();
 
     $options['node_type'] = array(
@@ -28,7 +28,7 @@ class pm_handler_area_addcontent extends views_handler_area {
   /**
    * Define options form.
    */
-  function options_form(&$form, &$form_state) {
+  public function options_form(&$form, &$form_state) {
     $form['node_type'] = array(
       '#type' => 'select',
       '#title' => t('Content type'),
@@ -46,7 +46,7 @@ class pm_handler_area_addcontent extends views_handler_area {
   /**
    * Render the area.
    */
-  function render($empty = FALSE) {
+  public function render($empty = FALSE) {
     // Only show a link if the user has permissions for the destination.
     if (node_access('create', $this->options['node_type']) === TRUE) {
       $node_type_name = node_type_get_name($this->options['node_type']);

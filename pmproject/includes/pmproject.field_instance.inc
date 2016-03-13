@@ -147,6 +147,7 @@ function pmproject_default_field_instances() {
   );
 
   // Exported field_instance: 'node-pmproject-pm_duration'
+  // Warning: In older installations this field will be of type 'text'.
   $field_instances['node-pmproject-pm_duration'] = array(
     'bundle' => 'pmproject',
     'default_value' => NULL,
@@ -155,9 +156,14 @@ function pmproject_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'inline',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
+        'module' => 'number',
+        'settings' => array(
+          'decimal_separator' => '.',
+          'prefix_suffix' => TRUE,
+          'scale' => 2,
+          'thousand_separator' => ' ',
+        ),
+        'type' => 'number_decimal',
         'weight' => 10,
       ),
       'teaser' => array(
@@ -172,16 +178,17 @@ function pmproject_default_field_instances() {
     'label' => 'Duration',
     'required' => 0,
     'settings' => array(
-      'text_processing' => 0,
+      'max' => '',
+      'min' => 0,
+      'prefix' => '',
+      'suffix' => '',
       'user_register_form' => FALSE,
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'text',
-      'settings' => array(
-        'size' => 60,
-      ),
-      'type' => 'text_textfield',
+      'module' => 'number',
+      'settings' => array(),
+      'type' => 'number',
       'weight' => 7,
     ),
   );
@@ -373,10 +380,11 @@ function pmproject_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-pmproject-pmproject_parent'
+  // Exported field_instance: 'node-pmproject-pmproject_parent'.
   $field_instances['node-pmproject-pmproject_parent'] = array(
     'bundle' => 'pmproject',
     'default_value' => NULL,
+    'default_value_function' => 'entityreference_prepopulate_field_default_value',
     'deleted' => 0,
     'description' => '',
     'display' => array(
@@ -401,6 +409,19 @@ function pmproject_default_field_instances() {
     'label' => 'Organization',
     'required' => 0,
     'settings' => array(
+      'behaviors' => array(
+        'prepopulate' => array(
+          'action' => 'disable',
+          'action_on_edit' => 0,
+          'fallback' => 'none',
+          'providers' => array(
+            'og_context' => FALSE,
+            'url' => 1,
+          ),
+          'skip_perm' => 0,
+          'status' => 1,
+        ),
+      ),
       'user_register_form' => FALSE,
     ),
     'widget' => array(

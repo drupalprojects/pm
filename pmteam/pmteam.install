@@ -10,11 +10,12 @@
 function pmteam_install() {
   // Create and attaches fields to pmteam content type.
   module_load_include('inc', 'pmteam', 'includes/pmteam.migrate');
+  variable_set('pm_permission_field_parent_reference_for_pmteam', 'pmteam_organization');
 
   // Parameter $sandbox is passed as a placeholder.
   $sandbox = array();
   pmteam_migrate_create_fields($sandbox);
-  variable_set("pmpermission_node_pmteam_enabled", TRUE);
+  variable_set("pm_permission_node_pmteam_enabled", TRUE);
 }
 
 /**
@@ -86,6 +87,24 @@ function pmteam_update_7103(&$sandbox) {
   if (pmteam_migrate_update_could_be_performed()) {
     return pmteam_migrate($sandbox);
   }
+}
+
+/**
+ * Change team parent field cardinality to 1.
+ */
+function pmteam_update_7200() {
+  $field = array(
+    'field_name' => 'pmteam_organization',
+    'cardinality' => 1,
+  );
+  field_update_field($field);
+}
+
+/**
+ * Set pmpermission_field_parent_reference_for_pmteam variable.
+ */
+function pmteam_update_7201() {
+  variable_set('pmpermission_field_parent_reference_for_pmteam', 'pmteam_organization');
 }
 
 /**

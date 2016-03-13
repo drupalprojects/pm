@@ -11,10 +11,10 @@ function pmticket_install() {
   variable_set('node_options_pmticket', array('status'));
 
   // PM Permissions default configurations.
-  variable_set('pmpermission_field_assigned_reference', 'pm_assigned');
-  variable_set('pmpermission_field_pm_reference', 'pm_manager');
-  variable_set('pmpermission_field_parent_reference_for_pmticket', 'pmticket_parent');
-  variable_set('pmpermission_node_pmticket_enabled', TRUE);
+  variable_set('pm_permission_field_assigned_reference', 'pm_assigned');
+  variable_set('pm_permission_field_pm_reference', 'pm_manager');
+  variable_set('pm_permission_field_parent_reference_for_pmticket', 'pmticket_parent');
+  variable_set('pm_permission_node_pmticket_enabled', TRUE);
 
   // Create and attaches fields to pmticket content type.
   module_load_include('inc', 'pmticket', 'includes/pmticket.migrate');
@@ -66,6 +66,26 @@ function pmticket_update_7105(&$sandbox) {
   if (pmticket_migrate_update_could_be_performed()) {
     return pmticket_migrate($sandbox);
   }
+}
+
+/**
+ * Add entityreference_prepopulate behaviour to pmticket_parent.
+ */
+function pmticket_update_7300() {
+  $entity_type = 'node';
+  $field_name = 'pmticket_parent';
+  $bundle_name = 'pmticket';
+
+  // Get defaults from the configurations.
+  module_load_include('inc', 'pmticket', 'includes/pmticket.field_instance');
+  $field_instances = pmticket_default_field_instances();
+  $field_instance = $field_instances['node-pmticket-pmticket_parent'];
+
+  $instance_info = field_info_instance($entity_type, $field_name, $bundle_name);
+  $instance_info['settings']['behaviors']['prepopulate'] = $field_instance['settings']['behaviors']['prepopulate'];
+  $instance_info['default_value_function'] = $field_instance['default_value_function'];
+  field_update_instance($instance_info);
+
 }
 
 /**

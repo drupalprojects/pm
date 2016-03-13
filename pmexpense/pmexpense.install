@@ -11,8 +11,8 @@ function pmexpense_install() {
   variable_set('node_options_pmexpense', array('status'));
 
   // PM Permissions default configurations.
-  variable_set('pmpermission_field_parent_reference_for_pmexpense', 'pmexpense_parent');
-  variable_set('pmpermission_node_pmexpense_enabled', TRUE);
+  variable_set('pm_permission_field_parent_reference_for_pmexpense', 'pmexpense_parent');
+  variable_set('pm_permission_node_pmexpense_enabled', TRUE);
 
   // Create and attaches fields to pmexpense content type.
   module_load_include('inc', 'pmexpense', 'includes/pmexpense.migrate');
@@ -64,4 +64,23 @@ function pmexpense_update_7200(&$sandbox) {
   if (pmexpense_migrate_update_could_be_performed()) {
     return pmexpense_migrate($sandbox);
   }
+}
+
+/**
+ * Add entityreference_prepopulate behaviour to pmexpense_parent.
+ */
+function pmexpense_update_7300() {
+  $entity_type = 'node';
+  $field_name = 'pmexpense_parent';
+  $bundle_name = 'pmexpense';
+
+  // Get defaults from the configurations.
+  module_load_include('inc', 'pmexpense', 'includes/pmexpense.field_instance');
+  $field_instances = pmexpense_default_field_instances();
+  $field_instance = $field_instances['node-pmexpense-pmexpense_parent'];
+
+  $instance_info = field_info_instance($entity_type, $field_name, $bundle_name);
+  $instance_info['settings']['behaviors']['prepopulate'] = $field_instance['settings']['behaviors']['prepopulate'];
+  $instance_info['default_value_function'] = $field_instance['default_value_function'];
+  field_update_instance($instance_info);
 }
