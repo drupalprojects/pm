@@ -674,21 +674,6 @@ function _pm_permission_get_entity_id_referenced_to_user($entity_type, $bundle, 
 }
 
 /**
- * Implements hook_node_access().
- */
-function pm_permission_node_access($node, $op, $account) {
-  $type = is_string($node) ? $node : $node->type;
-
-  if (variable_get("pm_permission_node_{$type}_enabled", FALSE) && $op == 'create') {
-    if (user_access("PM permission $type: create", $account)) {
-      return NODE_ACCESS_ALLOW;
-    }
-  }
-  // Returning nothing from this function would have the same effect.
-  return NODE_ACCESS_IGNORE;
-}
-
-/**
  * Log and display the error.
  *
  * @param string $error

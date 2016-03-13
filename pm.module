@@ -890,3 +890,19 @@ function pm_node_grants($account, $op) {
   }
   return $grants;
 }
+
+/**
+ * Implements hook_node_access().
+ */
+function pm_node_access($node, $op, $account) {
+  $type = is_string($node) ? $node : $node->type;
+
+  if (variable_get("pm_permission_node_{$type}_enabled", FALSE) && $op == 'create') {
+    if (user_access("PM permission $type: create", $account)) {
+      return NODE_ACCESS_ALLOW;
+    }
+  }
+  // Returning nothing from this function would have the same effect.
+  return NODE_ACCESS_IGNORE;
+}
+
