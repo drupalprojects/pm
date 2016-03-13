@@ -11,6 +11,8 @@ define('PM_ICON_SET_NO_ICON', 'none');
 
 define('PM_CONTEXTUAL_LINK_PSEUDO_FIELD', 'pm_contextual_link');
 
+module_load_include('inc', 'pm', 'includes/pm.permission');
+
 /**
  * Implements hook_help().
  */
@@ -21,6 +23,8 @@ function pm_help($path, $arg) {
     case "admin/help#pm":
       $output = '<p>' . t("Provides a complete project management environment") . '</p>';
       break;
+    case 'admin/help#pm-permission':
+      return '<p>' . t('PM Permission allows you to grant access to content based on interactions with Drupal PM.') . '</p>';
   }
 
   return $output;
@@ -30,7 +34,19 @@ function pm_help($path, $arg) {
  * Implements hook_permission().
  */
 function pm_permission() {
-  return array(
+  $permissions = array(
+    'administer pm permission' => array(
+      'title' => t('Administer Project Management Permission'),
+      'restrict access' => TRUE,
+    ),
+  );
+
+  // Generate override node permissions for all applicable node types.
+  foreach (pm_permission_get_enabled_types() as $bundle_name) {
+    $permissions += pm_permission_permission_per_bundle($bundle_name);
+  }
+
+  $permissions += array(
     'Project Management: access dashboard' => array(
       'title' => t('Access Dashboard'),
       'description' => t('Allows the user to access the Project Management dashboard. The items included on the dashboard are set through permissions on the individual modules that provide those links.'),
@@ -40,6 +56,8 @@ function pm_permission() {
       'description' => t('Allow the user to perform administrative tasks on Project Management modules, such as altering configuration.'),
     ),
   );
+
+  return $permissions;
 }
 
 /**
@@ -84,6 +102,16 @@ function pm_menu() {
     'access arguments' => array('Project Management: access administration pages'),
     'weight' => -100,
     'file' => 'pm.settings.inc',
+    'file path' => drupal_get_path('module', 'pm') . '/includes',
+  );
+
+  $items['admin/config/pm/pm_permission'] = array(
+    'title' => 'Permissions',
+    'description' => 'Configure access controls based on PM fields.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pm_permission_admin'),
+    'access arguments' => array('administer pm permission'),
+    'file' => 'pm.permission.inc',
     'file path' => drupal_get_path('module', 'pm') . '/includes',
   );
 
@@ -806,4 +834,89 @@ function pm_field_formatter_view($entity_type, $entity, $field, $instance, $lang
   }
 
   return $element;
+}
+
+
+/**
+ * Implements hook_node_access_records().
+ */
+function pm_node_access_records($node) {
+  if (empty($node->status)) {
+    // Lets Drupal take care of permission to unpublished nodes.
+    return array();
+  }
+  $bundle_name = is_string($node) ? $node : $node->type;
+  $grants = array();
+  if (!variable_get('node_permissions_' . $bundle_name, 1)) {
+    $default_grants = _pm_permission_grants_default($node, $bundle_name);
+    $grants = array_merge($grants, $default_grants);
+  }
+  if (module_exists('pmorganization')) {
+    if ($bundle_name == 'pmorganization' OR _pm_permission_get_field_name($bundle_name, 'parent')) {
+      $belonged_grants = _pm_permission_grants_belonged($node, $bundle_name, 'Organization');
+      if ($belonged_grants) {
+        $grants = array_merge($grants, $belonged_grants);
+      }
+    }
+  }
+  if (module_exists('pmproject')) {
+    if (_pm_permission_get_field_name($bundle_name, 'pm')) {
+      $assigned_grants_pm = _pm_permission_grants_assigned($node, $bundle_name, 'Project Manager');
+      if ($assigned_grants_pm) {
+        $grants = array_merge($grants, $assigned_grants_pm);
+      }
+    }
+  }
+  if (_pm_permission_get_field_name($bundle_name, 'assigned')) {
+    $assigned_grants_assigned = _pm_permission_grants_assigned($node, $bundle_name, 'Assigned');
+    if ($assigned_grants_assigned) {
+      $grants = array_merge($grants, $assigned_grants_assigned);
+    }
+  }
+  return $grants;
+}
+
+/**
+ * Implements hook_node_grants().
+ */
+function pm_node_grants($account, $op) {
+
+  $grants = array();
+  foreach (pm_permission_get_enabled_types() as $type) {
+    $grant_per_type = pm_permission_grants_list($account, $op, $type);
+    if ($grant_per_type) {
+      $grants += $grant_per_type;
+    }
+  }
+  return $grants;
+}
+
+/**
+ * Implements hook_node_access().
+ */
+function pm_node_access($node, $op, $account) {
+  $type = is_string($node) ? $node : $node->type;
+
+  if (variable_get("pm_permission_node_{$type}_enabled", FALSE) && $op == 'create') {
+    if (user_access("PM permission $type: create", $account)) {
+      return NODE_ACCESS_ALLOW;
+    }
+  }
+  // Returning nothing from this function would have the same effect.
+  return NODE_ACCESS_IGNORE;
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function pm_node_update($node) {
+
+  $enabled = pm_permission_get_enabled_types();
+  $type = $node->type;
+
+  if (in_array($type, $enabled)) {
+    if (pm_permission_check_if_child_permission_needs_update($node)) {
+      pm_permission_hunt_and_update_all_child_permission($node);
+    }
+  }
 }

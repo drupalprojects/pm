@@ -11,7 +11,7 @@ define('PMPERMISSION_CANNOT_BE_PORTED', '2');
 /**
  * Retrieves array of legacy to new permission mappings (keyed by sub-module).
  */
-function pmpermission_migrate_get_legacy_permission_map() {
+function pm_permission_migrate_get_legacy_permission_map() {
   $map = array(
     'pmexpense' => array(
       'Project Management expense: access'                                => PMPERMISSION_UNCHANGED,
@@ -167,17 +167,17 @@ function pmpermission_migrate_get_legacy_permission_map() {
 /**
  * Helper function to migrate permission defined by submodules.
  */
-function pmpermission_migrate_execute($module_name) {
+function pm_permission_migrate_execute($module_name) {
   // Enable Permission to be defined by pmpermission.
-  pmpermission_migrate_enable_permissions($module_name);
+  pm_permission_migrate_enable_permissions($module_name);
   // Handover legacy permission to pmpermission based implementations.
-  pmpermission_migrate_legacy_permissions($module_name);
+  pm_permission_migrate_legacy_permissions($module_name);
 }
 
 /**
  * Sets site variables to tell pmpermission to handle submodule's permissions.
  */
-function pmpermission_migrate_enable_permissions($type) {
+function pm_permission_migrate_enable_permissions($type) {
   switch ($type) {
     case 'pmteam':
     case 'pmorganization':
@@ -188,7 +188,7 @@ function pmpermission_migrate_enable_permissions($type) {
     case 'pmnote':
     case 'pminvoice':
     case 'pmexpense':
-      variable_set("pmpermission_node_{$type}_enabled", TRUE);
+      variable_set("pm_permission_node_{$type}_enabled", TRUE);
       break;
 
     default:
@@ -199,10 +199,10 @@ function pmpermission_migrate_enable_permissions($type) {
 /**
  * Handles migration of legacy permissions for a given sub-module.
  */
-function pmpermission_migrate_legacy_permissions($module_name) {
+function pm_permission_migrate_legacy_permissions($module_name) {
   // Enable Permission to be defined by pmpermission.
   // Handover legacy permission to pmpermission based implementations.
-  $map = pmpermission_migrate_get_legacy_permission_map();
+  $map = pm_permission_migrate_get_legacy_permission_map();
   $permissions = $map[$module_name];
   foreach ($permissions as $old => $new) {
     switch ($new) {
@@ -218,7 +218,7 @@ function pmpermission_migrate_legacy_permissions($module_name) {
         break;
 
       default:
-        $rids = _pmpermission_migrate_get_all_roles_having_permission($old);
+        $rids = _pm_permission_migrate_get_all_roles_having_permission($old);
         $permission = array(
           // Revoke old permission (deletes the record) by setting to 0.
           $old => 0,
@@ -238,7 +238,7 @@ function pmpermission_migrate_legacy_permissions($module_name) {
 /**
  * Gets a list of all roles which have been given a particular permission.
  */
-function _pmpermission_migrate_get_all_roles_having_permission($name) {
+function _pm_permission_migrate_get_all_roles_having_permission($name) {
   $rids = array();
   $roles = user_roles();
   $permissions = user_role_permissions($roles);

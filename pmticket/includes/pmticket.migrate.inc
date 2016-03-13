@@ -25,13 +25,13 @@ function pmticket_migrate(&$sandbox) {
   variable_del('node_options_pmticket');
 
   // PM Permissions default configurations.
-  variable_set('pmpermission_field_assigned_reference', 'pm_assigned');
-  variable_set('pmpermission_field_pm_reference', 'pm_manager');
-  variable_set('pmpermission_field_parent_reference_for_pmticket', 'pmticket_parent');
-  variable_set('pmpermission_node_pmticket_enabled', TRUE);
+  variable_set('pm_permission_field_assigned_reference', 'pm_assigned');
+  variable_set('pm_permission_field_pm_reference', 'pm_manager');
+  variable_set('pm_permission_field_parent_reference_for_pmticket', 'pmticket_parent');
+  variable_set('pm_permission_node_pmticket_enabled', TRUE);
 
-  module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');
-  pmpermission_migrate_execute('pmticket');
+  module_load_include('inc', 'pm', 'includes/pm.permission.migrate');
+  pm_permission_migrate_execute('pmticket');
 
   $sandbox['#finished'] = 1;
   return 'PM Ticket nodes have been migrated to field_api based fields successfully.';

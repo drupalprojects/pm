@@ -89,7 +89,6 @@ class PMTestCase extends DrupalWebTestCase {
       'pmissue',
       'pmnote',
       'pmorganization',
-      'pmpermission',
       'pmperson',
       'pmproject',
       'pmtask',

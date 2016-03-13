@@ -25,11 +25,11 @@ function pmorganization_migrate(&$sandbox) {
   db_drop_table('pmorganization');
   variable_del('node_options_pmorganization');
 
-  variable_set('pmpermission_field_org_member_reference', 'pmorganization_members');
-  variable_set('pmpermission_node_pmorganization_enabled', TRUE);
+  variable_set('pm_permission_field_org_member_reference', 'pmorganization_members');
+  variable_set('pm_permission_node_pmorganization_enabled', TRUE);
 
-  module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');
-  pmpermission_migrate_execute('pmorganization');
+  module_load_include('inc', 'pm', 'includes/pm.permission.migrate');
+  pm_permission_migrate_execute('pmorganization');
 
   $sandbox['#finished'] = 1;
   return 'PM Organization nodes have been migrated to field_api based fields successfully.';

@@ -10,12 +10,12 @@
 function pmteam_install() {
   // Create and attaches fields to pmteam content type.
   module_load_include('inc', 'pmteam', 'includes/pmteam.migrate');
-  variable_set('pmpermission_field_parent_reference_for_pmteam', 'pmteam_organization');
+  variable_set('pm_permission_field_parent_reference_for_pmteam', 'pmteam_organization');
 
   // Parameter $sandbox is passed as a placeholder.
   $sandbox = array();
   pmteam_migrate_create_fields($sandbox);
-  variable_set("pmpermission_node_pmteam_enabled", TRUE);
+  variable_set("pm_permission_node_pmteam_enabled", TRUE);
 }
 
 /**

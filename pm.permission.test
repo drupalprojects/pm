@@ -7,7 +7,7 @@
 /**
  * Define a test case for PM Permission.
  */
-class PmpermissionTestCase extends DrupalWebTestCase {
+class PmPermissionTestCase extends DrupalWebTestCase {
 
   /**
    * Returns meta data for PM Permission tests.
@@ -24,7 +24,7 @@ class PmpermissionTestCase extends DrupalWebTestCase {
    * Standard set up for all tests.
    */
   public function setUp() {
-    parent::setUp('pm', 'pmpermission', 'pmorganization', 'pmproject');
+    parent::setUp('pm', 'pmorganization', 'pmproject');
     node_access_rebuild();
   }
 
