@@ -4,22 +4,6 @@
  * Main module file for the pmpermission module.
  */
 
-
-/**
- * Implements hook_menu().
- */
-function pmpermission_menu() {
-  $items['admin/config/pm/pmpermission'] = array(
-    'title' => 'Permissions',
-    'description' => 'Configure access controls based on PM fields.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('pmpermission_admin'),
-    'access arguments' => array('administer pm permission'),
-  );
-
-  return $items;
-}
-
 /**
  * Admin settings form.
  */
