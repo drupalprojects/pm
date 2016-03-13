@@ -24,7 +24,7 @@ class PmPermissionTestCase extends DrupalWebTestCase {
    * Standard set up for all tests.
    */
   public function setUp() {
-    parent::setUp('pm', 'pmpermission', 'pmorganization', 'pmproject');
+    parent::setUp('pm', 'pmorganization', 'pmproject');
     node_access_rebuild();
   }
 
