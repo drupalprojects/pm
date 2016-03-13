@@ -111,7 +111,4 @@ function pm_update_7300() {
     variable_set($new_variable, variable_get($old_variable, ''));
     variable_del($old_variable);
   }
-
-  // @todo migrate node grants table.
-
 }
