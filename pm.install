@@ -93,3 +93,25 @@ function pm_update_7201() {
   variable_del('pm_tax2_name');
   variable_del('pm_tax2_percent');
 }
+
+/**
+ * Include pmpermission module into core.
+ */
+function pm_update_7300() {
+  // Rename all pmpermission_* variable to pm_permission_*.
+  $result = db_query("SELECT name FROM {variable} WHERE name LIKE 'pmpermission_%'");
+  foreach($result as $record) {
+    $str = $record->name;
+    $prefix = 'pmpermission';
+    if (substr($str, 0, strlen($prefix)) == $prefix) {
+        $str = substr($str, strlen($prefix));
+    }
+    $old_variable = $record->name;
+    $new_variable = 'pm_permission' . $str;
+    variable_set($new_variable, variable_get($old_variable, ''));
+    variable_del($old_variable);
+  }
+
+  // @todo migrate node grants table.
+
+}
