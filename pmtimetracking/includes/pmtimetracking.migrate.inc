@@ -24,11 +24,11 @@ function pmtimetracking_migrate(&$sandbox) {
   variable_del('node_options_pmtimetracking');
 
   // PM Permissions default configurations.
-  variable_set('pmpermission_field_parent_reference_for_pmtimetracking', 'pmtimetracking_parent');
-  variable_set('pmpermission_node_pmtimetracking_enabled', TRUE);
+  variable_set('pm_permission_field_parent_reference_for_pmtimetracking', 'pmtimetracking_parent');
+  variable_set('pm_permission_node_pmtimetracking_enabled', TRUE);
 
-  module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');
-  pmpermission_migrate_execute('pmtimetracking');
+  module_load_include('inc', 'pm', 'includes/pm.permission.migrate');
+  pm_permission_migrate_execute('pmtimetracking');
 
   $sandbox['#finished'] = 1;
   return 'PM Timetracking nodes have been migrated to field_api based fields successfully.';
