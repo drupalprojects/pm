@@ -242,7 +242,7 @@ function pmproject_build_node_index($node) {
   // We maintain a denormalized table of term/node relationships, containing
   // only data for current, published nodes.
   $status = NULL;
-  if (variable_get('pmproject_maintain_index_table', TRUE) AND module_exists('pmpermission')) {
+  if (variable_get('pmproject_maintain_index_table', TRUE)) {
     // If a node property is not set in the node object when node_save() is
     // called, the old value from $node->original is used.
     if (!empty($node->original)) {
@@ -255,7 +255,7 @@ function pmproject_build_node_index($node) {
   // We only maintain the pmproject index for published nodes.
   if ($status) {
     // Hunt for PM Organization.
-    $pmproject_nid = pmpermission_get_parent_nid_of_node($node, 'pmproject');;
+    $pmproject_nid = pm_permission_get_parent_nid_of_node($node, 'pmproject');;
 
     // Insert index entries for all the node's terms.
     if (!empty($pmproject_nid)) {

@@ -25,13 +25,13 @@ function pmproject_migrate(&$sandbox) {
   variable_del('node_options_pmproject');
 
   // PM Permissions default configurations.
-  variable_set('pmpermission_field_assigned_reference', 'pm_assigned');
-  variable_set('pmpermission_field_pm_reference', 'pm_manager');
-  variable_set('pmpermission_field_parent_reference_for_pmproject', 'pmproject_parent');
-  variable_set('pmpermission_node_pmproject_enabled', TRUE);
+  variable_set('pm_permission_field_assigned_reference', 'pm_assigned');
+  variable_set('pm_permission_field_pm_reference', 'pm_manager');
+  variable_set('pm_permission_field_parent_reference_for_pmproject', 'pmproject_parent');
+  variable_set('pm_permission_node_pmproject_enabled', TRUE);
 
-  module_load_include('inc', 'pmpermission', 'includes/pmpermission.migrate');
-  pmpermission_migrate_execute('pmproject');
+  module_load_include('inc', 'pm', 'includes/pm.permission.migrate');
+  pm_permission_migrate_execute('pmproject');
 
   $sandbox['#finished'] = 1;
   return 'PM Project nodes have been migrated to field_api based fields successfully.';
