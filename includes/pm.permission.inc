@@ -687,22 +687,6 @@ function _pm_permission_watchdog_log($error, $backtrace = TRUE) {
   drupal_set_message($err_msg, 'error');
 }
 
-
-/**
- * Implements hook_node_update().
- */
-function pm_permission_node_update($node) {
-
-  $enabled = pm_permission_get_enabled_types();
-  $type = $node->type;
-
-  if (in_array($type, $enabled)) {
-    if (pm_permission_check_if_child_permission_needs_update($node)) {
-      pm_permission_hunt_and_update_all_child_permission($node);
-    }
-  }
-}
-
 /**
  * Check and performs access update if supplied pmorganization.
  */

@@ -906,3 +906,17 @@ function pm_node_access($node, $op, $account) {
   return NODE_ACCESS_IGNORE;
 }
 
+/**
+ * Implements hook_node_update().
+ */
+function pm_node_update($node) {
+
+  $enabled = pm_permission_get_enabled_types();
+  $type = $node->type;
+
+  if (in_array($type, $enabled)) {
+    if (pm_permission_check_if_child_permission_needs_update($node)) {
+      pm_permission_hunt_and_update_all_child_permission($node);
+    }
+  }
+}
