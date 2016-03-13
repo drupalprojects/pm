@@ -608,20 +608,6 @@ function _pm_permission_get_assigned_id($node, $type, $assigned) {
   return $assigned_nids;
 }
 
-/**
- * Implements hook_node_grants().
- */
-function pm_permission_node_grants($account, $op) {
-
-  $grants = array();
-  foreach (pm_permission_get_enabled_types() as $type) {
-    $grant_per_type = pm_permission_grants_list($account, $op, $type);
-    if ($grant_per_type) {
-      $grants += $grant_per_type;
-    }
-  }
-  return $grants;
-}
 
 /**
  * Helper function for pm_permission_node_grants.
