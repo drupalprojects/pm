@@ -54,10 +54,11 @@ function pmproject_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-pmproject-pm_assigned'
+  // Exported field_instance: 'node-pmproject-pm_assigned'.
   $field_instances['node-pmproject-pm_assigned'] = array(
     'bundle' => 'pmproject',
     'default_value' => NULL,
+    'default_value_function' => '',
     'deleted' => 0,
     'description' => '',
     'display' => array(
@@ -82,6 +83,11 @@ function pmproject_default_field_instances() {
     'label' => 'Assigned to',
     'required' => 0,
     'settings' => array(
+      'behaviors' => array(
+        'prepopulate' => array(
+          'status' => 0,
+        ),
+      ),
       'user_register_form' => FALSE,
     ),
     'widget' => array(
@@ -92,6 +98,7 @@ function pmproject_default_field_instances() {
       'weight' => 12,
     ),
   );
+
 
   // Exported field_instance: 'node-pmproject-pm_date'
   $field_instances['node-pmproject-pm_date'] = array(
