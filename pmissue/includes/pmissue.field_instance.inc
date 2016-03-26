@@ -440,7 +440,7 @@ function pmissue_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-pmissue-pm_assigned'
+  // Exported field_instance: 'node-pmissue-pm_assigned'.
   $field_instances['node-pmissue-pm_assigned'] = array(
     'bundle' => 'pmissue',
     'default_value' => NULL,
