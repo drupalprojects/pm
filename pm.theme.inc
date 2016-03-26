@@ -7,7 +7,8 @@
 /**
  * Provides HTML for a Project Management dashboard.
  */
-function theme_pm_dashboard($link_blocks) {
+function theme_pm_dashboard($vars) {
+  $link_blocks = $vars['links'];
   $content = '<div id="pmdashboard">';
   if (!empty($link_blocks)) {
     $content .= '<dl class="pmdashboard clear-block">';
@@ -38,19 +39,16 @@ function theme_pm_dashboard($link_blocks) {
 /**
  * Provides HTML for the Project Management dashboard blocks.
  */
-function theme_pm_dashboard_block($link_blocks) {
+function theme_pm_dashboard_block($vars) {
+  $link_blocks = $vars['links'];
   $content = '<div id="pmdashboard-block">';
   if (!empty($link_blocks)) {
-    foreach ($link_blocks as $link_block_array) {
-      if (!empty($link_block_array) AND is_array($link_block_array)) {
-        foreach ($link_block_array as $link_array) {
-          if (!empty($link_array['theme'])) {
-            $content .= theme($link_array['theme'], $link_array);
-          }
-          else {
-            $content .= theme('pm_dashboard_link', $link_array);
-          }
-        }
+    foreach ($link_blocks as $link_array) {
+      if (!empty($link_array['theme'])) {
+        $content .= theme($link_array['theme'], $link_array);
+      }
+      else {
+        $content .= theme('pm_dashboard_link', $link_array);
       }
     }
   }
