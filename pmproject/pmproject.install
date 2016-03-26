@@ -214,8 +214,8 @@ function pmproject_update_7302() {
   $instance_info['default_value_function'] = $field_instance['default_value_function'];
   field_update_instance($instance_info);
 
-  // Update pmproject_assigned.
-  $field_name = 'pmproject_assigned';
+  // Update pm_assigned.
+  $field_name = 'pm_assigned';
 
   $field_base = $field_bases[$field_name];
   $base_info = array(
@@ -225,7 +225,7 @@ function pmproject_update_7302() {
   field_update_field($base_info);
 
   // Update Field Instance.
-  $field_instance = $field_instances['node-pmproject-pmproject_assigned'];
+  $field_instance = $field_instances['node-pmproject-pm_assigned'];
 
   $instance_info = field_info_instance($entity_type, $field_name, $bundle_name);
   $instance_info['settings']['behaviors']['prepopulate'] = $field_instance['settings']['behaviors']['prepopulate'];
