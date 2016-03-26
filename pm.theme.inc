@@ -17,10 +17,10 @@ function theme_pm_dashboard($vars) {
       if (!empty($link_block_array) AND is_array($link_block_array)) {
         foreach ($link_block_array as $link_array) {
           if (!empty($link_array['theme'])) {
-            $content .= theme($link_array['theme'], $link_array);
+            $content .= theme($link_array['theme'], array('link_blocks' => $link_array));
           }
           else {
-            $content .= theme('pm_dashboard_link', $link_array);
+            $content .= theme('pm_dashboard_link', array('link_blocks' => $link_array));
           }
         }
       }
@@ -45,10 +45,10 @@ function theme_pm_dashboard_block($vars) {
   if (!empty($link_blocks)) {
     foreach ($link_blocks as $link_array) {
       if (!empty($link_array['theme'])) {
-        $content .= theme($link_array['theme'], $link_array);
+        $content .= theme($link_array['theme'], array('link_blocks' => $link_array));
       }
       else {
-        $content .= theme('pm_dashboard_link', $link_array);
+        $content .= theme('pm_dashboard_link', array('link_blocks' => $link_array));
       }
     }
   }
@@ -63,7 +63,8 @@ function theme_pm_dashboard_block($vars) {
 /**
  * Provides HTML for Project Management links.
  */
-function theme_pm_dashboard_link($link_array) {
+function theme_pm_dashboard_link($vars) {
+  $link_array = $vars['link_blocks'];
   $content = '';
 
   // Default icon.
