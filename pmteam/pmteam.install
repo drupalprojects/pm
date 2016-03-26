@@ -107,6 +107,27 @@ function pmteam_update_7201() {
   variable_set('pmpermission_field_parent_reference_for_pmteam', 'pmteam_organization');
 }
 
+
+/**
+ * Use pm_entity_reference_user_filter for pmteam_user.
+ */
+function pmteam_update_7300() {
+  $entity_type = 'node';
+  $field_name = 'pmteam_user';
+  $bundle_name = 'pmteam';
+
+  // Get defaults from the configurations.
+  // Update Field Base.
+  module_load_include('inc', 'pmteam', 'includes/pmteam.field_base');
+  $field_bases = pmteam_default_field_bases();
+  $field_base = $field_bases[$field_name];
+  $base_info = array(
+    'field_name' => $field_name,
+    'settings' => $field_base['settings'],
+  );
+  field_update_field($base_info);
+}
+
 /**
  * Implements hook_update_dependencies().
  */
