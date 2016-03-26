@@ -230,10 +230,11 @@ function pmproject_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-pmproject-pm_manager'
+  // Exported field_instance: 'node-pmproject-pm_manager'.
   $field_instances['node-pmproject-pm_manager'] = array(
     'bundle' => 'pmproject',
     'default_value' => NULL,
+    'default_value_function' => '',
     'deleted' => 0,
     'description' => '',
     'display' => array(
@@ -258,6 +259,11 @@ function pmproject_default_field_instances() {
     'label' => 'Project manager',
     'required' => 0,
     'settings' => array(
+      'behaviors' => array(
+        'prepopulate' => array(
+          'status' => 0,
+        ),
+      ),
       'user_register_form' => FALSE,
     ),
     'widget' => array(
