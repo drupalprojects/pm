@@ -125,15 +125,15 @@ function pm_theme() {
   return array(
     'pm_dashboard' => array(
       'file'      => 'pm.theme.inc',
-      'arguments' => array('links' => array()),
+      'variables' => array('links' => array()),
     ),
     'pm_dashboard_block' => array(
       'file'      => 'pm.theme.inc',
-      'arguments' => array('links' => array()),
+      'variables' => array('links' => array()),
     ),
     'pm_dashboard_link' => array(
       'file'      => 'pm.theme.inc',
-      'arguments' => array('link_blocks' => array()),
+      'variables' => array('link_blocks' => array()),
     ),
     'pm_list_default' => array(
       'template' => 'pm-list-default',
