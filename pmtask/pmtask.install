@@ -91,6 +91,38 @@ function pmtask_update_7300() {
 }
 
 /**
+ * Add entityreference_prepopulate behaviour to pm_assigned.
+ */
+function pmtask_update_7301() {
+  $entity_type = 'node';
+  $bundle_name = 'pmtask';
+
+  // Get defaults from the configurations.
+  module_load_include('inc', 'pmtask', 'includes/pmtask.field_base');
+  module_load_include('inc', 'pmtask', 'includes/pmtask.field_instance');
+  $field_bases = pmtask_default_field_bases();
+  $field_instances = pmtask_default_field_instances();
+
+  // Update pm_assigned.
+  $field_name = 'pm_assigned';
+
+  $field_base = $field_bases[$field_name];
+  $base_info = array(
+    'field_name' => $field_name,
+    'settings' => $field_base['settings'],
+  );
+  field_update_field($base_info);
+
+  // Update Field Instance.
+  $field_instance = $field_instances['node-pmtask-pm_assigned'];
+
+  $instance_info = field_info_instance($entity_type, $field_name, $bundle_name);
+  $instance_info['settings']['behaviors']['prepopulate'] = $field_instance['settings']['behaviors']['prepopulate'];
+  $instance_info['default_value_function'] = $field_instance['default_value_function'];
+  field_update_instance($instance_info);
+}
+
+/**
  * Implements hook_update_dependencies().
  */
 function pmtask_update_dependencies() {
