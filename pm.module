@@ -109,13 +109,13 @@ function pm_menu() {
 
   // Basic settings tab (default).
   $items['admin/config/pm/general/basic'] = array(
-    'title' => 'Project Management Basic Settings',
+    'title' => 'Basic Settings',
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
 
   // Permissions tab.
   $items['admin/config/pm/general/permissions'] = array(
-    'title' => 'Project Management Permissions',
+    'title' => 'Permissions',
     'description' => 'Configure access controls based on PM fields.',
     'type' => MENU_LOCAL_TASK,
     'page callback' => 'drupal_get_form',
