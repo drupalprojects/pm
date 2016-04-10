@@ -46,14 +46,4 @@ class PMTeamTestCase extends DrupalWebTestCase {
     $this->assertText(t('Team @title has been created.', array('@title' => $team['title'])));;
   }
 
-  /**
-   * Tests module uninstall path.
-   */
-  public function testpmteamUninstall() {
-    $module = array('pmteam');
-
-    module_disable($module);
-    drupal_uninstall_modules($module);
-  }
-
 }
