@@ -37,12 +37,20 @@ function pmtimetracking_permission() {
 function pmtimetracking_menu() {
   $items = array();
 
-  $items['admin/config/pm/timetracking'] = array(
-    'title' => 'Timetrackings',
-    'description' => 'Configuration settings for PM Timetracking.',
+  // Component settings page (move to pm if other modules expose settings).
+  $items['admin/config/pm/component'] = array(
+    'title' => 'Component Settings',
+    'description' => 'Settings affecting specific <em>Project Management</em> components.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('pmtimetracking_admin_settings'),
     'access arguments' => array('Project Management: access administration pages'),
+  );
+
+  // Timetracking tab.
+  $items['admin/config/pm/component/timetracking'] = array(
+    'title' => 'Timetrackings',
+    'description' => 'Configuration settings for PM Timetracking.',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
   );
 
   return $items;
