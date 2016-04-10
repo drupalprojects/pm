@@ -99,7 +99,6 @@ function pm_menu() {
   $items['admin/config/pm/general'] = array(
     'title' => 'Project Management General Settings',
     'description' => 'Settings affecting <em>Project Management</em> behaviour across components.',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
     'page callback' => 'drupal_get_form',
     'page arguments' => array('pm_admin_settings'),
     'access arguments' => array('Project Management: access administration pages'),
