@@ -97,7 +97,7 @@ function pm_menu() {
 
   // Project Management settings page (tabs defined below).
   $items['admin/config/pm/pm'] = array(
-    'title' => 'Project Management Settings',
+    'title' => 'Project Management General Settings',
     'description' => 'Configure <em>Project Management</em> behaviour across components.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('pm_admin_settings'),
@@ -108,7 +108,7 @@ function pm_menu() {
   );
 
   // Basic settings tab (default).
-  $items['admin/config/pm/general/basic'] = array(
+  $items['admin/config/pm/pm/basic'] = array(
     'title' => 'Basic Settings',
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
