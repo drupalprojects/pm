@@ -1,4 +1,9 @@
-UPGRADE NOTES (7.x-1.x -> 7.x-2.x):
+UPGRADE NOTES
+
+Currently, it is possible to upgrade directly from 7.x-1.x to 7.x-3.x.
+(However, support for this may be removed in the future.)
+
+7.x-1.x -> 7.x-2.x:
 
 * Integration with Drupal user accounts:
 
@@ -29,3 +34,12 @@ UPGRADE NOTES (7.x-1.x -> 7.x-2.x):
   Project Management Person: view own
   Project Management Person: view of user organization
   Project Management Person: view when linked to own user account
+
+7.x-2.x - 7.x-3.x:
+
+* Permission changes:
+
+  The separate PM Permission module has been removed. All functionality is in
+  the PM (core) module. No migration is required - permissions will be retained
+  after upgrade.
+  
