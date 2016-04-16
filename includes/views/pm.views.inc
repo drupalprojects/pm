@@ -1,9 +1,39 @@
 <?php
-
 /**
  * @file
- * Views definitions for pm module.
+ * Views integrations.
  */
+
+/**
+ * Implements hook_views_data().
+ */
+function pm_views_data() {
+  $data = array();
+
+  $data['pm_index']['table']['group'] = t('Drupal PM');
+  $data['pm_index']['table']['base'] = array(
+    'title' => t('PM Index'),
+  );
+  $data['pm_index']['table']['join'] = array(
+    'node' => array(
+      'left_field' => 'nid',
+      'field' => 'nid',
+    ),
+  );
+
+  // The parent_nid field.
+  $data['pm_index']['parent_nid'] = array(
+    'title' => t('PM Organization'),
+    'help' => t('PM Organization the content is attached to.'),
+    'relationship' => array(
+      'base' => 'node',
+      'field' => 'parent_nid',
+      'handler' => 'views_handler_relationship',
+      'label' => t('PM Parents'),
+    ),
+  );
+  return $data;
+}
 
 /**
  * Implements hook_views_data_alter().
