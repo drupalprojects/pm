@@ -51,52 +51,6 @@ function pmproject_uninstall() {
 }
 
 /**
- * Implements hook_schema().
- */
-function pmproject_schema() {
-  $schema['pmproject_index'] = array(
-    'description' => 'Maintains denormalized information about pm project relationships.',
-    'fields' => array(
-      'nid' => array(
-        'description' => 'The {node}.nid this record tracks.',
-        'type' => 'int',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-        'default' => 0,
-      ),
-      'pmproject_nid' => array(
-        'description' => 'The pmproject nid.',
-        'type' => 'int',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-        'default' => 0,
-      ),
-      'created' => array(
-        'description' => 'The Unix timestamp when the node was created.',
-        'type' => 'int',
-        'not null' => TRUE,
-        'default' => 0,
-      ),
-    ),
-    'indexes' => array(
-      'nid' => array('nid'),
-      'pmproject_nid' => array('pmproject_nid'),
-    ),
-    'foreign keys' => array(
-      'tracked_node' => array(
-        'table' => 'node',
-        'columns' => array('nid' => 'nid'),
-      ),
-      'pmproject_nid' => array(
-        'table' => 'node',
-        'columns' => array('pmproject_nid' => 'nid'),
-      ),
-    ),
-  );
-  return $schema;
-}
-
-/**
  * Implements hook_update_last_removed().
  */
 function pmproject_update_last_removed() {
@@ -118,65 +72,9 @@ function pmproject_update_7105(&$sandbox) {
 }
 
 /**
- * Create pmproject_index table.
- */
-function pmproject_update_7300() {
-  $schema = module_invoke('pmproject', 'schema');
-  db_create_table('pmproject_index', $schema['pmproject_index']);
-}
-
-/**
- * Build pmproject_index for all nodes.
- */
-function pmproject_update_7301(&$sandbox) {
-  // Retrieve all records.
-  $result = db_select('node', 'n')
-    ->fields('n', array('nid'))
-    ->orderBy('n.nid', 'ASC')
-    ->execute();
-
-  // Use the sandbox to store the information needed to track progression.
-  if (!isset($sandbox['progress'])) {
-    $sandbox['progress'] = 0;
-    $sandbox['max'] = $result->rowCount();
-    $sandbox['messages'] = array();
-    $sandbox['current_node'] = -1;
-  }
-
-  // Process nodes by groups of 50.
-  $limit = 50;
-
-  // Retrieve the next group of nids.
-  $query = db_select('node', 'n')->extend('PagerDefault');
-
-  $result = $query->fields('n', array('nid'))
-      ->orderBy('n.nid', 'ASC')
-      ->condition('n.nid', $sandbox['current_node'], '>')
-      ->limit($limit)->execute();
-
-  foreach ($result as $row) {
-    $node = node_load($row->nid);
-    // Rebuild the pmproject_index.
-    pmproject_delete_node_index($node);
-    pmproject_build_node_index($node);
-    // Update our progress information.
-    $sandbox['progress']++;
-    $sandbox['current_node'] = $row->nid;
-  }
-
-  $sandbox['#finished'] = ($sandbox['progress'] >= $sandbox['max'])
-    ? TRUE
-    : ($sandbox['progress'] / $sandbox['max']);
-
-  if ($sandbox['#finished']) {
-    return t('PM Project index rebuild has been completed.');
-  }
-}
-
-/**
  * Add entityreference_prepopulate behaviour to pmproject_parent.
  */
-function pmproject_update_7302() {
+function pmproject_update_7300() {
   $entity_type = 'node';
   $bundle_name = 'pmproject';
 
