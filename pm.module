@@ -853,7 +853,7 @@ function pm_node_access($node, $op, $account) {
  * Implements hook_node_insert().
  */
 function pm_node_insert($node) {
-  module_load_include('inc', 'pm', '/includes/pm.index.inc');
+  module_load_include('inc', 'pm', '/includes/pm.index');
 
   // Add index entries for the node.
   pm_build_node_index($node);
@@ -864,7 +864,7 @@ function pm_node_insert($node) {
  * Implements hook_node_update().
  */
 function pm_node_update($node) {
-  module_load_include('inc', 'pm', '/includes/pm.index.inc');
+  module_load_include('inc', 'pm', '/includes/pm.index');
 
   // Always rebuild the node's pmorganization index entries on node save.
   pm_delete_node_index($node);
@@ -885,7 +885,7 @@ function pm_node_update($node) {
  * Implements hook_node_delete().
  */
 function pm_node_delete($node) {
-  module_load_include('inc', 'pm', '/includes/pm.index.inc');
+  module_load_include('inc', 'pm', '/includes/pm.index');
 
   // Clean up the {pm_index} table when nodes are deleted, including by parent.
   pm_delete_node_index($node, TRUE);
