@@ -65,25 +65,16 @@ function pm_permission() {
  */
 function pm_menu() {
   $items = array();
-
-  $dashboard_types = module_invoke_all('pm_dashboard_types');
-  foreach ($dashboard_types as $type => $type_info) {
-    if (isset($type_info['url'])) {
-      $title = isset($type_info['title']) ? $type_info['title'] : 'Project Management Dashboard';
-      $items[$type_info['url']] = array(
-        'title' => $title,
-        'description' => $title,
-        'page callback' => 'pm_dashboard',
-        'page arguments' => array($type),
-        'access arguments' => array('Project Management: access dashboard'),
-        'parent' => '',
-        'type' => MENU_NORMAL_ITEM,
-      );
-      if (isset($type_info['menu_options'])) {
-        $items[$type_info['url']] = array_merge($items[$type_info['url']], $type_info['menu_options']);
-      }
-    }
-  }
+  $items['pm'] = array(
+    'title' => t('Project Management'),
+    'description' => t('You can disable or reorder the links from the !dashboard here', array(
+        '!dashboard' => l(t('dashboard'), 'pm'),
+      )),
+    'page callback' => 'pm_page_front',
+    'access arguments' => array('Project Management: access dashboard'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'includes/pm.pages.inc',
+  );
 
   // Configuration group.
   $items['admin/config/pm'] = array(
@@ -135,15 +126,15 @@ function pm_theme() {
   return array(
     'pm_dashboard' => array(
       'file'      => 'pm.theme.inc',
-      'arguments' => array('links' => array()),
+      'variables' => array('links' => array()),
     ),
     'pm_dashboard_block' => array(
       'file'      => 'pm.theme.inc',
-      'arguments' => array('links' => array()),
+      'variables' => array('links' => array()),
     ),
     'pm_dashboard_link' => array(
       'file'      => 'pm.theme.inc',
-      'arguments' => array('link_blocks' => array()),
+      'variables' => array('link_blocks' => array()),
     ),
     'pm_list_default' => array(
       'template' => 'pm-list-default',
@@ -208,35 +199,6 @@ function pm_entity_view($entity, $type, $view_mode, $langcode) {
   }
 }
 
-/**
- * Function to create a dashboard (call to theme function).
- *
- * @param string $type
- *   Dashboard type, used for pm_get_dashboard_links.
- *
- * @return string
- *   Themed string.
- */
-function pm_dashboard($type = 'page') {
-  $types = module_invoke_all('pm_dashboard_types');
-  // Only set Page Title if it has a url, so there is a menu entry for that.
-  // The block type has no url and shouldn't change the title!
-  if (isset($types[$type]['url']) && isset($types[$type]['title'])) {
-    drupal_set_title($types[$type]['title']);
-  }
-  drupal_add_css(drupal_get_path('module', 'pm') . '/pm-dashboard.css');
-
-  $link_blocks = pm_dashboard_get_links(TRUE, $type);
-  if (!empty($link_blocks)) {
-    // Divide links into two blocks.
-    $count = ceil(count($link_blocks) / 2);
-    $link_blocks = array_chunk($link_blocks, $count);
-  }
-  $theme = isset($types[$type]['theme']) ? $types[$type]['theme'] : 'pm_dashboard';
-  $content = theme($theme, $link_blocks);
-
-  return $content;
-}
 
 /**
  * Return links array for the pm dashboard.
@@ -342,45 +304,6 @@ function pm_pm_dashboard_links($type) {
 }
 
 /**
- * Implements hook_pm_dashboard_types().
- */
-function pm_pm_dashboard_types() {
-  return array(
-    'page' => array(
-      // URL: menu path which should be used, if omitted no menu item will be
-      // created.
-      'url'         => 'pm',
-      // Title: Required. Title of menu item, page title and title for the pm
-      // settings.
-      'title'       => t('Project Management'),
-      // Description: Required. Description for the fieldset in the pm
-      // settings.
-      'description' => t('You can disable or reorder the links from the !dashboard here', array(
-        '!dashboard' => l(t('dashboard'), 'pm'),
-      )),
-      // Theme: theme which should be used to display this dashboard.
-      // If omitted uses standard theme pm_dashboard.
-      'theme'       => 'pm_dashboard',
-      // Menu_options: This array will be merged into the default menu item
-      // array. If the menu should have special access arguments, title, it can
-      // be set here.
-      // Page callback and page argument shouldn't been overwritten.
-      'menu_options' => array(
-        'title'       => t('Project Management'),
-        'description' => t('Project Management dashboard'),
-      ),
-    ),
-    'block' => array(
-      'title'       => t('Dashboard block'),
-      'description' => t('You can disable or reorder the links from the dashboard !block here', array(
-        '!block' => l(t('block'), 'admin/build/block'),
-      )),
-      'theme'       => 'pm_dashboard_block',
-    ),
-  );
-}
-
-/**
  * Implements hook_block_info().
  */
 function pm_block_info() {
@@ -402,8 +325,18 @@ function pm_block_view($delta = '') {
   switch ($delta) {
     case 'pm_menu':
       $block = array(
-        'subject' => 'Project Management',
-        'content' => pm_dashboard('block'),
+        'subject' => 'Project Management Menu',
+        'content' => array(
+          'quick_links' => array(
+            '#theme'  => 'pm_dashboard_block',
+            '#links' => pm_dashboard_get_links(TRUE, 'block'),
+            '#attached' => array(
+              'css' => array(
+                drupal_get_path('module', 'pm') . '/pm-dashboard.css',
+              ),
+            ),
+          ),
+        ),
       );
       break;
   }
