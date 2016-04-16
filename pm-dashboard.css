@@ -133,3 +133,7 @@ div.pmdashboard {
 .pm-use-storm-icons .pmcomponent i.fa-ticket {
   background-image: url(images/tickets.png);
 }
+
+.pm-use-storm-icons .pmcomponent i.fa-users {
+  background-image: url(images/teams.png);
+}

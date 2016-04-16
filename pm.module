@@ -76,6 +76,7 @@ function pm_menu() {
     'file' => 'includes/pm.pages.inc',
   );
 
+  // Configuration group.
   $items['admin/config/pm'] = array(
     'title' => 'Project Management',
     'description' => 'Project Management settings',
@@ -85,9 +86,10 @@ function pm_menu() {
     'file path' => drupal_get_path('module', 'system'),
   );
 
+  // Project Management settings page (tabs defined below).
   $items['admin/config/pm/pm'] = array(
-    'title' => 'Project Management',
-    'description' => 'Project Management general settings.',
+    'title' => 'General Settings',
+    'description' => 'Configure <em>Project Management</em> behaviour across components.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('pm_admin_settings'),
     'access arguments' => array('Project Management: access administration pages'),
@@ -96,9 +98,17 @@ function pm_menu() {
     'file path' => drupal_get_path('module', 'pm') . '/includes',
   );
 
-  $items['admin/config/pm/pm_permission'] = array(
+  // Basic settings tab (default).
+  $items['admin/config/pm/pm/basic'] = array(
+    'title' => 'Basic Settings',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+
+  // Permissions tab.
+  $items['admin/config/pm/pm/permissions'] = array(
     'title' => 'Permissions',
     'description' => 'Configure access controls based on PM fields.',
+    'type' => MENU_LOCAL_TASK,
     'page callback' => 'drupal_get_form',
     'page arguments' => array('pm_permission_admin'),
     'access arguments' => array('administer pm permission'),
