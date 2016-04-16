@@ -23,8 +23,8 @@ function pm_views_data() {
 
   // The parent_nid field.
   $data['pm_index']['parent_nid'] = array(
-    'title' => t('PM Organization'),
-    'help' => t('PM Organization the content is attached to.'),
+    'title' => t('PM Parents'),
+    'help' => t('All parents that the content references (including indirect parents through other content).'),
     'relationship' => array(
       'base' => 'node',
       'field' => 'parent_nid',
