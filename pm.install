@@ -16,6 +16,46 @@ function pm_uninstall() {
 }
 
 /**
+ * Implements hook_schema().
+ */
+function pm_schema() {
+  $schema['pm_index'] = array(
+    'description' => 'Maintains denormalized information about pm parent relationships.',
+    'fields' => array(
+      'nid' => array(
+        'description' => 'The {node}.nid this record tracks.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'parent_nid' => array(
+        'description' => 'The parent nid.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'indexes' => array(
+      'nid' => array('nid'),
+      'parent_nid' => array('parent_nid'),
+    ),
+    'foreign keys' => array(
+      'tracked_node' => array(
+        'table' => 'node',
+        'columns' => array('nid' => 'nid'),
+      ),
+      'parent_nid' => array(
+        'table' => 'node',
+        'columns' => array('parent_nid' => 'nid'),
+      ),
+    ),
+  );
+  return $schema;
+}
+
+/**
  * Implements hook_update_last_removed().
  */
 function pm_update_last_removed() {
@@ -110,5 +150,56 @@ function pm_update_7300() {
     $new_variable = 'pm_permission' . $str;
     variable_set($new_variable, variable_get($old_variable, ''));
     variable_del($old_variable);
+  }
+}
+
+/**
+ * Create and populate pm_index table.
+ */
+function pm_update_7301(&$sandbox) {
+  $schema = module_invoke('pm', 'schema');
+  db_create_table('pm_index', $schema['pm_index']);
+
+  // Retrieve all records.
+  $result = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->orderBy('n.nid', 'ASC')
+    ->execute();
+
+  // Use the sandbox to store the information needed to track progression.
+  if (!isset($sandbox['progress'])) {
+    $sandbox['progress'] = 0;
+    $sandbox['max'] = $result->rowCount();
+    $sandbox['messages'] = array();
+    $sandbox['current_node'] = -1;
+  }
+
+  // Process nodes by groups of 50.
+  $limit = 50;
+
+  // Retrieve the next group of nids.
+  $query = db_select('node', 'n')->extend('PagerDefault');
+
+  $result = $query->fields('n', array('nid'))
+      ->orderBy('n.nid', 'ASC')
+      ->condition('n.nid', $sandbox['current_node'], '>')
+      ->limit($limit)->execute();
+
+  foreach ($result as $row) {
+    $node = node_load($row->nid);
+    // Rebuild the index for each node.
+    pm_delete_node_index($node);
+    pm_build_node_index($node);
+    // Update our progress information.
+    $sandbox['progress']++;
+    $sandbox['current_node'] = $row->nid;
+  }
+
+  $sandbox['#finished'] = ($sandbox['progress'] >= $sandbox['max'])
+    ? TRUE
+    : ($sandbox['progress'] / $sandbox['max']);
+
+  if ($sandbox['#finished']) {
+    return t('Project Management index has been created and populated.');
   }
 }
