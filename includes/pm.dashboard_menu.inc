@@ -84,7 +84,6 @@ function pm_dashboard_menu_admin($form, $form_state, $type) {
   $icon_picker = module_exists('fontawesome_iconpicker') ? 'fontawesome_iconpicker_textfield' : 'textfield';
   // Loop through the activites and add them to the form.
   if (!empty($menu_items)) {
-    uasort($menu_items, 'drupal_sort_weight');
     foreach ($menu_items as $key => $item) {
       $table[$key]['#menu_item'] = (array)$item;
       $table[$key]['custom'] = array(
@@ -204,7 +203,11 @@ function pm_dashboard_menu_get_links($type) {
         $links[$id] = $item;
       }
     }
+    if ($hide_inactive AND $item['status'] == FALSE) {
+      unset($links[$id]);
+    }
   }
+  uasort($links, 'drupal_sort_weight');
   return $links;
 }
 
