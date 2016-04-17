@@ -135,7 +135,7 @@ function theme_pm_dashboard_menu_entry_table($form) {
           'data' => array(
             drupal_render($form[$key]['title']),
             drupal_render($form[$key]['path']) .
-            drupal_render($form[$key]['add_link']),
+            drupal_render($form[$key]['extra_link']),
             drupal_render($form[$key]['icon']),
             drupal_render($form[$key]['weight']),
             drupal_render($form[$key]['status']),

@@ -42,7 +42,12 @@ function pm_dashboard_menu_list() {
  */
 function pm_dashboard_menu_admin($form, $form_state, $type) {
   drupal_set_title('Dashboard Menu : ' . $type);
-  $menu_items = module_invoke_all('pm_dashboard_links', $type);
+  $menu_items = pm_dashboard_menu_get_links($type);
+
+  $form['type'] = array(
+    '#type' => 'value',
+    '#value' => $type,
+  );
 
   $form['items'] = array(
     '#type' => 'fieldset',
@@ -71,7 +76,7 @@ function pm_dashboard_menu_admin($form, $form_state, $type) {
       'status' => TRUE,
       'delete' => FALSE,
       'weight' => 0,
-      'add_link' => '',
+      'extra_link' => '',
       'custom' => TRUE,
     );
   }
@@ -81,22 +86,14 @@ function pm_dashboard_menu_admin($form, $form_state, $type) {
   if (!empty($menu_items)) {
     uasort($menu_items, 'drupal_sort_weight');
     foreach ($menu_items as $key => $item) {
-      $item['add_link'] = '';
-      $item['delete'] = FALSE;
-      $item['status'] = TRUE;
-      $item['custom'] = isset($item['custom']) ? $item['custom'] : FALSE;
-      if ($item['delete']) {
-        continue;
-      }
-
       $table[$key]['#menu_item'] = (array)$item;
       $table[$key]['custom'] = array(
         '#type' => 'value',
         '#value' => $item['custom'],
       );
-      $table[$key]['item'] = array(
+      $table[$key]['id'] = array(
         '#type' => 'value',
-        '#value' => $item,
+        '#value' => $item['id'],
       );
       $table[$key]['title'] = array(
         '#type' => 'textfield',
@@ -116,10 +113,10 @@ function pm_dashboard_menu_admin($form, $form_state, $type) {
           'placeholder' => t('Main Link'),
         ),
       );
-      $table[$key]['add_link'] = array(
+      $table[$key]['extra_link'] = array(
         '#type' => 'textfield',
         '#size' => '40',
-        '#default_value' => $item['add_link'],
+        '#default_value' => $item['extra_link'],
         '#access' => $item['custom'],
         '#attributes' => array(
           'placeholder' => t('Sub link (add item)'),
@@ -169,6 +166,71 @@ function pm_dashboard_menu_admin_add_new($form, &$form_state) {
  * Submit callback for dashboard_menu_admin form.
  */
 function pm_dashboard_menu_admin_submit($form, $form_state) {
-  // @todo: Handle saving.
+  $type = $form_state['values']['type'];
+  $links = $form_state['values']['items'];
+  dpm($links);
+  pm_dashboard_menu_save_links($type, $links);
 }
 
+/**
+ * Get all menu defined for particular type.
+ */
+function pm_dashboard_menu_get_links($type) {
+  $links = array();
+  $menu_items = module_invoke_all('pm_dashboard_links', $type);
+  if (!empty($menu_items)) {
+    foreach ($menu_items as $item) {
+      $id = $item['path'];
+      $links[$id] = array(
+        'custom' => FALSE,
+        'title' => $item['title'],
+        'icon' => $item['icon'],
+        'path' => $item['path'],
+        'weight' => $item['weight'],
+        'extra_link' => ($item['add_type']) ? 'node/add/' . $item['add_type'] : '',
+        'status' => TRUE,
+        'id' => $id,
+      );
+    }
+  }
+  $menu_items = variable_get('pm_dashboard_links_' . $type, array());
+  if (!empty($menu_items)) {
+    foreach ($menu_items as $id => $item) {
+      if ($item['custom'] == FALSE) {
+        $links[$id]['status'] = $item['status'];
+        $links[$id]['weight'] = $item['weight'];
+      }
+      else {
+        $links[$id] = $item;
+      }
+    }
+  }
+  return $links;
+}
+
+/**
+ * Save link specific settings for dashboard menu item.
+ */
+function pm_dashboard_menu_save_links($type, $items) {
+  $menu_items = variable_get('pm_dashboard_links_' . $type, array());
+  foreach ($items as $item) {
+    if (!empty($item['delete'])) {
+      unset($menu_items[$item['id']]);
+      drupal_set_message(t('Deleting menu with id %id', array('%id' => $item['id'])), 'warning');
+      continue;
+    }
+
+    if ($item['custom'] == FALSE) {
+      $item['id'] = $item['path'];
+    }
+
+    if (empty($item['id'])) {
+      $item['id'] = uniqid('pm_dashboard_menu_custom_');
+      $menu_items[$item['id']] = $item;
+    }
+    else {
+      $menu_items[$item['id']] = $item;
+    }
+  }
+  variable_set('pm_dashboard_links_' . $type,  $menu_items);
+}
