@@ -160,6 +160,16 @@ function pm_theme() {
       'variables' => array('link_blocks' => array()),
       'template' => 'templates/pm.dashboard_menu.link',
     ),
+    'pm_icon_none' => array(
+      'file'      => 'pm.theme.inc',
+      'variables' => array('title' => ''),
+      'template' => 'templates/pm.icon.none',
+    ),
+    'pm_icon' => array(
+      'file'      => 'pm.theme.inc',
+      'variables' => array('title' => '', 'icon' => ''),
+      'template' => 'templates/pm.icon',
+    ),
     'pm_list_default' => array(
       'template' => 'pm-list-default',
       'variables' => array('value' => NULL, 'key' => NULL, 'field_name' => NULL),
@@ -456,28 +466,20 @@ function _pm_icon_urlencode_helper($params, $org_key = "") {
  * Provides a Project Management icon.
  */
 function pm_icon($icon, $title) {
-  // Running check_plain() on these variables means that we can call pm_icon()
-  // without further sanitising.
-  $icon = check_plain($icon);
-  $title = check_plain($title);
-
-  $icon = str_replace(' ', '_', $icon);
-
   if (variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR) !== PM_ICON_SET_NO_ICON) {
-    $fa_icon = pm_helper_get_fa_icon($icon, '');
-
-    // @todo: Should we force default? what if other module handles the icon?
-    if (empty($fa_icon)) {
-      return pm_icon_default($icon, $title);
-    }
-    else {
-      return $fa_icon;
-    }
+    $output = array(
+      '#theme' => 'pm_icon',
+      '#title' => $title,
+      '#icon' => $icon,
+    );
   }
   else {
-    // Icons set to not display.
-    return '<span class="pm-no-icon">' . $title . '</span>';
+    $output = array(
+      '#theme' => 'pm_icon_none',
+      '#title' => $title,
+    );
   }
+  return drupal_render($output);
 }
 
 /**
@@ -535,12 +537,14 @@ function pm_preprocess_html(&$vars) {
 /**
  * Helper to attach fontawesome icons.
  */
-function pm_helper_get_fa_icon($key, $default_class = 'fa_wrench') {
-  if ((variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR) == PM_ICON_SET_NO_ICON)) {
-    return '';
-  }
-  $key = str_replace(' ', '_', $key);
+function pm_helper_get_fa_icon($original_key, $default_class = 'fa_wrench') {
+  $context = array(
+    'original_key' => $original_key,
+    'default_class' => $default_class,
+  );
+  $key = str_replace(' ', '_', $original_key);
   $key = str_replace('-', '_', $key);
+
   switch ($key) {
     case 'pmconfiguration':
       $class = 'fa-gear';
@@ -655,10 +659,12 @@ function pm_helper_get_fa_icon($key, $default_class = 'fa_wrench') {
       break;
 
     default:
-      // @todo: Discuss how to handle other keys.
-      return '';
+      $class = $original_key;
   }
-  return "<i class='fa pm-icon $class fa-fw'></i>";
+
+  drupal_alter('pm_icon_classes', $class, $key, $context);
+
+  return $class;
 }
 
 /**

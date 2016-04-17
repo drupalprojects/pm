@@ -61,6 +61,23 @@ function theme_pm_dashboard_block($vars) {
 }
 
 /**
+ * Implements hook_preprocess_pm_icon().
+ */
+function pm_preprocess_pm_icon(&$vars) {
+  $icon = check_plain($vars['icon']);
+  $title = check_plain($vars['title']);
+  $icon = str_replace(' ', '_', $icon);
+  $vars['class'] = pm_helper_get_fa_icon($icon);
+}
+
+/**
+ * Implements hook_preprocess_pm_icon_none().
+ */
+function pm_preprocess_pm_icon_none(&$vars) {
+  $vars['title'] = check_plain($vars['title']);
+}
+
+/**
  * Implements hook_preprocess_theme().
  */
 function pm_preprocess_pm_dashboard_link(&$vars) {
@@ -76,13 +93,11 @@ function pm_preprocess_pm_dashboard_link(&$vars) {
   $vars['extra_link'] = NULL;
   $vars['extra_link_icon'] = NULL;
 
-  if (variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR) !== PM_ICON_SET_NO_ICON) {
-    $vars['icon'] = pm_helper_get_fa_icon($link_array['icon']);
-  }
+  $vars['icon'] = pm_icon($link_array['icon'], '');
   // Add extra link if present.
   if (!empty($link_array['extra_link'])) {
     $vars['extra_link'] = $link_array['extra_link'];
-    $vars['extra_link_icon'] = pm_helper_get_fa_icon('application_add');
+    $vars['extra_link_icon'] = pm_icon('application_add', t('+Add'));
   }
 }
 
