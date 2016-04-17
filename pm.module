@@ -116,6 +116,18 @@ function pm_menu() {
     'file path' => drupal_get_path('module', 'pm') . '/includes',
   );
 
+  // Dashboard Menu tab.
+  $items['admin/config/pm/pm/dashboard-menu'] = array(
+    'title' => 'Dashboard Menu',
+    'description' => 'Manage Dashboard Menu.',
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pm_dashboard_menu_list'),
+    'access arguments' => array('administer pm permission'),
+    'file' => 'pm.dashboard_menu.inc',
+    'file path' => drupal_get_path('module', 'pm') . '/includes',
+  );
+
   return $items;
 }
 
