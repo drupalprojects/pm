@@ -113,3 +113,66 @@ function theme_pm_dashboard_link($vars) {
   }
   return $content;
 }
+
+
+/**
+ * Theme the pm entry table as a sortable list of menu items.
+ */
+function theme_pm_dashboard_menu_entry_table($form) {
+  $form = reset($form);
+  // For some reason form comes in an empty array...
+  if(!empty($form)){
+    $rows = array();
+    // Take all the form elements and format theme for theme_table
+    foreach (element_children($form) as $key) {
+      if (isset($form[$key]['title'])) {
+        // Add the table drag functionality
+        drupal_add_tabledrag('widget-menu-table', 'order', 'sibling', 'menu-weight');
+        // Add class to group weight fields for drag and drop.
+        $form[$key]['weight']['#attributes']['class'] = array('menu-weight');
+        // array to store row data
+        $rows[] = array(
+          'data' => array(
+            drupal_render($form[$key]['title']),
+            drupal_render($form[$key]['path']) .
+            drupal_render($form[$key]['add_link']),
+            drupal_render($form[$key]['icon']),
+            drupal_render($form[$key]['weight']),
+            drupal_render($form[$key]['status']),
+            drupal_render($form[$key]['delete']),
+          ),
+          'class' => array('draggable'),
+        );
+      }
+    }
+    // The table headers
+    $header = array(
+      t('Title'),
+      t('Path (main link and sub links)'),
+      t('Icon'),
+      t('weight'),
+      t('Enabled'),
+      t('Delete'),
+    );
+
+    $table = array(
+      'header' => $header,
+      'rows' => $rows,
+      'attributes' => array(
+        'id' => array('widget-menu-table'),
+        'max-width' => '100%',
+      ),
+    );
+    // Theme it as a table
+    $output = theme('table', $table);
+
+    // Render the form
+    $output .= drupal_render_children($form);
+  }
+  else {
+    $output = drupal_render_children($form);
+  }
+
+  // Return the themed activities table
+  return $output;
+}

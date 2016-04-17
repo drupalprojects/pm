@@ -163,6 +163,10 @@ function pm_theme() {
       'template' => 'pm-list-default',
       'variables' => array('value' => NULL, 'key' => NULL, 'field_name' => NULL),
     ),
+    'pm_dashboard_menu_entry_table' => array(
+      'file' => 'pm.theme.inc',
+      'render element' => 'element',
+    ),
   );
 }
 
