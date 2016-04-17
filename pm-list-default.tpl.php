@@ -5,5 +5,5 @@
  */
 ?>
 <div class="pm-list-default-wrapper pm-list-field-name-<?php echo $field_name ?>">
-  <?php echo pm_helper_get_fa_icon($key); ?>&nbsp;<span class="value"><?php echo $value; ?></span>
+  <span class="value pm-no-wrap"><?php echo pm_icon($key, ''); ?>&nbsp;<?php echo $value; ?></span>
 </div>

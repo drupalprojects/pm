@@ -111,3 +111,7 @@ span.pm-no-icon {
 .pm-use-storm-icons i.fa.fa-circle.pm-status-danger {
   background-image: url(icons/priority_4-urgent.png);
 }
+
+.pm-no-wrap {
+  white-space: nowrap;
+}

@@ -171,6 +171,7 @@ function pm_theme() {
       'template' => 'templates/pm.icon',
     ),
     'pm_list_default' => array(
+      'file'      => 'pm.theme.inc',
       'template' => 'pm-list-default',
       'variables' => array('value' => NULL, 'key' => NULL, 'field_name' => NULL),
     ),

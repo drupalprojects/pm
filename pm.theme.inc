@@ -61,6 +61,13 @@ function theme_pm_dashboard_block($vars) {
 }
 
 /**
+ * Implements hook_preprocess_pm_list_default().
+ */
+function pm_preprocess_pm_list_default(&$vars) {
+  $vars['value'] = str_replace(' ', '&nbsp;', $vars['value']);
+}
+
+/**
  * Implements hook_preprocess_pm_icon().
  */
 function pm_preprocess_pm_icon(&$vars) {
