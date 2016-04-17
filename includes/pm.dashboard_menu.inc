@@ -36,3 +36,139 @@ function pm_dashboard_menu_list() {
   );
 }
 
+
+/**
+ * Generates a table of recommended modules.
+ */
+function pm_dashboard_menu_admin($form, $form_state, $type) {
+  drupal_set_title('Dashboard Menu : ' . $type);
+  $menu_items = module_invoke_all('pm_dashboard_links', $type);
+
+  $form['items'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Menu items'),
+    '#tree' => TRUE,
+    '#theme' => 'pm_dashboard_menu_entry_table'
+  );
+
+  $form['actions']['add'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add New item'),
+    '#name' => 'add_new_item',
+    '#submit' => array('pm_dashboard_menu_admin_add_new'),
+  );
+
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+  );
+
+  if (isset($form_state['values']['add_new_item'])) {
+    $menu_items[] = array(
+      'title' => '',
+      'path' => '',
+      'icon' => '',
+      'status' => TRUE,
+      'delete' => FALSE,
+      'weight' => 0,
+      'add_link' => '',
+      'custom' => TRUE,
+    );
+  }
+  $table = &$form['items'];
+  $icon_picker = module_exists('fontawesome_iconpicker') ? 'fontawesome_iconpicker_textfield' : 'textfield';
+  // Loop through the activites and add them to the form.
+  if (!empty($menu_items)) {
+    uasort($menu_items, 'drupal_sort_weight');
+    foreach ($menu_items as $key => $item) {
+      $item['add_link'] = '';
+      $item['delete'] = FALSE;
+      $item['status'] = TRUE;
+      $item['custom'] = isset($item['custom']) ? $item['custom'] : FALSE;
+      if ($item['delete']) {
+        continue;
+      }
+
+      $table[$key]['#menu_item'] = (array)$item;
+      $table[$key]['custom'] = array(
+        '#type' => 'value',
+        '#value' => $item['custom'],
+      );
+      $table[$key]['item'] = array(
+        '#type' => 'value',
+        '#value' => $item,
+      );
+      $table[$key]['title'] = array(
+        '#type' => 'textfield',
+        '#size' => '30',
+        '#default_value' => check_plain($item['title']),
+        '#disabled' => !$item['custom'],
+        '#attributes' => array(
+          'placeholder' => t('Title'),
+        ),
+      );
+      $table[$key]['path'] = array(
+        '#type' => 'textfield',
+        '#size' => '40',
+        '#default_value' => $item['path'],
+        '#disabled' => !$item['custom'],
+        '#attributes' => array(
+          'placeholder' => t('Main Link'),
+        ),
+      );
+      $table[$key]['add_link'] = array(
+        '#type' => 'textfield',
+        '#size' => '40',
+        '#default_value' => $item['add_link'],
+        '#access' => $item['custom'],
+        '#attributes' => array(
+          'placeholder' => t('Sub link (add item)'),
+        ),
+      );
+      $table[$key]['icon'] = array(
+        '#type' => $icon_picker,
+        '#size' => '15',
+        '#default_value' => $item['icon'],
+        '#disabled' => !$item['custom'],
+      );
+      // The weight (this is for the tabledrag we'll add in the theme function
+      $table[$key]['weight'] = array(
+        '#type' => 'textfield',
+        '#size' => 2,
+        '#delta' => 10,
+        '#default_value' => $item['weight'],
+      );
+      // Is this activity enabled?
+      $table[$key]['status'] = array(
+        '#type' => 'checkbox',
+        '#default_value' => $item['status'] ? TRUE : FALSE,
+      );
+      // Is this activity enabled?
+      $table[$key]['delete'] = array(
+        '#type' => 'checkbox',
+        '#default_value' => FALSE,
+        '#access' => $item['custom'],
+      );
+    }
+  }
+  return $form;
+}
+
+/**
+ * Add new item form callback.
+ */
+function pm_dashboard_menu_admin_add_new($form, &$form_state) {
+  if (isset($form_state['values']['add_new_item'])) {
+    $form_state['rebuild'] = TRUE;
+    return;
+  }
+  $form_state['redirect'] = current_path();
+}
+
+/**
+ * Submit callback for dashboard_menu_admin form.
+ */
+function pm_dashboard_menu_admin_submit($form, $form_state) {
+  // @todo: Handle saving.
+}
+
