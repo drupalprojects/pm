@@ -158,6 +158,7 @@ function pm_theme() {
     'pm_dashboard_link' => array(
       'file'      => 'pm.theme.inc',
       'variables' => array('link_blocks' => array()),
+      'template' => 'templates/pm.dashboard_menu.link',
     ),
     'pm_list_default' => array(
       'template' => 'pm-list-default',
@@ -239,49 +240,8 @@ function pm_entity_view($entity, $type, $view_mode, $langcode) {
  *   Dashboard links.
  */
 function pm_dashboard_get_links($check_active = TRUE, $type = 'page') {
-
-  $links = module_invoke_all('pm_dashboard_links', $type);
-
-  if (!empty($links)) {
-
-    $default_dashboard_settings = variable_get('pm_' . $type . 'dashboard_settings', array());
-
-    $weight = 0;
-    foreach ($links as $key => &$link_array) {
-
-      // Active check.
-      if ($check_active && isset($default_dashboard_settings[$link_array['path']]['active']) && $default_dashboard_settings[$link_array['path']]['active'] == FALSE) {
-        unset($links[$key]);
-        continue;
-      }
-
-      // Module exist check.
-      if (isset($link_array['destination_module']) && !module_exists($link_array['destination_module'])) {
-        unset($links[$key]);
-        continue;
-      }
-
-      // Access check.
-      if (!drupal_valid_path($link_array['path'])) {
-        unset($links[$key]);
-      }
-
-      if (isset($default_dashboard_settings[$link_array['path']]['weight'])) {
-        $link_array['weight'] = $default_dashboard_settings[$link_array['path']]['weight'];
-      }
-      elseif (!isset($link_array['weight'])) {
-        $link_array['weight'] = $weight;
-        $weight++;
-      }
-    }
-
-    // Hook for altering links.
-    drupal_alter('pm_dashboard_links', $links, $type);
-
-    // Sort links by weight.
-    uasort($links, '_pm_dashboard_sort_links');
-
-  }
+  module_load_include('inc', 'pm', 'includes/pm.dashboard_menu');
+  $links = pm_dashboard_menu_get_links($type, $check_active);
   return $links;
 }
 

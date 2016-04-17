@@ -61,59 +61,30 @@ function theme_pm_dashboard_block($vars) {
 }
 
 /**
- * Provides HTML for Project Management links.
+ * Implements hook_preprocess_theme().
  */
-function theme_pm_dashboard_link($vars) {
+function pm_preprocess_pm_dashboard_link(&$vars) {
   $link_array = $vars['link_blocks'];
-  $content = '';
-
-  // Default icon.
-  if (empty($link_array['icon'])) {
-    $dt_id = 'pmexpenses';
-  }
-  else {
-    $dt_id = $link_array['icon'];
-  }
-
   $params = array();
   if (!empty($link_array['nid'])) {
     $params_key = $link_array['node_type'] . '_nid';
     $params['query'] = array($params_key => $link_array['nid']);
   }
+  $vars['path'] = url($link_array['path'], $params);
+  $vars['title'] = $link_array['title'];
+  $vars['icon'] = NULL;
+  $vars['extra_link'] = NULL;
+  $vars['extra_link_icon'] = NULL;
 
-  $link = l($link_array['title'], $link_array['path'], $params);
-
-  // ADD PLUS SIGN (node/add)
-  if (!empty($link_array['add_type'])) {
-    $item = new stdClass();
-    $item->type = $link_array['add_type'];
-    if (empty($link_array['params'])) {
-      $link_array['params'] = array();
-    }
-    $link .= pm_icon_add('node/add/' . str_replace('_', '-', $link_array['add_type']), $item, $link_array['params']);
+  if (variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR) !== PM_ICON_SET_NO_ICON) {
+    $vars['icon'] = pm_helper_get_fa_icon($link_array['icon']);
   }
-
-  if (empty($link_array['nid']) || 0 == $link_array['nid']) {
-    if (variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR) !== PM_ICON_SET_NO_ICON) {
-      $content .= '<dt class="pmcomponent">' . pm_helper_get_fa_icon($dt_id);
-    }
-    else {
-      $content .= '<dt class="pmcomponent">';
-    }
-    $content .= $link;
-    $content .= '</dt>';
+  // Add extra link if present.
+  if (!empty($link_array['extra_link'])) {
+    $vars['extra_link'] = $link_array['extra_link'];
+    $vars['extra_link_icon'] = pm_helper_get_fa_icon('application_add');
   }
-  else {
-    $content = array(
-      '#prefix' => (variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR) !== PM_ICON_SET_NO_ICON) ? '<dt class="pmcomponent">' . pm_helper_get_fa_icon($dt_id) : '<dt class="pmcomponent">',
-      '#suffix' => '</dt>',
-      '#value' => $link,
-      '#weight' => $link_array['weight'],
-    );
-  }
-  return $content;
 }
-
 
 /**
  * Theme the pm entry table as a sortable list of menu items.

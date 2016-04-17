@@ -167,14 +167,13 @@ function pm_dashboard_menu_admin_add_new($form, &$form_state) {
 function pm_dashboard_menu_admin_submit($form, $form_state) {
   $type = $form_state['values']['type'];
   $links = $form_state['values']['items'];
-  dpm($links);
   pm_dashboard_menu_save_links($type, $links);
 }
 
 /**
  * Get all menu defined for particular type.
  */
-function pm_dashboard_menu_get_links($type) {
+function pm_dashboard_menu_get_links($type, $hide_inactive = FALSE) {
   $links = array();
   $menu_items = module_invoke_all('pm_dashboard_links', $type);
   if (!empty($menu_items)) {
