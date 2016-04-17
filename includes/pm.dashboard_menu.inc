@@ -75,9 +75,10 @@ function pm_dashboard_menu_admin($form, $form_state, $type) {
       'icon' => '',
       'status' => TRUE,
       'delete' => FALSE,
-      'weight' => 0,
+      'weight' => 10000,
       'extra_link' => '',
       'custom' => TRUE,
+      'id' => NULL,
     );
   }
   $table = &$form['items'];
