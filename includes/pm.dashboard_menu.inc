@@ -194,6 +194,11 @@ function pm_dashboard_menu_get_links($type, $hide_inactive = FALSE) {
   $menu_items = variable_get('pm_dashboard_links_' . $type, array());
   if (!empty($menu_items)) {
     foreach ($menu_items as $id => $item) {
+      // Hide the item if only active items have been requeted.
+      if ($hide_inactive AND $item['status'] == FALSE) {
+        unset($links[$id]);
+        continue;
+      }
       if ($item['custom'] == FALSE) {
         $links[$id]['status'] = $item['status'];
         $links[$id]['weight'] = $item['weight'];
@@ -201,9 +206,6 @@ function pm_dashboard_menu_get_links($type, $hide_inactive = FALSE) {
       else {
         $links[$id] = $item;
       }
-    }
-    if ($hide_inactive AND $item['status'] == FALSE) {
-      unset($links[$id]);
     }
   }
   uasort($links, 'drupal_sort_weight');
