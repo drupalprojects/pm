@@ -19,14 +19,14 @@ function pm_menu_list() {
 
   $rows[] = array(
     t('Page'),
-    t('Drupal PM Dashboard Menu shown on Page'),
-    l('Manage', 'admin/config/pm/pm/dashboard-menu/page'),
+    t('This menu will be displayed on your site as a page at path !path', array('!path' => l('pm', 'pm'))),
+    l('Manage', 'admin/config/pm/pm/menu/page'),
   );
 
   $rows[] = array(
     t('Block'),
-    t('Drupal PM Dashboard Menu shown in Block'),
-    l('Manage', 'admin/config/pm/pm/dashboard-menu/block'),
+    t('This menu can be positioned anywhere on your site as a block. Configure positioning using !link', array('!link' => l('this block configuration page', 'admin/structure/block/manage/pm/pm_menu/configure'))),
+    l('Manage', 'admin/config/pm/pm/menu/block'),
   );
 
   return array(
