@@ -28,14 +28,8 @@ function pm_get_parent_nid_by_type($node, $parent_type, $max_depth = NULL) {
   }
   if ($max_depth) {
     --$max_depth;
-    $bundle_name = $node->type;
-    $field_name = _pm_permission_get_field_name($bundle_name, 'parent');
-    if (empty($field_name)) {
-      return FALSE;
-    }
     try {
-      $wrapper = entity_metadata_wrapper('node', $node);
-      $n = $wrapper->$field_name->value();
+      $n = pm_get_parent_node($node);
       if (empty($n)) {
         return FALSE;
       }
@@ -52,5 +46,35 @@ function pm_get_parent_nid_by_type($node, $parent_type, $max_depth = NULL) {
   }
   else {
     return FALSE;
+  }
+}
+
+/**
+ * Recursively hunts and find out the first parent node.
+ *
+ * @param object $node
+ *   The node for which the parent to be found.
+ *
+ * @return mixed
+ *   nid of the parent node if found, FALSE otherwise.
+ */
+function pm_get_parent_node($node) {
+  $bundle_name = $node->type;
+  $field_name = _pm_permission_get_field_name($bundle_name, 'parent');
+  if (empty($field_name)) {
+    return FALSE;
+  }
+  try {
+    $wrapper = entity_metadata_wrapper('node', $node);
+    $n = $wrapper->$field_name->value();
+    if (empty($n)) {
+      return FALSE;
+    }
+    else {
+      return $n;
+    }
+  }
+  catch (Exception $e) {
+    _pm_permission_watchdog_log($e);
   }
 }

@@ -49,19 +49,25 @@ function pm_build_node_index($node) {
     module_load_include('inc', 'pm', 'includes/pm.parent');
     // Hunt for PM Organization.
     // @todo Hunt for all parents.
-    $parent_nid = pm_get_parent_nid_by_type($node, 'pmorganization');;
-
-    // Insert index entries for all the node's terms.
-    if (!empty($parent_nid)) {
-      $query = db_insert('pm_index')->fields(array(
-        'nid',
-        'parent_nid',
-      ));
-      $query->values(array(
-        'nid' => $node->nid,
-        'parent_nid' => $parent_nid,
-      ));
-      $query->execute();
-    }
+    $parent = pm_get_parent_node($node);
+    pm_write_node_index($node, $parent);
   }
+}
+
+function pm_write_node_index($node, $parent) {
+  // Insert index entries for all the node's terms.
+  if ($parent <> FALSE) {
+    $query = db_insert('pm_index')->fields(array(
+      'nid',
+      'parent_nid',
+    ));
+    $query->values(array(
+      'nid' => $node->nid,
+      'parent_nid' => $parent->nid,
+    ));
+    $query->execute();
+    
+    $parent = pm_get_parent_node($parent);
+    pm_write_node_index();
+  }    
 }
