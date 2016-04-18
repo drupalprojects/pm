@@ -498,7 +498,7 @@ function _pm_permission_get_belonged_id($node, $type, $belonged) {
   switch ($belonged) {
     case 'Organization':
       module_load_include('inc', 'pm', 'includes/pm.parent');
-      $belonged_nid = pm_permission_get_parent_nid_of_node($node, 'pmorganization', 4);
+      $belonged_nid = pm_permission_get_parent_nid_of_node($node, 'pmorganization');
       break;
 
     default:
