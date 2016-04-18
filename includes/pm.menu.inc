@@ -100,7 +100,7 @@ function pm_menu_admin($form, $form_state, $type) {
       );
       $table[$key]['title'] = array(
         '#type' => 'textfield',
-        '#size' => '30',
+        '#size' => '20',
         '#default_value' => check_plain($item['title']),
         '#disabled' => !$item['custom'],
         '#attributes' => array(
@@ -109,7 +109,7 @@ function pm_menu_admin($form, $form_state, $type) {
       );
       $table[$key]['path'] = array(
         '#type' => 'textfield',
-        '#size' => '40',
+        '#size' => '20',
         '#default_value' => $item['path'],
         '#disabled' => !$item['custom'],
         '#attributes' => array(
@@ -118,7 +118,7 @@ function pm_menu_admin($form, $form_state, $type) {
       );
       $table[$key]['extra_link'] = array(
         '#type' => 'textfield',
-        '#size' => '40',
+        '#size' => '20',
         '#default_value' => $item['extra_link'],
         '#access' => $item['custom'],
         '#attributes' => array(
