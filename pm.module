@@ -116,26 +116,24 @@ function pm_menu() {
     'file path' => drupal_get_path('module', 'pm') . '/includes',
   );
 
-  // Dashboard Menu tab.
-  $items['admin/config/pm/pm/dashboard-menu'] = array(
-    'title' => 'Dashboard Menu',
-    'description' => 'Manage Dashboard Menu.',
+  $items['admin/config/pm/pm/menu'] = array(
+    'title' => 'Menu',
+    'description' => 'Manage menu exposed in block and on dashboard.',
     'type' => MENU_LOCAL_TASK,
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('pm_dashboard_menu_list'),
+    'page arguments' => array('pm_menu_list'),
     'access arguments' => array('administer pm permission'),
-    'file' => 'pm.dashboard_menu.inc',
+    'file' => 'pm.menu.inc',
     'file path' => drupal_get_path('module', 'pm') . '/includes',
   );
 
-  // Dashboard Menu tab.
-  $items['admin/config/pm/pm/dashboard-menu/%'] = array(
-    'title' => 'Dashboard Menu',
+  $items['admin/config/pm/pm/menu/%'] = array(
+    'title' => 'Menu Settings',
     'description' => 'Manage Dashboard Menu.',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('pm_dashboard_menu_admin', 5),
+    'page arguments' => array('pm_menu_admin', 5),
     'access arguments' => array('administer pm permission'),
-    'file' => 'pm.dashboard_menu.inc',
+    'file' => 'pm.menu.inc',
     'file path' => drupal_get_path('module', 'pm') . '/includes',
   );
 
@@ -158,7 +156,7 @@ function pm_theme() {
     'pm_dashboard_link' => array(
       'file'      => 'pm.theme.inc',
       'variables' => array('link_blocks' => array()),
-      'template' => 'templates/pm.dashboard_menu.link',
+      'template' => 'templates/pm.menu.link',
     ),
     'pm_icon_none' => array(
       'file'      => 'pm.theme.inc',
@@ -175,7 +173,7 @@ function pm_theme() {
       'template' => 'pm-list-default',
       'variables' => array('value' => NULL, 'key' => NULL, 'field_name' => NULL),
     ),
-    'pm_dashboard_menu_entry_table' => array(
+    'pm_menu_entry_table' => array(
       'file' => 'pm.theme.inc',
       'render element' => 'element',
     ),
@@ -251,8 +249,8 @@ function pm_entity_view($entity, $type, $view_mode, $langcode) {
  *   Dashboard links.
  */
 function pm_dashboard_get_links($check_active = TRUE, $type = 'page') {
-  module_load_include('inc', 'pm', 'includes/pm.dashboard_menu');
-  $links = pm_dashboard_menu_get_links($type, $check_active);
+  module_load_include('inc', 'pm', 'includes/pm.menu');
+  $links = pm_menu_get_links($type, $check_active);
   return $links;
 }
 

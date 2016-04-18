@@ -8,7 +8,7 @@
 /**
  * Get list of menu types.
  */
-function pm_dashboard_menu_list() {
+function pm_menu_list() {
   $header = array(
     'title' => t('Menu Type'),
     'icon' => t('Description'),
@@ -40,9 +40,9 @@ function pm_dashboard_menu_list() {
 /**
  * Generates a table of recommended modules.
  */
-function pm_dashboard_menu_admin($form, $form_state, $type) {
+function pm_menu_admin($form, $form_state, $type) {
   drupal_set_title('Dashboard Menu : ' . $type);
-  $menu_items = pm_dashboard_menu_get_links($type);
+  $menu_items = pm_menu_get_links($type);
 
   $form['type'] = array(
     '#type' => 'value',
@@ -51,14 +51,14 @@ function pm_dashboard_menu_admin($form, $form_state, $type) {
 
   $form['items'] = array(
     '#tree' => TRUE,
-    '#theme' => 'pm_dashboard_menu_entry_table'
+    '#theme' => 'pm_menu_entry_table'
   );
 
   $form['actions']['add'] = array(
     '#type' => 'submit',
     '#value' => t('Add New item'),
     '#name' => 'add_new_item',
-    '#submit' => array('pm_dashboard_menu_admin_add_new'),
+    '#submit' => array('pm_menu_admin_add_new'),
   );
 
   $form['actions']['submit'] = array(
@@ -152,7 +152,7 @@ function pm_dashboard_menu_admin($form, $form_state, $type) {
 /**
  * Add new item form callback.
  */
-function pm_dashboard_menu_admin_add_new($form, &$form_state) {
+function pm_menu_admin_add_new($form, &$form_state) {
   if (isset($form_state['values']['add_new_item'])) {
     $form_state['rebuild'] = TRUE;
     return;
@@ -161,18 +161,18 @@ function pm_dashboard_menu_admin_add_new($form, &$form_state) {
 }
 
 /**
- * Submit callback for dashboard_menu_admin form.
+ * Submit callback for menu_admin form.
  */
-function pm_dashboard_menu_admin_submit($form, $form_state) {
+function pm_menu_admin_submit($form, $form_state) {
   $type = $form_state['values']['type'];
   $links = $form_state['values']['items'];
-  pm_dashboard_menu_save_links($type, $links);
+  pm_menu_save_links($type, $links);
 }
 
 /**
  * Get all menu defined for particular type.
  */
-function pm_dashboard_menu_get_links($type, $hide_inactive = FALSE) {
+function pm_menu_get_links($type, $hide_inactive = FALSE) {
   $links = array();
   $menu_items = module_invoke_all('pm_dashboard_links', $type);
   if (!empty($menu_items)) {
@@ -214,7 +214,7 @@ function pm_dashboard_menu_get_links($type, $hide_inactive = FALSE) {
 /**
  * Save link specific settings for dashboard menu item.
  */
-function pm_dashboard_menu_save_links($type, $items) {
+function pm_menu_save_links($type, $items) {
   $menu_items = variable_get('pm_dashboard_links_' . $type, array());
   foreach ($items as $item) {
     if (!empty($item['delete'])) {
@@ -228,7 +228,7 @@ function pm_dashboard_menu_save_links($type, $items) {
     }
 
     if (empty($item['id'])) {
-      $item['id'] = uniqid('pm_dashboard_menu_custom_');
+      $item['id'] = uniqid('pm_menu_custom_');
       $menu_items[$item['id']] = $item;
     }
     else {
