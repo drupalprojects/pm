@@ -126,11 +126,12 @@ function theme_pm_dashboard_menu_entry_table($form) {
         // array to store row data
         $rows[] = array(
           'data' => array(
+            '',
+            drupal_render($form[$key]['weight']),
             drupal_render($form[$key]['title']),
             drupal_render($form[$key]['path']) .
             drupal_render($form[$key]['extra_link']),
             drupal_render($form[$key]['icon']),
-            drupal_render($form[$key]['weight']),
             drupal_render($form[$key]['status']),
             drupal_render($form[$key]['delete']),
           ),
@@ -140,10 +141,11 @@ function theme_pm_dashboard_menu_entry_table($form) {
     }
     // The table headers
     $header = array(
+      '',
+      t('Weight'),
       t('Title'),
       t('Path (main link and sub links)'),
       t('Icon'),
-      t('weight'),
       t('Enabled'),
       t('Delete'),
     );
