@@ -46,6 +46,7 @@ function pm_build_node_index($node) {
   }
   // We only maintain the index for published nodes.
   if ($status) {
+    module_load_include('inc', 'pm', 'includes/pm.parent');
     // Hunt for PM Organization.
     // @todo Hunt for all parents.
     $parent_nid = pm_permission_get_parent_nid_of_node($node, 'pmorganization');;
