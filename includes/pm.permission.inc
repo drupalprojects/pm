@@ -489,13 +489,6 @@ function _pm_permission_grants_assigned($node, $type, $assigned) {
 }
 
 /**
- * Finds the nid of the organization attached to a node.
- */
-function _pm_permission_get_organization_id($node, $max_depth) {
-  return pm_permission_get_parent_nid_of_node($node, 'pmorganization', $max_depth);
-}
-
-/**
  * Recursively hunts and find out the first parent node of given type.
  *
  * @param object $node
@@ -555,7 +548,7 @@ function _pm_permission_get_belonged_id($node, $type, $belonged) {
 
   switch ($belonged) {
     case 'Organization':
-      $belonged_nid = _pm_permission_get_organization_id($node, 4);
+      $belonged_nid = pm_permission_get_parent_nid_of_node($node, 'pmorganization', 4);
       break;
 
     default:
