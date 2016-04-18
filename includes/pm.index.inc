@@ -47,15 +47,14 @@ function pm_build_node_index($node) {
   // We only maintain the index for published nodes.
   if ($status) {
     module_load_include('inc', 'pm', 'includes/pm.parent');
-    // Hunt for PM Organization.
-    // @todo Hunt for all parents.
-    $parent = pm_get_parent_node($node);
-    pm_write_node_index($node, $parent);
+    pm_write_node_index($node, $node);
   }
 }
 
-function pm_write_node_index($node, $parent) {
+function pm_write_node_index($node, $child) {
   // Insert index entries for all the node's terms.
+  $parent = pm_get_parent_node($child);
+
   if ($parent <> FALSE) {
     $query = db_insert('pm_index')->fields(array(
       'nid',
@@ -67,7 +66,6 @@ function pm_write_node_index($node, $parent) {
     ));
     $query->execute();
     
-    $parent = pm_get_parent_node($parent);
     pm_write_node_index($node, $parent);
   }    
 }
