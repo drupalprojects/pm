@@ -17,7 +17,7 @@
  * @return mixed
  *   nid of the parent node if found, FALSE otherwise.
  */
-function pm_permission_get_parent_nid_of_node($node, $parent_type, $max_depth = NULL) {
+function pm_get_parent_nid_by_type($node, $parent_type, $max_depth = NULL) {
 
   if ($max_depth == NULL) {
     $max_depth = variable_get('pm_permission_relation_search_depth', 10);
@@ -43,7 +43,7 @@ function pm_permission_get_parent_nid_of_node($node, $parent_type, $max_depth = 
         return $n->nid;
       }
       else {
-        return pm_permission_get_parent_nid_of_node($n, $parent_type, $max_depth);
+        return pm_get_parent_nid_by_type($n, $parent_type, $max_depth);
       }
     }
     catch (Exception $e) {
