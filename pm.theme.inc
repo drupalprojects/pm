@@ -111,7 +111,7 @@ function pm_preprocess_pm_dashboard_link(&$vars) {
 /**
  * Theme the pm entry table as a sortable list of menu items.
  */
-function theme_pm_dashboard_menu_entry_table($form) {
+function theme_pm_menu_entry_table($form) {
   $form = reset($form);
   // For some reason form comes in an empty array...
   if(!empty($form)){
