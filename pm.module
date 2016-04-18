@@ -129,6 +129,8 @@ function pm_menu() {
 
   $items['admin/config/pm/pm/menu/%'] = array(
     'title' => 'Menu Settings',
+    'title callback' => 'pm_menu_admin_title_callback',
+    'title arguments' => array(5),
     'description' => 'Manage Dashboard Menu.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('pm_menu_admin', 5),

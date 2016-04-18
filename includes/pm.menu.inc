@@ -36,12 +36,17 @@ function pm_menu_list() {
   );
 }
 
+/**
+ * Title callback for menu specific administration page.
+ */
+function pm_menu_admin_title_callback($type) {
+  return $type;
+}
 
 /**
  * Generates a table of recommended modules.
  */
 function pm_menu_admin($form, $form_state, $type) {
-  drupal_set_title('Dashboard Menu : ' . $type);
   $menu_items = pm_menu_get_links($type);
 
   $form['type'] = array(
