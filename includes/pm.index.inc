@@ -68,6 +68,6 @@ function pm_write_node_index($node, $parent) {
     $query->execute();
     
     $parent = pm_get_parent_node($parent);
-    pm_write_node_index();
+    pm_write_node_index($node, $parent);
   }    
 }
