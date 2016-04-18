@@ -50,8 +50,6 @@ function pm_dashboard_menu_admin($form, $form_state, $type) {
   );
 
   $form['items'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Menu items'),
     '#tree' => TRUE,
     '#theme' => 'pm_dashboard_menu_entry_table'
   );
