@@ -236,4 +236,5 @@ function pm_dashboard_menu_save_links($type, $items) {
     }
   }
   variable_set('pm_dashboard_links_' . $type,  $menu_items);
+  drupal_set_message(t('The configuration options have been saved.'), 'status');
 }
