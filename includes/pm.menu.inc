@@ -224,7 +224,6 @@ function pm_menu_save_links($type, $items) {
   foreach ($items as $item) {
     if (!empty($item['delete'])) {
       unset($menu_items[$item['id']]);
-      drupal_set_message(t('Deleting menu with id %id', array('%id' => $item['id'])), 'warning');
       continue;
     }
 
