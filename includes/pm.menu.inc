@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Dashboard Menu Admin settings.
+ * Drupal Pm Menu Admin settings.
  */
 
 /**
