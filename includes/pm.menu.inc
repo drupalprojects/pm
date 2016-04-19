@@ -49,6 +49,25 @@ function pm_menu_admin_title_callback($type) {
 function pm_menu_admin($form, $form_state, $type) {
   $menu_items = pm_menu_get_links($type);
 
+  $message = NULL;
+
+  switch ($type) {
+    case 'page':
+      $message = t('This menu will be displayed on your site as a page at path !path', array('!path' => l('pm', 'pm')));
+      break;
+
+    case 'block':
+      $message = t('This menu can be positioned anywhere on your site as a block. Configure positioning using !link', array('!link' => l('this block configuration page', 'admin/structure/block/manage/pm/pm_menu/configure')));
+      break;
+  }
+
+  if ($message) {
+    $form['message'] = array(
+      '#type' => 'markup',
+      '#markup' => $message,
+    );
+  }
+
   $form['type'] = array(
     '#type' => 'value',
     '#value' => $type,
