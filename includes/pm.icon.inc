@@ -208,125 +208,48 @@ function pm_helper_get_fa_icon($original_key, $default_class = 'fa_wrench') {
   );
   $key = str_replace(' ', '_', $original_key);
   $key = str_replace('-', '_', $key);
-
-  switch ($key) {
-    case 'pmconfiguration':
-      $class = 'fa-gear';
-      break;
-
-    case 'pmexpenses':
-      $class = 'fa-money';
-      break;
-
-    case 'pmnotes':
-      $class = 'fa-file-o';
-      break;
-
-    case 'pmtimetrackings':
-      $class = 'fa-clock-o';
-      break;
-
-    case 'pmtickets':
-      $class = 'fa-ticket';
-      break;
-
-    case 'pmtasks':
-      $class = 'fa-tasks';
-      break;
-
-    case 'pmprojects':
-      $class = 'fa-cubes';
-      break;
-
-    case 'pmteams':
-      $class = 'fa-users';
-      break;
-
-    case 'pmorganizations':
-      $class = 'fa-institution';
-      break;
-
-    case 'pmissues':
-      $class = 'fa-cube';
-      break;
-
-    case 'application_add':
-      $class = 'fa-plus';
-      break;
-
-    case 'application_delete':
-      $class = 'fa-remove pm-status-danger-onfocus';
-      break;
-
-    case 'application_edit':
-      $class = 'fa-edit';
-      break;
-
-    // Issue type.
-    case 'bug':
-      $class = 'fa-bug';
-      break;
-
-    case 'task':
-      $class = 'fa-tasks';
-      break;
-
-    case 'feature_request':
-      $class = 'fa-ticket';
-      break;
-
-    case 'support':
-      $class = 'fa-phone';
-      break;
-
-    // Project type.
-    case 'development':
-      $class = 'fa-flask';
-      break;
-
-    // Progress.
-    case 'in_progress':
-      $class = 'fa-play pm-status-info';
-      break;
-
-    case 'completed':
-      $class = 'fa-check pm-status-success';
-      break;
-
-    case 'on_hold':
-      $class = 'fa-pause pm-status-warning';
-      break;
-
-    case 'inserted':
-      $class = 'fa-square pm-status-normal';
-      break;
-
-    // Priority.
-    case '1_low':
-      $class = 'fa-circle pm-status-info';
-      break;
-
-    case '2_normal':
-      $class = 'fa-circle pm-status-success';
-      break;
-
-    case '3_high':
-      $class = 'fa-circle pm-status-warning';
-      break;
-
-    case '4_urgent':
-      $class = 'fa-circle pm-status-danger';
-      break;
-
-    case 'default':
-      $class = '';
-      break;
-
-    default:
-      $class = $original_key;
-  }
+  $map = pm_icon_map();
+  $class = isset($map[$key]) ? $map[$key] : $key;
 
   drupal_alter('pm_icon_classes', $class, $key, $context);
 
   return $class;
+}
+
+/**
+ * Get the entire mapping of icon list that Drupal PM supports.
+ */
+function pm_icon_map() {
+  return array(
+    'pmconfiguration' => 'fa-gear';
+    'pmexpenses' => 'fa-money';
+    'pmnotes' => 'fa-file-o';
+    'pmtimetrackings' => 'fa-clock-o';
+    'pmtickets' => 'fa-ticket';
+    'pmtasks' => 'fa-tasks';
+    'pmprojects' => 'fa-cubes';
+    'pmteams' => 'fa-users';
+    'pmorganizations' => 'fa-institution';
+    'pmissues' => 'fa-cube';
+    'application_add' => 'fa-plus';
+    'application_delete' => 'fa-remove pm-status-danger-onfocus';
+    'application_edit' => 'fa-edit';
+    // Issue type.
+    'bug' => 'fa-bug';
+    'task' => 'fa-tasks';
+    'feature_request' => 'fa-ticket';
+    'support' => 'fa-phone';
+    // Project type.
+    'development' => 'fa-flask';
+    // Progress.
+    'in_progress' => 'fa-play pm-status-info';
+    'completed' => 'fa-check pm-status-success';
+    'on_hold' => 'fa-pause pm-status-warning';
+    'inserted' => 'fa-square pm-status-normal';
+    // Priority.
+    '1_low' => 'fa-circle pm-status-info';
+    '2_normal' => 'fa-circle pm-status-success';
+    '3_high' => 'fa-circle pm-status-warning';
+    '4_urgent' => 'fa-circle pm-status-danger';
+  );
 }
