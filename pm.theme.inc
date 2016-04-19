@@ -64,6 +64,8 @@ function theme_pm_dashboard_block($vars) {
  * Implements hook_preprocess_pm_list_default().
  */
 function pm_preprocess_pm_list_default(&$vars) {
+  module_load_include('inc', 'pm', 'includes/pm.icon');
+  $vars['icon'] = pm_icon($vars['key'], '');
   $vars['value'] = str_replace(' ', '&nbsp;', $vars['value']);
 }
 
@@ -88,6 +90,8 @@ function pm_preprocess_pm_icon_none(&$vars) {
  * Implements hook_preprocess_theme().
  */
 function pm_preprocess_pm_dashboard_link(&$vars) {
+  module_load_include('inc', 'pm', 'includes/pm.icon');
+
   $link_array = $vars['link_blocks'];
   $params = array();
   if (!empty($link_array['nid'])) {
