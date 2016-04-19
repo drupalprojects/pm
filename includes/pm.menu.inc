@@ -78,18 +78,6 @@ function pm_menu_admin($form, $form_state, $type) {
     '#theme' => 'pm_menu_entry_table'
   );
 
-  $form['actions']['add'] = array(
-    '#type' => 'submit',
-    '#value' => t('Add New item'),
-    '#name' => 'add_new_item',
-    '#submit' => array('pm_menu_admin_add_new'),
-  );
-
-  $form['actions']['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save'),
-  );
-
   if (isset($form_state['values']['add_new_item'])) {
     $menu_items[] = array(
       'title' => '',
@@ -170,6 +158,44 @@ function pm_menu_admin($form, $form_state, $type) {
       );
     }
   }
+
+
+  module_load_include('inc', 'pm', 'includes/pm.icon');
+  $form['icon'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Icons'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $icon_table = _pm_icon_list_as_table();
+  if (module_exists('fontawesome')) {
+    $fa_module_status = 'The <em>Font Awesome</em> module is <span class="admin-enabled">enabled</span>.';
+
+    if (($library = libraries_detect('fontawesome')) && !empty($library['installed'])) {
+      $form['icon']['fontawesome']['#markup'] = t('Fontawesome is enabled, you may use the icon classes available at !link', array('!link' => l('http://fortawesome.github.io/', 'http://fortawesome.github.io/Font-Awesome/icons/')));
+    }
+    else {
+      $form['icon']['fontawesome']['#markup'] = t('Fontawesome is enabled, but fontawesome library is missing. You will have to install the library to use the icon classes available at !link', array('!link' => l('http://fortawesome.github.io/', 'http://fortawesome.github.io/Font-Awesome/icons/')));
+    }
+  }
+  else {
+    $form['icon']['fontawesome']['#markup'] = t('If you install fontawesome module and the library, you may use the icon classes available at !link', array('!link' => l('http://fortawesome.github.io/', 'http://fortawesome.github.io/Font-Awesome/icons/')));
+  }
+
+  $form['icon']['table']['#markup'] = drupal_render($icon_table);
+
+
+  $form['actions']['add'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add New item'),
+    '#name' => 'add_new_item',
+    '#submit' => array('pm_menu_admin_add_new'),
+  );
+
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+  );
   return $form;
 }
 

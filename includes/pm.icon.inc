@@ -209,7 +209,7 @@ function pm_helper_get_fa_icon($original_key, $default_class = 'fa_wrench') {
   $key = str_replace(' ', '_', $original_key);
   $key = str_replace('-', '_', $key);
   $map = pm_icon_map();
-  $class = isset($map[$key]) ? $map[$key] : $key;
+  $class = isset($map[$key]) ? $map[$key] : $original_key;
 
   drupal_alter('pm_icon_classes', $class, $key, $context);
 
@@ -221,35 +221,61 @@ function pm_helper_get_fa_icon($original_key, $default_class = 'fa_wrench') {
  */
 function pm_icon_map() {
   return array(
-    'pmconfiguration' => 'fa-gear';
-    'pmexpenses' => 'fa-money';
-    'pmnotes' => 'fa-file-o';
-    'pmtimetrackings' => 'fa-clock-o';
-    'pmtickets' => 'fa-ticket';
-    'pmtasks' => 'fa-tasks';
-    'pmprojects' => 'fa-cubes';
-    'pmteams' => 'fa-users';
-    'pmorganizations' => 'fa-institution';
-    'pmissues' => 'fa-cube';
-    'application_add' => 'fa-plus';
-    'application_delete' => 'fa-remove pm-status-danger-onfocus';
-    'application_edit' => 'fa-edit';
+    'pmconfiguration' => 'fa-gear',
+    'pmexpenses' => 'fa-money',
+    'pmnotes' => 'fa-file-o',
+    'pmtimetrackings' => 'fa-clock-o',
+    'pmtickets' => 'fa-ticket',
+    'pmtasks' => 'fa-tasks',
+    'pmprojects' => 'fa-cubes',
+    'pmteams' => 'fa-users',
+    'pmorganizations' => 'fa-institution',
+    'pmissues' => 'fa-cube',
+    'application_add' => 'fa-plus',
+    'application_delete' => 'fa-remove pm-status-danger-onfocus',
+    'application_edit' => 'fa-edit',
     // Issue type.
-    'bug' => 'fa-bug';
-    'task' => 'fa-tasks';
-    'feature_request' => 'fa-ticket';
-    'support' => 'fa-phone';
+    'bug' => 'fa-bug',
+    'task' => 'fa-tasks',
+    'feature_request' => 'fa-ticket',
+    'support' => 'fa-phone',
     // Project type.
-    'development' => 'fa-flask';
+    'development' => 'fa-flask',
     // Progress.
-    'in_progress' => 'fa-play pm-status-info';
-    'completed' => 'fa-check pm-status-success';
-    'on_hold' => 'fa-pause pm-status-warning';
-    'inserted' => 'fa-square pm-status-normal';
+    'in_progress' => 'fa-play pm-status-info',
+    'completed' => 'fa-check pm-status-success',
+    'on_hold' => 'fa-pause pm-status-warning',
+    'inserted' => 'fa-square pm-status-normal',
     // Priority.
-    '1_low' => 'fa-circle pm-status-info';
-    '2_normal' => 'fa-circle pm-status-success';
-    '3_high' => 'fa-circle pm-status-warning';
-    '4_urgent' => 'fa-circle pm-status-danger';
+    '1_low' => 'fa-circle pm-status-info',
+    '2_normal' => 'fa-circle pm-status-success',
+    '3_high' => 'fa-circle pm-status-warning',
+    '4_urgent' => 'fa-circle pm-status-danger',
+  );
+}
+
+/**
+ * Helper function to generate a list of icons exposed by Drupal PM.
+ */
+function _pm_icon_list_as_table() {
+  $map = pm_icon_map();
+  $header = array(
+    t('Icon'),
+    t('Name'),
+    t('Classes'),
+  );
+  $rows = array();
+  foreach ($map as $name => $class) {
+    $rows[] = array(
+      pm_icon($name, ''),
+      $name,
+      $class,
+    );
+  }
+  return array(
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+    '#caption' => t('Icons supported by Drupal PM')
   );
 }
