@@ -28,7 +28,7 @@ function pm_views_data() {
     'relationship' => array(
       'base' => 'node',
       'field' => 'parent_nid',
-      'handler' => 'views_handler_relationship',
+      'handler' => 'pm_handler_relationship_parents',
       'label' => t('PM Parents'),
     ),
   );
