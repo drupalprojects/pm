@@ -25,13 +25,13 @@ class pm_handler_relationship_parents extends views_handler_relationship {
    * Define options form.
    */
   public function options_form(&$form, &$form_state) {
-    $none = array('none' => '- NONE -');
+    $none = array('none' => '- No filter -');
 
     $form['node_type'] = array(
       '#type' => 'select',
-      '#title' => t('Content type'),
+      '#title' => t('Content type filter'),
       '#options' => array_merge($none, node_type_get_names()),
-      '#default_value' => $this->options['node_type'],
+      '#default_value' => isset($this->options['node_type']) ? $this->options['node_type'] : 'none',
     );
   }
 
