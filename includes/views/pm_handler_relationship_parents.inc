@@ -76,10 +76,8 @@ class pm_handler_relationship_parents extends views_handler_relationship {
     );
     $node_join->options = $this->options;
     $node_join->construct();
-    
-    $node_alias = $index_alias . '_node';
-    
-    $this->query->add_relationship($node_alias, $node_join, 'node');
+
+    $this->query->add_relationship('pm_index_node', $node_join, 'node');
 
     // Add access tags if the base table provide it.
     if (empty($this->query->options['disable_sql_rewrite']) && isset($table_data['table']['base']['access query tag'])) {
