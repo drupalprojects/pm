@@ -54,11 +54,22 @@ class pm_handler_relationship_parents extends views_handler_relationship {
 
     $index_alias = $this->query->add_table('pm_index', NULL, $index_join);
     
+    // Add a join from pm_index back to node.
+    $node_join = new views_join();
+    $node_join->definition = array(
+      'left_table' => 'pm_index',
+      'left_field' => 'parent_nid',
+      'table' => 'node',
+      'field' => 'nid',
+      'type' => 'INNER',
+    );
+    $node_join->options = $this->options;
+    $node_join->construct();
 
     // use a short alias for this:
     $alias = $def['table'] . '_' . $this->table;
 
-    $this->alias = $this->query->add_relationship($alias, $join, $this->definition['base'], $this->relationship);
+    $this->alias = $this->query->add_relationship($alias, $node_join, $this->definition['base'], 'pm_index');
 
     // Add access tags if the base table provide it.
     if (empty($this->query->options['disable_sql_rewrite']) && isset($table_data['table']['base']['access query tag'])) {
