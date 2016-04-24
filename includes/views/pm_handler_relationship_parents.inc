@@ -41,20 +41,18 @@ class pm_handler_relationship_parents extends views_handler_relationship {
     $this->ensure_my_table();
 
     // Add a join to pm_index.
-    $def['left_table'] = 'node';
-    $def['left_field'] = 'nid';
+    $index_join = new views_join();
+    $index_join->definition = array(
+      'left_table' => 'node',
+      'left_field' => 'nid',
+      'table' => 'pm_index',
+      'field' => 'nid',
+      'type' => !empty($this->options['required']) ? 'INNER' : 'LEFT',
+    );
+    $index_join->options = $this->options;
+    $index_join->construct();
 
-    $def['table'] = 'pm_index';
-    $def['field'] = 'nid';
-
-    if (!empty($this->options['required'])) {
-      $def['type'] = 'INNER';
-    }
     
-    $join = new views_join();
-    $join->definition = $def;
-    $join->options = $this->options;
-    $join->construct();
 
     // use a short alias for this:
     $alias = $def['table'] . '_' . $this->table;
