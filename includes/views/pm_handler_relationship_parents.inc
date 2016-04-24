@@ -63,7 +63,6 @@ class pm_handler_relationship_parents extends views_handler_relationship {
         'table' => 'node',
         'field' => 'type',
         'value' => $this->options['node_type'],
-        'operator' => '=',
       );
     }
     
