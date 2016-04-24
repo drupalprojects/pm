@@ -35,4 +35,24 @@ class pm_handler_relationship_parents extends views_handler_relationship {
     );
   }
 
+  public function query() {
+    $this->ensure_my_table();
+
+    // Add a join to pm_index.
+    $def['left_table'] = 'node';
+    $def['left_field'] = 'nid';
+
+    $def['table'] = 'pm_index';
+    $def['field'] = 'nid';
+
+    if (!empty($this->options['required'])) {
+      $def['type'] = 'INNER';
+    }
+    
+    $join = new views_join();
+    $join->definition = $def;
+    $join->options = $this->options;
+    $join->construct();
+  }
+    
 }
