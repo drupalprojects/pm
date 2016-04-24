@@ -68,7 +68,7 @@ class pm_handler_relationship_parents extends views_handler_relationship {
     
     $node_join = new views_join();
     $node_join->definition = array(
-      'left_table' => 'pm_index',
+      'left_table' => $index_alias,
       'left_field' => 'parent_nid',
       'table' => 'node',
       'field' => 'nid',
