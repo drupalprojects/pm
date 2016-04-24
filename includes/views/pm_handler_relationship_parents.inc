@@ -60,7 +60,6 @@ class pm_handler_relationship_parents extends views_handler_relationship {
     $node_join_extra = array();
     if ($this->options['node_type'] != 'none') {
       $node_join_extra[] = array(
-        'table' => 'node',
         'field' => 'type',
         'value' => $this->options['node_type'],
       );
