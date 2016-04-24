@@ -68,8 +68,10 @@ class pm_handler_relationship_parents extends views_handler_relationship {
 
     // use a short alias for this:
     $alias = $def['table'] . '_' . $this->table;
-
-    $this->alias = $this->query->add_relationship($alias, $node_join, $this->definition['base'], 'pm_index');
+    
+    $node_alias = $this->query->add_table('node', NULL, $node_join);
+    
+    //$this->alias = $this->query->add_relationship($alias, $node_join, 'node', 'pm_index');
 
     // Add access tags if the base table provide it.
     if (empty($this->query->options['disable_sql_rewrite']) && isset($table_data['table']['base']['access query tag'])) {
