@@ -27,13 +27,14 @@ class pm_handler_relationship_parents extends views_handler_relationship {
   public function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
 
-    $none = array('none' => '- No filter -');
+    $all = array('all' => '- All -');
 
     $form['node_type'] = array(
       '#type' => 'select',
-      '#title' => t('Content type filter'),
-      '#options' => array_merge($none, node_type_get_names()),
-      '#default_value' => isset($this->options['node_type']) ? $this->options['node_type'] : 'none',
+      '#title' => t('Content type'),
+      '#description' => t('This relationship will only match nodes of the content type specified.'),
+      '#options' => array_merge($all, node_type_get_names()),
+      '#default_value' => isset($this->options['node_type']) ? $this->options['node_type'] : 'all',
     );
   }
 
@@ -58,7 +59,7 @@ class pm_handler_relationship_parents extends views_handler_relationship {
     
     // Check whether this join needs to be restricted on content type.
     $node_join_extra = array();
-    if ($this->options['node_type'] != 'none') {
+    if ($this->options['node_type'] != 'all') {
       $node_join_extra[] = array(
         'field' => 'type',
         'value' => $this->options['node_type'],
