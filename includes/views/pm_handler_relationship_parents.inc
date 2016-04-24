@@ -55,6 +55,18 @@ class pm_handler_relationship_parents extends views_handler_relationship {
     $index_alias = $this->query->add_table('pm_index', NULL, $index_join);
     
     // Add a join from pm_index back to node.
+    
+    // Check whether this join needs to be restricted on content type.
+    $node_join_extra = array();
+    if ($this->options['node_type'] != 'none') {
+      $node_join_extra[] = array(
+        'table' => 'node',
+        'field' => 'type',
+        'value' => $this->options['node_type'],
+        'operator' => '=',
+      );
+    }
+    
     $node_join = new views_join();
     $node_join->definition = array(
       'left_table' => 'pm_index',
@@ -62,6 +74,7 @@ class pm_handler_relationship_parents extends views_handler_relationship {
       'table' => 'node',
       'field' => 'nid',
       'type' => 'INNER',
+      'extra' => $node_join_extra,
     );
     $node_join->options = $this->options;
     $node_join->construct();
