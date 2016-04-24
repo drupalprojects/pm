@@ -52,6 +52,7 @@ class pm_handler_relationship_parents extends views_handler_relationship {
     $index_join->options = $this->options;
     $index_join->construct();
 
+    $index_alias = $this->query->add_table('pm_index', NULL, $index_join);
     
 
     // use a short alias for this:
