@@ -25,6 +25,8 @@ class pm_handler_relationship_parents extends views_handler_relationship {
    * Define options form.
    */
   public function options_form(&$form, &$form_state) {
+    parent::options_form($form, $form_state);
+
     $none = array('none' => '- No filter -');
 
     $form['node_type'] = array(
