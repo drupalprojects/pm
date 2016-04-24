@@ -35,6 +35,8 @@ function pm_views_data() {
     'title' => t('PM Parents'),
     'help' => t('All parents that the content references (including indirect parents through other content).'),
     'relationship' => array(
+      'base' => 'node',
+      'field' => 'parent_nid',
       'handler' => 'pm_handler_relationship_parents',
       'label' => t('PM Parents'),
     ),
