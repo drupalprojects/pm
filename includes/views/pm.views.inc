@@ -38,6 +38,7 @@ function pm_views_data() {
       'base' => 'node',
       'handler' => 'pm_handler_relationship_parents',
       'label' => t('PM Parents'),
+      'group' => t('Drupal PM'),
     ),
   );
 
