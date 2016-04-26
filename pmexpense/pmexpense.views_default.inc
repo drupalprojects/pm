@@ -126,12 +126,14 @@ function pmexpense_views_default_views() {
   $handler->display->display_options['fields']['title_1']['field'] = 'title';
   $handler->display->display_options['fields']['title_1']['relationship'] = 'pm_handler_relationship_parents';
   $handler->display->display_options['fields']['title_1']['label'] = 'Organization';
+  $handler->display->display_options['fields']['title_1']['hide_empty'] = TRUE;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title_2']['id'] = 'title_2';
   $handler->display->display_options['fields']['title_2']['table'] = 'node';
   $handler->display->display_options['fields']['title_2']['field'] = 'title';
   $handler->display->display_options['fields']['title_2']['relationship'] = 'pm_handler_relationship_parents_1';
   $handler->display->display_options['fields']['title_2']['label'] = 'Project';
+  $handler->display->display_options['fields']['title_2']['hide_empty'] = TRUE;
   /* Field: Content: Expense Date */
   $handler->display->display_options['fields']['pmexpense_date']['id'] = 'pmexpense_date';
   $handler->display->display_options['fields']['pmexpense_date']['table'] = 'field_data_pmexpense_date';
