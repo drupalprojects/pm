@@ -77,7 +77,7 @@ function pmnote_views_default_views() {
   );
   $handler->display->display_options['style_options']['sticky'] = TRUE;
   $handler->display->display_options['style_options']['empty_table'] = TRUE;
-  /* Header: Content: PM Add Content Link */
+  /* Header: Drupal PM: PM Add Content Link */
   $handler->display->display_options['header']['pm_handler_area_addcontent']['id'] = 'pm_handler_area_addcontent';
   $handler->display->display_options['header']['pm_handler_area_addcontent']['table'] = 'node';
   $handler->display->display_options['header']['pm_handler_area_addcontent']['field'] = 'pm_handler_area_addcontent';
@@ -90,14 +90,20 @@ function pmnote_views_default_views() {
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
   $handler->display->display_options['empty']['area']['content'] = 'No results match your search.';
   $handler->display->display_options['empty']['area']['format'] = 'plain_text';
-  /* Relationship: Drupal PM: PM Organization */
-  $handler->display->display_options['relationships']['pmorganization_nid']['id'] = 'pmorganization_nid';
-  $handler->display->display_options['relationships']['pmorganization_nid']['table'] = 'pmorganization_index';
-  $handler->display->display_options['relationships']['pmorganization_nid']['field'] = 'pmorganization_nid';
-  /* Relationship: Drupal PM: PM Project */
-  $handler->display->display_options['relationships']['pmproject_nid']['id'] = 'pmproject_nid';
-  $handler->display->display_options['relationships']['pmproject_nid']['table'] = 'pmproject_index';
-  $handler->display->display_options['relationships']['pmproject_nid']['field'] = 'pmproject_nid';
+  /* Relationship: PM Parents - Organization */
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['id'] = 'pm_handler_relationship_parents';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['table'] = 'node';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['field'] = 'pm_handler_relationship_parents';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['ui_name'] = 'PM Parents - Organization';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['label'] = 'PM Parents - Organization';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['node_type'] = 'pmorganization';
+  /* Relationship: PM Parents - Project */
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents_1']['id'] = 'pm_handler_relationship_parents_1';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents_1']['table'] = 'node';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents_1']['field'] = 'pm_handler_relationship_parents';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents_1']['ui_name'] = 'PM Parents - Project';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents_1']['label'] = 'PM Parents - Project';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents_1']['node_type'] = 'pmproject';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title_1']['id'] = 'title_1';
   $handler->display->display_options['fields']['title_1']['table'] = 'node';
@@ -106,14 +112,16 @@ function pmnote_views_default_views() {
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['relationship'] = 'pmorganization_nid';
+  $handler->display->display_options['fields']['title']['relationship'] = 'pm_handler_relationship_parents';
   $handler->display->display_options['fields']['title']['label'] = 'Organization';
+  $handler->display->display_options['fields']['title']['hide_empty'] = TRUE;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title_2']['id'] = 'title_2';
   $handler->display->display_options['fields']['title_2']['table'] = 'node';
   $handler->display->display_options['fields']['title_2']['field'] = 'title';
-  $handler->display->display_options['fields']['title_2']['relationship'] = 'pmproject_nid';
+  $handler->display->display_options['fields']['title_2']['relationship'] = 'pm_handler_relationship_parents_1';
   $handler->display->display_options['fields']['title_2']['label'] = 'Project';
+  $handler->display->display_options['fields']['title_2']['hide_empty'] = TRUE;
   /* Field: Content: Description */
   $handler->display->display_options['fields']['body']['id'] = 'body';
   $handler->display->display_options['fields']['body']['table'] = 'field_data_body';
@@ -122,12 +130,11 @@ function pmnote_views_default_views() {
   $handler->display->display_options['fields']['body']['settings'] = array(
     'trim_length' => '600',
   );
-  /* Field: Content: PM Operations */
+  /* Field: Drupal PM: PM Operations */
   $handler->display->display_options['fields']['pm_handler_field_operation']['id'] = 'pm_handler_field_operation';
   $handler->display->display_options['fields']['pm_handler_field_operation']['table'] = 'node';
   $handler->display->display_options['fields']['pm_handler_field_operation']['field'] = 'pm_handler_field_operation';
   $handler->display->display_options['fields']['pm_handler_field_operation']['label'] = 'Operations';
-  $handler->display->display_options['fields']['pm_handler_field_operation']['display_add_icon'] = 1;
   $handler->display->display_options['fields']['pm_handler_field_operation']['display_icons'] = 1;
   /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
