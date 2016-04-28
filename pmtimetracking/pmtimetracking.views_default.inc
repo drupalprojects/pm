@@ -96,7 +96,7 @@ function pmtimetracking_views_default_views() {
   );
   $handler->display->display_options['style_options']['sticky'] = TRUE;
   $handler->display->display_options['style_options']['empty_table'] = TRUE;
-  /* Header: Content: PM Add Content Link */
+  /* Header: Drupal PM: PM Add Content Link */
   $handler->display->display_options['header']['pm_handler_area_addcontent']['id'] = 'pm_handler_area_addcontent';
   $handler->display->display_options['header']['pm_handler_area_addcontent']['table'] = 'node';
   $handler->display->display_options['header']['pm_handler_area_addcontent']['field'] = 'pm_handler_area_addcontent';
@@ -107,20 +107,26 @@ function pmtimetracking_views_default_views() {
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
-  $handler->display->display_options['empty']['area']['content'] = 'No Timetrackings results match your search.';
-  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
+  $handler->display->display_options['empty']['area']['content'] = 'No results match your search.';
+  $handler->display->display_options['empty']['area']['format'] = 'plain_text';
   /* Relationship: Content: Author */
   $handler->display->display_options['relationships']['uid']['id'] = 'uid';
   $handler->display->display_options['relationships']['uid']['table'] = 'node';
   $handler->display->display_options['relationships']['uid']['field'] = 'uid';
-  /* Relationship: Drupal PM: PM Organization */
-  $handler->display->display_options['relationships']['pmorganization_nid']['id'] = 'pmorganization_nid';
-  $handler->display->display_options['relationships']['pmorganization_nid']['table'] = 'pmorganization_index';
-  $handler->display->display_options['relationships']['pmorganization_nid']['field'] = 'pmorganization_nid';
-  /* Relationship: Drupal PM: PM Project */
-  $handler->display->display_options['relationships']['pmproject_nid']['id'] = 'pmproject_nid';
-  $handler->display->display_options['relationships']['pmproject_nid']['table'] = 'pmproject_index';
-  $handler->display->display_options['relationships']['pmproject_nid']['field'] = 'pmproject_nid';
+  /* Relationship: PM Parents - Organization */
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['id'] = 'pm_handler_relationship_parents';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['table'] = 'node';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['field'] = 'pm_handler_relationship_parents';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['ui_name'] = 'PM Parents - Organization';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['label'] = 'PM Parents - Organization';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['node_type'] = 'pmorganization';
+  /* Relationship: PM Parents - Project */
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents_1']['id'] = 'pm_handler_relationship_parents_1';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents_1']['table'] = 'node';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents_1']['field'] = 'pm_handler_relationship_parents';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents_1']['ui_name'] = 'PM Parents - Project';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents_1']['label'] = 'PM Parents - Project';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents_1']['node_type'] = 'pmproject';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -132,14 +138,16 @@ function pmtimetracking_views_default_views() {
   $handler->display->display_options['fields']['title_1']['id'] = 'title_1';
   $handler->display->display_options['fields']['title_1']['table'] = 'node';
   $handler->display->display_options['fields']['title_1']['field'] = 'title';
-  $handler->display->display_options['fields']['title_1']['relationship'] = 'pmorganization_nid';
+  $handler->display->display_options['fields']['title_1']['relationship'] = 'pm_handler_relationship_parents';
   $handler->display->display_options['fields']['title_1']['label'] = 'Organization';
+  $handler->display->display_options['fields']['title_1']['hide_empty'] = TRUE;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title_2']['id'] = 'title_2';
   $handler->display->display_options['fields']['title_2']['table'] = 'node';
   $handler->display->display_options['fields']['title_2']['field'] = 'title';
-  $handler->display->display_options['fields']['title_2']['relationship'] = 'pmproject_nid';
+  $handler->display->display_options['fields']['title_2']['relationship'] = 'pm_handler_relationship_parents_1';
   $handler->display->display_options['fields']['title_2']['label'] = 'Project';
+  $handler->display->display_options['fields']['title_2']['hide_empty'] = TRUE;
   /* Field: Content: Date */
   $handler->display->display_options['fields']['pm_date']['id'] = 'pm_date';
   $handler->display->display_options['fields']['pm_date']['table'] = 'field_data_pm_date';
@@ -160,12 +168,11 @@ function pmtimetracking_views_default_views() {
   $handler->display->display_options['fields']['pm_durationunit']['id'] = 'pm_durationunit';
   $handler->display->display_options['fields']['pm_durationunit']['table'] = 'field_data_pm_durationunit';
   $handler->display->display_options['fields']['pm_durationunit']['field'] = 'pm_durationunit';
-  /* Field: Content: PM Operations */
+  /* Field: Drupal PM: PM Operations */
   $handler->display->display_options['fields']['pm_handler_field_operation']['id'] = 'pm_handler_field_operation';
   $handler->display->display_options['fields']['pm_handler_field_operation']['table'] = 'node';
   $handler->display->display_options['fields']['pm_handler_field_operation']['field'] = 'pm_handler_field_operation';
   $handler->display->display_options['fields']['pm_handler_field_operation']['label'] = 'Operations';
-  $handler->display->display_options['fields']['pm_handler_field_operation']['display_add_icon'] = 1;
   $handler->display->display_options['fields']['pm_handler_field_operation']['display_icons'] = 1;
   /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
@@ -238,7 +245,7 @@ function pmtimetracking_views_default_views() {
   $handler->display->display_options['filters']['title_1']['id'] = 'title_1';
   $handler->display->display_options['filters']['title_1']['table'] = 'node';
   $handler->display->display_options['filters']['title_1']['field'] = 'title';
-  $handler->display->display_options['filters']['title_1']['relationship'] = 'pmorganization_nid';
+  $handler->display->display_options['filters']['title_1']['relationship'] = 'pm_handler_relationship_parents';
   $handler->display->display_options['filters']['title_1']['operator'] = 'contains';
   $handler->display->display_options['filters']['title_1']['exposed'] = TRUE;
   $handler->display->display_options['filters']['title_1']['expose']['operator_id'] = 'title_1_op';
@@ -253,7 +260,7 @@ function pmtimetracking_views_default_views() {
   $handler->display->display_options['filters']['title_2']['id'] = 'title_2';
   $handler->display->display_options['filters']['title_2']['table'] = 'node';
   $handler->display->display_options['filters']['title_2']['field'] = 'title';
-  $handler->display->display_options['filters']['title_2']['relationship'] = 'pmproject_nid';
+  $handler->display->display_options['filters']['title_2']['relationship'] = 'pm_handler_relationship_parents_1';
   $handler->display->display_options['filters']['title_2']['operator'] = 'contains';
   $handler->display->display_options['filters']['title_2']['exposed'] = TRUE;
   $handler->display->display_options['filters']['title_2']['expose']['operator_id'] = 'title_2_op';
