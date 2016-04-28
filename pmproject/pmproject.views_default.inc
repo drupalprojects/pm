@@ -86,16 +86,19 @@ function pmproject_views_default_views() {
       'empty_column' => 1,
     ),
   );
-  /* Header: Content: PM Add Content Link */
+  /* Header: Drupal PM: PM Add Content Link */
   $handler->display->display_options['header']['pm_handler_area_addcontent']['id'] = 'pm_handler_area_addcontent';
   $handler->display->display_options['header']['pm_handler_area_addcontent']['table'] = 'node';
   $handler->display->display_options['header']['pm_handler_area_addcontent']['field'] = 'pm_handler_area_addcontent';
   $handler->display->display_options['header']['pm_handler_area_addcontent']['node_type'] = 'pmproject';
   $handler->display->display_options['header']['pm_handler_area_addcontent']['redirect'] = TRUE;
-  /* Relationship: Drupal PM: PM Organization */
-  $handler->display->display_options['relationships']['pmorganization_nid']['id'] = 'pmorganization_nid';
-  $handler->display->display_options['relationships']['pmorganization_nid']['table'] = 'pmorganization_index';
-  $handler->display->display_options['relationships']['pmorganization_nid']['field'] = 'pmorganization_nid';
+  /* Relationship: PM Parents - Organization */
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['id'] = 'pm_handler_relationship_parents';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['table'] = 'node';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['field'] = 'pm_handler_relationship_parents';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['ui_name'] = 'PM Parents - Organization';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['label'] = 'PM Parents - Organization';
+  $handler->display->display_options['relationships']['pm_handler_relationship_parents']['node_type'] = 'pmorganization';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -106,8 +109,9 @@ function pmproject_views_default_views() {
   $handler->display->display_options['fields']['title_1']['id'] = 'title_1';
   $handler->display->display_options['fields']['title_1']['table'] = 'node';
   $handler->display->display_options['fields']['title_1']['field'] = 'title';
-  $handler->display->display_options['fields']['title_1']['relationship'] = 'pmorganization_nid';
+  $handler->display->display_options['fields']['title_1']['relationship'] = 'pm_handler_relationship_parents';
   $handler->display->display_options['fields']['title_1']['label'] = 'Organization';
+  $handler->display->display_options['fields']['title_1']['hide_empty'] = TRUE;
   /* Field: Content: Status */
   $handler->display->display_options['fields']['pm_projectstatus']['id'] = 'pm_projectstatus';
   $handler->display->display_options['fields']['pm_projectstatus']['table'] = 'field_data_pm_projectstatus';
@@ -123,13 +127,12 @@ function pmproject_views_default_views() {
   $handler->display->display_options['fields']['pm_projectpriority']['table'] = 'field_data_pm_projectpriority';
   $handler->display->display_options['fields']['pm_projectpriority']['field'] = 'pm_projectpriority';
   $handler->display->display_options['fields']['pm_projectpriority']['type'] = 'pm_list_default';
-  /* Field: Content: PM Operations */
+  /* Field: Drupal PM: PM Operations */
   $handler->display->display_options['fields']['pm_handler_field_operation']['id'] = 'pm_handler_field_operation';
   $handler->display->display_options['fields']['pm_handler_field_operation']['table'] = 'node';
   $handler->display->display_options['fields']['pm_handler_field_operation']['field'] = 'pm_handler_field_operation';
   $handler->display->display_options['fields']['pm_handler_field_operation']['label'] = 'Operations';
   $handler->display->display_options['fields']['pm_handler_field_operation']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['pm_handler_field_operation']['display_add_icon'] = 1;
   $handler->display->display_options['fields']['pm_handler_field_operation']['display_icons'] = 1;
   /* Sort criterion: Content: Title */
   $handler->display->display_options['sorts']['title']['id'] = 'title';
