@@ -59,10 +59,12 @@ function pm_write_node_index($node, $child) {
     $query = db_insert('pm_index')->fields(array(
       'nid',
       'parent_nid',
+      'parent_type',
     ));
     $query->values(array(
       'nid' => $node->nid,
       'parent_nid' => $parent->nid,
+      'parent_type' => $parent->type,
     ));
     $query->execute();
     

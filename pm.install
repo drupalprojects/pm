@@ -30,11 +30,18 @@ function pm_schema() {
         'default' => 0,
       ),
       'parent_nid' => array(
-        'description' => 'The parent nid.',
+        'description' => 'The {node}.nid of this nodes parent.',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0,
+      ),
+      'parent_type' => array(
+        'description' => 'The {node_type}.type of the parent.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
       ),
     ),
     'indexes' => array(
