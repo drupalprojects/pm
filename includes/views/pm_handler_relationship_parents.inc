@@ -41,6 +41,15 @@ class pm_handler_relationship_parents extends views_handler_relationship {
   public function query() {
     $this->ensure_my_table();
 
+    // Check whether joins will need to be restricted on content type.
+    $join_extra = array();
+    if ($this->options['node_type'] != 'all') {
+      $join_extra[] = array(
+        'field' => 'type',
+        'value' => $this->options['node_type'],
+      );
+    }
+    
     // Add a join to pm_index.
     $index_join = new views_join();
     $index_join->definition = array(
@@ -49,6 +58,7 @@ class pm_handler_relationship_parents extends views_handler_relationship {
       'table' => 'pm_index',
       'field' => 'nid',
       'type' => !empty($this->options['required']) ? 'INNER' : 'LEFT',
+      'extra' => $join_extra,
     );
     $index_join->options = $this->options;
     $index_join->construct();
@@ -57,23 +67,14 @@ class pm_handler_relationship_parents extends views_handler_relationship {
     
     // Add a join from pm_index back to node.
     
-    // Check whether this join needs to be restricted on content type.
-    $node_join_extra = array();
-    if ($this->options['node_type'] != 'all') {
-      $node_join_extra[] = array(
-        'field' => 'type',
-        'value' => $this->options['node_type'],
-      );
-    }
-    
     $node_join = new views_join();
     $node_join->definition = array(
       'left_table' => $index_alias,
       'left_field' => 'parent_nid',
       'table' => 'node',
       'field' => 'nid',
-      'type' => 'INNER',
-      'extra' => $node_join_extra,
+      'type' => !empty($this->options['required']) ? 'INNER' : 'LEFT',
+      'extra' => $join_extra,
     );
     $node_join->options = $this->options;
     $node_join->construct();
