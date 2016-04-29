@@ -45,7 +45,7 @@ class pm_handler_relationship_parents extends views_handler_relationship {
     $join_extra = array();
     if ($this->options['node_type'] != 'all') {
       $join_extra[] = array(
-        'field' => 'type',
+        'field' => 'parent_type',
         'value' => $this->options['node_type'],
       );
     }
@@ -74,7 +74,6 @@ class pm_handler_relationship_parents extends views_handler_relationship {
       'table' => 'node',
       'field' => 'nid',
       'type' => !empty($this->options['required']) ? 'INNER' : 'LEFT',
-      'extra' => $join_extra,
     );
     $node_join->options = $this->options;
     $node_join->construct();
