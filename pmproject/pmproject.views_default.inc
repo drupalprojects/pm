@@ -156,7 +156,7 @@ function pmproject_views_default_views() {
   $handler->display->display_options['filters']['title_1']['id'] = 'title_1';
   $handler->display->display_options['filters']['title_1']['table'] = 'node';
   $handler->display->display_options['filters']['title_1']['field'] = 'title';
-  $handler->display->display_options['filters']['title_1']['relationship'] = 'pmproject_parent_target_id';
+  $handler->display->display_options['filters']['title_1']['relationship'] = 'pm_handler_relationship_parents';
   $handler->display->display_options['filters']['title_1']['operator'] = 'contains';
   $handler->display->display_options['filters']['title_1']['group'] = 1;
   $handler->display->display_options['filters']['title_1']['exposed'] = TRUE;
@@ -167,9 +167,6 @@ function pmproject_views_default_views() {
   $handler->display->display_options['filters']['title_1']['expose']['remember_roles'] = array(
     2 => '2',
     1 => 0,
-    3 => 0,
-    4 => 0,
-    5 => 0,
   );
   /* Filter criterion: Content: Title */
   $handler->display->display_options['filters']['title']['id'] = 'title';
