@@ -866,7 +866,7 @@ function pm_node_insert($node) {
 function pm_node_update($node) {
   module_load_include('inc', 'pm', '/includes/pm.index');
 
-  // Always rebuild the node's pmorganization index entries on node save.
+  // Rebuild index records for this node.
   pm_delete_node_index($node);
   pm_build_node_index($node);
 
