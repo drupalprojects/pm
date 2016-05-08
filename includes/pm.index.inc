@@ -46,13 +46,15 @@ function pm_build_node_index($node) {
   }
   // We only maintain the index for published nodes.
   if ($status) {
-    module_load_include('inc', 'pm', 'includes/pm.parent');
     pm_write_node_index($node, $node);
   }
 }
 
+/**
+ * Recursively insert index entries into the database.
+ */
 function pm_write_node_index($node, $child) {
-  // Insert index entries for all the node's terms.
+  module_load_include('inc', 'pm', 'includes/pm.parent');
   $parent = pm_get_parent_node($child);
 
   if ($parent <> FALSE) {
