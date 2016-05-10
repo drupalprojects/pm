@@ -66,10 +66,13 @@ function pmtimetracking_node_info() {
  */
 function pmtimetracking_form(&$node, $form_state) {
   $breadcrumb = array(
-    l(t('Project Management'), 'pm'),
-    l(t('Timetrackings'), 'pm/timetrackings'),
+    array(
+      'text' => t('Timetrackings'),
+      'path' => 'pm/timetrackings',
+    ),
   );
-  drupal_set_breadcrumb($breadcrumb);
+  pm_set_breadcrumb($breadcrumb);
+
   return node_content_form($node, $form_state);
 }
 
@@ -79,11 +82,14 @@ function pmtimetracking_form(&$node, $form_state) {
 function pmtimetracking_view($node, $view_mode) {
   if ($view_mode == 'full' && node_is_page($node)) {
     $breadcrumb = array(
-      l(t('Project Management'), 'pm'),
-      l(t('Timetrackings'), 'pm/timetrackings'),
+      array(
+        'text' => t('Timetrackings'),
+        'path' => 'pm/timetrackings',
+      ),
     );
-    drupal_set_breadcrumb($breadcrumb);
+    pm_set_breadcrumb($breadcrumb);
   }
+
   return $node;
 }
 

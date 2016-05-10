@@ -50,10 +50,12 @@ function pmnote_node_info() {
  */
 function pmnote_form(&$node, $form_state) {
   $breadcrumb = array(
-    l(t('Project Management'), 'pm'),
-    l(t('Notes'), 'pm/notes'),
+    array(
+      'text' => t('Notes'),
+      'path' => 'pm/notes',
+    ),
   );
-  drupal_set_breadcrumb($breadcrumb);
+  pm_set_breadcrumb($breadcrumb);
 
   return node_content_form($node, $form_state);
 }
@@ -64,10 +66,12 @@ function pmnote_form(&$node, $form_state) {
 function pmnote_view($node, $view_mode = 'full') {
   if ($view_mode == 'full' && node_is_page($node)) {
     $breadcrumb = array(
-      l(t('Project Management'), 'pm'),
-      l(t('Notes'), 'pm/notes'),
+      array(
+        'text' => t('Notes'),
+        'path' => 'pm/notes',
+      ),
     );
-    drupal_set_breadcrumb($breadcrumb);
+    pm_set_breadcrumb($breadcrumb);
   }
 
   return $node;
