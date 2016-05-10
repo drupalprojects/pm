@@ -9,7 +9,5 @@ dependencies[] = entityreference
 dependencies[] = list
 dependencies[] = pm
 dependencies[] = text
-; @todo Remove pmorganization dependency.
-dependencies[] = pmorganization
 
 files[] = pmticket.test

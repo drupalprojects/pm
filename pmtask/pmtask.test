@@ -24,8 +24,7 @@ class PMTaskTestCase extends DrupalWebTestCase {
    * Provides standard set up for all test cases.
    */
   public function setUp() {
-    // @todo Remove pmorganization dependency.
-    parent::setUp('pm', 'pmorganization', 'pmtask');
+    parent::setUp('pm', 'pmtask');
   }
 
   /**
