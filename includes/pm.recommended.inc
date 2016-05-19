@@ -121,9 +121,16 @@ function pm_get_available_modules() {
 
 /**
  * Implements hook_pm_recommended_modules_info().
+ *
+ * Projects recommended here should usually also be added to pm.make.
  */
 function pm_pm_recommended_modules_info() {
   return array(
+    'entityreference_prepopulate' => array(
+      'name' => 'Entity Reference Prepopulate',
+      'functionality' => t('Prepopulates the parent field when creating Project Management content based on specially crafted links. This module is pre-configured by Project Management to work "out of the box", although custom links can also be crafted to utilise this functionality.'),
+      'download' => 'https://www.drupal.org/project/entityreference_prepopulate',
+    ),
     'field_group' => array(
       'name' => 'Field Group',
       'functionality' => t('Allows fields to be structured into labelled groups. This module is pre-configured by Project Management to work "out of the box", although the configuration can also be customised.'),
