@@ -5,6 +5,7 @@ package = Project Management
 core = 7.x
 
 dependencies[] = date
+dependencies[] = entityreference
 dependencies[] = list
 dependencies[] = number
 dependencies[] = pm

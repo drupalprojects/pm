@@ -182,7 +182,7 @@ function pmexpense_views_default_views() {
   $handler->display->display_options['filters']['title_1']['id'] = 'title_1';
   $handler->display->display_options['filters']['title_1']['table'] = 'node';
   $handler->display->display_options['filters']['title_1']['field'] = 'title';
-  $handler->display->display_options['filters']['title_1']['relationship'] = 'pmorganization_nid';
+  $handler->display->display_options['filters']['title_1']['relationship'] = 'pm_handler_relationship_parents';
   $handler->display->display_options['filters']['title_1']['operator'] = 'contains';
   $handler->display->display_options['filters']['title_1']['group'] = 1;
   $handler->display->display_options['filters']['title_1']['exposed'] = TRUE;
@@ -198,7 +198,7 @@ function pmexpense_views_default_views() {
   $handler->display->display_options['filters']['title_2']['id'] = 'title_2';
   $handler->display->display_options['filters']['title_2']['table'] = 'node';
   $handler->display->display_options['filters']['title_2']['field'] = 'title';
-  $handler->display->display_options['filters']['title_2']['relationship'] = 'pmproject_nid';
+  $handler->display->display_options['filters']['title_2']['relationship'] = 'pm_handler_relationship_parents_1';
   $handler->display->display_options['filters']['title_2']['operator'] = 'contains';
   $handler->display->display_options['filters']['title_2']['group'] = 1;
   $handler->display->display_options['filters']['title_2']['exposed'] = TRUE;
