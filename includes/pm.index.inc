@@ -73,3 +73,15 @@ function pm_write_node_index($node, $child) {
     pm_write_node_index($node, $parent);
   }    
 }
+
+/**
+ * Retrieve nids of all children of the given nid.
+ */
+function pm_get_children_from_index($parent_nid) {
+  $result = db_select('pm_index', 'p')
+    ->fields('p', array('nid'))
+    ->condition('p.parent_nid', $parent_nid)
+    ->execute();
+
+  return $result;
+}
