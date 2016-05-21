@@ -46,7 +46,7 @@ span.pm-no-icon {
   float: left;
   background-position: center center;
   background-repeat: no-repeat;
-  background-size: initial;
+  background-size: contain;
 }
 
 .pm-use-storm-icons i.fa.fa-plus {
@@ -140,9 +140,7 @@ span.pm-no-icon {
 .pm-use-storm-icons i.fa.fa-cube {
   background-image: url(images/tasks.png);
 }
-.pm-use-storm-icons i.fa {
-  background-size: contain;
-}
+
 .pm-no-wrap {
   white-space: nowrap;
 }
