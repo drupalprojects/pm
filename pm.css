@@ -140,7 +140,10 @@ span.pm-no-icon {
 .pm-use-storm-icons i.fa.fa-cube {
   background-image: url(images/tasks.png);
 }
-
+.pm-use-storm-icons .fa-fw {
+  width: 1.28571429em;
+  height: 1.28571429em;
+}
 .pm-no-wrap {
   white-space: nowrap;
 }
