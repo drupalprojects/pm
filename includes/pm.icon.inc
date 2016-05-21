@@ -174,31 +174,6 @@ function pm_icon_default($icon, $title) {
 }
 
 /**
- * Set body class to use pm default icons if required.
- */
-function pm_preprocess_html(&$vars) {
-  $pm_icon = variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR);
-  $font_awesome_enabled = module_exists('fontawesome');
-  switch ($pm_icon) {
-    case PM_ICON_SET_DEFAULT_BEHAVIOUR:
-      $vars['classes_array'][] = ($font_awesome_enabled) ? "pm-use-fa-icons" : "pm-use-storm-icons";
-
-      break;
-
-    case PM_ICON_SET_FONTAWESOME:
-      $vars['classes_array'][] = "pm-use-fa-icons";
-
-      break;
-
-    case PM_ICON_SET_STORM:
-      $vars['classes_array'][] = "pm-use-storm-icons";
-
-      break;
-
-  }
-}
-
-/**
  * Helper to attach fontawesome icons.
  */
 function pm_helper_get_fa_icon($original_key, $default_class = 'fa_wrench') {

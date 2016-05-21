@@ -46,6 +46,7 @@ span.pm-no-icon {
   float: left;
   background-position: center center;
   background-repeat: no-repeat;
+  background-size: initial;
 }
 
 .pm-use-storm-icons i.fa.fa-plus {
@@ -112,6 +113,36 @@ span.pm-no-icon {
   background-image: url(icons/priority_4-urgent.png);
 }
 
+.pm-use-storm-icons i.fa.fa-gear {
+  background-image: url(images/configuration.png);
+}
+.pm-use-storm-icons i.fa.fa-money {
+  background-image: url(images/expenses.png);
+}
+.pm-use-storm-icons i.fa.fa-file-o {
+  background-image: url(images/notes.png);
+}
+.pm-use-storm-icons i.fa.fa-clock-o {
+  background-image: url(images/timetrackings.png);
+}
+.pm-use-storm-icons i.fa.fa-cubes {
+  background-image: url(images/projects.png);
+}
+.pm-use-storm-icons i.fa.fa-users {
+  background-image: url(images/teams.png);
+}
+.pm-use-storm-icons i.fa.fa-users {
+  background-image: url(images/teams.png);
+}
+.pm-use-storm-icons i.fa.fa-institution {
+  background-image: url(images/organizations.png);
+}
+.pm-use-storm-icons i.fa.fa-cube {
+  background-image: url(images/tasks.png);
+}
+.pm-use-storm-icons i.fa {
+  background-size: contain;
+}
 .pm-no-wrap {
   white-space: nowrap;
 }
