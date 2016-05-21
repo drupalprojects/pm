@@ -39,6 +39,10 @@ span.pm-no-icon {
   content: '' !important;
 }
 
+.pm-use-storm-icons .pm-list-default-wrapper i.fa.pm-icon {
+  background-size: initial;
+}
+
 .pm-use-storm-icons i.fa.pm-icon {
   min-width: 16px;
   min-height: 16px;
