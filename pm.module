@@ -581,3 +581,33 @@ function pm_node_delete($node) {
   // Clean up the {pm_index} table when nodes are deleted, including by parent.
   pm_delete_node_index($node, TRUE);
 }
+
+/**
+ * Helper function to set breadcrumb based on which links a user has access to.
+ */
+function pm_set_breadcrumb(array $links, $pm_root = TRUE) {
+  $breadcrumb = array();
+
+  // Unless set otherwise, all breadcrumbs start with a link to pm.
+  if ($pm_root && drupal_valid_path('pm')) {
+    $breadcrumb = array(
+      l(t('Project Management'), 'pm')
+    );
+  }
+  
+  // Now process any other links provided.
+  foreach ($links as $link) {
+    $text = $link['text'];
+    $path = $link['path'];
+    $options = isset($link['options']) ? $link['options'] : array();
+
+    if (drupal_valid_path($path)) {
+      $breadcrumb[] = l($text, $path, $options);
+    }
+  }
+  
+  // Only set the breadcrumb if one or more links are present.
+  if (!empty($breadcrumb)) {
+    drupal_set_breadcrumb($breadcrumb);
+  }
+}
