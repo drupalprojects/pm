@@ -343,6 +343,31 @@ function pm_block_view($delta = '') {
 }
 
 /**
+ * Set body class to use pm default icons if required.
+ */
+function pm_preprocess_html(&$vars) {
+  $pm_icon = variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR);
+  $font_awesome_enabled = module_exists('fontawesome');
+  switch ($pm_icon) {
+    case PM_ICON_SET_DEFAULT_BEHAVIOUR:
+      $vars['classes_array'][] = ($font_awesome_enabled) ? "pm-use-fa-icons" : "pm-use-storm-icons";
+
+      break;
+
+    case PM_ICON_SET_FONTAWESOME:
+      $vars['classes_array'][] = "pm-use-fa-icons";
+
+      break;
+
+    case PM_ICON_SET_STORM:
+      $vars['classes_array'][] = "pm-use-storm-icons";
+
+      break;
+
+  }
+}
+
+/**
  * Helper function to return nid of particular bundle in hierarchy.
  *
  * @param object $node
@@ -397,7 +422,6 @@ function pm_views_api() {
   );
 }
 
-
 /**
  * Implements hook_field_formatter_info().
  */
@@ -446,7 +470,6 @@ function pm_field_formatter_view($entity_type, $entity, $field, $instance, $lang
 
   return $element;
 }
-
 
 /**
  * Implements hook_node_access_records().
@@ -529,30 +552,5 @@ function pm_node_update($node) {
     if (pm_permission_check_if_child_permission_needs_update($node)) {
       pm_permission_hunt_and_update_all_child_permission($node);
     }
-  }
-}
-
-/**
- * Set body class to use pm default icons if required.
- */
-function pm_preprocess_html(&$vars) {
-  $pm_icon = variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR);
-  $font_awesome_enabled = module_exists('fontawesome');
-  switch ($pm_icon) {
-    case PM_ICON_SET_DEFAULT_BEHAVIOUR:
-      $vars['classes_array'][] = ($font_awesome_enabled) ? "pm-use-fa-icons" : "pm-use-storm-icons";
-
-      break;
-
-    case PM_ICON_SET_FONTAWESOME:
-      $vars['classes_array'][] = "pm-use-fa-icons";
-
-      break;
-
-    case PM_ICON_SET_STORM:
-      $vars['classes_array'][] = "pm-use-storm-icons";
-
-      break;
-
   }
 }
