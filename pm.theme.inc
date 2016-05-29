@@ -180,6 +180,6 @@ function theme_pm_menu_entry_table($form) {
  * Provides HTML for the pm_parent_breadcrumb field formatter.
  */
 function theme_pm_parent_breadcrumb($variables) {
-  $breadcrumb = implode(' > ', $variables['data']);
+  $breadcrumb = implode(' &raquo; ', $variables['data']);
   return '<div class="pm_parent_breadcrumb">' . $breadcrumb . '</div>';
 }
