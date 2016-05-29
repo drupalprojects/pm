@@ -23,6 +23,7 @@ function pm_help($path, $arg) {
     case "admin/help#pm":
       $output = '<p>' . t("Provides a complete project management environment") . '</p>';
       break;
+
     case 'admin/help#pm-permission':
       return '<p>' . t('PM Permission allows you to grant access to content based on interactions with Drupal PM.') . '</p>';
   }
