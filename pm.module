@@ -570,10 +570,10 @@ function pm_set_breadcrumb(array $links, $pm_root = TRUE) {
   // Unless set otherwise, all breadcrumbs start with a link to pm.
   if ($pm_root && drupal_valid_path('pm')) {
     $breadcrumb = array(
-      l(t('Project Management'), 'pm')
+      l(t('Project Management'), 'pm'),
     );
   }
-  
+
   // Now process any other links provided.
   foreach ($links as $link) {
     $text = $link['text'];
@@ -584,7 +584,7 @@ function pm_set_breadcrumb(array $links, $pm_root = TRUE) {
       $breadcrumb[] = l($text, $path, $options);
     }
   }
-  
+
   // Only set the breadcrumb if one or more links are present.
   if (!empty($breadcrumb)) {
     drupal_set_breadcrumb($breadcrumb);
