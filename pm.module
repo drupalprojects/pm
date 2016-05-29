@@ -521,9 +521,9 @@ function pm_get_parents($entity_type, $entity, $field, $delta) {
     while ($iteration AND $wrapper) {
       $iteration--;
       $bundle = $wrapper->getBundle();
-      $parents[$wrapper->getIdentifier()] = pm_get_parent_label('node', $wrapper);
-
-
+      if ($wrapper->getIdentifier()) {
+        $parents[$wrapper->getIdentifier()] = pm_get_parent_label('node', $wrapper);
+      }
       if ($wrapper->__isset($bundle . '_parent')) {
         $parent_field = $bundle . '_parent';
       }
@@ -547,7 +547,7 @@ function pm_get_parents($entity_type, $entity, $field, $delta) {
       NULL, WATCHDOG_ERROR
     );
   }
-  return $parents;
+  return array_reverse($parents);
 }
 
 /**
