@@ -51,10 +51,13 @@ function pmtask_node_info() {
  */
 function pmtask_form($node, &$form_state) {
   $breadcrumb = array(
-    l(t('Project Management'), 'pm'),
-    l(t('Tasks'), 'pm/tasks'),
+    array(
+      'text' => t('Tasks'),
+      'path' => 'pm/tasks',
+    ),
   );
-  drupal_set_breadcrumb($breadcrumb);
+  pm_set_breadcrumb($breadcrumb);
+
   return node_content_form($node, $form_state);
 }
 
@@ -64,11 +67,14 @@ function pmtask_form($node, &$form_state) {
 function pmtask_view($node, $view_mode) {
   if ($view_mode == 'full' && node_is_page($node)) {
     $breadcrumb = array(
-      l(t('Project Management'), 'pm'),
-      l(t('Tasks'), 'pm/tasks'),
+      array(
+        'text' => t('Tasks'),
+        'path' => 'pm/tasks',
+      ),
     );
-    drupal_set_breadcrumb($breadcrumb);
+    pm_set_breadcrumb($breadcrumb);
   }
+
   return $node;
 }
 

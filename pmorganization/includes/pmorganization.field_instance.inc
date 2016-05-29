@@ -480,10 +480,11 @@ function pmorganization_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-pmorganization-pmorganization_members'
+  // Exported field_instance: 'node-pmorganization-pmorganization_members'.
   $field_instances['node-pmorganization-pmorganization_members'] = array(
     'bundle' => 'pmorganization',
     'default_value' => NULL,
+    'default_value_function' => '',
     'deleted' => 0,
     'description' => '',
     'display' => array(
@@ -508,6 +509,11 @@ function pmorganization_default_field_instances() {
     'label' => 'Members',
     'required' => 0,
     'settings' => array(
+      'behaviors' => array(
+        'prepopulate' => array(
+          'status' => 0,
+        ),
+      ),
       'user_register_form' => FALSE,
     ),
     'widget' => array(

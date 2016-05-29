@@ -50,10 +50,12 @@ function pmticket_node_info() {
  */
 function pmticket_form(&$node, $form_state) {
   $breadcrumb = array(
-    l(t('Project Management'), 'pm'),
-    l(t('Tickets'), 'pm/tickets'),
+    array(
+      'text' => t('Tickets'),
+      'path' => 'pm/tickets',
+    ),
   );
-  drupal_set_breadcrumb($breadcrumb);
+  pm_set_breadcrumb($breadcrumb);
 
   return node_content_form($node, $form_state);
 }
@@ -64,11 +66,14 @@ function pmticket_form(&$node, $form_state) {
 function pmticket_view($node, $view_mode) {
   if ($view_mode == 'full' && node_is_page($node)) {
     $breadcrumb = array(
-      l(t('Project Management'), 'pm'),
-      l(t('Tickets'), 'pm/tickets'),
+      array(
+        'text' => t('Tickets'),
+        'path' => 'pm/tickets',
+      ),
     );
-    drupal_set_breadcrumb($breadcrumb);
+    pm_set_breadcrumb($breadcrumb);
   }
+
   return $node;
 }
 

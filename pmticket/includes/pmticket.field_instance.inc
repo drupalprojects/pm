@@ -308,7 +308,7 @@ function pmticket_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-pmticket-pm_assigned'
+  // Exported field_instance: 'node-pmticket-pm_assigned'.
   $field_instances['node-pmticket-pm_assigned'] = array(
     'bundle' => 'pmticket',
     'default_value' => NULL,

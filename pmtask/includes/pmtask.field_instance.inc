@@ -348,10 +348,11 @@ function pmtask_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-pmtask-pm_assigned'
+  // Exported field_instance: 'node-pmtask-pm_assigned'.
   $field_instances['node-pmtask-pm_assigned'] = array(
     'bundle' => 'pmtask',
     'default_value' => NULL,
+    'default_value_function' => '',
     'deleted' => 0,
     'description' => '',
     'display' => array(
@@ -376,6 +377,11 @@ function pmtask_default_field_instances() {
     'label' => 'Assigned to',
     'required' => 0,
     'settings' => array(
+      'behaviors' => array(
+        'prepopulate' => array(
+          'status' => 0,
+        ),
+      ),
       'user_register_form' => FALSE,
     ),
     'widget' => array(
@@ -386,6 +392,7 @@ function pmtask_default_field_instances() {
       'weight' => 14,
     ),
   );
+
 
   // Exported field_instance: 'node-pmtask-pm_billing_status'
   $field_instances['node-pmtask-pm_billing_status'] = array(

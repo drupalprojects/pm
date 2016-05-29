@@ -69,10 +69,13 @@ function pmteam_views_api() {
  */
 function pmteam_form($node, &$form_state) {
   $breadcrumb = array(
-    l(t('Project Management'), 'pm'),
-    l(t('Teams'), 'pm/teams'),
+    array(
+      'text' => t('Teams'),
+      'path' => 'pm/teams',
+    ),
   );
-  drupal_set_breadcrumb($breadcrumb);
+  pm_set_breadcrumb($breadcrumb);
+
   return node_content_form($node, $form_state);
 }
 
@@ -83,11 +86,14 @@ function pmteam_form($node, &$form_state) {
 function pmteam_view($node, $view_mode) {
   if ($view_mode == 'full' && node_is_page($node)) {
     $breadcrumb = array(
-      l(t('Project Management'), 'pm'),
-      l(t('Teams'), 'pm/teams'),
+      array(
+        'text' => t('Teams'),
+        'path' => 'pm/teams',
+      ),
     );
-    drupal_set_breadcrumb($breadcrumb);
+    pm_set_breadcrumb($breadcrumb);
   }
+
   return $node;
 }
 

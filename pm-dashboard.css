@@ -25,7 +25,7 @@
   text-decoration: none;
 }
 
-#pmdashboard .pmcomponent i.fa {
+#pmdashboard .pmcomponent i.fa.pm-icon {
   border: none;
   opacity: 0.5;
   color: black;
@@ -33,6 +33,7 @@
   height: 50px;
   width: 50px;
   padding: 0px 5px;
+  background-size: initial;
 }
 
 #pmdashboard .pmcomponent a i.fa.fa-plus {
@@ -132,4 +133,8 @@ div.pmdashboard {
 
 .pm-use-storm-icons .pmcomponent i.fa-ticket {
   background-image: url(images/tickets.png);
+}
+
+.pm-use-storm-icons .pmcomponent i.fa-users {
+  background-image: url(images/teams.png);
 }

@@ -178,12 +178,17 @@ function pmproject_update_7301(&$sandbox) {
  */
 function pmproject_update_7302() {
   $entity_type = 'node';
-  $field_name = 'pmproject_parent';
   $bundle_name = 'pmproject';
 
   // Get defaults from the configurations.
+  module_load_include('inc', 'pmproject', 'includes/pmproject.field_base');
   module_load_include('inc', 'pmproject', 'includes/pmproject.field_instance');
+  $field_bases = pmproject_default_field_bases();
   $field_instances = pmproject_default_field_instances();
+
+  // Update pmproject_parent.
+  $field_name = 'pmproject_parent';
+
   $field_instance = $field_instances['node-pmproject-pmproject_parent'];
 
   $instance_info = field_info_instance($entity_type, $field_name, $bundle_name);
@@ -191,6 +196,41 @@ function pmproject_update_7302() {
   $instance_info['default_value_function'] = $field_instance['default_value_function'];
   field_update_instance($instance_info);
 
+  // Update pm_manager.
+  $field_name = 'pm_manager';
+
+  $field_base = $field_bases[$field_name];
+  $base_info = array(
+    'field_name' => $field_name,
+    'settings' => $field_base['settings'],
+  );
+  field_update_field($base_info);
+
+  // Update Field Instance.
+  $field_instance = $field_instances['node-pmproject-pm_manager'];
+
+  $instance_info = field_info_instance($entity_type, $field_name, $bundle_name);
+  $instance_info['settings']['behaviors']['prepopulate'] = $field_instance['settings']['behaviors']['prepopulate'];
+  $instance_info['default_value_function'] = $field_instance['default_value_function'];
+  field_update_instance($instance_info);
+
+  // Update pm_assigned.
+  $field_name = 'pm_assigned';
+
+  $field_base = $field_bases[$field_name];
+  $base_info = array(
+    'field_name' => $field_name,
+    'settings' => $field_base['settings'],
+  );
+  field_update_field($base_info);
+
+  // Update Field Instance.
+  $field_instance = $field_instances['node-pmproject-pm_assigned'];
+
+  $instance_info = field_info_instance($entity_type, $field_name, $bundle_name);
+  $instance_info['settings']['behaviors']['prepopulate'] = $field_instance['settings']['behaviors']['prepopulate'];
+  $instance_info['default_value_function'] = $field_instance['default_value_function'];
+  field_update_instance($instance_info);
 }
 
 /**
