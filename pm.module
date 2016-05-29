@@ -355,7 +355,7 @@ function pm_preprocess_html(&$vars) {
       if (isset($library_info['installed']) AND ($library_info['installed'] == TRUE)) {
         $fontawesome_enabled = TRUE;
       }
-      $vars['classes_array'][] = ($font_awesome_enabled) ? "pm-use-fa-icons" : "pm-use-storm-icons";
+      $vars['classes_array'][] = ($fontawesome_enabled) ? "pm-use-fa-icons" : "pm-use-storm-icons";
 
       break;
 
