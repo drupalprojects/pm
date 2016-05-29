@@ -489,7 +489,7 @@ function pm_field_formatter_view($entity_type, $entity, $field, $instance, $lang
     case 'pm_parent_breadcrumb':
       foreach ($items as $delta => $item) {
         $element[$delta] = array(
-          '#data' => pm_get_parents($entity_type, $entity, $field),
+          '#data' => pm_get_parents($entity_type, $entity, $field, $delta),
           '#theme' => 'pm_parent_breadcrumb',
         );
       }
@@ -502,25 +502,52 @@ function pm_field_formatter_view($entity_type, $entity, $field, $instance, $lang
 /**
  * Recursively gather all parents for a given entity.
  */
-function pm_get_parents($entity_type, $entity, $field) {
-  $data = array();
-  $field_name = $field['field name'];
-  $e = $entity;
-
-  $wrapper = entity_metadata_wrapper($entity_type, $entity);
-  $data[] = pm_get_parent_label($entity_type, $wrapper);
-
-  for ($i = 0; $i < 4; $i++) {
-    $wrapper = entity_metadata_wrapper($entity_type, $entity);
-    if (isset($e->$field_name)) {
-      $data[] = pm_get_parent_label($entity_type, $wrapper);
+function pm_get_parents($entity_type, $entity, $field, $delta) {
+  $iteration = 10;
+  $field_name = $field['field_name'];
+  $parents = array();
+  try {
+    $e = entity_metadata_wrapper('node', $entity);
+    if ($field['cardinality'] == '1') {
+      if (isset($e->{$field_name})) {
+        $wrapper = $e->{$field_name};
+      }
     }
     else {
-      break;
+      if (isset($e->{$field_name})) {
+        $wrapper = $e->{$field_name}[$delta];
+      }
     }
-    $e = $wrapper->$field_name->value();
+    while ($iteration AND $wrapper) {
+      $iteration--;
+      $bundle = $wrapper->getBundle();
+      $parents[$wrapper->getIdentifier()] = pm_get_parent_label('node', $wrapper);
+
+
+      if ($wrapper->__isset($bundle . '_parent')) {
+        $parent_field = $bundle . '_parent';
+      }
+      elseif ($wrapper->__isset('field_' . $bundle . '_parent')) {
+        $parent_field = 'field_' . $bundle . '_parent';
+      }
+      else {
+        break;
+      }
+
+      if ($bundle == 'pmorganization') {
+        break;
+      }
+      $wrapper = $wrapper->{$parent_field};
+    }
   }
-  return array_reverse($data);
+  catch (EntityMetadataWrapperException $exc) {
+    watchdog(
+      'pm',
+      'See ' . __FUNCTION__ . '() <pre>' . $exc->getTraceAsString() . '</pre>',
+      NULL, WATCHDOG_ERROR
+    );
+  }
+  return $parents;
 }
 
 /**
