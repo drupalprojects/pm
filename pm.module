@@ -499,7 +499,6 @@ function pm_field_formatter_view($entity_type, $entity, $field, $instance, $lang
   return $element;
 }
 
-<<<<<<< HEAD
 /**
  * Recursively gather all parents for a given entity.
  */
@@ -536,8 +535,6 @@ function pm_get_parent_label($entity_type, $wrapper) {
   return drupal_valid_path($path) ? l($label, $path) : $label;
 }
 
-=======
->>>>>>> 46ba31e687f8f269ee7ff002cd796d873e17e4cc
 /**
  * Implements hook_node_access_records().
  */
