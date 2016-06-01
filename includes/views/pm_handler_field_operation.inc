@@ -38,6 +38,7 @@ class pm_handler_field_operation extends views_handler_field_node_link {
       $id = $node->nid;
 
       if ($this->options['display_icons']) {
+        module_load_include('inc', 'pm', 'includes/pm.icon');
         $value = "";
         $value .= pm_icon_edit_node($node, $_GET);
         if (!empty($value)) {

@@ -1,0 +1,1 @@
+<i class='fa pm-icon <?php echo $class; ?> fa-fw'></i>

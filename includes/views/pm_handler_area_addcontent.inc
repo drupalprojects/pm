@@ -50,7 +50,7 @@ class pm_handler_area_addcontent extends views_handler_area {
     // Only show a link if the user has permissions for the destination.
     if (node_access('create', $this->options['node_type']) === TRUE) {
       $node_type_name = node_type_get_name($this->options['node_type']);
-
+      module_load_include('inc', 'pm', 'includes/pm.icon');
       $link_icon = pm_icon('application_add', '');
       $link_text = t('Add @node_type_name', array('@node_type_name' => $node_type_name));
       $link_path = 'node/add/' . $this->options['node_type'];
