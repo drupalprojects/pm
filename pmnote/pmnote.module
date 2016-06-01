@@ -85,7 +85,18 @@ function pmnote_pm_contextual_links($entity, $type, $view_mode, $langcode) {
   list($id, $vid, $bundle) = entity_extract_ids($type, $entity);
   if ($type == 'node') {
     $field_info = field_info_field('pmnote_parent');
-    $target_bundles = $field_info['settings']['handler_settings']['target_bundles'];
+    if (isset($field_info['settings']['handler_settings']['target_bundles'])) {
+      $target_bundles = $field_info['settings']['handler_settings']['target_bundles'];
+    }
+    else {
+      $target_bundles = array(
+        'pmissue',
+        'pmorganization',
+        'pmproject',
+        'pmtask',
+        'pmticket',
+      );
+    }
     if (in_array($bundle, $target_bundles)) {
       $links[t('Add Note')] = array(
         'title' => t('Add Note'),
