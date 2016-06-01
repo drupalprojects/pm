@@ -111,3 +111,12 @@ function pmteam_pm_dashboard_links($type) {
   }
   return $links;
 }
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function pmteam_ctools_plugin_api($module = NULL, $api = NULL) {
+  if ($module == 'field_group' && $api == 'field_group') {
+    return array('version' => '1');
+  }
+}

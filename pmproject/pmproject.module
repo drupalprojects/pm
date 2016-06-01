@@ -311,3 +311,12 @@ function pmproject_delete_node_index($node) {
 /**
  * @} End of "defgroup pmproject_index".
  */
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function pmproject_ctools_plugin_api($module = NULL, $api = NULL) {
+  if ($module == 'field_group' && $api == 'field_group') {
+    return array('version' => '1');
+  }
+}
