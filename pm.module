@@ -68,7 +68,7 @@ function pm_menu() {
   $items = array();
   $items['pm'] = array(
     'title' => 'Project Management',
-    'description' => 'You can disable or reorder the links from the <a href="/pm">dashboard</a> here',
+    'description' => 'Access various components of <em>Project Management</em>',
     'page callback' => 'pm_page_front',
     'access arguments' => array('Project Management: access dashboard'),
     'type' => MENU_NORMAL_ITEM,
