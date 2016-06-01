@@ -85,7 +85,14 @@ function pmticket_pm_contextual_links($entity, $type, $view_mode, $langcode) {
   list($id, $vid, $bundle) = entity_extract_ids($type, $entity);
   if ($type == 'node') {
     $field_info = field_info_field('pmticket_parent');
-    $target_bundles = $field_info['settings']['handler_settings']['target_bundles'];
+    if (isset($field_info['settings']['handler_settings']['target_bundles'])) {
+      $target_bundles = $field_info['settings']['handler_settings']['target_bundles'];
+    }
+    else {
+      $target_bundles = array(
+        'pmproject',
+      );
+    }
     if (in_array($bundle, $target_bundles)) {
       $links[t('Add Ticket')] = array(
         'title' => t('Add Ticket'),
