@@ -11,6 +11,11 @@ define('PM_ICON_SET_NO_ICON', 'none');
 
 define('PM_CONTEXTUAL_LINK_PSEUDO_FIELD', 'pm_contextual_link');
 
+define('PM_FONTAWESOME_DISABLED', 0x0000);
+define('PM_FONTAWESOME_LIBRARY_ENABLED', 0x0001);
+define('PM_FONTAWESOME_MODULE_ENABLED', 0x0002);
+define('PM_FONTAWESOME_ENABLED', PM_FONTAWESOME_LIBRARY_ENABLED | PM_FONTAWESOME_MODULE_ENABLED);
+
 module_load_include('inc', 'pm', 'includes/pm.permission');
 
 /**
@@ -350,12 +355,8 @@ function pm_preprocess_html(&$vars) {
   switch ($pm_icon) {
     case PM_ICON_SET_DEFAULT_BEHAVIOUR:
       // Use fontawesome icons if available, defer to legacy otherwise.
-      $fontawesome_enabled = FALSE;
-      $library_info = libraries_detect('fontawesome');
-      if (isset($library_info['installed']) AND ($library_info['installed'] == TRUE)) {
-        $fontawesome_enabled = TRUE;
-      }
-      $vars['classes_array'][] = ($fontawesome_enabled) ? "pm-use-fa-icons" : "pm-use-storm-icons";
+      $fontawesome_status = _pm_get_fontawesome_status();
+      $vars['classes_array'][] = ($fontawesome_status == PM_FONTAWESOME_ENABLED) ? "pm-use-fa-icons" : "pm-use-storm-icons";
 
       break;
 
@@ -588,4 +589,22 @@ function pm_set_breadcrumb(array $links, $pm_root = TRUE) {
   if (!empty($breadcrumb)) {
     drupal_set_breadcrumb($breadcrumb);
   }
+}
+
+/**
+ * Helper function to check if fontawesome is available or not.
+ */
+function _pm_get_fontawesome_status() {
+  $status = &drupal_static(__FUNCTION__);
+  if (!isset($status)) {
+    $status = PM_FONTAWESOME_DISABLED;
+    $status |= module_exists('fontawesome') ? PM_FONTAWESOME_MODULE_ENABLED : 0x0000;
+    if (module_exists('libraries')) {
+      $library_info = libraries_detect('fontawesome');
+      if (isset($library_info['installed']) AND ($library_info['installed'] == TRUE)) {
+        $status |= PM_FONTAWESOME_LIBRARY_ENABLED;
+      }
+    }
+  }
+  return $status;
 }
