@@ -179,6 +179,14 @@ function pm_theme() {
       'template' => 'pm-list-default',
       'variables' => array('value' => NULL, 'key' => NULL, 'field_name' => NULL),
     ),
+
+    'pm_parent_breadcrumb' => array(
+      'file' => 'pm.theme.inc',
+      'variables' => array(
+        'data' => array(),
+      ),
+    ),
+
     'pm_menu_entry_table' => array(
       'file' => 'pm.theme.inc',
       'render element' => 'element',
@@ -442,6 +450,10 @@ function pm_field_formatter_info() {
         'list_boolean',
       ),
     ),
+    'pm_parent_breadcrumb' => array(
+      'label' => t('Project Management Parent Breadcrumb'),
+      'field types' => array('entityreference'),
+    ),
   );
 }
 
@@ -450,7 +462,9 @@ function pm_field_formatter_info() {
  */
 function pm_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
+
   switch ($display['type']) {
+
     case 'pm_list_default':
       $allowed_values = list_allowed_values($field, $instance, $entity_type, $entity);
       foreach ($items as $delta => $item) {
@@ -472,9 +486,81 @@ function pm_field_formatter_view($entity_type, $entity, $field, $instance, $lang
         $element[$delta] = array('#markup' => $output);
       }
       break;
+
+    case 'pm_parent_breadcrumb':
+      foreach ($items as $delta => $item) {
+        $element[$delta] = array(
+          '#data' => pm_get_parents($entity_type, $entity, $field, $delta),
+          '#theme' => 'pm_parent_breadcrumb',
+        );
+      }
+      break;
   }
 
   return $element;
+}
+
+/**
+ * Recursively gather all parents for a given entity.
+ */
+function pm_get_parents($entity_type, $entity, $field, $delta) {
+  $iteration = 10;
+  $field_name = $field['field_name'];
+  $parents = array();
+  try {
+    $e = entity_metadata_wrapper('node', $entity);
+    if ($field['cardinality'] == '1') {
+      if (isset($e->{$field_name})) {
+        $wrapper = $e->{$field_name};
+      }
+    }
+    else {
+      if (isset($e->{$field_name})) {
+        $wrapper = $e->{$field_name}[$delta];
+      }
+    }
+    while ($iteration AND $wrapper) {
+      $iteration--;
+      $bundle = $wrapper->getBundle();
+      if ($wrapper->getIdentifier()) {
+        $parents[$wrapper->getIdentifier()] = pm_get_parent_label('node', $wrapper);
+      }
+      if ($wrapper->__isset($bundle . '_parent')) {
+        $parent_field = $bundle . '_parent';
+      }
+      elseif ($wrapper->__isset('field_' . $bundle . '_parent')) {
+        $parent_field = 'field_' . $bundle . '_parent';
+      }
+      else {
+        break;
+      }
+
+      if ($bundle == 'pmorganization') {
+        break;
+      }
+      $wrapper = $wrapper->{$parent_field};
+    }
+  }
+  catch (EntityMetadataWrapperException $exc) {
+    watchdog(
+      'pm',
+      'See ' . __FUNCTION__ . '() <pre>' . $exc->getTraceAsString() . '</pre>',
+      NULL, WATCHDOG_ERROR
+    );
+  }
+  return array_reverse($parents);
+}
+
+/**
+ * Get the label for a given entity.
+ */
+function pm_get_parent_label($entity_type, $wrapper) {
+  $label = $wrapper->label();
+  $id = $wrapper->getIdentifier();
+
+  $path = $entity_type . '/' . $id;
+
+  return drupal_valid_path($path) ? l($label, $path) : $label;
 }
 
 /**
