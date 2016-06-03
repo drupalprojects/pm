@@ -57,6 +57,13 @@ class pm_handler_area_addcontent extends views_handler_area {
 
       $link_options = array(
         'html' => TRUE,
+        'attributes' => array(
+          'class' => array(
+            'btn',
+            'btn-xs',
+            'btn-success',
+          ),
+        ),
       );
 
       if ($this->options['redirect'] == TRUE) {
