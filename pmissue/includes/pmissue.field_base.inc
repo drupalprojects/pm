@@ -97,21 +97,13 @@ function pmissue_default_field_bases() {
     'type' => 'datetime',
   );
 
-  // Exported field_base: 'pmissue_parent'
+  // Exported field_base: 'pmissue_parent'.
   $field_bases['pmissue_parent'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'pmissue_parent',
-    'foreign keys' => array(
-      'node' => array(
-        'columns' => array(
-          'target_id' => 'nid',
-        ),
-        'table' => 'node',
-      ),
-    ),
     'indexes' => array(
       'target_id' => array(
         0 => 'target_id',
@@ -120,18 +112,17 @@ function pmissue_default_field_bases() {
     'locked' => 0,
     'module' => 'entityreference',
     'settings' => array(
-      'handler' => 'base',
+      'handler' => 'views',
       'handler_settings' => array(
         'behaviors' => array(
           'views-select-list' => array(
             'status' => 0,
           ),
         ),
-        'sort' => array(
-          'type' => 'none',
-        ),
-        'target_bundles' => array(
-          'pmproject' => 'pmproject',
+        'view' => array(
+          'args' => array(),
+          'display_name' => 'parent',
+          'view_name' => 'drupal_pm_entity_reference_parent_filter',
         ),
       ),
       'target_type' => 'node',
@@ -140,21 +131,13 @@ function pmissue_default_field_bases() {
     'type' => 'entityreference',
   );
 
-  // Exported field_base: 'pmissue_related'
+  // Exported field_base: 'pmissue_related'.
   $field_bases['pmissue_related'] = array(
     'active' => 1,
-    'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+    'cardinality' => -1,
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'pmissue_related',
-    'foreign keys' => array(
-      'node' => array(
-        'columns' => array(
-          'target_id' => 'nid',
-        ),
-        'table' => 'node',
-      ),
-    ),
     'indexes' => array(
       'target_id' => array(
         0 => 'target_id',
@@ -163,18 +146,17 @@ function pmissue_default_field_bases() {
     'locked' => 0,
     'module' => 'entityreference',
     'settings' => array(
-      'handler' => 'base',
+      'handler' => 'views',
       'handler_settings' => array(
         'behaviors' => array(
           'views-select-list' => array(
             'status' => 0,
           ),
         ),
-        'sort' => array(
-          'type' => 'none',
-        ),
-        'target_bundles' => array(
-          'pmissue' => 'pmissue',
+        'view' => array(
+          'args' => array(),
+          'display_name' => 'related',
+          'view_name' => 'drupal_pm_entity_reference_parent_filter',
         ),
       ),
       'target_type' => 'node',
@@ -183,21 +165,13 @@ function pmissue_default_field_bases() {
     'type' => 'entityreference',
   );
 
-  // Exported field_base: 'pmissue_parent_issue'
+  // Exported field_base: 'pmissue_parent_issue'.
   $field_bases['pmissue_parent_issue'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'pmissue_parent_issue',
-    'foreign keys' => array(
-      'node' => array(
-        'columns' => array(
-          'target_id' => 'nid',
-        ),
-        'table' => 'node',
-      ),
-    ),
     'indexes' => array(
       'target_id' => array(
         0 => 'target_id',
@@ -206,18 +180,17 @@ function pmissue_default_field_bases() {
     'locked' => 0,
     'module' => 'entityreference',
     'settings' => array(
-      'handler' => 'base',
+      'handler' => 'views',
       'handler_settings' => array(
         'behaviors' => array(
           'views-select-list' => array(
             'status' => 0,
           ),
         ),
-        'sort' => array(
-          'type' => 'none',
-        ),
-        'target_bundles' => array(
-          'pmissue' => 'pmissue',
+        'view' => array(
+          'args' => array(),
+          'display_name' => 'parent_issue',
+          'view_name' => 'drupal_pm_entity_reference_parent_filter',
         ),
       ),
       'target_type' => 'node',
