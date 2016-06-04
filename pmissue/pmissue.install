@@ -108,3 +108,30 @@ function pmissue_update_7301() {
   $instance_info['default_value_function'] = $field_instance['default_value_function'];
   field_update_instance($instance_info);
 }
+
+/**
+ * Change the widget used for Related and Parent issue to autocomplete.
+ */
+function pmissue_update_7302() {
+  $entity_type = 'node';
+  $bundle_name = 'pmissue';
+
+  // Get defaults from the configurations.
+  module_load_include('inc', 'pmissue', 'includes/pmissue.field_base');
+  module_load_include('inc', 'pmissue', 'includes/pmissue.field_instance');
+  $field_bases = pmissue_default_field_bases();
+  $field_instances = pmissue_default_field_instances();
+
+  $field_name = 'pmissue_parent_issue';
+  $field_instance = $field_instances['node-pmissue-' . $field_name];
+  $instance_info = field_info_instance($entity_type, $field_name, $bundle_name);
+  $instance_info['widget'] = $field_instance['widget'];
+  field_update_instance($instance_info);
+
+  $field_name = 'pmissue_related';
+  $field_instance = $field_instances['node-pmissue-' . $field_name];
+  $instance_info = field_info_instance($entity_type, $field_name, $bundle_name);
+  $instance_info['widget'] = $field_instance['widget'];
+  field_update_instance($instance_info);
+
+}
