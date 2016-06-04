@@ -101,7 +101,7 @@ function pm_field_instances_create_if_required(array $field_instances) {
   }
   foreach ($result as $key => $status) {
     $variables = array(
-      '@field_name' => $field_bases[$key]['field_name'],
+      '@field_name' => $field_instances[$key]['field_name'],
     );
     switch ($status) {
       case PM_FIELD_INSTANCE_CREATE_FAILURE:
