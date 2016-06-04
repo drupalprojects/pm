@@ -37,7 +37,7 @@ function pm_field_bases_create_if_required(array $field_bases) {
       case PM_FIELD_BASE_CREATE_FAILURE:
         $message = 'Failed to create field base - @field_name';
         watchdog('pm', $message, $variables, WATCHDOG_ERROR);
-        throw new Exception("Drupal PM: Error Creating field base.", 1);
+        throw new Exception("Drupal PM: Error Creating field base - " . $field_bases[$key]['field_name'], 1);
 
       case PM_FIELD_BASE_CREATE_SUCCESS:
         $message = 'Successfully created field base - @field_name';
@@ -107,7 +107,7 @@ function pm_field_instances_create_if_required(array $field_instances) {
       case PM_FIELD_INSTANCE_CREATE_FAILURE:
         $message = 'Failed to create field instance - @field_name';
         watchdog('pm', $message, $variables, WATCHDOG_ERROR);
-        throw new Exception("Drupal PM: Error Creating field instance.", 1);
+        throw new Exception("Drupal PM: Error Creating field instance - " . $field_instances[$key]['field_name'] . ' (' . $key . ')', 1);
 
       case PM_FIELD_INSTANCE_CREATE_SUCCESS:
         $message = 'Successfully created field instance - @field_name';
