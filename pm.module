@@ -11,6 +11,11 @@ define('PM_ICON_SET_NO_ICON', 'none');
 
 define('PM_CONTEXTUAL_LINK_PSEUDO_FIELD', 'pm_contextual_link');
 
+define('PM_FONTAWESOME_DISABLED', 0x0000);
+define('PM_FONTAWESOME_LIBRARY_ENABLED', 0x0001);
+define('PM_FONTAWESOME_MODULE_ENABLED', 0x0002);
+define('PM_FONTAWESOME_ENABLED', PM_FONTAWESOME_LIBRARY_ENABLED | PM_FONTAWESOME_MODULE_ENABLED);
+
 module_load_include('inc', 'pm', 'includes/pm.permission');
 
 /**
@@ -23,6 +28,7 @@ function pm_help($path, $arg) {
     case "admin/help#pm":
       $output = '<p>' . t("Provides a complete project management environment") . '</p>';
       break;
+
     case 'admin/help#pm-permission':
       return '<p>' . t('PM Permission allows you to grant access to content based on interactions with Drupal PM.') . '</p>';
   }
@@ -66,10 +72,8 @@ function pm_permission() {
 function pm_menu() {
   $items = array();
   $items['pm'] = array(
-    'title' => t('Project Management'),
-    'description' => t('You can disable or reorder the links from the !dashboard here', array(
-        '!dashboard' => l(t('dashboard'), 'pm'),
-      )),
+    'title' => 'Project Management',
+    'description' => 'Access various components of <em>Project Management</em>',
     'page callback' => 'pm_page_front',
     'access arguments' => array('Project Management: access dashboard'),
     'type' => MENU_NORMAL_ITEM,
@@ -175,6 +179,14 @@ function pm_theme() {
       'template' => 'pm-list-default',
       'variables' => array('value' => NULL, 'key' => NULL, 'field_name' => NULL),
     ),
+
+    'pm_parent_breadcrumb' => array(
+      'file' => 'pm.theme.inc',
+      'variables' => array(
+        'data' => array(),
+      ),
+    ),
+
     'pm_menu_entry_table' => array(
       'file' => 'pm.theme.inc',
       'render element' => 'element',
@@ -347,10 +359,12 @@ function pm_block_view($delta = '') {
  */
 function pm_preprocess_html(&$vars) {
   $pm_icon = variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR);
-  $font_awesome_enabled = module_exists('fontawesome');
+
   switch ($pm_icon) {
     case PM_ICON_SET_DEFAULT_BEHAVIOUR:
-      $vars['classes_array'][] = ($font_awesome_enabled) ? "pm-use-fa-icons" : "pm-use-storm-icons";
+      // Use fontawesome icons if available, defer to legacy otherwise.
+      $fontawesome_status = _pm_get_fontawesome_status();
+      $vars['classes_array'][] = ($fontawesome_status == PM_FONTAWESOME_ENABLED) ? "pm-use-fa-icons" : "pm-use-storm-icons";
 
       break;
 
@@ -436,6 +450,10 @@ function pm_field_formatter_info() {
         'list_boolean',
       ),
     ),
+    'pm_parent_breadcrumb' => array(
+      'label' => t('Project Management Parent Breadcrumb'),
+      'field types' => array('entityreference'),
+    ),
   );
 }
 
@@ -444,7 +462,9 @@ function pm_field_formatter_info() {
  */
 function pm_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
+
   switch ($display['type']) {
+
     case 'pm_list_default':
       $allowed_values = list_allowed_values($field, $instance, $entity_type, $entity);
       foreach ($items as $delta => $item) {
@@ -466,9 +486,81 @@ function pm_field_formatter_view($entity_type, $entity, $field, $instance, $lang
         $element[$delta] = array('#markup' => $output);
       }
       break;
+
+    case 'pm_parent_breadcrumb':
+      foreach ($items as $delta => $item) {
+        $element[$delta] = array(
+          '#data' => pm_get_parents($entity_type, $entity, $field, $delta),
+          '#theme' => 'pm_parent_breadcrumb',
+        );
+      }
+      break;
   }
 
   return $element;
+}
+
+/**
+ * Recursively gather all parents for a given entity.
+ */
+function pm_get_parents($entity_type, $entity, $field, $delta) {
+  $iteration = 10;
+  $field_name = $field['field_name'];
+  $parents = array();
+  try {
+    $e = entity_metadata_wrapper('node', $entity);
+    if ($field['cardinality'] == '1') {
+      if (isset($e->{$field_name})) {
+        $wrapper = $e->{$field_name};
+      }
+    }
+    else {
+      if (isset($e->{$field_name})) {
+        $wrapper = $e->{$field_name}[$delta];
+      }
+    }
+    while ($iteration AND $wrapper) {
+      $iteration--;
+      $bundle = $wrapper->getBundle();
+      if ($wrapper->getIdentifier()) {
+        $parents[$wrapper->getIdentifier()] = pm_get_parent_label('node', $wrapper);
+      }
+      if ($wrapper->__isset($bundle . '_parent')) {
+        $parent_field = $bundle . '_parent';
+      }
+      elseif ($wrapper->__isset('field_' . $bundle . '_parent')) {
+        $parent_field = 'field_' . $bundle . '_parent';
+      }
+      else {
+        break;
+      }
+
+      if ($bundle == 'pmorganization') {
+        break;
+      }
+      $wrapper = $wrapper->{$parent_field};
+    }
+  }
+  catch (EntityMetadataWrapperException $exc) {
+    watchdog(
+      'pm',
+      'See ' . __FUNCTION__ . '() <pre>' . $exc->getTraceAsString() . '</pre>',
+      NULL, WATCHDOG_ERROR
+    );
+  }
+  return array_reverse($parents);
+}
+
+/**
+ * Get the label for a given entity.
+ */
+function pm_get_parent_label($entity_type, $wrapper) {
+  $label = $wrapper->label();
+  $id = $wrapper->getIdentifier();
+
+  $path = $entity_type . '/' . $id;
+
+  return drupal_valid_path($path) ? l($label, $path) : $label;
 }
 
 /**
@@ -591,10 +683,10 @@ function pm_set_breadcrumb(array $links, $pm_root = TRUE) {
   // Unless set otherwise, all breadcrumbs start with a link to pm.
   if ($pm_root && drupal_valid_path('pm')) {
     $breadcrumb = array(
-      l(t('Project Management'), 'pm')
+      l(t('Project Management'), 'pm'),
     );
   }
-  
+
   // Now process any other links provided.
   foreach ($links as $link) {
     $text = $link['text'];
@@ -605,9 +697,27 @@ function pm_set_breadcrumb(array $links, $pm_root = TRUE) {
       $breadcrumb[] = l($text, $path, $options);
     }
   }
-  
+
   // Only set the breadcrumb if one or more links are present.
   if (!empty($breadcrumb)) {
     drupal_set_breadcrumb($breadcrumb);
   }
+}
+
+/**
+ * Helper function to check if fontawesome is available or not.
+ */
+function _pm_get_fontawesome_status() {
+  $status = &drupal_static(__FUNCTION__);
+  if (!isset($status)) {
+    $status = PM_FONTAWESOME_DISABLED;
+    $status |= module_exists('fontawesome') ? PM_FONTAWESOME_MODULE_ENABLED : 0x0000;
+    if (module_exists('libraries')) {
+      $library_info = libraries_detect('fontawesome');
+      if (isset($library_info['installed']) AND ($library_info['installed'] == TRUE)) {
+        $status |= PM_FONTAWESOME_LIBRARY_ENABLED;
+      }
+    }
+  }
+  return $status;
 }

@@ -101,7 +101,17 @@ function pmtimetracking_pm_contextual_links($entity, $type, $view_mode, $langcod
   list($id, $vid, $bundle) = entity_extract_ids($type, $entity);
   if ($type == 'node') {
     $field_info = field_info_field('pmtimetracking_parent');
-    $target_bundles = $field_info['settings']['handler_settings']['target_bundles'];
+    if (isset($field_info['settings']['handler_settings']['target_bundles'])) {
+      $target_bundles = $field_info['settings']['handler_settings']['target_bundles'];
+    }
+    else {
+      $target_bundles = array(
+        'pmproject',
+        'pmissue',
+        'pmticket',
+        'pmtask',
+      );
+    }
     if (in_array($bundle, $target_bundles)) {
       $links[t('Add Timetracking')] = array(
         'title' => t('Add Timetracking'),

@@ -175,3 +175,11 @@ function theme_pm_menu_entry_table($form) {
   // Return the themed activities table
   return $output;
 }
+
+/**
+ * Provides HTML for the pm_parent_breadcrumb field formatter.
+ */
+function theme_pm_parent_breadcrumb($variables) {
+  $breadcrumb = implode(' &raquo; ', $variables['data']);
+  return '<div class="pm_parent_breadcrumb">' . $breadcrumb . '</div>';
+}
