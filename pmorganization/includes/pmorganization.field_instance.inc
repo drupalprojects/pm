@@ -449,7 +449,7 @@ function pmorganization_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'pm_www',
-    'label' => 'Organization website',
+    'label' => 'Website',
     'required' => 0,
     'settings' => array(
       'attributes' => array(
