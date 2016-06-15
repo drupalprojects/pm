@@ -72,9 +72,21 @@ function pmproject_update_7105(&$sandbox) {
 }
 
 /**
- * Add entityreference_prepopulate behaviour to pmproject_parent.
+ * Skipping update that has been superceded in this version of Drupal PM.
  */
 function pmproject_update_7300() {
+}
+
+/**
+ * Skipping update that has been superceded in this version of Drupal PM.
+ */
+function pmproject_update_7301() {
+}
+
+/**
+ * Add entityreference_prepopulate behaviour to pmproject_parent.
+ */
+function pmproject_update_7302() {
   $entity_type = 'node';
   $bundle_name = 'pmproject';
 
@@ -129,6 +141,15 @@ function pmproject_update_7300() {
   $instance_info['settings']['behaviors']['prepopulate'] = $field_instance['settings']['behaviors']['prepopulate'];
   $instance_info['default_value_function'] = $field_instance['default_value_function'];
   field_update_instance($instance_info);
+}
+
+/**
+ * Removing legacy pmproject index now superceded in Drupal PM core.
+ */
+function pmproject_update_7303() {
+  if (db_table_exists('pmproject_index')) {
+    db_drop_table('pmproject_index');
+  }
 }
 
 /**
