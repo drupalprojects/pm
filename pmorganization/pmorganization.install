@@ -67,11 +67,22 @@ function pmorganization_update_7104(&$sandbox) {
     return pmorganization_migrate($sandbox);
   }
 }
+/**
+ * Skipping update that has been superceded in this version of Drupal PM.
+ */
+function pmproject_update_7300() {
+}
+
+/**
+ * Skipping update that has been superceded in this version of Drupal PM.
+ */
+function pmproject_update_7301() {
+}
 
 /**
  * Use pm_entity_reference_user_filter for pmorganization_members.
  */
-function pmorganization_update_7300() {
+function pmorganization_update_7302() {
   $entity_type = 'node';
   $field_name = 'pmorganization_members';
   $bundle_name = 'pmorganization';
@@ -96,6 +107,15 @@ function pmorganization_update_7300() {
   $instance_info['settings']['behaviors']['prepopulate'] = $field_instance['settings']['behaviors']['prepopulate'];
   $instance_info['default_value_function'] = $field_instance['default_value_function'];
   field_update_instance($instance_info);
+}
+
+/**
+ * Removing legacy pmorganization index now superceded in Drupal PM core.
+ */
+function pmorganization_update_7303() {
+  if (db_table_exists('pmorganization_index')) {
+    db_drop_table('pmorganization_index');
+  }
 }
 
 /**
@@ -124,7 +144,6 @@ function pmorganization_requirements($phase) {
   }
   return $requirements;
 }
-
 
 /**
  * Implements hook_update_dependencies().
