@@ -636,7 +636,7 @@ function _pm_permission_watchdog_log($error, $backtrace = TRUE) {
  * Check and performs access update if supplied pmorganization.
  */
 function pm_permission_hunt_and_update_all_child_permission($node) {
-  $nids = pm_permission_get_all_child_nids($node->nid);
+  $nids = pm_get_children_from_index($node->nid);
   if ($nids) {
     $batch = array(
       'title' => t('Rebuilding access permissions for the @type "@title"', array('@type' => $node->type, '@title' => $node->title)),
@@ -669,60 +669,6 @@ function pm_permission_check_if_child_permission_needs_update($node) {
   $old_id = (isset($parent_old->nid)) ? $parent_old->nid : NULL;
 
   return ($new_id != $old_id);
-}
-
-/**
- * Helper function to get all child nids under current node.
- */
-function pm_permission_get_all_child_nids($nid) {
-  $parents = array($nid);
-  $result = NULL;
-  _pm_permission_get_all_child_nids($parents, $result);
-  return $result;
-}
-
-/**
- * Recursively hunt for child nodes of pmorganization.
- */
-function _pm_permission_get_all_child_nids($nids, &$result = NULL) {
-  static $depth = 0;
-  $depth++;
-  if ($depth >= 10) {
-    return;
-  }
-  if ($result === NULL) {
-    $result = array();
-    $new_ids = $nids;
-  }
-  else {
-    $new_ids = array_diff($nids, $result);
-    $result = array_merge($result, $new_ids);
-    if (empty($new_ids)) {
-      return;
-    }
-  }
-  $ids = array();
-  foreach ($new_ids as $nid) {
-    $enabled = pm_permission_get_enabled_types();
-    if ($enabled) {
-      foreach ($enabled as $type) {
-        $parent_field = variable_get("pm_permission_field_parent_reference_for_{$type}", NULL);
-        if ($parent_field) {
-          $query = new EntityFieldQuery();
-          $query->entityCondition('entity_type', 'node')
-            ->entityCondition('bundle', array($type), 'IN')
-            ->fieldCondition($parent_field, 'target_id', $nid)
-            ->addMetaData('account', user_load(1));
-          $r = $query->execute();
-          if (isset($r['node'])) {
-            $keys = array_keys($r['node']);
-            $ids = array_merge($ids, $keys);
-          }
-        }
-      }
-    }
-  }
-  _pm_permission_get_all_child_nids($ids, $result);
 }
 
 /**
