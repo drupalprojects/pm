@@ -41,7 +41,7 @@ function pm_get_parent_nid_by_type($node, $parent_type, $max_depth = NULL) {
       }
     }
     catch (Exception $e) {
-      _pm_permission_watchdog_log($e);
+      _pm_log_error($e);
     }
   }
   else {
@@ -75,6 +75,6 @@ function pm_get_parent_node($node) {
     }
   }
   catch (Exception $e) {
-    _pm_permission_watchdog_log($e);
+    _pm_log_error($e);
   }
 }

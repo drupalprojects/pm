@@ -547,7 +547,7 @@ function _pm_permission_get_assigned_id($node, $type, $assigned) {
       }
     }
     catch (Exception $e) {
-      _pm_permission_watchdog_log($e);
+      _pm_log_error($e);
     }
   }
   return $assigned_nids;
@@ -616,20 +616,6 @@ function _pm_permission_get_entity_id_referenced_to_user($entity_type, $bundle, 
     }
   }
   return $ids;
-}
-
-/**
- * Log and display the error.
- *
- * @param string $error
- *   Error to report.
- * @param bool $backtrace
- *   TRUE if watchdog log should include full backtrace of the error.
- */
-function _pm_permission_watchdog_log($error, $backtrace = TRUE) {
-  $err_msg = t("Error message: %error", array('%error' => $error));
-  watchdog('PHP', $err_msg, WATCHDOG_ERROR);
-  drupal_set_message($err_msg, 'error');
 }
 
 /**

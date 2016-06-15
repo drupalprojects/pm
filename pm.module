@@ -722,3 +722,17 @@ function _pm_get_fontawesome_status() {
   }
   return $status;
 }
+
+/**
+ * Log an error.
+ *
+ * @param string $error
+ *   Error to report.
+ * @param bool $backtrace
+ *   TRUE if watchdog log should include full backtrace of the error.
+ */
+function _pm_log_error($error, $backtrace = TRUE) {
+  $err_msg = t("Error message: %error", array('%error' => $error));
+  watchdog('PHP', $err_msg, WATCHDOG_ERROR);
+  drupal_set_message($err_msg, 'error');
+}
