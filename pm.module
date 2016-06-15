@@ -653,9 +653,21 @@ function pm_node_update($node) {
   pm_delete_node_index_by_child($node);
   pm_build_node_index_by_child($node);
 
-  // Update permissions.
-  if (pm_permission_check_if_child_permission_needs_update($node)) {
-    pm_permission_hunt_and_update_all_child_permission($node);
+  // Check if children of this node need updating.
+  module_load_include('inc', 'pm', '/includes/pm.parent');
+
+  if (pm_detect_parent_change($node)) {
+    $chidren = pm_get_children_from_index($node->nid);
+    if ($children) {
+      $batch = array(
+        'title' => t('Rebuilding access permissions for the @type "@title"', array('@type' => $node->type, '@title' => $node->title)),
+        'operations' => array(
+          array('_pm_permission_node_access_rebuild_batch_operation', array($children)),
+        ),
+        'finished' => '_pm_permission_node_access_rebuild_batch_finished',
+      );
+      batch_set($batch);
+    }
   }
 }
 

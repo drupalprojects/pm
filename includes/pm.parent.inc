@@ -78,3 +78,27 @@ function pm_get_parent_node($node) {
     _pm_log_error($e);
   }
 }
+
+/**
+ * Check if the parent field of a given node has changed value.
+ */
+function pm_detect_parent_change($node) {
+  // Parent field can only have changed if a parent field exists.
+  $wrapper = entity_metadata_wrapper('node', $node);
+  $parent_field = variable_get("pm_permission_field_parent_reference_for_{$type}", NULL);
+  if (empty($parent_field)) {
+    return FALSE;
+  }
+
+  // Find new parent value.
+  $parent_new = $wrapper->$parent_field->value();
+  $new_id = (isset($parent_new->nid)) ? $parent_new->nid : NULL;
+
+  // Find original parent value.
+  $wrapper = entity_metadata_wrapper('node', $node->original);
+  $parent_old = $wrapper->$parent_field->value();
+  $old_id = (isset($parent_old->nid)) ? $parent_old->nid : NULL;
+
+  // Detect and return whether the parent value has changed.
+  return ($new_id != $old_id);
+}

@@ -619,52 +619,6 @@ function _pm_permission_get_entity_id_referenced_to_user($entity_type, $bundle, 
 }
 
 /**
- * Check and performs access update if supplied pmorganization.
- */
-function pm_permission_hunt_and_update_all_child_permission($node) {
-  $nids = pm_get_children_from_index($node->nid);
-  if ($nids) {
-    $batch = array(
-      'title' => t('Rebuilding access permissions for the @type "@title"', array('@type' => $node->type, '@title' => $node->title)),
-      'operations' => array(
-        array('_pm_permission_node_access_rebuild_batch_operation', array($nids)),
-      ),
-      'finished' => '_pm_permission_node_access_rebuild_batch_finished',
-    );
-    batch_set($batch);
-  }
-}
-
-/**
- * Check if current node is directly under pmorganization, and has changed.
- */
-function pm_permission_check_if_child_permission_needs_update($node) {
-  // Update only required if pm permissions enabled for this content type.
-  $enabled = pm_permission_get_enabled_types();
-  $type = $node->type;
-  if (!in_array($type, $enabled)) {
-    return FALSE;
-  }
-
-  // Update only required if parent field is present.
-  $wrapper = entity_metadata_wrapper('node', $node);
-  $parent_field = variable_get("pm_permission_field_parent_reference_for_{$type}", NULL);
-  if (empty($parent_field)) {
-    return FALSE;
-  }
-
-  $parent_new = $wrapper->$parent_field->value();
-  $new_id = (isset($parent_new->nid)) ? $parent_new->nid : NULL;
-
-  $wrapper = entity_metadata_wrapper('node', $node->original);
-  $parent_old = $wrapper->$parent_field->value();
-
-  $old_id = (isset($parent_old->nid)) ? $parent_old->nid : NULL;
-
-  return ($new_id != $old_id);
-}
-
-/**
  * Custom batch operation for rebuilding permission.
  *
  * @see pm_permission_hunt_and_update_all_child_permission()
