@@ -5,32 +5,38 @@
  */
 
 /**
- * Deletes index entries for a given node.
+ * Deletes index entries for a given child node.
  *
  * @param object $node
  *   The node object.
  */
-function pm_delete_node_index($node, $delete_by_parent = FALSE) {
+function pm_delete_node_index_by_child($node) {
   if (variable_get('pm_maintain_index', TRUE)) {
-    db_delete('pm_index')->condition('nid', $node->nid)->execute();
-        
-    // Only remove parent_nid rows when explicitly specified.
-    if ($delete_by_parent === TRUE) {
-      db_delete('pm_index')->condition('parent_nid', $node->nid)->execute();
-    }
+    db_delete('pm_index')->condition('nid', $node->nid)->execute();        
   }
 }
 
 /**
- * Builds and inserts index entries for a given node.
- *
- * The index lists all nodes that are parents of a given node entity, and is
- * therefore maintained at the entity level.
+ * Deletes index entries for a given parent node.
  *
  * @param object $node
  *   The node object.
  */
-function pm_build_node_index($node) {
+function pm_delete_node_index_by_parent($node) {
+  if (variable_get('pm_maintain_index', TRUE)) {
+    db_delete('pm_index')->condition('parent_nid', $node->nid)->execute();
+  }
+}
+
+/**
+ * Builds and inserts index entries for a given child node.
+ *
+ * The index lists all nodes that are parents of a given node entity.
+ *
+ * @param object $node
+ *   The node object.
+ */
+function pm_build_node_index_by_child($node) {
   // We maintain a denormalized table of parent/node relationships, containing
   // only data for current, published nodes.
   $status = NULL;
