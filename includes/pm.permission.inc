@@ -639,13 +639,20 @@ function pm_permission_hunt_and_update_all_child_permission($node) {
  * Check if current node is directly under pmorganization, and has changed.
  */
 function pm_permission_check_if_child_permission_needs_update($node) {
+  // Update only required if pm permissions enabled for this content type.
+  $enabled = pm_permission_get_enabled_types();
   $type = $node->type;
+  if (!in_array($type, $enabled)) {
+    return FALSE;
+  }
+
+  // Update only required if parent field is present.
   $wrapper = entity_metadata_wrapper('node', $node);
   $parent_field = variable_get("pm_permission_field_parent_reference_for_{$type}", NULL);
-  // No update required if parent field is absent.
   if (empty($parent_field)) {
     return FALSE;
   }
+
   $parent_new = $wrapper->$parent_field->value();
   $new_id = (isset($parent_new->nid)) ? $parent_new->nid : NULL;
 
