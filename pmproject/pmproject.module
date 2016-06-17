@@ -51,10 +51,13 @@ function pmproject_node_info() {
  */
 function pmproject_form(&$node, &$form_state) {
   $breadcrumb = array(
-    l(t('Project Management'), 'pm'),
-    l(t('Projects'), 'pm/projects'),
+    array(
+      'text' => t('Projects'),
+      'path' => 'pm/projects',
+    ),
   );
-  drupal_set_breadcrumb($breadcrumb);
+  pm_set_breadcrumb($breadcrumb);
+
   return node_content_form($node, $form_state);
 }
 
@@ -64,11 +67,14 @@ function pmproject_form(&$node, &$form_state) {
 function pmproject_view($node, $view_mode) {
   if ($view_mode == 'full' && node_is_page($node)) {
     $breadcrumb = array(
-      l(t('Project Management'), 'pm'),
-      l(t('Projects'), 'pm/projects'),
+      array(
+        'text' => t('Projects'),
+        'path' => 'pm/projects',
+      ),
     );
-    drupal_set_breadcrumb($breadcrumb);
+    pm_set_breadcrumb($breadcrumb);
   }
+
   return $node;
 }
 
@@ -80,7 +86,14 @@ function pmproject_pm_contextual_links($entity, $type, $view_mode, $langcode) {
   list($id, $vid, $bundle) = entity_extract_ids($type, $entity);
   if ($type == 'node') {
     $field_info = field_info_field('pmproject_parent');
-    $target_bundles = $field_info['settings']['handler_settings']['target_bundles'];
+    if (isset($field_info['settings']['handler_settings']['target_bundles'])) {
+      $target_bundles = $field_info['settings']['handler_settings']['target_bundles'];
+    }
+    else {
+      $target_bundles = array(
+        'pmorganization',
+      );
+    }
     if (in_array($bundle, $target_bundles)) {
       $links[t('Add Project')] = array(
         'title' => t('Add Project'),

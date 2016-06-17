@@ -11,6 +11,11 @@ define('PM_ICON_SET_NO_ICON', 'none');
 
 define('PM_CONTEXTUAL_LINK_PSEUDO_FIELD', 'pm_contextual_link');
 
+define('PM_FONTAWESOME_DISABLED', 0x0000);
+define('PM_FONTAWESOME_LIBRARY_ENABLED', 0x0001);
+define('PM_FONTAWESOME_MODULE_ENABLED', 0x0002);
+define('PM_FONTAWESOME_ENABLED', PM_FONTAWESOME_LIBRARY_ENABLED | PM_FONTAWESOME_MODULE_ENABLED);
+
 module_load_include('inc', 'pm', 'includes/pm.permission');
 
 /**
@@ -23,6 +28,7 @@ function pm_help($path, $arg) {
     case "admin/help#pm":
       $output = '<p>' . t("Provides a complete project management environment") . '</p>';
       break;
+
     case 'admin/help#pm-permission':
       return '<p>' . t('PM Permission allows you to grant access to content based on interactions with Drupal PM.') . '</p>';
   }
@@ -66,10 +72,8 @@ function pm_permission() {
 function pm_menu() {
   $items = array();
   $items['pm'] = array(
-    'title' => t('Project Management'),
-    'description' => t('You can disable or reorder the links from the !dashboard here', array(
-        '!dashboard' => l(t('dashboard'), 'pm'),
-      )),
+    'title' => 'Project Management',
+    'description' => 'Access various components of <em>Project Management</em>',
     'page callback' => 'pm_page_front',
     'access arguments' => array('Project Management: access dashboard'),
     'type' => MENU_NORMAL_ITEM,
@@ -116,6 +120,29 @@ function pm_menu() {
     'file path' => drupal_get_path('module', 'pm') . '/includes',
   );
 
+  $items['admin/config/pm/pm/menu'] = array(
+    'title' => 'Menu',
+    'description' => 'Manage menu exposed in block and on dashboard.',
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pm_menu_list'),
+    'access arguments' => array('administer pm permission'),
+    'file' => 'pm.menu.inc',
+    'file path' => drupal_get_path('module', 'pm') . '/includes',
+  );
+
+  $items['admin/config/pm/pm/menu/%'] = array(
+    'title' => 'Menu Settings',
+    'title callback' => 'pm_menu_admin_title_callback',
+    'title arguments' => array(5),
+    'description' => 'Manage Dashboard Menu.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pm_menu_admin', 5),
+    'access arguments' => array('administer pm permission'),
+    'file' => 'pm.menu.inc',
+    'file path' => drupal_get_path('module', 'pm') . '/includes',
+  );
+
   return $items;
 }
 
@@ -135,10 +162,34 @@ function pm_theme() {
     'pm_dashboard_link' => array(
       'file'      => 'pm.theme.inc',
       'variables' => array('link_blocks' => array()),
+      'template' => 'templates/pm.menu.link',
+    ),
+    'pm_icon_none' => array(
+      'file'      => 'pm.theme.inc',
+      'variables' => array('title' => ''),
+      'template' => 'templates/pm.icon.none',
+    ),
+    'pm_icon' => array(
+      'file'      => 'pm.theme.inc',
+      'variables' => array('title' => '', 'icon' => ''),
+      'template' => 'templates/pm.icon',
     ),
     'pm_list_default' => array(
+      'file'      => 'pm.theme.inc',
       'template' => 'pm-list-default',
       'variables' => array('value' => NULL, 'key' => NULL, 'field_name' => NULL),
+    ),
+
+    'pm_parent_breadcrumb' => array(
+      'file' => 'pm.theme.inc',
+      'variables' => array(
+        'data' => array(),
+      ),
+    ),
+
+    'pm_menu_entry_table' => array(
+      'file' => 'pm.theme.inc',
+      'render element' => 'element',
     ),
   );
 }
@@ -212,49 +263,8 @@ function pm_entity_view($entity, $type, $view_mode, $langcode) {
  *   Dashboard links.
  */
 function pm_dashboard_get_links($check_active = TRUE, $type = 'page') {
-
-  $links = module_invoke_all('pm_dashboard_links', $type);
-
-  if (!empty($links)) {
-
-    $default_dashboard_settings = variable_get('pm_' . $type . 'dashboard_settings', array());
-
-    $weight = 0;
-    foreach ($links as $key => &$link_array) {
-
-      // Active check.
-      if ($check_active && isset($default_dashboard_settings[$link_array['path']]['active']) && $default_dashboard_settings[$link_array['path']]['active'] == FALSE) {
-        unset($links[$key]);
-        continue;
-      }
-
-      // Module exist check.
-      if (isset($link_array['destination_module']) && !module_exists($link_array['destination_module'])) {
-        unset($links[$key]);
-        continue;
-      }
-
-      // Access check.
-      if (!drupal_valid_path($link_array['path'])) {
-        unset($links[$key]);
-      }
-
-      if (isset($default_dashboard_settings[$link_array['path']]['weight'])) {
-        $link_array['weight'] = $default_dashboard_settings[$link_array['path']]['weight'];
-      }
-      elseif (!isset($link_array['weight'])) {
-        $link_array['weight'] = $weight;
-        $weight++;
-      }
-    }
-
-    // Hook for altering links.
-    drupal_alter('pm_dashboard_links', $links, $type);
-
-    // Sort links by weight.
-    uasort($links, '_pm_dashboard_sort_links');
-
-  }
+  module_load_include('inc', 'pm', 'includes/pm.menu');
+  $links = pm_menu_get_links($type, $check_active);
   return $links;
 }
 
@@ -345,190 +355,16 @@ function pm_block_view($delta = '') {
 }
 
 /**
- * Provides an add icon for Project Management nodes.
- */
-function pm_icon_add_node($node, $params = array()) {
-  return pm_icon_add('node/add/' . $node->type, $params);
-}
-
-/**
- * Provides an edit icon for Project Management nodes.
- */
-function pm_icon_edit_node($node, $params = array()) {
-  return pm_icon_edit('node/' . $node->nid . '/edit', $params);
-}
-
-/**
- * Provides a delete icon for Project Management nodes.
- */
-function pm_icon_delete_node($node, $params = array()) {
-  return pm_icon_delete('node/' . $node->nid . '/delete', $params);
-}
-
-/**
- * Provides a Project Management add icon.
- */
-function pm_icon_add($path, $params = array()) {
-  $attributes = array('class' => array('popups-form'));
-  return pm_icon_l('application_add', $path, t('Add'), $params, $attributes);
-}
-
-/**
- * Provides a Project Management edit icon.
- */
-function pm_icon_edit($path, $params = array()) {
-  $attributes = array('class' => array('popups-form'));
-  return pm_icon_l('application_edit', $path, t('Edit'), $params, $attributes);
-}
-
-/**
- * Provides a Project Management delete icon.
- */
-function pm_icon_delete($path, $params = array()) {
-  $attributes = array('class' => array('popups-form'));
-  return pm_icon_l('application_delete', $path, t('Delete'), $params, $attributes);
-}
-
-/**
- * Provides an icon link.
- */
-function pm_icon_l($icon, $path, $title, $params = array(), $attributes = array()) {
-  if (!drupal_valid_path($path)) {
-    return '';
-  }
-  $icon = pm_icon($icon, $title);
-  $attributes['title'] = $title;
-
-  $query = '';
-
-  if (array_key_exists('q', $params)) {
-    $destination = $params['q'];
-    unset($params['q']);
-    $c = 0;
-    if (array_key_exists('page', $params)) {
-      $destination .= '?page=' . $params['page'];
-      unset($params['page']);
-      $c++;
-    }
-    if (array_key_exists('sort', $params)) {
-      if ($c) {
-        $destination .= '&';
-      }
-      else {
-        $destination .= '?';
-      }
-      $destination .= 'sort=' . $params['sort'];
-      unset($params['sort']);
-      $c++;
-    }
-    if (array_key_exists('order', $params)) {
-      if ($c) {
-        $destination .= '&';
-      }
-      else {
-        $destination .= '?';
-      }
-      $destination .= 'order=' . $params['order'];
-      unset($params['order']);
-      $c++;
-    }
-    $query .= 'destination=' . urlencode($destination);
-    unset($params['destination']);
-  }
-
-  return l($icon, $path, array(
-    'attributes' => $attributes,
-    'html' => TRUE,
-    'query' => _pm_icon_urlencode_helper($params),
-  ));
-}
-
-/**
- * Encodes URL for icon links.
- */
-function _pm_icon_urlencode_helper($params, $org_key = "") {
-  $new_params = array();
-  foreach ($params as $key => $value) {
-    if (!empty($org_key)) {
-      $new_key = $org_key . "[" . $key . "]";
-    }
-    else {
-      $new_key = $key;
-    }
-    if (is_array($value)) {
-      $new_params = array_merge(_pm_icon_urlencode_helper($value, $new_key), $new_params);
-    }
-    else {
-      $new_params[$new_key] = urlencode($value);
-    }
-  }
-  return $new_params;
-}
-
-/**
- * Provides a Project Management icon.
- */
-function pm_icon($icon, $title) {
-  // Running check_plain() on these variables means that we can call pm_icon()
-  // without further sanitising.
-  $icon = check_plain($icon);
-  $title = check_plain($title);
-
-  $icon = str_replace(' ', '_', $icon);
-
-  if (variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR) !== PM_ICON_SET_NO_ICON) {
-    $fa_icon = pm_helper_get_fa_icon($icon, '');
-
-    // @todo: Should we force default? what if other module handles the icon?
-    if (empty($fa_icon)) {
-      return pm_icon_default($icon, $title);
-    }
-    else {
-      return $fa_icon;
-    }
-  }
-  else {
-    // Icons set to not display.
-    return '<span class="pm-no-icon">' . $title . '</span>';
-  }
-}
-
-/**
- * Forces a recache of Project Management icons.
- */
-function pm_icon_recache() {
-  $available = array();
-
-  $dir = variable_get('pm_icons_path', drupal_get_path('module', 'pm') . '/icons');
-
-  $files = scandir($dir);
-  foreach ($files as $file) {
-    $available[] = $file;
-  }
-
-  cache_set('pm:icons', $available, 'cache', CACHE_TEMPORARY);
-  $available = cache_get('pm:icons');
-  return $available;
-}
-
-/**
- * Provides a default icon to avoid missing icons.
- */
-function pm_icon_default($icon, $title) {
-  // For now, just return $title.
-  // A future extension could be more intelligent using $icon.
-  return $title;
-}
-
-/**
  * Set body class to use pm default icons if required.
  */
 function pm_preprocess_html(&$vars) {
   $pm_icon = variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR);
-  $font_awesome_enabled = module_exists('fontawesome');
+
   switch ($pm_icon) {
     case PM_ICON_SET_DEFAULT_BEHAVIOUR:
-      $vars['classes_array'][] = ($font_awesome_enabled) ? "pm-use-fa-icons" : "pm-use-storm-icons";
+      // Use fontawesome icons if available, defer to legacy otherwise.
+      $fontawesome_status = _pm_get_fontawesome_status();
+      $vars['classes_array'][] = ($fontawesome_status == PM_FONTAWESOME_ENABLED) ? "pm-use-fa-icons" : "pm-use-storm-icons";
 
       break;
 
@@ -543,135 +379,6 @@ function pm_preprocess_html(&$vars) {
       break;
 
   }
-}
-
-/**
- * Helper to attach fontawesome icons.
- */
-function pm_helper_get_fa_icon($key, $default_class = 'fa_wrench') {
-  if ((variable_get('pm_icon', PM_ICON_SET_DEFAULT_BEHAVIOUR) == PM_ICON_SET_NO_ICON)) {
-    return '';
-  }
-  $key = str_replace(' ', '_', $key);
-  $key = str_replace('-', '_', $key);
-  switch ($key) {
-    case 'pmconfiguration':
-      $class = 'fa-gear';
-      break;
-
-    case 'pmexpenses':
-      $class = 'fa-money';
-      break;
-
-    case 'pmnotes':
-      $class = 'fa-file-o';
-      break;
-
-    case 'pmtimetrackings':
-      $class = 'fa-clock-o';
-      break;
-
-    case 'pmtickets':
-      $class = 'fa-ticket';
-      break;
-
-    case 'pmtasks':
-      $class = 'fa-tasks';
-      break;
-
-    case 'pmprojects':
-      $class = 'fa-cubes';
-      break;
-
-    case 'pmteams':
-      $class = 'fa-users';
-      break;
-
-    case 'pmorganizations':
-      $class = 'fa-institution';
-      break;
-
-    case 'pmissues':
-      $class = 'fa-cube';
-      break;
-
-    case 'application_add':
-      $class = 'fa-plus';
-      break;
-
-    case 'application_delete':
-      $class = 'fa-remove pm-status-danger-onfocus';
-      break;
-
-    case 'application_edit':
-      $class = 'fa-edit';
-      break;
-
-    // Issue type.
-    case 'bug':
-      $class = 'fa-bug';
-      break;
-
-    case 'task':
-      $class = 'fa-tasks';
-      break;
-
-    case 'feature_request':
-      $class = 'fa-ticket';
-      break;
-
-    case 'support':
-      $class = 'fa-phone';
-      break;
-
-    // Project type.
-    case 'development':
-      $class = 'fa-flask';
-      break;
-
-    // Progress.
-    case 'in_progress':
-      $class = 'fa-play pm-status-info';
-      break;
-
-    case 'completed':
-      $class = 'fa-check pm-status-success';
-      break;
-
-    case 'on_hold':
-      $class = 'fa-pause pm-status-warning';
-      break;
-
-    case 'inserted':
-      $class = 'fa-square pm-status-normal';
-      break;
-
-    // Priority.
-    case '1_low':
-      $class = 'fa-circle pm-status-info';
-      break;
-
-    case '2_normal':
-      $class = 'fa-circle pm-status-success';
-      break;
-
-    case '3_high':
-      $class = 'fa-circle pm-status-warning';
-      break;
-
-    case '4_urgent':
-      $class = 'fa-circle pm-status-danger';
-      break;
-
-    case 'default':
-      $class = '';
-      break;
-
-    default:
-      // @todo: Discuss how to handle other keys.
-      return '';
-  }
-  return "<i class='fa pm-icon $class fa-fw'></i>";
 }
 
 /**
@@ -729,7 +436,6 @@ function pm_views_api() {
   );
 }
 
-
 /**
  * Implements hook_field_formatter_info().
  */
@@ -744,6 +450,10 @@ function pm_field_formatter_info() {
         'list_boolean',
       ),
     ),
+    'pm_parent_breadcrumb' => array(
+      'label' => t('Project Management Parent Breadcrumb'),
+      'field types' => array('entityreference'),
+    ),
   );
 }
 
@@ -752,7 +462,9 @@ function pm_field_formatter_info() {
  */
 function pm_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
+
   switch ($display['type']) {
+
     case 'pm_list_default':
       $allowed_values = list_allowed_values($field, $instance, $entity_type, $entity);
       foreach ($items as $delta => $item) {
@@ -774,11 +486,82 @@ function pm_field_formatter_view($entity_type, $entity, $field, $instance, $lang
         $element[$delta] = array('#markup' => $output);
       }
       break;
+
+    case 'pm_parent_breadcrumb':
+      foreach ($items as $delta => $item) {
+        $element[$delta] = array(
+          '#data' => pm_get_parents($entity_type, $entity, $field, $delta),
+          '#theme' => 'pm_parent_breadcrumb',
+        );
+      }
+      break;
   }
 
   return $element;
 }
 
+/**
+ * Recursively gather all parents for a given entity.
+ */
+function pm_get_parents($entity_type, $entity, $field, $delta) {
+  $iteration = 10;
+  $field_name = $field['field_name'];
+  $parents = array();
+  try {
+    $e = entity_metadata_wrapper('node', $entity);
+    if ($field['cardinality'] == '1') {
+      if (isset($e->{$field_name})) {
+        $wrapper = $e->{$field_name};
+      }
+    }
+    else {
+      if (isset($e->{$field_name})) {
+        $wrapper = $e->{$field_name}[$delta];
+      }
+    }
+    while ($iteration AND $wrapper) {
+      $iteration--;
+      $bundle = $wrapper->getBundle();
+      if ($wrapper->getIdentifier()) {
+        $parents[$wrapper->getIdentifier()] = pm_get_parent_label('node', $wrapper);
+      }
+      if ($wrapper->__isset($bundle . '_parent')) {
+        $parent_field = $bundle . '_parent';
+      }
+      elseif ($wrapper->__isset('field_' . $bundle . '_parent')) {
+        $parent_field = 'field_' . $bundle . '_parent';
+      }
+      else {
+        break;
+      }
+
+      if ($bundle == 'pmorganization') {
+        break;
+      }
+      $wrapper = $wrapper->{$parent_field};
+    }
+  }
+  catch (EntityMetadataWrapperException $exc) {
+    watchdog(
+      'pm',
+      'See ' . __FUNCTION__ . '() <pre>' . $exc->getTraceAsString() . '</pre>',
+      NULL, WATCHDOG_ERROR
+    );
+  }
+  return array_reverse($parents);
+}
+
+/**
+ * Get the label for a given entity.
+ */
+function pm_get_parent_label($entity_type, $wrapper) {
+  $label = $wrapper->label();
+  $id = $wrapper->getIdentifier();
+
+  $path = $entity_type . '/' . $id;
+
+  return drupal_valid_path($path) ? l($label, $path) : $label;
+}
 
 /**
  * Implements hook_node_access_records().
@@ -862,4 +645,52 @@ function pm_node_update($node) {
       pm_permission_hunt_and_update_all_child_permission($node);
     }
   }
+}
+
+/**
+ * Helper function to set breadcrumb based on which links a user has access to.
+ */
+function pm_set_breadcrumb(array $links, $pm_root = TRUE) {
+  $breadcrumb = array();
+
+  // Unless set otherwise, all breadcrumbs start with a link to pm.
+  if ($pm_root && drupal_valid_path('pm')) {
+    $breadcrumb = array(
+      l(t('Project Management'), 'pm'),
+    );
+  }
+
+  // Now process any other links provided.
+  foreach ($links as $link) {
+    $text = $link['text'];
+    $path = $link['path'];
+    $options = isset($link['options']) ? $link['options'] : array();
+
+    if (drupal_valid_path($path)) {
+      $breadcrumb[] = l($text, $path, $options);
+    }
+  }
+
+  // Only set the breadcrumb if one or more links are present.
+  if (!empty($breadcrumb)) {
+    drupal_set_breadcrumb($breadcrumb);
+  }
+}
+
+/**
+ * Helper function to check if fontawesome is available or not.
+ */
+function _pm_get_fontawesome_status() {
+  $status = &drupal_static(__FUNCTION__);
+  if (!isset($status)) {
+    $status = PM_FONTAWESOME_DISABLED;
+    $status |= module_exists('fontawesome') ? PM_FONTAWESOME_MODULE_ENABLED : 0x0000;
+    if (module_exists('libraries')) {
+      $library_info = libraries_detect('fontawesome');
+      if (isset($library_info['installed']) AND ($library_info['installed'] == TRUE)) {
+        $status |= PM_FONTAWESOME_LIBRARY_ENABLED;
+      }
+    }
+  }
+  return $status;
 }

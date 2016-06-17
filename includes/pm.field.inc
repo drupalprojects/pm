@@ -29,6 +29,30 @@ function pm_field_bases_create_if_required(array $field_bases) {
       $result[$key] = pm_field_base_create_if_required($field_name, $field_base);
     }
   }
+  foreach ($result as $key => $status) {
+    $variables = array(
+      '@field_name' => $field_bases[$key]['field_name'],
+    );
+    switch ($status) {
+      case PM_FIELD_BASE_CREATE_FAILURE:
+        $message = 'Failed to create field base - @field_name';
+        watchdog('pm', $message, $variables, WATCHDOG_ERROR);
+        throw new Exception("Drupal PM: Error Creating field base - " . $field_bases[$key]['field_name'], 1);
+
+      case PM_FIELD_BASE_CREATE_SUCCESS:
+        $message = 'Successfully created field base - @field_name';
+        watchdog('pm', $message, $variables, WATCHDOG_INFO);
+
+        break;
+
+      case PM_FIELD_BASE_UPDATE_SUCCESS:
+        $message = 'Successfully Updated field base - @field_name';
+        watchdog('pm', $message, $variables, WATCHDOG_INFO);
+
+        break;
+
+    }
+  }
   return $result;
 }
 
@@ -73,6 +97,30 @@ function pm_field_instances_create_if_required(array $field_instances) {
     foreach ($field_instances as $key => $field_instance) {
       $field_name = $field_instance['field_name'];
       $result[$key] = pm_field_instance_create_if_required($field_name, $field_instance);
+    }
+  }
+  foreach ($result as $key => $status) {
+    $variables = array(
+      '@field_name' => $field_instances[$key]['field_name'],
+    );
+    switch ($status) {
+      case PM_FIELD_INSTANCE_CREATE_FAILURE:
+        $message = 'Failed to create field instance - @field_name';
+        watchdog('pm', $message, $variables, WATCHDOG_ERROR);
+        throw new Exception("Drupal PM: Error Creating field instance - " . $field_instances[$key]['field_name'] . ' (' . $key . ')', 1);
+
+      case PM_FIELD_INSTANCE_CREATE_SUCCESS:
+        $message = 'Successfully created field instance - @field_name';
+        watchdog('pm', $message, $variables, WATCHDOG_INFO);
+
+        break;
+
+      case PM_FIELD_INSTANCE_UPDATE_SUCCESS:
+        $message = 'Successfully Updated field instance - @field_name';
+        watchdog('pm', $message, $variables, WATCHDOG_INFO);
+
+        break;
+
     }
   }
   return $result;
