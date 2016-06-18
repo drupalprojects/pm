@@ -41,7 +41,7 @@ function pmnote_field_group_info() {
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
   $field_group->identifier = 'group_references|node|pmnote|form';
-  $field_group->group_name = 'group_contact_info';
+  $field_group->group_name = 'group_references';
   $field_group->entity_type = 'node';
   $field_group->bundle = 'pmnote';
   $field_group->mode = 'form';
