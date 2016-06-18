@@ -38,7 +38,7 @@ function pmorganization_field_group_info() {
       ),
     ),
   );
-  $export['group_contact_info|node|pmorganization|default'] = $field_group;
+  $export[$field_group->identifier] = $field_group;
 
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
@@ -68,7 +68,7 @@ function pmorganization_field_group_info() {
       ),
     ),
   );
-  $export['group_contact_info|node|pmorganization|form'] = $field_group;
+  $export[$field_group->identifier] = $field_group;
 
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
@@ -98,7 +98,7 @@ function pmorganization_field_group_info() {
       ),
     ),
   );
-  $export['group_financial_info|node|pmorganization|default'] = $field_group;
+  $export[$field_group->identifier] = $field_group;
 
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
@@ -128,7 +128,7 @@ function pmorganization_field_group_info() {
       ),
     ),
   );
-  $export['group_financial_info|node|pmorganization|form'] = $field_group;
+  $export[$field_group->identifier] = $field_group;
 
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
@@ -158,7 +158,7 @@ function pmorganization_field_group_info() {
       ),
     ),
   );
-  $export['group_general_ino|node|pmorganization|default'] = $field_group;
+  $export[$field_group->identifier] = $field_group;
 
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
@@ -188,7 +188,7 @@ function pmorganization_field_group_info() {
       ),
     ),
   );
-  $export['group_general_ino|node|pmorganization|form'] = $field_group;
+  $export[$field_group->identifier] = $field_group;
 
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
@@ -214,7 +214,7 @@ function pmorganization_field_group_info() {
       ),
     ),
   );
-  $export['group_organization_members|node|pmorganization|default'] = $field_group;
+  $export[$field_group->identifier] = $field_group;
 
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
@@ -241,7 +241,7 @@ function pmorganization_field_group_info() {
       ),
     ),
   );
-  $export['group_organization_members|node|pmorganization|form'] = $field_group;
+  $export[$field_group->identifier] = $field_group;
 
   return $export;
 }
