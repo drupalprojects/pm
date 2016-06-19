@@ -24,8 +24,8 @@ function pmorganization_field_group_info() {
     'weight' => '0',
     'children' => array(
       0 => 'pm_address',
-      1 => 'pm_mail',
-      2 => 'pm_phone',
+      1 => 'pm_phone',
+      2 => 'pm_mail',
       3 => 'pm_www',
     ),
     'format_type' => 'fieldset',
@@ -54,8 +54,8 @@ function pmorganization_field_group_info() {
     'weight' => '1',
     'children' => array(
       0 => 'pm_address',
-      1 => 'pm_mail',
-      2 => 'pm_phone',
+      1 => 'pm_phone',
+      2 => 'pm_mail',
       3 => 'pm_www',
     ),
     'format_type' => 'fieldset',
