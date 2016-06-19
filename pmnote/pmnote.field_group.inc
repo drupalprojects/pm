@@ -10,6 +10,7 @@
 function pmnote_field_group_info() {
   $export = array();
 
+  // References
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
@@ -64,6 +65,7 @@ function pmnote_field_group_info() {
   );
   $export[$field_group->identifier] = $field_group;
 
+  // Miscellaneous
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
