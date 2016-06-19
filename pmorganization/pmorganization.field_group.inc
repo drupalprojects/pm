@@ -133,8 +133,8 @@ function pmorganization_field_group_info() {
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
-  $field_group->identifier = 'group_general_ino|node|pmorganization|default';
-  $field_group->group_name = 'group_general_ino';
+  $field_group->identifier = 'group_general_info|node|pmorganization|default';
+  $field_group->group_name = 'group_general_info';
   $field_group->entity_type = 'node';
   $field_group->bundle = 'pmorganization';
   $field_group->mode = 'default';
@@ -163,8 +163,8 @@ function pmorganization_field_group_info() {
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
-  $field_group->identifier = 'group_general_ino|node|pmorganization|form';
-  $field_group->group_name = 'group_general_ino';
+  $field_group->identifier = 'group_general_info|node|pmorganization|form';
+  $field_group->group_name = 'group_general_info';
   $field_group->entity_type = 'node';
   $field_group->bundle = 'pmorganization';
   $field_group->mode = 'form';
