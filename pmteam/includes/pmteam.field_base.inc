@@ -10,7 +10,6 @@
 function pmteam_default_field_bases() {
   $field_bases = array();
 
-
   // Exported field_base: 'pmteam_user'.
   $field_bases['pmteam_user'] = array(
     'active' => 1,
