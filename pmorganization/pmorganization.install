@@ -70,13 +70,13 @@ function pmorganization_update_7104(&$sandbox) {
 /**
  * Skipping update that has been superceded in this version of Drupal PM.
  */
-function pmproject_update_7300() {
+function pmorganization_update_7300() {
 }
 
 /**
  * Skipping update that has been superceded in this version of Drupal PM.
  */
-function pmproject_update_7301() {
+function pmorganization_update_7301() {
 }
 
 /**
