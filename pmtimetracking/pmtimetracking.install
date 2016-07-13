@@ -322,8 +322,8 @@ function pmtimetracking_update_7105() {
   foreach ($result as $record) {
     $node = node_load($record->nid);
 
-    $datebegin = $record->trackingdate + strtotime($record->timebegin);
-    $dateend = $record->trackingdate + strtotime($record->timeend);
+    $datebegin = strtotime($record->timebegin, $record->trackingdate);
+    $dateend = strtotime($record->timeend, $record->trackingdate);
 
     $node->pm_date[LANGUAGE_NONE][0]['value'] = date('Y-m-d H:i:s', $datebegin);
     $node->pm_date[LANGUAGE_NONE][0]['value2'] = date('Y-m-d H:i:s', $dateend);
