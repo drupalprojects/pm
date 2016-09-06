@@ -59,6 +59,10 @@ function pmtimetracking_update_last_removed() {
  * Migrate PM Timetracking nodes to field_api fields.
  */
 function pmtimetracking_update_7106(&$sandbox) {
+  // Deactivate auto duration settings to avoid overwriting data on migration.
+  variable_set('pmtimetracking_auto_duration', FALSE);
+  variable_set('pmtimetracking_auto_billing_duration', FALSE);
+
   module_load_include('inc', 'pmtimetracking', 'includes/pmtimetracking.migrate');
 
   if (pmtimetracking_migrate_update_could_be_performed()) {
