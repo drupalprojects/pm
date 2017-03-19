@@ -303,7 +303,7 @@ function pmproject_node_delete($node) {
   // Clean up the {pmproject_index} table when nodes are deleted.
   pmproject_delete_node_index($node);
 
-  if (variable_get('pmproject_maintain_index_table', TRUE) AND $node->type = 'pmproject') {
+  if (variable_get('pmproject_maintain_index_table', TRUE) AND $node->type == 'pmproject') {
     // Clean up the {pmproject_index} table when pmproject are deleted.
     db_delete('pmproject_index')->condition('pmproject_nid', $node->nid)->execute();
   }
