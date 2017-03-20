@@ -194,7 +194,7 @@ function pmorganization_node_delete($node) {
   // Clean up the {pmorganization_index} table when nodes are deleted.
   pmorganization_delete_node_index($node);
 
-  if (variable_get('pmorganization_maintain_index_table', TRUE) AND $node->type = 'pmorganization') {
+  if (variable_get('pmorganization_maintain_index_table', TRUE) AND $node->type == 'pmorganization') {
     // Clean up the {pmorganization_index} table when pmorganization is deleted.
     db_delete('pmorganization_index')->condition('pmorganization_nid', $node->nid)->execute();
   }
